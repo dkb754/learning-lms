@@ -62,17 +62,44 @@ the numbers behind it, a session log, and a copy-out export.
 
 ## Files
 
-- `src/app.html` — the app: body content only, the form the Artifact publisher expects.
-- `build.py` — wraps it into a standalone document.
-- `index.html` — build output. Open directly or serve it; this is the file to bookmark.
+- `src/app.html` — the app. Body content only, the form the Artifact publisher expects.
+- `build.py` — wraps it into `dist/index.html` and writes `dist/manifest.json`.
+- `icons.py` — generates the PNG icons (no image library needed). Rarely rerun.
+- `netlify.toml` — deploy config: publish `dist/`, rebuild on push, SPA fallback, cache headers.
+- `dist/` — the deployable site, committed so it can also be opened or drag-dropped directly.
 
 ```sh
-python3 build.py          # rebuild index.html after editing src/app.html
-python3 -m http.server 8000
+python3 build.py                      # rebuild dist/ after editing src/app.html
+python3 -m http.server 8000 -d dist   # serve it locally
 ```
+
+## Deploying to Netlify
+
+`netlify.toml` sets everything, so no build settings need filling in by hand.
+
+**Connect the repo (auto-deploys on every push)**
+1. Netlify → **Add new site → Import an existing project → GitHub**
+2. Pick `dkb754/learning-lms`, branch `claude/ai-tutor-adam-h1oj2s`
+3. Deploy. Build command and publish directory come from `netlify.toml`.
+4. **Site configuration → Change site name** to get a clean URL, e.g.
+   `adams-build-mode.netlify.app` — that is the one to bookmark.
+
+**Or drag and drop (no Git, instant)** — drop the `dist/` folder on
+<https://app.netlify.com/drop>. Redeploying means dropping it again.
+
+### Installing it on Adam's device
+
+Once it is on HTTPS it installs to the home screen with its own icon, opening
+full-screen with no browser chrome:
+
+- **iPad / iPhone** — open in Safari, Share → *Add to Home Screen*
+- **Android / Chrome** — the *Install app* prompt appears, or ⋮ → *Add to Home screen*
+
+Progress is stored per browser, so install it once and always open it from that
+icon — opening the same URL in a different browser starts from zero.
 
 ## Privacy
 
 Progress lives in `localStorage` under `adamBuildMode.v1`, in one browser on one
-device. Nothing is uploaded and there is no account. Clearing site data clears
+device — including once it is deployed, since the site has no back end. Nothing is uploaded and there is no account. Clearing site data clears
 progress — the Progress tab has an export for keeping a copy.
