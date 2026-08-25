@@ -1,0 +1,2722 @@
+<!--HEAD-->
+<title>Adam's Build Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Figtree:wght@400..800&family=Literata:opsz,wght@7..72,400..700&display=swap">
+<style>
+/* ============================================================
+   ADAM'S BUILD MODE — design tokens
+   Light is the default ground; dark is a full re-tint.
+   Realms: BUILD (math, signal blue) / STORY (reading, violet)
+   ============================================================ */
+:root{
+  --ground:#EDF1F7;
+  --surface:#FFFFFF;
+  --surface-2:#F4F7FC;
+  --surface-3:#E7EDF6;
+  --line:#D6DFEC;
+  --line-strong:#BECBDE;
+  --ink:#131B2B;
+  --ink-2:#4A5878;
+  --ink-3:#79879F;
+
+  --build:#2C63F0;
+  --build-soft:#E6EDFF;
+  --build-edge:#1E47B5;
+  --story:#7A4DEA;
+  --story-soft:#EFE8FF;
+  --story-edge:#5B33BE;
+
+  --good:#0E9B58;
+  --good-soft:#E1F5EB;
+  --warn:#C97A00;
+  --warn-soft:#FDF0DC;
+  --miss:#D63E58;
+  --miss-soft:#FCE8EC;
+  --gold:#E39A0C;
+
+  --shadow:0 3px 0 var(--line-strong);
+  --shadow-lift:0 6px 0 var(--line-strong);
+
+  --f-display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --f-ui:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-read:'Literata',Georgia,'Times New Roman',serif;
+
+  --r-s:10px; --r-m:16px; --r-l:22px;
+  --wrap:660px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0D1320;
+    --surface:#161F30;
+    --surface-2:#1C2739;
+    --surface-3:#243248;
+    --line:#2A3750;
+    --line-strong:#374766;
+    --ink:#E8EEF9;
+    --ink-2:#A9B8D2;
+    --ink-3:#7A89A6;
+
+    --build:#5D8DFF;
+    --build-soft:#182849;
+    --build-edge:#3E6BD6;
+    --story:#A98BFF;
+    --story-soft:#241C46;
+    --story-edge:#7D5AE0;
+
+    --good:#3BCB86;
+    --good-soft:#12301F;
+    --warn:#F0A93F;
+    --warn-soft:#33230A;
+    --miss:#FF7488;
+    --miss-soft:#37151D;
+    --gold:#FFC24B;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0D1320;
+  --surface:#161F30;
+  --surface-2:#1C2739;
+  --surface-3:#243248;
+  --line:#2A3750;
+  --line-strong:#374766;
+  --ink:#E8EEF9;
+  --ink-2:#A9B8D2;
+  --ink-3:#7A89A6;
+
+  --build:#5D8DFF;
+  --build-soft:#182849;
+  --build-edge:#3E6BD6;
+  --story:#A98BFF;
+  --story-soft:#241C46;
+  --story-edge:#7D5AE0;
+
+  --good:#3BCB86;
+  --good-soft:#12301F;
+  --warn:#F0A93F;
+  --warn-soft:#33230A;
+  --miss:#FF7488;
+  --miss-soft:#37151D;
+  --gold:#FFC24B;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:var(--f-ui);
+  background:var(--ground);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:86px;
+}
+/* faint stud grid — the workshop floor */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ink) 7%, transparent) 1.4px, transparent 1.5px);
+  background-size:26px 26px;
+  opacity:.5;
+}
+.app{position:relative;z-index:1;max-width:var(--wrap);margin:0 auto;padding:14px 16px 8px}
+
+/* ---------- type ---------- */
+h1,h2,h3,.display{font-family:var(--f-display);font-weight:800;letter-spacing:-.02em;text-wrap:balance;line-height:1.12}
+h1{font-size:clamp(1.5rem,5.4vw,2.05rem)}
+h2{font-size:clamp(1.15rem,3.8vw,1.4rem)}
+h3{font-size:1.02rem}
+p{line-height:1.6}
+.eyebrow{font-size:.66rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.muted{color:var(--ink-2)}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- brick surfaces ---------- */
+.card{
+  background:var(--surface);
+  border:1.5px solid var(--line);
+  border-radius:var(--r-m);
+  box-shadow:var(--shadow);
+  padding:16px;
+}
+.card.flush{padding:0;overflow:hidden}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.avatar{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;position:relative;
+  background:linear-gradient(160deg,#FFD264,#F0A415);
+  border:1.5px solid var(--line);box-shadow:var(--shadow);
+  display:grid;place-items:center;font-size:1.35rem;
+}
+.who{flex:1;min-width:0}
+.who .name{font-family:var(--f-display);font-weight:800;font-size:1.02rem;line-height:1.1}
+.who .lvl{font-size:.72rem;font-weight:700;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:999px;
+  padding:5px 11px;font-size:.78rem;font-weight:800;box-shadow:0 2px 0 var(--line-strong);
+  white-space:nowrap;
+}
+.chip.xp{color:var(--gold)}
+.chip.streak{color:var(--miss)}
+.icon-btn{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  background:var(--surface);border:1.5px solid var(--line);box-shadow:0 2px 0 var(--line-strong);
+  color:var(--ink-2);cursor:pointer;display:grid;place-items:center;font-size:1rem;
+}
+.icon-btn:hover{color:var(--ink);border-color:var(--line-strong)}
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-display);font-weight:800;font-size:1rem;letter-spacing:-.01em;
+  border:1.5px solid transparent;border-radius:var(--r-s);
+  padding:13px 20px;cursor:pointer;color:#fff;background:var(--build);
+  box-shadow:0 4px 0 var(--build-edge);
+  transition:transform .08s ease, box-shadow .08s ease;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--build-edge)}
+.btn.story{background:var(--story);box-shadow:0 4px 0 var(--story-edge)}
+.btn.story:active{box-shadow:0 1px 0 var(--story-edge)}
+.btn.ghost{
+  background:var(--surface);color:var(--ink-2);
+  border-color:var(--line);box-shadow:0 3px 0 var(--line-strong);
+}
+.btn.ghost:active{box-shadow:0 1px 0 var(--line-strong)}
+.btn.wide{width:100%}
+.btn.sm{font-size:.85rem;padding:9px 14px;box-shadow:0 3px 0 var(--build-edge)}
+.btn.ghost.sm{box-shadow:0 3px 0 var(--line-strong)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+:focus-visible{outline:3px solid var(--build);outline-offset:2px}
+
+/* ---------- realm cards ---------- */
+.realms{display:grid;gap:12px;grid-template-columns:1fr 1fr;margin-bottom:14px}
+@media(max-width:430px){.realms{grid-template-columns:1fr}}
+.realm{
+  position:relative;text-align:left;cursor:pointer;overflow:hidden;
+  border:1.5px solid var(--line);border-radius:var(--r-m);
+  background:var(--surface);box-shadow:var(--shadow);padding:15px 15px 14px;
+  transition:transform .12s ease, box-shadow .12s ease;
+  font-family:var(--f-ui);color:var(--ink);
+}
+.realm:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.realm .rname{font-family:var(--f-display);font-weight:800;font-size:1.12rem;margin:8px 0 3px}
+.realm .rsub{font-size:.75rem;font-weight:600;color:var(--ink-2);line-height:1.4}
+.realm .rico{font-size:1.5rem;line-height:1}
+.realm.build{background:linear-gradient(170deg,var(--build-soft),var(--surface) 62%)}
+.realm.story{background:linear-gradient(170deg,var(--story-soft),var(--surface) 62%)}
+.realm .rbar{height:6px;border-radius:999px;background:var(--surface-3);margin-top:11px;overflow:hidden}
+.realm .rbar i{display:block;height:100%;border-radius:999px;transition:width .6s cubic-bezier(.2,.9,.3,1)}
+.realm.build .rbar i{background:var(--build)}
+.realm.story .rbar i{background:var(--story)}
+.realm .rpct{font-size:.68rem;font-weight:800;color:var(--ink-3);margin-top:6px;letter-spacing:.04em}
+
+/* ---------- coach ---------- */
+.coach{
+  display:flex;gap:11px;align-items:flex-start;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:13px 14px;
+}
+.coach.tone-good{background:var(--good-soft);border-color:color-mix(in srgb,var(--good) 35%,var(--line))}
+.coach.tone-miss{background:var(--miss-soft);border-color:color-mix(in srgb,var(--miss) 35%,var(--line))}
+.coach.tone-hint{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 35%,var(--line))}
+.coach-face{
+  width:40px;height:40px;flex-shrink:0;border-radius:11px;display:grid;place-items:center;
+  font-size:1.25rem;background:linear-gradient(160deg,#7FE3B0,#25B37A);
+  border:1.5px solid rgba(0,0,0,.12);box-shadow:inset 0 -3px 0 rgba(0,0,0,.14);
+}
+.coach-body{flex:1;min-width:0}
+.coach-name{font-family:var(--f-display);font-weight:800;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+.coach-text{font-size:.92rem;line-height:1.55;color:var(--ink)}
+.coach-text b{color:var(--ink);font-weight:800}
+.coach-text .k{
+  font-family:var(--f-display);font-weight:800;
+  background:var(--surface-3);border-radius:6px;padding:1px 7px;display:inline-block;
+}
+
+/* ---------- mission list ---------- */
+.quests{display:flex;flex-direction:column;gap:9px}
+.quest{
+  display:flex;align-items:center;gap:12px;cursor:pointer;text-align:left;width:100%;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:12px 14px;font-family:var(--f-ui);color:var(--ink);
+  transition:transform .12s ease;
+}
+.quest:hover{transform:translateX(3px)}
+.quest.done{opacity:.62;box-shadow:none}
+.quest.done .qname{text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.qbadge{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;
+  font-size:1.15rem;border:1.5px solid var(--line);
+}
+.qbadge.build{background:var(--build-soft)}
+.qbadge.story{background:var(--story-soft)}
+.qbadge.done{background:var(--good-soft)}
+.qinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.qname,.qmeta{display:block}
+.qname{font-family:var(--f-display);font-weight:800;font-size:.95rem;line-height:1.2}
+.qmeta{font-size:.72rem;font-weight:600;color:var(--ink-2);margin-top:2px}
+.qgo{font-size:1.1rem;color:var(--ink-3)}
+
+/* ---------- progress ring / bars ---------- */
+.bar{height:9px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px;background:var(--build);transition:width .5s cubic-bezier(.2,.9,.3,1)}
+.bar.gold i{background:linear-gradient(90deg,var(--gold),#FFD264)}
+
+/* ---------- skill grid ---------- */
+.skillrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.skillrow:last-child{border-bottom:none}
+.skillrow .sname{flex:1;min-width:0;font-size:.85rem;font-weight:700}
+.skillrow .sbar{width:92px;flex-shrink:0}
+.skillrow .sval{width:52px;text-align:right;font-size:.74rem;font-weight:800;color:var(--ink-2);flex-shrink:0}
+@media(max-width:520px){
+  .skillrow{flex-wrap:wrap;gap:6px 10px}
+  .skillrow .sname{flex-basis:100%}
+  .skillrow .sbar{flex:1;width:auto}
+}
+.tag{
+  display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 8px;border-radius:999px;background:var(--surface-3);color:var(--ink-2);
+}
+.tag.new{background:var(--surface-3);color:var(--ink-3)}
+.tag.learning{background:var(--warn-soft);color:var(--warn)}
+.tag.solid{background:var(--build-soft);color:var(--build)}
+.tag.mastered{background:var(--good-soft);color:var(--good)}
+
+/* ---------- bottom nav ---------- */
+.nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);
+  backdrop-filter:blur(10px);
+  border-top:1.5px solid var(--line);
+  padding:7px 10px calc(7px + env(safe-area-inset-bottom));
+}
+.nav-in{max-width:var(--wrap);margin:0 auto;display:flex}
+.nav button{
+  flex:1;background:none;border:none;cursor:pointer;color:var(--ink-3);
+  font-family:var(--f-ui);font-size:.66rem;font-weight:800;letter-spacing:.04em;
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;
+}
+.nav button .ni{font-size:1.15rem;line-height:1}
+.nav button.on{color:var(--build)}
+.nav button.on .ni{transform:translateY(-1px)}
+
+/* ---------- screens ---------- */
+.screen{display:none;animation:rise .25s ease}
+.screen.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;align-items:center;gap:10px}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* ============================================================
+   SESSION — question surfaces
+   ============================================================ */
+.sesh-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sesh-top .bar{flex:1}
+.dots{display:flex;gap:5px;flex-shrink:0}
+.dot{width:8px;height:8px;border-radius:3px;background:var(--surface-3);border:1px solid var(--line)}
+.dot.hit{background:var(--good);border-color:var(--good)}
+.dot.miss{background:var(--miss);border-color:var(--miss)}
+.dot.now{background:var(--build);border-color:var(--build);transform:scale(1.25)}
+
+.prompt{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:16px;margin-bottom:12px;
+}
+.prompt .qskill{display:flex;align-items:center;gap:7px;margin-bottom:9px;flex-wrap:wrap}
+.qtext{font-family:var(--f-display);font-weight:700;font-size:1.06rem;line-height:1.38}
+.qtext .num{font-size:1.5rem;letter-spacing:.01em}
+.story-frame{
+  font-family:var(--f-read);font-size:1rem;line-height:1.72;color:var(--ink);
+  font-weight:400;
+}
+.story-frame p+p{margin-top:.85em}
+.story-frame .para-n{
+  font-family:var(--f-ui);font-size:.62rem;font-weight:800;color:var(--ink-3);
+  vertical-align:super;margin-right:5px;letter-spacing:.04em;
+}
+.story-scroll{max-height:none}
+.passage-card{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:18px;margin-bottom:12px;position:relative;
+}
+.passage-card::before{
+  content:'';position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;
+  background:var(--story);
+}
+.passage-title{font-family:var(--f-display);font-weight:800;font-size:1.16rem;margin-bottom:3px}
+.passage-meta{font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px}
+.story-frame.folded{max-height:132px;overflow:hidden;position:relative;
+  -webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);mask-image:linear-gradient(180deg,#000 60%,transparent)}
+.fold-btn{
+  margin-top:10px;width:100%;cursor:pointer;font-family:var(--f-ui);font-size:.78rem;font-weight:800;
+  background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);
+  color:var(--ink-2);padding:9px;box-shadow:0 2px 0 var(--line-strong);
+}
+.fold-btn:hover{color:var(--ink);border-color:var(--line-strong)}
+
+/* answer options */
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  display:flex;align-items:flex-start;gap:11px;text-align:left;width:100%;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-s);
+  box-shadow:0 3px 0 var(--line-strong);
+  padding:12px 13px;font-family:var(--f-ui);font-size:.94rem;font-weight:600;line-height:1.45;color:var(--ink);
+  transition:transform .1s ease,box-shadow .1s ease,border-color .12s;
+}
+.opt:hover:not(:disabled){border-color:var(--build);transform:translateY(-1px);box-shadow:0 4px 0 var(--line-strong)}
+.opt:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 var(--line-strong)}
+.opt .ol{
+  width:26px;height:26px;border-radius:7px;flex-shrink:0;display:grid;place-items:center;
+  background:var(--surface-3);font-family:var(--f-display);font-weight:800;font-size:.78rem;color:var(--ink-2);
+}
+.opt.right{border-color:var(--good);background:var(--good-soft);box-shadow:0 3px 0 color-mix(in srgb,var(--good) 45%,var(--line-strong))}
+.opt.right .ol{background:var(--good);color:#fff}
+.opt.wrong{border-color:var(--miss);background:var(--miss-soft);box-shadow:0 3px 0 color-mix(in srgb,var(--miss) 45%,var(--line-strong))}
+.opt.wrong .ol{background:var(--miss);color:#fff}
+.opt.faded{opacity:.4}
+.opt:disabled{cursor:default}
+.opt.mathy{font-family:var(--f-display);font-weight:800;font-size:1.12rem;justify-content:flex-start}
+
+/* numeric keypad answer */
+.answerbox{display:flex;flex-direction:column;gap:10px;align-items:center}
+.ansfield{
+  font-family:var(--f-display);font-weight:800;font-size:2rem;text-align:center;
+  width:100%;max-width:230px;padding:11px 12px;border-radius:var(--r-s);
+  border:2px solid var(--line);background:var(--surface-2);color:var(--ink);
+  font-variant-numeric:tabular-nums;letter-spacing:.05em;
+}
+.ansfield.right{border-color:var(--good);color:var(--good)}
+.ansfield.wrong{border-color:var(--miss);color:var(--miss)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;width:100%;max-width:280px}
+.pad button{
+  font-family:var(--f-display);font-weight:800;font-size:1.25rem;padding:12px 0;
+  background:var(--surface);color:var(--ink);border:1.5px solid var(--line);
+  border-radius:var(--r-s);box-shadow:0 3px 0 var(--line-strong);cursor:pointer;
+}
+.pad button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line-strong)}
+.pad button.act{background:var(--build);color:#fff;border-color:transparent;box-shadow:0 3px 0 var(--build-edge)}
+.pad button.sub{background:var(--surface-2);color:var(--ink-2)}
+
+/* ============================================================
+   ARRAY BUILDER — plastic bricks
+   ============================================================ */
+.builder{
+  background:var(--surface-2);border:1.5px dashed var(--line-strong);border-radius:var(--r-m);
+  padding:13px;margin-bottom:12px;
+}
+.builder-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.builder-head .bl{font-size:.66rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+.grid-rows{display:flex;flex-direction:column;gap:7px}
+.grow{
+  display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--r-s);
+  border:1.5px solid var(--line);background:var(--surface);min-height:42px;flex-wrap:wrap;
+}
+.grow.live{border-color:var(--build);box-shadow:0 0 0 3px var(--build-soft)}
+.grow.full{border-color:var(--good);background:var(--good-soft)}
+.grow .rl{
+  font-size:.6rem;font-weight:800;letter-spacing:.05em;color:var(--ink-3);
+  width:34px;flex-shrink:0;text-transform:uppercase;
+}
+.brick{
+  width:26px;height:26px;border-radius:5px;flex-shrink:0;position:relative;
+  background:linear-gradient(165deg,var(--bk-l,#7CA6FF),var(--bk-d,#2C63F0));
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.22), inset 0 2px 0 rgba(255,255,255,.28);
+}
+.brick::after{
+  content:'';position:absolute;left:50%;top:4px;transform:translateX(-50%);
+  width:9px;height:9px;border-radius:50%;
+  background:rgba(255,255,255,.32);box-shadow:inset 0 -1px 0 rgba(0,0,0,.15);
+}
+.brick.pop{animation:snap .22s cubic-bezier(.3,1.6,.5,1)}
+@keyframes snap{0%{transform:scale(.4) translateY(-9px);opacity:0}100%{transform:none;opacity:1}}
+.brick.supply{cursor:pointer;--bk-l:#8BE6BC;--bk-d:#0E9B58}
+.brick.supply:hover{transform:translateY(-3px)}
+.brick.ghost{background:none;box-shadow:none;border:1.5px dashed var(--line-strong);opacity:.55}
+.brick.ghost::after{display:none}
+.supply-tray{
+  display:flex;flex-wrap:wrap;gap:6px;padding:9px;border-radius:var(--r-s);
+  background:var(--surface-3);border:1.5px solid var(--line);min-height:44px;margin-top:11px;
+}
+.rowcount{margin-left:auto;font-size:.68rem;font-weight:800;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.grow.full .rowcount{color:var(--good)}
+
+/* group visual for division */
+.groups{display:flex;flex-wrap:wrap;gap:10px}
+.group{
+  border:1.5px solid var(--story);border-radius:var(--r-s);padding:9px 8px 7px;
+  background:var(--story-soft);position:relative;display:flex;flex-wrap:wrap;gap:4px;max-width:150px;
+}
+.group .gl{
+  position:absolute;top:-9px;left:8px;background:var(--surface);padding:0 5px;
+  font-size:.58rem;font-weight:800;letter-spacing:.05em;color:var(--story);text-transform:uppercase;
+}
+.group .brick{width:20px;height:20px;--bk-l:#C3AEFF;--bk-d:#7A4DEA}
+.group .brick::after{width:7px;height:7px;top:3px}
+
+/* ============================================================
+   FEEDBACK / HINTS / RESULTS
+   ============================================================ */
+.hintbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.worked{
+  background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);
+  padding:12px 13px;margin-top:10px;
+}
+.worked ol{margin:0;padding-left:19px}
+.worked li{font-size:.88rem;line-height:1.62;margin-bottom:5px;color:var(--ink)}
+.worked li:last-child{margin-bottom:0}
+.worked .k{font-family:var(--f-display);font-weight:800;background:var(--surface-3);border-radius:6px;padding:1px 7px}
+.evidence{
+  border-left:3px solid var(--story);background:var(--story-soft);
+  padding:9px 12px;border-radius:0 var(--r-s) var(--r-s) 0;margin-top:9px;
+  font-family:var(--f-read);font-size:.9rem;line-height:1.6;
+}
+
+.result-hero{text-align:center;padding:24px 16px 8px}
+.result-hero .big{font-size:3.4rem;line-height:1;display:block;margin-bottom:10px;animation:snap .4s cubic-bezier(.3,1.5,.5,1)}
+.scoreboard{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.sbox{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);box-shadow:var(--shadow);padding:13px 8px;text-align:center}
+.sbox .n{font-family:var(--f-display);font-weight:800;font-size:1.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.sbox .l{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-top:3px}
+.sbox.gold .n{color:var(--gold)}
+.sbox.good .n{color:var(--good)}
+.sbox.build .n{color:var(--build)}
+
+.confetti{position:fixed;top:-14px;width:9px;height:12px;border-radius:2px;z-index:60;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(108vh) rotate(620deg);opacity:.15}}
+
+/* ============================================================
+   PROFILE DIALS / PARENT VIEW
+   ============================================================ */
+.dials{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:430px){.dials{grid-template-columns:1fr}}
+.dial{background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);padding:11px 12px}
+.dial .dl{font-size:.66rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.dial .dv{font-family:var(--f-display);font-weight:800;font-size:.98rem;margin:3px 0 7px;line-height:1.2}
+.dial .dnote{font-size:.74rem;color:var(--ink-2);line-height:1.45;margin-top:6px}
+
+.table{width:100%;border-collapse:collapse;font-size:.82rem}
+.table th{text-align:left;font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:7px 8px;border-bottom:1.5px solid var(--line)}
+.table td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.table tr:last-child td{border-bottom:none}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.notecard{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 12px;border-radius:0 var(--r-s) var(--r-s) 0;font-size:.86rem;line-height:1.55}
+.notecard+.notecard{margin-top:8px}
+
+/* badges */
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px}
+.badge{
+  text-align:center;padding:12px 6px;border-radius:var(--r-s);
+  border:1.5px solid var(--line);background:var(--surface-2);
+}
+.badge.got{background:var(--gold);border-color:transparent;color:#231704;box-shadow:0 3px 0 #B87C08}
+.badge .bi{font-size:1.5rem;display:block;line-height:1}
+.badge .bn{font-size:.66rem;font-weight:800;margin-top:5px;line-height:1.25}
+.badge:not(.got) .bi{filter:grayscale(1);opacity:.4}
+
+/* onboarding / assessment intro */
+.big-choice{
+  display:flex;gap:12px;align-items:center;width:100%;text-align:left;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:14px;font-family:var(--f-ui);color:var(--ink);
+}
+.big-choice:hover{border-color:var(--build);transform:translateY(-2px)}
+.big-choice .bcico{font-size:1.6rem}
+.big-choice .bct{font-family:var(--f-display);font-weight:800;font-size:1rem}
+.big-choice .bcs{font-size:.76rem;color:var(--ink-2);margin-top:2px;line-height:1.4}
+
+.pill-row{display:flex;gap:7px;flex-wrap:wrap}
+.pill{
+  font-size:.72rem;font-weight:800;padding:6px 11px;border-radius:999px;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--line);color:var(--ink-2);font-family:var(--f-ui);
+}
+.pill.on{background:var(--build);color:#fff;border-color:transparent}
+
+.divider{height:1px;background:var(--line);margin:14px 0}
+.tiny{font-size:.72rem;color:var(--ink-3);line-height:1.5}
+</style>
+<!--/HEAD-->
+
+<div class="app">
+
+  <!-- ══════════════════ TOP BAR ══════════════════ -->
+  <header class="topbar" id="topbar" hidden>
+    <div class="avatar" id="avatarBox">🧱</div>
+    <div class="who">
+      <div class="name" id="hudName">Adam</div>
+      <div class="lvl" id="hudLevel">Level 1 · Apprentice Builder</div>
+    </div>
+    <div class="chip xp">⚡ <span class="tnum" id="hudXP">0</span></div>
+    <div class="chip streak">🔥 <span class="tnum" id="hudStreak">0</span></div>
+    <button class="icon-btn" id="themeBtn" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
+  </header>
+
+  <!-- ══════════════════ ONBOARDING ══════════════════ -->
+  <section class="screen on" id="scr-welcome">
+    <div class="stack">
+      <div class="card" style="text-align:center;padding:26px 18px">
+        <div style="font-size:3rem;line-height:1">🧱</div>
+        <h1 style="margin:10px 0 6px">Build Mode</h1>
+        <p class="muted" style="font-size:.95rem;max-width:44ch;margin:0 auto">
+          A reading &amp; math trainer that watches how you think, then changes itself to fit you.
+          No worksheets. No red pen. Just building.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:9px">Step 1 · Who's building?</div>
+        <input id="nameInput" class="ansfield" style="max-width:none;font-size:1.15rem;text-align:left;letter-spacing:0"
+               value="Adam" maxlength="18" aria-label="Your name">
+        <div class="divider"></div>
+        <div class="eyebrow" style="margin-bottom:9px">Step 2 · Pick your builder brick</div>
+        <div class="pill-row" id="avatarPicker"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:10px">Step 3 · The Skill Scan</div>
+        <p style="font-size:.92rem;line-height:1.6;color:var(--ink-2)">
+          12 questions — eight math, then one short story. It gets <b>harder when you're right</b>
+          and <b>easier when you're not</b>, so it finds your real level in about six minutes.
+          You can't fail it. It's a scan, not a test.
+        </p>
+        <div class="divider"></div>
+        <button class="btn wide" id="startScanBtn">Start the Skill Scan →</button>
+        <button class="btn ghost wide sm" id="skipScanBtn" style="margin-top:8px">Skip — just start practicing</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ HOME BASE ══════════════════ -->
+  <section class="screen" id="scr-home">
+    <div class="stack">
+      <div class="coach" id="homeCoach">
+        <div class="coach-face" id="homeCoachFace">🤖</div>
+        <div class="coach-body">
+          <div class="coach-name">Bolt · your coach</div>
+          <div class="coach-text" id="homeCoachText">Ready when you are.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="spread" style="margin-bottom:9px">
+          <div class="eyebrow">Today's build order</div>
+          <div class="eyebrow tnum" id="questProgress">0/3</div>
+        </div>
+        <div class="quests" id="questList"></div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom:9px">Free build</div>
+        <div class="realms">
+          <button class="realm build" id="realmMath">
+            <div class="rico">🧮</div>
+            <div class="rname">Build Mode</div>
+            <div class="rsub">Multiplication &amp; division — facts, arrays, word problems</div>
+            <div class="rbar"><i id="mathBar" style="width:0%"></i></div>
+            <div class="rpct" id="mathPct">0% mastered</div>
+          </button>
+          <button class="realm story" id="realmRead">
+            <div class="rico">📖</div>
+            <div class="rname">Story Servers</div>
+            <div class="rsub">Reading comprehension — clues, meaning, big ideas</div>
+            <div class="rbar"><i id="readBar" style="width:0%"></i></div>
+            <div class="rpct" id="readPct">0% mastered</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="spread" style="margin-bottom:10px">
+          <div class="eyebrow">Next level</div>
+          <div class="eyebrow tnum" id="lvlText">0 / 200 XP</div>
+        </div>
+        <div class="bar gold"><i id="lvlBar" style="width:0%"></i></div>
+        <div class="tiny" style="margin-top:8px" id="lvlNote"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SESSION ══════════════════ -->
+  <section class="screen" id="scr-session">
+    <div class="sesh-top">
+      <button class="icon-btn" id="quitBtn" aria-label="Back to base">✕</button>
+      <div class="bar"><i id="seshBar" style="width:0%"></i></div>
+      <div class="dots" id="seshDots"></div>
+    </div>
+    <div id="seshBody"></div>
+    <div id="seshCoach" style="margin-top:12px"></div>
+    <div id="seshNav" style="margin-top:12px"></div>
+  </section>
+
+  <!-- ══════════════════ RESULT ══════════════════ -->
+  <section class="screen" id="scr-result">
+    <div class="result-hero">
+      <span class="big" id="resIcon">🏗️</span>
+      <h1 id="resTitle">Build complete</h1>
+      <p class="muted" id="resSub" style="margin-top:6px;font-size:.92rem"></p>
+    </div>
+    <div class="scoreboard">
+      <div class="sbox good"><div class="n tnum" id="resRight">0</div><div class="l">Right</div></div>
+      <div class="sbox build"><div class="n tnum" id="resTotal">0</div><div class="l">Questions</div></div>
+      <div class="sbox gold"><div class="n tnum" id="resXP">0</div><div class="l">XP</div></div>
+    </div>
+    <div class="stack">
+      <div class="coach" id="resCoach">
+        <div class="coach-face">🤖</div>
+        <div class="coach-body">
+          <div class="coach-name">Bolt's read on that run</div>
+          <div class="coach-text" id="resCoachText"></div>
+        </div>
+      </div>
+      <div class="card" id="resSkillsCard">
+        <div class="eyebrow" style="margin-bottom:6px">What moved</div>
+        <div id="resSkills"></div>
+      </div>
+      <div id="resNewBadges"></div>
+      <button class="btn wide" id="resAgainBtn">Run it again</button>
+      <button class="btn ghost wide" id="resHomeBtn">Back to base</button>
+    </div>
+  </section>
+
+  <!-- ══════════════════ PROGRESS ══════════════════ -->
+  <section class="screen" id="scr-progress">
+    <div class="stack">
+      <div>
+        <h2>Progress</h2>
+        <p class="tiny" style="margin-top:4px">Everything below is measured from real answers — nothing is guessed.</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:11px">Builder profile · how Adam learns</div>
+        <div class="dials" id="profileDials"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:6px">🧮 Math mastery</div>
+        <div id="mathSkills"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:6px">📖 Reading mastery</div>
+        <div id="readSkills"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:10px">Patterns Bolt is watching</div>
+        <div id="patternList"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:10px">Badges</div>
+        <div class="badges" id="badgeGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:10px">Session log</div>
+        <div class="scroll-x"><table class="table" id="logTable"></table></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:9px">Grown-up controls</div>
+        <div class="row" style="flex-wrap:wrap">
+          <button class="btn ghost sm" id="redoScanBtn">Re-run Skill Scan</button>
+          <button class="btn ghost sm" id="exportBtn">Export progress</button>
+          <button class="btn ghost sm" id="resetBtn">Reset everything</button>
+        </div>
+        <div id="exportOut" style="margin-top:10px"></div>
+        <p class="tiny" style="margin-top:9px">
+          Progress is saved on this device only, in this browser. Nothing is uploaded, and no account is needed.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ NAV ══════════════════ -->
+  <nav class="nav" id="navBar" hidden>
+    <div class="nav-in">
+      <button data-go="home" class="on"><span class="ni">🏠</span>Base</button>
+      <button data-go="math"><span class="ni">🧮</span>Math</button>
+      <button data-go="read"><span class="ni">📖</span>Reading</button>
+      <button data-go="progress"><span class="ni">📊</span>Progress</button>
+    </div>
+  </nav>
+</div>
+
+<script>
+"use strict";
+/* ============================================================================
+   ADAM'S BUILD MODE
+   A self-contained adaptive tutor. Everything runs in the browser:
+   mastery tracking, difficulty control, misconception diagnosis, and a coach
+   that changes its script based on how Adam actually answers.
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. SKILLS — the things we track mastery on
+   --------------------------------------------------------------------------- */
+const SKILLS = {
+  // ── math ──
+  'm-mult-low'  :{realm:'math', name:'×2 through ×5',        icon:'✖️'},
+  'm-mult-high' :{realm:'math', name:'×6 through ×9',        icon:'✖️'},
+  'm-mult-big'  :{realm:'math', name:'×10, ×11, ×12',        icon:'✖️'},
+  'm-div-low'   :{realm:'math', name:'Division facts',       icon:'➗'},
+  'm-div-high'  :{realm:'math', name:'Tough division',       icon:'➗'},
+  'm-missing'   :{realm:'math', name:'Missing factor',       icon:'❓'},
+  'm-remainder' :{realm:'math', name:'Remainders',           icon:'🧩'},
+  'm-multidigit':{realm:'math', name:'2-digit × 1-digit',    icon:'🏗️'},
+  'm-word'      :{realm:'math', name:'Word problems',        icon:'📝'},
+  // ── reading ──
+  'r-detail'    :{realm:'read', name:'Finding the facts',    icon:'🔍'},
+  'r-vocab'     :{realm:'read', name:'Word detective',       icon:'🔤'},
+  'r-infer'     :{realm:'read', name:'Reading between lines',icon:'🕵️'},
+  'r-main'      :{realm:'read', name:'The big idea',         icon:'💡'},
+  'r-struct'    :{realm:'read', name:'How a text is built',  icon:'🧱'},
+  'r-purpose'   :{realm:'read', name:"Author's move",        icon:'🎯'},
+  'r-theme'     :{realm:'read', name:'Deeper meaning',       icon:'🌊'},
+};
+const MATH_SKILLS = Object.keys(SKILLS).filter(k=>SKILLS[k].realm==='math');
+const READ_SKILLS = Object.keys(SKILLS).filter(k=>SKILLS[k].realm==='read');
+
+/* ---------------------------------------------------------------------------
+   2. READING LIBRARY
+   band 1 ≈ start of 5th · band 2 ≈ mid 5th · band 3 ≈ stretch into 6th
+   Every wrong option carries a `why` code so the coach can name the exact
+   thinking trap instead of just saying "nope".
+   --------------------------------------------------------------------------- */
+const PASSAGES = [
+{
+  id:'obby', band:1, kind:'Story', title:'The Obby Nobody Could Finish',
+  meta:'Fiction · 300 words',
+  paras:[
+    `Mateo had published forty-one obstacle courses. Forty of them were fine. The forty-first was famous.`,
+    `He called it <em>The Long Drop</em>, and in three weeks it had been played 90,000 times and finished exactly zero times. The comments filled up fast. <em>Impossible.</em> <em>Broken.</em> <em>Fake ending.</em> Mateo read every one of them twice, and each time his stomach did the same slow flip.`,
+    `The thing was, he knew the course could be beaten. He had beaten it himself, in testing, forty-eight times. The last jump — the one everybody rage-quit on — needed a running start from the left edge of the platform, not the middle. That was all. One small change in where you stood.`,
+    `On Thursday, a player named Wrenlock got closer than anyone. She reached the final platform six times in one night. Six times she jumped from the middle. Six times she fell.`,
+    `Mateo watched her replay at two in the morning, his finger hovering over the comment box. He could type it in eight words. <em>Start from the left edge, not the middle.</em> Eight words, and the zero would become a one.`,
+    `He didn't type them.`,
+    `He closed the laptop and lay in the dark and thought about the first time he had ever finished somebody else's hard course, back when he was eight — how his whole body had gone electric, how he had run into the kitchen still holding the controller. Nobody had told him the trick. That was the entire point.`,
+    `On Saturday morning, his phone buzzed at 6:14 a.m. A notification, then twelve more, then too many to count.`,
+    `<em>The Long Drop</em> — completions: 1.`,
+    `Wrenlock had posted a video. In it, she stood at the far left edge of the platform, took three steps back, and ran.`
+  ],
+  qs:[
+    { skill:'r-infer', q:'Why does Mateo decide NOT to post the hint?',
+      opts:[
+        {t:'He wants Wrenlock to feel the same rush he felt when he solved a hard course himself', ok:true},
+        {t:'He is worried the comments will get even angrier if he replies', why:'true-not-asked'},
+        {t:'He does not actually remember which edge to jump from', why:'literal-only'},
+        {t:'He is asleep by the time Wrenlock reaches the last platform', why:'first-detail'}
+      ],
+      why:'The story puts his memory of being eight years old right after the moment he almost types the hint — and ends it with "Nobody had told him the trick. That was the entire point." That memory IS the reason. The author never says "he decided to stay quiet because…" — you assemble it from what he remembers.',
+      evidence:'"Nobody had told him the trick. That was the entire point."',
+      hints:['The paragraph right after he closes the laptop is the reason. What is he remembering there?',
+             'Two of these are things that happen in the story but are not WHY he stayed quiet. Cross those off first.',
+             'He remembers going electric at age eight because no one told him the answer. He wants Wrenlock to get that same moment.']},
+    { skill:'r-detail', q:'How many times had Mateo finished the course himself while testing it?',
+      opts:[
+        {t:'48 times', ok:true},
+        {t:'41 times', why:'word-lure'},
+        {t:'6 times', why:'word-lure'},
+        {t:'Zero — he never finished it', why:'first-detail'}
+      ],
+      why:'"He had beaten it himself, in testing, forty-eight times." The other numbers are all real numbers from the story — 41 courses published, 6 attempts by Wrenlock, 0 public completions — placed there on purpose. A detail question is a matching job: find the sentence with the exact same idea, not just a number that looks familiar.',
+      evidence:'"He had beaten it himself, in testing, forty-eight times."',
+      hints:['Scan for the word "testing".','Every wrong choice is a real number from a DIFFERENT sentence. Match the question, not the digits.','"forty-eight times" — that is the count of his own finishes.']},
+    { skill:'r-vocab', q:'In "his stomach did the same slow flip," the phrase mostly shows that Mateo feels —',
+      opts:[
+        {t:'uneasy and stung by what people are saying', ok:true},
+        {t:'physically sick from something he ate', why:'literal-only'},
+        {t:'excited that his course got so popular', why:'true-not-asked'},
+        {t:'dizzy from staying up until two in the morning', why:'first-detail'}
+      ],
+      why:'A stomach flip is a body word for a feeling. He is reading comments calling his work broken and fake — so the flip is hurt and worry, not food and not fun. When a phrase describes the body, ask what emotion it is standing in for.',
+      evidence:'"Mateo read every one of them twice, and each time his stomach did the same slow flip."',
+      hints:['What is he doing at the exact moment his stomach flips?','It is not really about his stomach. Body words usually stand in for feelings.','He is reading "Impossible. Broken. Fake ending." That feeling is closer to hurt than to hunger.']},
+    { skill:'r-theme', q:'Which sentence best states the message of the story?',
+      opts:[
+        {t:'Some things are worth more when you figure them out yourself', ok:true},
+        {t:'Hard video games should always come with instructions', why:'too-narrow'},
+        {t:'Never help other people, because they should struggle', why:'overclaim'},
+        {t:'People online are usually rude and should be ignored', why:'true-not-asked'}
+      ],
+      why:'A theme is a life-sized idea, not a rule about video games. Mateo stays quiet because being handed the answer would have stolen Wrenlock\'s "electric" moment — the same one he got at eight. Watch out for the option that takes the idea too far: the story is not "never help anyone," it is about one specific kind of discovery.',
+      evidence:'"how his whole body had gone electric… Nobody had told him the trick."',
+      hints:['A theme should still be true outside of games. Which option would make sense to a person who never plays?',
+             'One option is the right idea pushed way too far ("never help ANYONE"). Themes are rarely that extreme.',
+             'The moment the whole story builds to is Wrenlock solving it alone — and the joy that comes with it.']}
+  ]
+},
+{
+  id:'levels', band:1, kind:'Explains how something works', title:'Why Games Have Levels',
+  meta:'Nonfiction · 280 words',
+  paras:[
+    `Almost every game you have ever played is built out of levels, stages, or rounds. That is not an accident of design. It is a decision, and game makers have a name for the problem it solves: the difficulty curve.`,
+    `Here is the trouble. If a game starts too hard, new players quit in the first ten minutes. If it starts too easy and stays easy, players get bored and quit anyway — just more slowly. Designers need players to stay in a narrow zone where the game is <em>just</em> beyond what they can already do. Levels are the tool that keeps them there.`,
+    `Each level does two jobs at once. First, it teaches one new thing — a new jump, a new enemy, a new button. Second, it quietly reviews everything taught before it. By level ten, a player is using nine older skills without noticing, because each one arrived alone and had room to sink in.`,
+    `Designers test this in playtests. They watch where real players die, over and over, and count. A spot where 80 percent of testers fail is not a challenge; it is a wall, and it gets rebuilt. A spot where 100 percent of testers walk through easily is not a level; it is a hallway, and it gets cut.`,
+    `The strange result is that the best-designed levels feel like they were made for you personally — like the game somehow knew what you were ready for. It did not. It was built and rebuilt until it fit almost everybody.`,
+    `The next time a game feels perfectly hard, that is not luck. Somebody counted.`
+  ],
+  qs:[
+    { skill:'r-main', q:'What is the main idea of this article?',
+      opts:[
+        {t:'Levels are a design tool for keeping a game just hard enough for players to stay', ok:true},
+        {t:'Game designers run playtests and count how often testers die', why:'too-narrow'},
+        {t:'Video games are an important part of modern life', why:'too-broad'},
+        {t:'Players quit games that are too hard in the first ten minutes', why:'first-detail'}
+      ],
+      why:'Main idea = what the WHOLE text is about, not one section of it. Playtesting is only paragraph four. "Games matter in modern life" is so big it could sit on top of a hundred different articles. The quitting fact is one supporting detail from paragraph two.',
+      evidence:'"Levels are the tool that keeps them there."',
+      hints:['Ask: does this option cover paragraph 1 AND paragraph 5, or only one part?',
+             'One option is too small (one paragraph) and one is too big (all of gaming). Find the one sized right.',
+             'Every paragraph is explaining WHY levels exist and what they do. That is the main idea.']},
+    { skill:'r-struct', q:'Why does the author describe the "too hard / too easy" problem BEFORE explaining what levels do?',
+      opts:[
+        {t:'To set up the problem first, so the reader understands what levels are solving', ok:true},
+        {t:'To prove that most video games are badly designed', why:'overclaim'},
+        {t:'Because the events happened in that order in history', why:'literal-only'},
+        {t:'To make readers feel bad about quitting games', why:'true-not-asked'}
+      ],
+      why:'This is problem → solution structure. The author hands you the trouble ("players quit either way") so that when levels show up, you already feel why they are needed. Nonfiction writers order paragraphs on purpose; noticing the order is a skill on its own.',
+      evidence:'"Here is the trouble."',
+      hints:['Look at how paragraph 2 opens: "Here is the trouble."',
+             'The order is: trouble first, fix second. What is that pattern called?',
+             'Problem → solution. Naming the problem first makes the solution make sense.']},
+    { skill:'r-vocab', q:'The author calls one spot "a wall" and another "a hallway." What do these words mean here?',
+      opts:[
+        {t:'A "wall" stops nearly everyone; a "hallway" lets everyone through with no challenge', ok:true},
+        {t:'The level literally contains walls and hallways that testers walk through', why:'literal-only'},
+        {t:'A "wall" is where the game crashes and a "hallway" is where it loads', why:'word-lure'},
+        {t:'Both words mean the level is too difficult for new players', why:'too-narrow'}
+      ],
+      why:'These are metaphors, and the sentences around them define both. 80 percent of testers fail → nobody gets past → a wall. 100 percent walk through easily → nothing happens → a hallway. The author even says a hallway "gets cut," which only makes sense if it is boring, not hard.',
+      evidence:'"A spot where 80 percent of testers fail is not a challenge; it is a wall."',
+      hints:['Read the number right in front of each word.','One word is about failing; the other is about it being too easy. They are opposites.','80% fail = wall (blocked). 100% pass easily = hallway (nothing there).']},
+    { skill:'r-detail', q:'According to the article, each level does two jobs. What are they?',
+      opts:[
+        {t:'Teaches one new skill, and quietly reviews the older ones', ok:true},
+        {t:'Adds a new enemy, and makes the game longer', why:'word-lure'},
+        {t:'Tests the player, and gives out rewards', why:'true-not-asked'},
+        {t:'Starts easy, and then gets much harder at the end', why:'first-detail'}
+      ],
+      why:'Paragraph three states both jobs directly: "First, it teaches one new thing… Second, it quietly reviews everything taught before it." When a text announces "two jobs," the answer is almost always in the very next sentences — read forward, not backward.',
+      evidence:'"First, it teaches one new thing… Second, it quietly reviews everything taught before it."',
+      hints:['Find the paragraph that says "two jobs at once."','The words "First" and "Second" are doing you a favor. Read those two sentences.','New thing + review of old things.']}
+  ]
+},
+{
+  id:'lag', band:2, kind:'Story', title:'Lag',
+  meta:'Fiction · 330 words',
+  paras:[
+    `The server had been perfect for six months, and then, on a Tuesday, it started to stutter.`,
+    `Priya noticed it first, because Priya noticed everything. She was the one who kept the spreadsheet of player counts, the one who could tell you that Thursdays ran hot and Sunday mornings ran empty. So when the world froze for half a second at 4:07 p.m. and then snapped forward, she wrote down the time.`,
+    `"It's your build," Dev said, not looking up. "You put a hundred trees in the south field."`,
+    `"Ninety-two," said Priya. "And I put them in on Saturday. This started today."`,
+    `Dev shrugged the shrug of somebody who has already decided. Priya let it go, the way she had let the last four things go, and opened her spreadsheet instead.`,
+    `The stutter came back at 4:19. Then 4:31. Then 4:43.`,
+    `Twelve minutes. Every time, exactly twelve minutes.`,
+    `Priya sat back. Trees do not wait twelve minutes. Trees do not have a schedule. Whatever was doing this was <em>counting</em>.`,
+    `She scrolled back through the update log until she found it: a small script, added at 3:55 that afternoon by a builder named Kite, meant to sweep the map for dropped items and delete them. Harmless. Except Kite had set it to sweep <em>every</em> object on the map, one at a time, every twelve minutes.`,
+    `Priya fixed it in ninety seconds.`,
+    `At 4:55, the world did not stutter. At 5:07, it did not stutter. At 5:19, Dev finally looked up.`,
+    `"Huh," he said. "Guess it was a fluke."`,
+    `Priya looked at her spreadsheet, at the four times written down in her own handwriting, at the ninety-two trees that had never been the problem. She thought about explaining it. She thought about the shrug.`,
+    `"Guess so," she said, and saved the file.`
+  ],
+  qs:[
+    { skill:'r-infer', q:'What can you tell about Dev from the way he responds to the problem?',
+      opts:[
+        {t:'He decides on an answer quickly and does not check whether the facts fit it', ok:true},
+        {t:'He knows more about servers than Priya does', why:'overclaim'},
+        {t:'He is deliberately trying to sabotage Priya\'s build', why:'overclaim'},
+        {t:'He is too busy with his own work to help', why:'true-not-asked'}
+      ],
+      why:'Look at his two lines. He blames the trees without looking up, gets the number wrong, and is corrected on the timeline — then shrugs "the shrug of somebody who has already decided." At the end he calls a solved problem "a fluke." He is not evil and not an expert; he just stops thinking early.',
+      evidence:'"Dev shrugged the shrug of somebody who has already decided."',
+      hints:['He makes a guess, gets two facts corrected, and never changes his mind. What does that tell you?',
+             'Two options accuse him of way more than the story shows. Cut those.',
+             'His last line calls a fixed problem "a fluke." He never actually checked anything.']},
+    { skill:'r-struct', q:'Why does the author list the times 4:07, 4:19, 4:31, and 4:43?',
+      opts:[
+        {t:'So the reader can spot the exact twelve-minute pattern along with Priya', ok:true},
+        {t:'To show that the story takes place over a long afternoon', why:'true-not-asked'},
+        {t:'To prove that Priya is good at keeping a spreadsheet', why:'too-narrow'},
+        {t:'To build suspense about who will be blamed for the problem', why:'true-not-asked'}
+      ],
+      why:'The list is evidence handed to you before the explanation. Because you can subtract those times yourself, you reach "twelve minutes, every time" at the same moment Priya does — which is exactly why the next line lands: "Whatever was doing this was counting."',
+      evidence:'"Twelve minutes. Every time, exactly twelve minutes."',
+      hints:['Do the subtraction between the times. What do you find?',
+             'The author wants you to discover something before it is explained. What?',
+             'Even spacing = a schedule = something automatic, not trees.']},
+    { skill:'r-detail', q:'What actually caused the stuttering?',
+      opts:[
+        {t:'A cleanup script that scanned every object on the map every twelve minutes', ok:true},
+        {t:'The ninety-two trees Priya added to the south field', why:'first-detail'},
+        {t:'Too many players logging in on a Thursday', why:'word-lure'},
+        {t:'A server problem that fixed itself, which is why Dev called it a fluke', why:'literal-only'}
+      ],
+      why:'The trees are the accusation, not the cause — and the story disproves them twice (wrong count, wrong day). The real cause is Kite\'s sweep script set to scan every object instead of just dropped items. "Fluke" is Dev being wrong out loud, not the narrator telling you a fact.',
+      evidence:'"Kite had set it to sweep every object on the map, one at a time, every twelve minutes."',
+      hints:['A character saying something does not make it true. Which answer only a character believes?',
+             'Priya fixed it in ninety seconds — so it did not fix itself.',
+             'The sweep script was set to check everything, not just dropped items.']},
+    { skill:'r-theme', q:'The story ends with Priya saying "Guess so" instead of explaining. What does that ending suggest?',
+      opts:[
+        {t:'She has stopped expecting Dev to listen, so she quietly keeps the truth to herself', ok:true},
+        {t:'She is not completely sure her fix was the real solution', why:'literal-only'},
+        {t:'She agrees with Dev that the whole thing was random luck', why:'literal-only'},
+        {t:'She plans to report Kite for adding the script', why:'overclaim'},
+      ],
+      why:'The line right before tells you what she is weighing: "She thought about explaining it. She thought about the shrug." Earlier the narrator says she "let it go, the way she had let the last four things go." She knows exactly what happened — she has just given up on being heard.',
+      evidence:'"She thought about explaining it. She thought about the shrug."',
+      hints:['Read the two sentences directly before her last line.',
+             'She fixed it in ninety seconds and has it written down — so she is not unsure.',
+             '"The way she had let the last four things go" — this is a pattern, not a one-time thing.']}
+  ]
+},
+{
+  id:'sold', band:2, kind:'True story', title:'The Kid Who Sold His Game',
+  meta:'Nonfiction · 310 words',
+  paras:[
+    `When Alex Balfanz was nine years old, he did not know how to write a single line of code. What he had was a notebook full of drawings of a police car chasing a getaway van.`,
+    `He learned by copying. He would find a game he liked, open up how it worked, and change one thing to see what broke. Most of what he built in those first years never worked properly. He kept the notebook.`,
+    `In 2017, as a high school senior, he and a friend released <em>Jailbreak</em>: a game where half the players are prisoners trying to escape and the other half are police trying to stop them. It was the police car and the getaway van, finally built.`,
+    `Within a year, <em>Jailbreak</em> had been played more than two billion times. The money it earned paid for Balfanz's entire college tuition at Duke University, and then some. Reporters called him an overnight success, which annoyed him, because it had taken eight years.`,
+    `Balfanz has been asked many times what advice he would give. He does not say "learn to code." He says something less comfortable: finish things. Most people who want to make games, he argues, start ten projects and complete none of them, because the middle of a project is boring and the beginning of a new one is exciting. A finished bad game teaches you more than ten unfinished good ones.`,
+    `He also points out something that is easy to miss. <em>Jailbreak</em> was not his first game. It was closer to his hundredth.`
+  ],
+  qs:[
+    { skill:'r-purpose', q:'Why does the author include the detail that reporters calling him an "overnight success" annoyed him?',
+      opts:[
+        {t:'To push back on the idea that his success was fast or lucky', ok:true},
+        {t:'To show that Balfanz has a bad temper with reporters', why:'literal-only'},
+        {t:'To explain why he chose to attend Duke University', why:'true-not-asked'},
+        {t:'To prove that news reporters usually get facts wrong', why:'overclaim'}
+      ],
+      why:'The sentence answers itself: "which annoyed him, because it had taken eight years." Authors of biographies choose details to build an argument. This one exists to correct a story the reader might already believe — that talent arrives suddenly.',
+      evidence:'"Reporters called him an overnight success, which annoyed him, because it had taken eight years."',
+      hints:['The reason is inside the same sentence. Read to the end of it.',
+             'The article keeps returning to how LONG this took. Which answer fits that pattern?',
+             'Eight years is the opposite of overnight. That contrast is the point.']},
+    { skill:'r-main', q:'Which statement best captures what this article is really arguing?',
+      opts:[
+        {t:'Skill is built by finishing many ordinary projects, not by one lucky idea', ok:true},
+        {t:'Making video games is a good way to pay for college', why:'too-narrow'},
+        {t:'Alex Balfanz is the most successful young game developer in the world', why:'overclaim'},
+        {t:'Anyone who learns to code can become a millionaire', why:'overclaim'}
+      ],
+      why:'Tuition is one fact in one paragraph. The article never claims he is the most successful or that anyone can get rich. What it returns to again and again — the notebook, the broken early builds, eight years, "closer to his hundredth" — is that finished repetitions are what built the skill.',
+      evidence:'"A finished bad game teaches you more than ten unfinished good ones."',
+      hints:['Two options make claims the article never actually makes. Cut those first.',
+             'What idea shows up in paragraph 2, paragraph 5, AND the last line?',
+             'The last line — "closer to his hundredth" — is the whole point in six words.']},
+    { skill:'r-infer', q:'Why does the author end with "It was closer to his hundredth"?',
+      opts:[
+        {t:'To reveal that the famous game sat on top of a huge pile of unseen practice', ok:true},
+        {t:'To show that Balfanz has published exactly one hundred games', why:'literal-only'},
+        {t:'To suggest that most of his games were also very popular', why:'overclaim'},
+        {t:'To explain why the game was released in 2017', why:'true-not-asked'}
+      ],
+      why:'"Closer to" signals an estimate, not a count — the author is not reporting a number, they are reframing the whole story. Everything you were shown about Jailbreak was the top of a stack; the last line shows you the stack.',
+      evidence:'"Jailbreak was not his first game. It was closer to his hundredth."',
+      hints:['"Closer to" is doing a lot of work. Is that a precise number?',
+             'The article says most of his early builds "never worked properly."',
+             'The last line changes how you see everything above it — that is why it is last.']},
+    { skill:'r-vocab', q:'Balfanz says "the middle of a project is boring and the beginning of a new one is exciting." What is he explaining?',
+      opts:[
+        {t:'Why so many people abandon projects before finishing them', ok:true},
+        {t:'That new projects are usually better than old ones', why:'literal-only'},
+        {t:'That game design becomes boring after a few years', why:'too-broad'},
+        {t:'That he wishes he had started Jailbreak earlier', why:'true-not-asked'}
+      ],
+      why:'The sentence before it names the problem: people "start ten projects and complete none of them." His line is the CAUSE — the boring middle loses to the shiny new beginning. When a quote follows a claim, it is usually the explanation for that claim.',
+      evidence:'"start ten projects and complete none of them, because the middle of a project is boring"',
+      hints:['Read the sentence just before the quote.','The word "because" tells you it is explaining something. What?','He is describing the trap that stops people from finishing.']}
+  ]
+},
+{
+  id:'loot', band:2, kind:'Someone arguing a point', title:'The Mystery Box Problem',
+  meta:'Opinion column · 290 words',
+  paras:[
+    `Last month my little brother spent forty dollars in a game and got nothing he wanted. He was not scammed, exactly. He bought eleven mystery boxes, and every one of them gave him an item he already owned.`,
+    `Mystery boxes — sometimes called loot boxes — are digital packages you buy without knowing what is inside. Game companies love them, and it is not hard to see why. In 2022, they earned an estimated 15 billion dollars worldwide.`,
+    `Defenders make a fair point: nobody is forced to buy one, and trading-card packs have worked this way for a century. That is true. But a pack of cards does not sit inside the game you are already playing, glowing, with a countdown timer telling you the offer ends in nine minutes.`,
+    `Here is what bothers me most. Several countries have studied this, and researchers at the University of York found a consistent link between loot box spending and problem-gambling measures in young players. Belgium looked at the same evidence and banned paid loot boxes outright in 2018.`,
+    `I am not saying every game with a mystery box is preying on kids. Plenty of designers put them in without thinking hard about it. But "we did not mean any harm" is a weak defense when an eleven-year-old has spent forty dollars on duplicates and is now asking whether the twelfth box is the one.`,
+    `Show players the odds. Show them what they have already spent. If a system only works when people cannot see the numbers, that tells you what kind of system it is.`
+  ],
+  qs:[
+    { skill:'r-purpose', q:'Which sentence from the column is a FACT rather than an opinion?',
+      opts:[
+        {t:'"Belgium… banned paid loot boxes outright in 2018."', ok:true},
+        {t:'"Here is what bothers me most."', why:'opinion-fact'},
+        {t:'"…that tells you what kind of system it is."', why:'opinion-fact'},
+        {t:'"Game companies love them."', why:'opinion-fact'}
+      ],
+      why:'A fact can be checked in a record somewhere. Belgium\'s 2018 ban is in the law books — checkable. "Bothers me," "tells you what kind of system," and "companies love them" are all the writer\'s judgment, no matter how reasonable they sound. Opinions often hide inside confident sentences.',
+      evidence:'"Belgium looked at the same evidence and banned paid loot boxes outright in 2018."',
+      hints:['Ask of each one: could I look this up and prove it?',
+             'Watch for feeling words — "bothers me," "love."',
+             'A law with a date and a country is a record. That is a fact.']},
+    { skill:'r-purpose', q:'Why does the author include the point about trading-card packs?',
+      opts:[
+        {t:'To fairly state the other side\'s argument before explaining why it is not enough', ok:true},
+        {t:'To prove that mystery boxes are perfectly safe for kids', why:'literal-only'},
+        {t:'Because trading cards are more popular than video games', why:'true-not-asked'},
+        {t:'To suggest that kids should collect cards instead of playing games', why:'overclaim'}
+      ],
+      why:'This is called a counterargument. Strong persuasive writers name the best objection to their own view — "Defenders make a fair point" — and then answer it: the card pack is not glowing inside the game with a nine-minute timer. Spotting a counterargument keeps you from mistaking it for the author\'s actual position.',
+      evidence:'"Defenders make a fair point… That is true. But…"',
+      hints:['Look at the word that starts the very next sentence after "That is true."',
+             'The author agrees for one sentence, then pushes back. Why would a writer do that?',
+             'Naming the other side first makes your own argument harder to dismiss.']},
+    { skill:'r-detail', q:'What did the researchers at the University of York find?',
+      opts:[
+        {t:'A consistent link between loot box spending and problem-gambling measures in young players', ok:true},
+        {t:'That loot boxes earned 15 billion dollars in 2022', why:'word-lure'},
+        {t:'That loot boxes directly cause children to become gamblers', why:'overclaim'},
+        {t:'That Belgium was right to ban paid loot boxes', why:'true-not-asked'}
+      ],
+      why:'The passage says "a consistent link" — a link is not proof of cause, and precise readers keep that difference. The 15 billion is a different sentence, and Belgium\'s ban is a separate action the researchers did not vote on.',
+      evidence:'"…found a consistent link between loot box spending and problem-gambling measures in young players."',
+      hints:['Find the sentence with "University of York" in it.',
+             'One option upgrades "link" into "causes." Is that the same thing?',
+             'A link means the two things travel together. It does not prove one made the other happen.']},
+    { skill:'r-main', q:'What does the author actually want to happen?',
+      opts:[
+        {t:'Games should show players the odds and what they have already spent', ok:true},
+        {t:'All games with mystery boxes should be banned worldwide', why:'overclaim'},
+        {t:'Parents should stop letting children play online games', why:'true-not-asked'},
+        {t:'Game companies should refund money spent on duplicate items', why:'word-lure'}
+      ],
+      why:'The last paragraph is the ask, and it is narrower than the anger might suggest: show the odds, show the spending. The author even says outright "I am not saying every game with a mystery box is preying on kids." Match the demand to what is written, not to how strongly it is written.',
+      evidence:'"Show players the odds. Show them what they have already spent."',
+      hints:['The request is in the final paragraph.','One option is stronger than anything the author actually says. The author even rules it out.','Two short commands at the end — those are the ask.']}
+  ]
+},
+{
+  id:'tycoon', band:3, kind:'Story', title:'The Tycoon Trap',
+  meta:'Fiction · 340 words',
+  paras:[
+    `The rule in Nadia's tycoon game was simple, and everybody in sixth grade knew it: your factory earns coins while you are offline, but only for eight hours. After that, the machines stop.`,
+    `So Nadia built a schedule. She logged in before school to restart the line. She logged in at lunch, in the twelve minutes between the bell and the cafeteria doors. She logged in the second she got home, and again at 9 p.m., and set an alarm for 5:40 a.m. so the gap never ran past eight hours.`,
+    `By November she had the third-largest factory on the server, and a spreadsheet, and a headache that arrived every afternoon around two.`,
+    `Her friend Omar had a smaller factory. Omar logged in when he felt like it.`,
+    `"You're losing thousands of coins a week," Nadia told him once, and she showed him the math on her phone, and Omar looked at the numbers for a while and said, "Yeah," in a way that meant he had understood the math and simply did not care about it. Nadia thought about that answer for longer than she wanted to.`,
+    `In January, the developers changed the rule. Offline earnings became unlimited. Overnight, every schedule on the server was worthless — Nadia's twelve-minute lunch runs, her 5:40 alarm, all of it.`,
+    `The server chat filled with players raging about wasted months.`,
+    `Nadia did not rage. She sat with her phone in her lap and felt something she had not expected and could not name for almost a minute.`,
+    `It was relief.`,
+    `That was the part that stayed with her. Not the lost coins. The fact that when the machine finally let go of her, the first thing she felt was <em>relief</em> — which meant that some part of her had been waiting to be let go for a long time, and had never once said so.`
+  ],
+  qs:[
+    { skill:'r-theme', q:'What is the central theme of this story?',
+      opts:[
+        {t:'A system can quietly take control of you while you believe you are in control of it', ok:true},
+        {t:'Video game companies should not change their rules without warning', why:'too-narrow'},
+        {t:'Working hard always pays off in the end', why:'literal-only'},
+        {t:'Friends should support each other\'s hobbies', why:'true-not-asked'}
+      ],
+      why:'Nadia thinks she is playing the game; the last paragraph reveals the game was running her — the alarms, the headaches, the twelve-minute lunches. Her relief proves she wanted out long before she admitted it. The rule change is only the event that exposes this; it is not what the story is about.',
+      evidence:'"…some part of her had been waiting to be let go for a long time, and had never once said so."',
+      hints:['The theme lives in the last paragraph, not in the rule change.',
+             'Why would losing months of work feel like RELIEF? Answer that and you have the theme.',
+             'She was not in charge of the schedule. The schedule was in charge of her.']},
+    { skill:'r-infer', q:'What does Omar\'s "Yeah" reveal, and why does Nadia think about it so long?',
+      opts:[
+        {t:'He understood her math perfectly and chose not to let it run his life — which unsettles her', ok:true},
+        {t:'He did not understand the math and was embarrassed to say so', why:'literal-only'},
+        {t:'He was jealous of how large Nadia\'s factory had become', why:'overclaim'},
+        {t:'He agreed with her and planned to start his own schedule', why:'literal-only'}
+      ],
+      why:'The narrator spells out the first half — "he had understood the math and simply did not care about it" — and then leaves the second half to you. It sits with her because Omar has an option she never considered: knowing the numbers and refusing them anyway.',
+      evidence:'"…in a way that meant he had understood the math and simply did not care about it."',
+      hints:['The narrator tells you what the "Yeah" meant. Read that clause carefully.',
+             'She thinks about it "longer than she wanted to." What makes an answer uncomfortable?',
+             'Omar proves the schedule was a choice. That is the part she cannot un-hear.']},
+    { skill:'r-struct', q:'How does the author\'s choice to put "It was relief." on its own line affect the story?',
+      opts:[
+        {t:'It isolates the surprise so the reader lands on it as hard as Nadia does', ok:true},
+        {t:'It marks where the story shifts from January back to November', why:'literal-only'},
+        {t:'It shows that Nadia says the word out loud to the server chat', why:'literal-only'},
+        {t:'It signals that the story is nearly over', why:'true-not-asked'}
+      ],
+      why:'The paragraph before deliberately withholds the word — "something she… could not name for almost a minute." Putting the answer alone on a line makes the reader pause exactly where she paused. White space is a tool: writers use it to control your speed.',
+      evidence:'"…could not name for almost a minute. / It was relief."',
+      hints:['Read the sentence right before it — the feeling is deliberately kept from you.',
+             'What happens to your reading speed when a line is that short?',
+             'The delay makes you feel the surprise instead of just being told about it.']},
+    { skill:'r-vocab', q:'"When the machine finally let go of her" — what does this phrase suggest about the game?',
+      opts:[
+        {t:'It had been holding onto her like something with a grip, not like a hobby', ok:true},
+        {t:'The factory machines in the game physically broke down', why:'literal-only'},
+        {t:'The developers deleted her account by mistake', why:'literal-only'},
+        {t:'She finally beat the game and reached the last level', why:'true-not-asked'}
+      ],
+      why:'The author gives the game hands. "Let go" is something a grip does, and it turns the tycoon game into something that was holding her — which is why the release feels like relief instead of loss. When an object is given human actions, ask what that comparison is claiming.',
+      evidence:'"…when the machine finally let go of her…"',
+      hints:['Machines do not "let go" of people. Why choose that verb?',
+             'If it let go, what was it doing before?',
+             'The word turns the game into something with a grip on her.']}
+  ]
+},
+{
+  id:'octo', band:3, kind:'Science', title:'The Escape Artist',
+  meta:'Nonfiction · 320 words',
+  paras:[
+    `In 2016, an octopus named Inky pushed the lid off his tank at the National Aquarium of New Zealand, crossed the floor, and squeezed into a drainpipe about six inches wide. The pipe led to the sea. Inky was never seen again.`,
+    `Stories like this get told as jokes about a clever animal. The more interesting question is how an octopus can do it at all, because an octopus is built nothing like us.`,
+    `A human brain sits in one place and sends orders out to the body. An octopus is arranged differently: roughly two-thirds of its neurons are distributed in its arms, not its head. Each arm can taste, feel, and react on its own. In laboratory studies, a severed arm will still reach for and reject objects it dislikes. In effect, the animal is a committee.`,
+    `That design has consequences. An octopus cannot see its own arms well, and it does not appear to track exactly where all eight are at once. It solves problems the way a crowd solves problems — many small local decisions, loosely coordinated, adding up to something that looks like a single plan.`,
+    `Researchers testing this have handed octopuses screw-top jars with food inside. Many of them open the jars. What is striking is that individual octopuses use different methods, and the same animal will often try a new method next time even when the old one worked.`,
+    `Biologists are careful about the word "intelligence" here, because the octopus's last common ancestor with us lived more than 500 million years ago. Whatever it is doing, it is not a version of what we do. It is a second answer to the same problem, invented separately.`
+  ],
+  qs:[
+    { skill:'r-main', q:'What is the central idea of this article?',
+      opts:[
+        {t:'The octopus solves problems using a body-wide system that developed completely separately from ours', ok:true},
+        {t:'An octopus named Inky escaped from an aquarium in New Zealand in 2016', why:'first-detail'},
+        {t:'Octopuses are more intelligent than most people believe', why:'too-broad'},
+        {t:'Scientists give octopuses jars in order to test their memory', why:'too-narrow'}
+      ],
+      why:'Inky is the hook, not the subject — the author says so in paragraph two ("the more interesting question"). And the article deliberately avoids the intelligence ranking, ending with "it is not a version of what we do." The through-line is the distributed body and its separate evolutionary origin.',
+      evidence:'"It is a second answer to the same problem, invented separately."',
+      hints:['Paragraph 2 tells you the escape story was only a setup. What does it point to instead?',
+             'The article refuses to say octopuses are "smarter." Cut that option.',
+             'Arms that think + 500 million years apart = the real subject.']},
+    { skill:'r-vocab', q:'The author writes that "the animal is a committee." What does this comparison mean?',
+      opts:[
+        {t:'Control is spread across many parts that each decide something, instead of one boss', ok:true},
+        {t:'Octopuses live and hunt in organized groups', why:'literal-only'},
+        {t:'Octopuses argue with themselves before acting', why:'literal-only'},
+        {t:'Scientists meet as a committee to study octopuses', why:'word-lure'}
+      ],
+      why:'A committee is many members deciding together with no single boss — which is exactly the structure described: two-thirds of neurons in the arms, each arm tasting and reacting on its own. Test a metaphor by asking what the comparison and the subject share, not what the word means on its own.',
+      evidence:'"Each arm can taste, feel, and react on its own. In effect, the animal is a committee."',
+      hints:['What does a committee do that one boss does not?',
+             'Read the sentence directly before the metaphor.',
+             'Many arms deciding = many members deciding. No single boss.']},
+    { skill:'r-infer', q:'Why is it significant that an octopus will try a NEW method on a jar even when the old one worked?',
+      opts:[
+        {t:'It suggests the animal is exploring options rather than repeating one memorized routine', ok:true},
+        {t:'It proves that octopuses forget what they did the last time', why:'overclaim'},
+        {t:'It shows the jars were too easy for the octopuses to open', why:'true-not-asked'},
+        {t:'It means each octopus was taught a different method by researchers', why:'literal-only'}
+      ],
+      why:'A memorized routine gets repeated; switching after success suggests something more like exploring. Note that "forget" is an overclaim — the evidence cannot tell those apart, and the article never says it. The author\'s word is "striking," not "proves."',
+      evidence:'"…the same animal will often try a new method next time even when the old one worked."',
+      hints:['If it were pure memory, what would the octopus do next time?',
+             'Two options claim more than the evidence can show. Which are they?',
+             'Switching when the old way worked looks like curiosity, not a stuck routine.']},
+    { skill:'r-purpose', q:'Why does the author bring up the 500-million-year-old common ancestor at the end?',
+      opts:[
+        {t:'To explain why octopus problem-solving cannot be measured as a version of human thinking', ok:true},
+        {t:'To prove that octopuses are older and more advanced than humans', why:'overclaim'},
+        {t:'To show that scientists are unsure how old octopuses are', why:'literal-only'},
+        {t:'To argue that octopuses should be protected by law', why:'true-not-asked'}
+      ],
+      why:'The date is there to justify the caution in the sentence before it — biologists are "careful about the word intelligence." If our lines split 500 million years ago, octopus problem-solving is not a simpler copy of ours; it is a separate invention. The date is an argument, not a fun fact.',
+      evidence:'"Biologists are careful about the word \'intelligence\' here, because…"',
+      hints:['The word "because" connects the date to the sentence before it. What is that sentence doing?',
+             'The author is defending a choice of words. Which word?',
+             'Separate ancestry means separate invention — so ranking them on one scale does not work.']}
+  ]
+},
+{
+  id:'reviews', band:3, kind:'Two texts to compare', title:'Two Reviews, One Game',
+  meta:'Paired sources · 260 words',
+  paras:[
+    `<b>Review A — from a gaming magazine, written by a paid critic</b>`,
+    `<em>Deep Harbor</em> asks for patience. Its first two hours are slow, its map is deliberately confusing, and it explains almost nothing. Players expecting constant action will bounce off it. Those who stay will find one of the most carefully built underwater worlds released this year — every current, every wreck, every silence appears to be intentional. It is not a game for everyone, and it does not seem to want to be. Score: 8/10.`,
+    `<b>Review B — a player review posted on the game's store page</b>`,
+    `<em>DO NOT BUY.</em> Worst game I have ever played. I got lost for TWO HOURS and there is no map arrow and no tutorial and the devs clearly did not test this. Total money grab. Everyone I know says it is broken. Refunded. 1/10.`,
+    `<b>Note:</b> Both reviews were posted within the same week of the game's release. Neither reviewer disputes what happens in the game — both describe a slow opening, a confusing map, and very little instruction.`
+  ],
+  qs:[
+    { skill:'r-purpose', q:'The two reviews describe the same features of the game. What is the real difference between them?',
+      opts:[
+        {t:'They disagree about whether those features are flaws or deliberate design choices', ok:true},
+        {t:'They played two different versions of the game', why:'literal-only'},
+        {t:'Review A had more time to finish the game than Review B', why:'true-not-asked'},
+        {t:'Review B lists facts while Review A only gives opinions', why:'opinion-fact'}
+      ],
+      why:'The closing note removes the easy explanation: both agree on the facts — slow opening, confusing map, little instruction. What splits them is interpretation. Reviewer A reads those as intentional; Reviewer B reads them as failures. Two people can hold the same facts and reach opposite verdicts.',
+      evidence:'"Neither reviewer disputes what happens in the game…"',
+      hints:['Read the note at the bottom. What does it rule out?',
+             'Both mention the slow start and confusing map. So what actually differs?',
+             'Same facts, opposite judgment: one says "on purpose," the other says "broken."']},
+    { skill:'r-purpose', q:'Which phrase from Review B is the weakest as evidence?',
+      opts:[
+        {t:'"Everyone I know says it is broken"', ok:true},
+        {t:'"I got lost for TWO HOURS"', why:'true-not-asked'},
+        {t:'"there is no map arrow"', why:'true-not-asked'},
+        {t:'"Refunded."', why:'word-lure'}
+      ],
+      why:'Getting lost, the missing arrow, and the refund are all checkable things about one player\'s real experience. "Everyone I know" is unnamed, uncounted, and impossible to verify — and Review A shows at least one person disagrees. Sweeping words like everyone, always, and nobody are where arguments go soft.',
+      evidence:'"Everyone I know says it is broken."',
+      hints:['Which one could nobody ever check?',
+             'Look for the word that covers a whole group at once.',
+             '"Everyone" is a claim about people who are never named or counted.']},
+    { skill:'r-infer', q:'A student writes: "Review A is more trustworthy because it was written by a paid professional critic." Is that reasoning solid?',
+      opts:[
+        {t:'Not by itself — being paid does not make a review true; A is stronger because it gives specific, checkable reasons', ok:true},
+        {t:'Yes — professional critics are always more reliable than players', why:'overclaim'},
+        {t:'No — player reviews are always more honest than paid ones', why:'overclaim'},
+        {t:'Yes, because Review A gave the game a higher score', why:'literal-only'}
+      ],
+      why:'A job title is not evidence. Notice that "paid critic" could just as easily be used to argue A is LESS trustworthy. What actually strengthens A is what it does: names specific features, admits the game is not for everyone, and ties its judgment to reasons. Judge the reasoning, not the badge.',
+      evidence:'"…every current, every wreck, every silence appears to be intentional."',
+      hints:['Does a job title prove anything about one specific review?',
+             'Two options use the word "always." Be suspicious of those.',
+             'A is stronger because of what it SHOWS, not who wrote it.']},
+    { skill:'r-main', q:'A reader wants to decide whether to buy this game. What is the most useful conclusion from both reviews together?',
+      opts:[
+        {t:'The game is slow and gives little guidance — worth it if you like exploring, frustrating if you do not', ok:true},
+        {t:'The game is broken and should be avoided', why:'literal-only'},
+        {t:'The game is excellent and the negative review can be ignored', why:'literal-only'},
+        {t:'There is no way to learn anything useful from reviews that disagree', why:'overclaim'}
+      ],
+      why:'Synthesis means using both sources instead of picking a side. The agreed-upon facts tell you what the game IS; the disagreement tells you who it is FOR. Two reviews that clash are often more useful than two that agree — the clash marks exactly where taste decides the outcome.',
+      evidence:'"It is not a game for everyone, and it does not seem to want to be."',
+      hints:['You are allowed to use both reviews. What do they AGREE on?',
+             'Two options just pick a winner. Synthesis does not pick a winner.',
+             'The facts describe the game; the disagreement describes the audience.']}
+  ]
+}
+];
+
+/* ---------------------------------------------------------------------------
+   3. MISCONCEPTIONS — the coach's diagnosis vocabulary
+   Every wrong answer is tagged, so Bolt can name the trap rather than the miss.
+   --------------------------------------------------------------------------- */
+const TRAPS = {
+  // math
+  'add-instead'   :{label:'Added instead of multiplied', say:'You added when the problem wanted groups. <b>+</b> joins two numbers once. <b>×</b> repeats a whole group.'},
+  'off-group'     :{label:'One group off',               say:'So close — you were one whole group off. That usually means a row got counted twice or skipped.'},
+  'neighbor'      :{label:'Neighbouring fact',           say:'That is the fact right next door. Your table is nearly there; it just slid one step.'},
+  'swap-div'      :{label:'Swapped the parts',           say:'You gave the number of groups instead of how many are <i>in</i> each group. Easy swap — always ask which one the question wants.'},
+  'drop-remainder':{label:'Dropped the remainder',       say:'The groups came out right, but there were leftovers. Leftovers are part of the answer.'},
+  'place-value'   :{label:'Place-value slip',            say:'Your facts were right — the tens and ones got mixed up on the way out.'},
+  'wrong-op'      :{label:'Wrong operation',             say:'That is the right numbers, wrong job. Re-read what is being done to them.'},
+  'count-slip'    :{label:'Counting slip',               say:'The thinking was right; the count wobbled. Slow the last step down.'},
+  // reading
+  'first-detail'  :{label:'Grabbed an early detail',     say:'That is real — it is just from a different part of the text than the question asked about.'},
+  'word-lure'     :{label:'Matched a word, not an idea', say:'That option reuses a word straight from the passage. Test makers do that on purpose. Match the <i>idea</i>, not the vocabulary.'},
+  'true-not-asked':{label:'True, but not the question',  say:'This one is actually true — it just is not what the question asked for. Re-read the question stem.'},
+  'too-broad'     :{label:'Too big',                     say:'That answer would fit a hundred different texts. A main idea should only fit <i>this</i> one.'},
+  'too-narrow'    :{label:'Too small',                   say:'That covers one paragraph. The question asked about the whole thing.'},
+  'opinion-fact'  :{label:'Opinion read as fact',        say:'That sentence sounds confident, but it is a judgment. Facts can be checked; opinions cannot.'},
+  'overclaim'     :{label:'Went further than the text',  say:'The text hints at that but never says it. Strong readers stop exactly where the evidence stops.'},
+  'too-high'      :{label:'Overshot',                    say:'Your answer is much bigger than that problem can produce. Re-count one group before you total it up.'},
+  'too-low'       :{label:'Undershot',                   say:'That is well under what this problem makes. It looks like a group or two got left out.'},
+  'literal-only'  :{label:'Read it literally',           say:'You took the words at face value. This one is doing something underneath the words.'},
+};
+
+/* ---------------------------------------------------------------------------
+   4. MATH ENGINE — generators produce endless fresh items per skill
+   --------------------------------------------------------------------------- */
+const rnd = n => Math.floor(Math.random()*n);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; };
+const uniqOpts = list => {
+  const seen=new Set(), out=[];
+  for(const o of list){ if(seen.has(o.t)) continue; seen.add(o.t); out.push(o); }
+  return out;
+};
+/* build a 4-option set from a correct value plus tagged wrong values */
+function mcOpts(correct, wrongs){
+  const opts = uniqOpts([{t:String(correct), ok:true}, ...wrongs
+    .filter(w=>Number.isFinite(w.v) && w.v>0 && w.v!==correct)
+    .map(w=>({t:String(w.v), why:w.why}))]);
+  let pad = 1;
+  while (opts.length < 4){
+    const v = correct + (pad%2 ? pad : -pad);
+    pad++;
+    if (v>0 && !opts.some(o=>o.t===String(v))) opts.push({t:String(v), why:'count-slip'});
+    if (pad>12) break;
+  }
+  return shuffle(opts.slice(0,4));
+}
+
+const NAMES = ['Adam','Wrenlock','Mateo','Priya','Omar','Nadia','Kite','Dev','Jazz','Rook'];
+const THINGS = [
+  ['obby stages','stages'], ['tycoon droppers','droppers'], ['server slots','slots'],
+  ['brick crates','crates'], ['pet eggs','eggs'], ['racing karts','karts'],
+  ['tower floors','floors'], ['loot chests','chests'], ['team badges','badges']
+];
+
+/* --- fact pools per skill ------------------------------------------------- */
+const FACT_POOL = {
+  'm-mult-low' : ()=>[pick([2,3,4,5]), 2+rnd(11)],
+  'm-mult-high': ()=>[pick([6,7,8,9]), 2+rnd(11)],
+  'm-mult-big' : ()=>[pick([10,11,12]), 2+rnd(11)],
+};
+
+function factItem(skill, diff){
+  let [a,b] = FACT_POOL[skill]();
+  if (Math.random()<0.5) [a,b]=[b,a];
+  const p = a*b;
+  const item = {
+    realm:'math', skill, diff, kind: diff>=2 ? 'input' : 'choice',
+    q:`<span class="num">${a} × ${b} = ?</span>`,
+    prompt:`${a} × ${b}`,
+    answer:p,
+    hints:[
+      `${a} × ${b} means <b>${a} groups of ${b}</b>. Not ${a} plus ${b}.`,
+      a>=6 && b>=6
+        ? `Use a fact you own: ${a} × 5 = ${a*5}. Now add ${b-5>0? (b-5)+' more group'+((b-5)>1?'s':'')+' of '+a : 'the rest'} → ${a*5} + ${a*(b-5)} = ${p}.`
+        : `Count by ${b}: ${Array.from({length:Math.min(a,5)},(_,i)=>b*(i+1)).join(', ')}${a>5?'…':''}`,
+      `${a} × ${b} = <b>${p}</b>.`
+    ],
+    worked:[
+      `Read it as <span class="k">${a} groups of ${b}</span>.`,
+      `Split it: ${a} × ${b} = (${a} × ${Math.min(b,5)}) + (${a} × ${b-Math.min(b,5)}) = ${a*Math.min(b,5)} + ${a*(b-Math.min(b,5))}.`,
+      `That is <span class="k">${p}</span>.`
+    ],
+    build:{mode:'mult', rows:a, cols:b}
+  };
+  if (item.kind==='choice'){
+    item.opts = mcOpts(p, [
+      {v:a+b, why:'add-instead'},
+      {v:p+a, why:'off-group'},
+      {v:p-b, why:'neighbor'},
+      {v:p+b, why:'neighbor'}
+    ]);
+  } else {
+    item.wrongMap = { [a+b]:'add-instead', [p+a]:'off-group', [p-b]:'neighbor', [p+b]:'neighbor' };
+  }
+  return item;
+}
+
+const DIV_POOL = {
+  'm-div-low' : ()=>{ const v=pick([2,3,4,5]), q=2+rnd(9); return [v*q, v, q]; },
+  'm-div-high': ()=>{ const v=pick([6,7,8,9,12]), q=3+rnd(8); return [v*q, v, q]; },
+};
+
+function divItem(skill, diff){
+  const [d,v,q] = DIV_POOL[skill]();
+  const item = {
+    realm:'math', skill, diff, kind: diff>=2 ? 'input' : 'choice',
+    q:`<span class="num">${d} ÷ ${v} = ?</span>`,
+    prompt:`${d} ÷ ${v}`,
+    answer:q,
+    hints:[
+      `${d} ÷ ${v} asks: split <b>${d}</b> into <b>${v} equal groups</b> — how many in each group?`,
+      `Flip it into multiplication: <b>${v} × ? = ${d}</b>. Walk your ${v}s until you hit ${d}.`,
+      `${v} × ${q} = ${d}, so ${d} ÷ ${v} = <b>${q}</b>.`
+    ],
+    worked:[
+      `Division undoes multiplication. Ask <span class="k">${v} × ? = ${d}</span>.`,
+      `Count ${v}s: ${Array.from({length:Math.min(q,6)},(_,i)=>v*(i+1)).join(', ')}${q>6?'…':''} → you reach ${d} after <span class="k">${q}</span> of them.`,
+      `So ${d} ÷ ${v} = <span class="k">${q}</span>. Check: ${q} × ${v} = ${d}. ✓`
+    ],
+    build:{mode:'div', rows:v, cols:q, dividend:d, divisor:v}
+  };
+  if (item.kind==='choice'){
+    item.opts = mcOpts(q, [
+      {v:v, why:'swap-div'},
+      {v:q+1, why:'neighbor'},
+      {v:q-1, why:'neighbor'},
+      {v:d-v, why:'wrong-op'}
+    ]);
+  } else {
+    item.wrongMap = { [v]:'swap-div', [q+1]:'neighbor', [q-1]:'neighbor', [d-v]:'wrong-op' };
+  }
+  return item;
+}
+
+function missingItem(skill, diff){
+  const a = diff>=2 ? pick([6,7,8,9,11,12]) : pick([2,3,4,5,10]);
+  const b = 2+rnd(11), p = a*b;
+  const hideFirst = Math.random()<0.5;
+  const shown = hideFirst ? b : a, other = hideFirst ? a : b;
+  const item = {
+    realm:'math', skill, diff, kind: diff>=2 ? 'input' : 'choice',
+    q: hideFirst ? `<span class="num">? × ${b} = ${p}</span>` : `<span class="num">${a} × ? = ${p}</span>`,
+    prompt: hideFirst ? `? × ${b} = ${p}` : `${a} × ? = ${p}`,
+    answer: other,
+    hints:[
+      `A missing factor is a division problem wearing a disguise.`,
+      `Turn it around: <b>${p} ÷ ${shown} = ?</b>`,
+      `${p} ÷ ${shown} = <b>${other}</b>, so the missing factor is ${other}.`
+    ],
+    worked:[
+      `Missing factor → divide. <span class="k">${p} ÷ ${shown}</span>.`,
+      `Ask how many ${shown}s fit into ${p}.`,
+      `Answer: <span class="k">${other}</span>. Check: ${a} × ${b} = ${p}. ✓`
+    ],
+    build:{mode:'mult', rows:a, cols:b}
+  };
+  if (item.kind==='choice'){
+    item.opts = mcOpts(other, [
+      {v:p, why:'wrong-op'}, {v:p-shown, why:'wrong-op'},
+      {v:other+1, why:'neighbor'}, {v:other-1, why:'neighbor'}
+    ]);
+  } else {
+    item.wrongMap = { [p]:'wrong-op', [p-shown]:'wrong-op', [other+1]:'neighbor', [other-1]:'neighbor' };
+  }
+  return item;
+}
+
+function remainderItem(skill, diff){
+  const v = diff>=2 ? pick([6,7,8,9]) : pick([3,4,5]);
+  const q = 3+rnd(diff>=2?9:6);
+  const r = 1+rnd(v-1);
+  const d = v*q + r;
+  const item = {
+    realm:'math', skill, diff, kind:'choice',
+    q:`<span class="num">${d} ÷ ${v} = ?</span>`,
+    prompt:`${d} ÷ ${v}`,
+    answer:`${q} r${r}`,
+    hints:[
+      `${v} does not divide ${d} evenly. Find the biggest multiple of ${v} that still fits under ${d}.`,
+      `${v} × ${q} = ${v*q}. How far is that from ${d}?`,
+      `${v*q} + ${r} = ${d}, so the answer is <b>${q} remainder ${r}</b>.`
+    ],
+    worked:[
+      `Fill as many groups of ${v} as you can: <span class="k">${v} × ${q} = ${v*q}</span>.`,
+      `${d} − ${v*q} = <span class="k">${r}</span> left over. ${r} is smaller than ${v}, so no more full groups fit.`,
+      `Answer: <span class="k">${q} r${r}</span>.`
+    ],
+    opts: shuffle(uniqOpts([
+      {t:`${q} r${r}`, ok:true},
+      {t:`${q}`, why:'drop-remainder'},
+      {t:`${q+1} r${Math.max(0,r-1)}`, why:'off-group'},
+      {t:`${q} r${r === 1 ? Math.min(v-1, r+1) : r-1}`, why:'count-slip'},
+      {t:`${r} r${q}`, why:'swap-div'}
+    ]).slice(0,4))
+  };
+  return item;
+}
+
+function multidigitItem(skill, diff){
+  const a = diff>=3 ? 12+rnd(76) : 12+rnd(36);   // 12–87 or 12–47
+  const b = diff>=2 ? pick([4,6,7,8,9]) : pick([2,3,4,5]);
+  const p = a*b;
+  const tens = Math.floor(a/10)*10, ones = a%10;
+  const item = {
+    realm:'math', skill, diff, kind:'input',
+    q:`<span class="num">${a} × ${b} = ?</span>`,
+    prompt:`${a} × ${b}`,
+    answer:p,
+    hints:[
+      `Break ${a} apart: <b>${tens} + ${ones}</b>. Multiply each piece by ${b}, then add.`,
+      `${tens} × ${b} = <b>${tens*b}</b> &nbsp;·&nbsp; ${ones} × ${b} = <b>${ones*b}</b>`,
+      `${tens*b} + ${ones*b} = <b>${p}</b>.`
+    ],
+    worked:[
+      `Split by place value: <span class="k">${a} = ${tens} + ${ones}</span>.`,
+      `${tens} × ${b} = <span class="k">${tens*b}</span>, and ${ones} × ${b} = <span class="k">${ones*b}</span>.`,
+      `Add the two pieces: ${tens*b} + ${ones*b} = <span class="k">${p}</span>.`
+    ],
+    wrongMap:{
+      [tens*b + ones]:'place-value',
+      [Math.floor(a/10)*b*10 + (ones*b)%10]:'place-value',
+      [p-b]:'neighbor', [p+b]:'neighbor', [a+b]:'add-instead'
+    }
+  };
+  return item;
+}
+
+function wordItem(skill, diff){
+  const who = pick(NAMES), [thingLong, thing] = pick(THINGS);
+  const isDiv = Math.random()<0.5;
+  let q, answer, hints, worked, wrongs, prompt, build;
+
+  if (!isDiv){
+    const a = diff>=2 ? pick([6,7,8,9,12]) : pick([3,4,5]);
+    const b = diff>=3 ? 8+rnd(9) : 3+rnd(7);
+    const p = a*b;
+    q = `${who} is building a tycoon with <b>${a}</b> ${thingLong}. Each one holds <b>${b}</b> ${thing==='stages'?'checkpoints':'items'}. How many is that altogether?`;
+    prompt = `${a} × ${b}`;
+    answer = p;
+    hints = [
+      `"Each one holds…" is the tell. Equal groups means <b>multiply</b>.`,
+      `${a} groups of ${b} → <b>${a} × ${b}</b>.`,
+      `${a} × ${b} = <b>${p}</b>.`
+    ];
+    worked = [
+      `Equal groups → multiplication. Groups: <span class="k">${a}</span>. In each: <span class="k">${b}</span>.`,
+      `${a} × ${b} = <span class="k">${p}</span>.`,
+      `Sanity check: ${a} + ${b} = ${a+b}, way too small for ${a} full groups. Multiplication is right.`
+    ];
+    wrongs = [{v:a+b, why:'add-instead'},{v:p-b, why:'neighbor'},{v:p+a, why:'off-group'},{v:Math.abs(a-b), why:'wrong-op'}];
+    build = {mode:'mult', rows:a, cols:b};
+  } else {
+    const v = diff>=2 ? pick([6,7,8,9]) : pick([3,4,5]);
+    const qt = 3+rnd(diff>=3?10:7);
+    const d = v*qt;
+    q = `${who} has <b>${d}</b> ${thingLong} to share evenly across <b>${v}</b> servers. How many go on each server?`;
+    prompt = `${d} ÷ ${v}`;
+    answer = qt;
+    hints = [
+      `"Share evenly" is the tell. Splitting a total into equal groups means <b>divide</b>.`,
+      `Flip it: <b>${v} × ? = ${d}</b>.`,
+      `${v} × ${qt} = ${d}, so each server gets <b>${qt}</b>.`
+    ];
+    worked = [
+      `Total <span class="k">${d}</span>, split into <span class="k">${v}</span> equal groups → division.`,
+      `${v} × ${qt} = ${d}, so ${d} ÷ ${v} = <span class="k">${qt}</span>.`,
+      `Each server gets <span class="k">${qt}</span>.`
+    ];
+    wrongs = [{v:v, why:'swap-div'},{v:d-v, why:'wrong-op'},{v:qt+1, why:'neighbor'},{v:qt-1, why:'neighbor'}];
+    build = {mode:'div', rows:v, cols:qt, dividend:d, divisor:v};
+  }
+  return {
+    realm:'math', skill, diff, kind:'choice',
+    q, prompt, answer, hints, worked, build,
+    opts: mcOpts(answer, wrongs)
+  };
+}
+
+/* A pure visual item: he builds the array himself, then reads the answer off it.
+   Sizes are chosen so no grid ever needs more than ~45 taps. */
+const VISUAL_SKILLS = ['m-mult-low','m-mult-high','m-div-low','m-div-high'];
+const BUILD_PAIR = {
+  'm-mult-low' : ()=>[pick([2,3,4,5]),  2+rnd(7)],
+  'm-mult-high': ()=>[pick([6,7,8,9]),  2+rnd(4)],
+  'm-div-low'  : ()=>{ const v=pick([2,3,4,5]), q=2+rnd(6); return [v,q]; },
+  'm-div-high' : ()=>{ const v=pick([6,7,8,9]), q=2+rnd(4); return [v,q]; },
+};
+
+function buildItem(skill){
+  const gen = BUILD_PAIR[skill] || BUILD_PAIR['m-mult-low'];
+  const isDiv = skill.indexOf('div') > -1;
+
+  if (isDiv){
+    const [v, q] = gen(), d = v*q;
+    return {
+      realm:'math', skill, diff:1, kind:'build',
+      q:`Split <span class="num">${d}</span> bricks into <b>${v} equal groups</b>. Tap a brick to place it.`,
+      prompt:`${d} ÷ ${v}`, answer:q,
+      build:{mode:'div', rows:v, cols:q, dividend:d, divisor:v},
+      hints:[`Fill one group at a time. Every group ends up with the same number.`,
+             `${v} groups, ${d} bricks, nothing left over.`,
+             `Each group gets <b>${q}</b>. That is what ${d} ÷ ${v} means.`],
+      worked:[`You just built <span class="k">${d} ÷ ${v} = ${q}</span>.`,
+              `${v} groups, ${q} bricks in each.`,
+              `Check it backwards: ${q} × ${v} = ${d}. ✓`]
+    };
+  }
+
+  let [a, b] = gen();
+  if (a > b && a*b > 30) [a, b] = [b, a];   // fewer, longer rows are quicker to fill
+  return {
+    realm:'math', skill, diff:1, kind:'build',
+    q:`Build <span class="num">${a} × ${b}</span> — ${a} rows with ${b} bricks in each.`,
+    prompt:`${a} × ${b}`, answer:a*b,
+    build:{mode:'mult', rows:a, cols:b},
+    hints:[`Fill the glowing row first. Each row needs exactly ${b}.`,
+           `${a} rows, ${b} in every row.`,
+           `Filled up, that is <b>${a*b}</b> bricks.`],
+    worked:[`You built <span class="k">${a} rows of ${b}</span>.`,
+            `Count the whole grid: ${a} × ${b} = <span class="k">${a*b}</span>.`,
+            `That is all multiplication is — equal groups, repeated.`]
+  };
+}
+
+const MATH_GEN = {
+  'm-mult-low':factItem, 'm-mult-high':factItem, 'm-mult-big':factItem,
+  'm-div-low':divItem, 'm-div-high':divItem,
+  'm-missing':missingItem, 'm-remainder':remainderItem,
+  'm-multidigit':multidigitItem, 'm-word':wordItem
+};
+
+function makeMathItem(skill, diff, forceVisual){
+  if (forceVisual && VISUAL_SKILLS.includes(skill)) return buildItem(skill);
+  const gen = MATH_GEN[skill] || factItem;
+  return gen(skill, Math.max(1, Math.min(3, diff)));
+}
+
+/* ---------------------------------------------------------------------------
+   5. STATE
+   Saved to this browser only. No account, no upload.
+   --------------------------------------------------------------------------- */
+const SAVE_KEY = 'adamBuildMode.v1';
+const blankMastery = () => {
+  const m = {};
+  Object.keys(SKILLS).forEach(k => m[k] = {m:0, seen:0, right:0, wrong:0, recent:[]});
+  return m;
+};
+let S = {
+  v:1, name:'Adam', avatar:'🧱', theme:null,
+  xp:0, streak:0, lastDay:null, scanned:false,
+  mastery: blankMastery(),
+  diff:{}, traps:{},
+  profile:{ answered:0, hintsUsed:0, times:[],
+            visTries:0, visRight:0, symTries:0, symRight:0,
+            fastWrong:0, slowRight:0, wordSeen:0, wordRight:0, bareSeen:0, bareRight:0,
+            readSeen:0, readRight:0 },
+  review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0
+};
+
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    S = Object.assign(S, d);
+    S.mastery = Object.assign(blankMastery(), d.mastery||{});
+    Object.keys(SKILLS).forEach(k=>{ if(!S.mastery[k].recent) S.mastery[k].recent=[]; });
+    S.profile = Object.assign({answered:0,hintsUsed:0,times:[],visTries:0,visRight:0,symTries:0,symRight:0,
+      fastWrong:0,slowRight:0,wordSeen:0,wordRight:0,bareSeen:0,bareRight:0,readSeen:0,readRight:0}, d.profile||{});
+  }catch(e){}
+}
+const today = () => new Date().toISOString().slice(0,10);
+
+function touchStreak(){
+  const t = today();
+  if (S.lastDay === t) return;
+  const y = new Date(Date.now()-864e5).toISOString().slice(0,10);
+  S.streak = (S.lastDay === y) ? S.streak+1 : 1;
+  S.lastDay = t;
+  if (S.streak > (S.bestStreak||0)) S.bestStreak = S.streak;
+}
+
+/* ---------------------------------------------------------------------------
+   6. ADAPTIVE ENGINE
+   --------------------------------------------------------------------------- */
+const MASTERY_BANDS = [
+  {min:0.82, key:'mastered', label:'Mastered'},
+  {min:0.55, key:'solid',    label:'Solid'},
+  {min:0.22, key:'learning', label:'Learning'},
+  {min:-1,   key:'new',      label:'Not started'}
+];
+const bandOf = m => MASTERY_BANDS.find(b => m >= b.min);
+const masteryOf = k => S.mastery[k] ? S.mastery[k].m : 0;
+const diffOf = k => S.diff[k] || 1;
+
+function realmMastery(realm){
+  const ks = realm==='math' ? MATH_SKILLS : READ_SKILLS;
+  const unlocked = ks.filter(k => !isLocked(k));
+  const pool = unlocked.length ? unlocked : ks;
+  return pool.reduce((s,k)=>s+masteryOf(k),0) / pool.length;
+}
+
+/* Some skills only make sense once their foundations hold. */
+const PREREQ = {
+  'm-remainder' :['m-div-low'],
+  'm-multidigit':['m-mult-high'],
+  'm-div-high'  :['m-div-low'],
+  'm-mult-big'  :['m-mult-low'],
+  'm-missing'   :['m-mult-low'],
+};
+function isLocked(skill){
+  const pre = PREREQ[skill];
+  if(!pre) return false;
+  return pre.some(p => masteryOf(p) < 0.35);
+}
+
+/* Record one answered item and move every dial it touches. */
+function record(item, correct, msTaken, hintsUsed){
+  const rec = S.mastery[item.skill];
+  rec.seen++; correct ? rec.right++ : rec.wrong++;
+  rec.recent.push(correct?1:0);
+  if (rec.recent.length>6) rec.recent.shift();
+
+  // mastery: gains scale with difficulty, shrink when hints carried the answer
+  const d = item.diff || 1;
+  if (correct){
+    const gain = (0.16 + 0.05*d) * (hintsUsed ? 0.45 : 1);
+    rec.m = Math.min(1, rec.m + (1-rec.m)*gain);
+  } else {
+    rec.m = Math.max(0, rec.m - rec.m*0.26 - 0.02);
+  }
+
+  // difficulty controller: aim for roughly 3-out-of-4 success
+  const last = rec.recent.slice(-4);
+  if (last.length>=3){
+    const acc = last.reduce((a,b)=>a+b,0)/last.length;
+    if (acc >= 0.85 && diffOf(item.skill) < 3) S.diff[item.skill] = diffOf(item.skill)+1;
+    else if (acc <= 0.34 && diffOf(item.skill) > 1) S.diff[item.skill] = diffOf(item.skill)-1;
+  }
+
+  // profile dials
+  const P = S.profile;
+  P.answered++;
+  if (hintsUsed) P.hintsUsed++;
+  const secs = msTaken/1000;
+  P.times.push(Math.round(secs)); if (P.times.length>60) P.times.shift();
+  if (item.realm==='math'){
+    if (item.kind==='build' || item.scaffolded){ P.visTries++; if(correct) P.visRight++; }
+    else { P.symTries++; if(correct) P.symRight++; }
+    if (item.skill==='m-word'){ P.wordSeen++; if(correct) P.wordRight++; }
+    else { P.bareSeen++; if(correct) P.bareRight++; }
+    if (!correct && secs < 4) P.fastWrong++;
+    if (correct && secs > 12) P.slowRight++;
+  } else {
+    P.readSeen++; if(correct) P.readRight++;
+  }
+
+  // spaced review queue
+  if (!correct){
+    S.review = S.review.filter(r => !(r.skill===item.skill && r.prompt===item.prompt));
+    S.review.push({skill:item.skill, prompt:item.prompt||'', due:(S.profile.answered||0)+6});
+    if (S.review.length>24) S.review.shift();
+  }
+  if (!correct && item.trap) S.traps[item.trap] = (S.traps[item.trap]||0)+1;
+}
+
+/* Which skill should come next? */
+function chooseSkill(realm){
+  const ks = (realm==='math' ? MATH_SKILLS : READ_SKILLS).filter(k => !isLocked(k));
+  const pool = ks.length ? ks : (realm==='math' ? MATH_SKILLS : READ_SKILLS);
+
+  // 1. anything overdue for review wins
+  const due = S.review.filter(r => (SKILLS[r.skill]||{}).realm===realm && r.due <= (S.profile.answered||0) && pool.includes(r.skill));
+  if (due.length && Math.random()<0.55) return pick(due).skill;
+
+  // 2. otherwise weight toward the productive-struggle zone
+  const weights = pool.map(k=>{
+    const m = masteryOf(k), seen = S.mastery[k].seen;
+    let w;
+    if (seen === 0)        w = 2.2;                 // try something new
+    else if (m < 0.22)     w = 3.4;                 // shaky — needs the most reps
+    else if (m < 0.55)     w = 3.0;                 // learning — the sweet spot
+    else if (m < 0.82)     w = 1.6;                 // solid — keep it warm
+    else                   w = 0.5;                 // mastered — occasional check-in
+    return w;
+  });
+  const total = weights.reduce((a,b)=>a+b,0);
+  let r = Math.random()*total;
+  for (let i=0;i<pool.length;i++){ r -= weights[i]; if (r<=0) return pool[i]; }
+  return pool[0];
+}
+
+/* Should this one be built out of bricks instead of written as symbols?
+   Early on the answer is "sometimes, on purpose" — otherwise the visual channel
+   never gets measured and the profile can never learn whether it helps him. */
+function wantsVisual(skill, prof){
+  if (!VISUAL_SKILLS.includes(skill)) return false;
+  if (S.profile.visTries < 6)      return Math.random() < 0.4;   // measuring
+  if (prof.needsVisual)            return masteryOf(skill) < 0.65 && Math.random() < 0.5;
+  return masteryOf(skill) < 0.3 && Math.random() < 0.25;         // still worth it when shaky
+}
+
+/* Profile read-outs the coach and the parent view both use. */
+function profileRead(){
+  const P = S.profile;
+  const visAcc = P.visTries>=4 ? P.visRight/P.visTries : null;
+  const symAcc = P.symTries>=4 ? P.symRight/P.symTries : null;
+  const wordAcc= P.wordSeen>=4 ? P.wordRight/P.wordSeen : null;
+  const bareAcc= P.bareSeen>=4 ? P.bareRight/P.bareSeen : null;
+  const times  = P.times.slice(-24).sort((a,b)=>a-b);
+  const median = times.length ? times[Math.floor(times.length/2)] : null;
+  const fastWrongRate = P.answered>=8 ? P.fastWrong/P.answered : 0;
+
+  return {
+    visual: (visAcc!==null && symAcc!==null) ? visAcc - symAcc : null,
+    visAcc, symAcc, wordAcc, bareAcc,
+    verbal: (wordAcc!==null && bareAcc!==null) ? wordAcc - bareAcc : null,
+    median, fastWrongRate,
+    hintRate: P.answered ? P.hintsUsed/P.answered : 0,
+    impulsive: fastWrongRate > 0.16,
+    needsVisual: (visAcc!==null && symAcc!==null) ? (visAcc - symAcc) > 0.12 : false,
+    storyThinker: (wordAcc!==null && bareAcc!==null) ? (wordAcc - bareAcc) > 0.12 : false,
+    enough: P.answered >= 12
+  };
+}
+
+/* ---------------------------------------------------------------------------
+   7. XP, LEVELS, BADGES
+   --------------------------------------------------------------------------- */
+const LEVELS = [
+  {xp:0,     title:'Apprentice Builder'},
+  {xp:200,   title:'Brick Layer'},
+  {xp:500,   title:'Obby Designer'},
+  {xp:900,   title:'Scripter'},
+  {xp:1500,  title:'Architect'},
+  {xp:2300,  title:'Server Admin'},
+  {xp:3400,  title:'Studio Lead'},
+  {xp:5000,  title:'Legend of the Grid'}
+];
+function levelInfo(){
+  let i = 0;
+  for (let k=0;k<LEVELS.length;k++) if (S.xp >= LEVELS[k].xp) i = k;
+  const cur = LEVELS[i], next = LEVELS[i+1] || null;
+  const into = S.xp - cur.xp;
+  const span = next ? next.xp - cur.xp : 1;
+  return {i, num:i+1, title:cur.title, into, span, next, pct: next ? Math.min(100, into/span*100) : 100};
+}
+
+const BADGES = [
+  {id:'scan',    ico:'🛰️', name:'Calibrated',  test:()=>S.scanned},
+  {id:'streak7', ico:'🔥', name:'7 in a row',  test:()=>S.bestRun>=7},
+  {id:'perfect', ico:'💯', name:'Perfect read',test:()=>Object.values(S.passages).some(p=>p.perfect)},
+  {id:'facts',   ico:'✖️', name:'Fact master', test:()=>['m-mult-low','m-mult-high'].every(k=>masteryOf(k)>=0.82)},
+  {id:'div',     ico:'➗', name:'Divider',     test:()=>masteryOf('m-div-low')>=0.82},
+  {id:'century', ico:'💠', name:'100 answers', test:()=>S.profile.answered>=100},
+  {id:'days3',   ico:'📅', name:'3-day streak',test:()=>(S.bestStreak||0)>=3},
+  {id:'reader',  ico:'📚', name:'Four stories',test:()=>Object.keys(S.passages).length>=4},
+  {id:'allmath', ico:'🏆', name:'Table boss',  test:()=>MATH_SKILLS.filter(k=>!isLocked(k)).every(k=>masteryOf(k)>=0.7)}
+];
+function checkBadges(){
+  const fresh = [];
+  BADGES.forEach(b=>{
+    if (!S.badges.includes(b.id) && b.test()){ S.badges.push(b.id); fresh.push(b); }
+  });
+  return fresh;
+}
+
+/* ---------------------------------------------------------------------------
+   8. BOLT — the coach
+   Bolt never says "wrong". Bolt names the trap, then hands back the next step.
+   --------------------------------------------------------------------------- */
+const RIGHT_LINES = [
+  'Clean build.', 'That is the one.', 'Locked in.', 'Exactly right.',
+  'Solid.', 'Nailed it.', 'Yes — that is the move.'
+];
+const RIGHT_FAST = ['Fast AND right. That fact is yours now.', 'No hesitation. That one is automatic for you.'];
+const RIGHT_HARD = ['That was a hard one. You earned it.', 'That is the level above where you started. Look at that.'];
+
+function coachRight(item, runStreak, secs, hinted){
+  let msg;
+  if (hinted) msg = 'Got there with the ladder — that still counts. Next time try it before the hint.';
+  else if (secs < 5 && item.diff>=2) msg = pick(RIGHT_FAST);
+  else if ((item.diff||1) >= 3) msg = pick(RIGHT_HARD);
+  else msg = pick(RIGHT_LINES);
+  if (runStreak >= 5) msg += ` <b>${runStreak} in a row.</b>`;
+  return msg;
+}
+
+function coachWrong(item, trap, attempt, prof){
+  const t = TRAPS[trap];
+  const repeat = trap && SESH && SESH.lastTrap === trap;
+  let msg;
+  if (t && repeat) msg = `<b>${t.label} again.</b> This one keeps coming back, so let us kill it: ${t.say}`;
+  else if (t) msg = `<b>${t.label}.</b> ${t.say}`;
+  else if (item.realm === 'math') msg = `Not that number. Say the problem out loud first — <b>${item.prompt}</b> — then decide what it is asking you to do.`;
+  else msg = 'Not that one. Two of the four are usually close enough to argue for — find the one the text actually supports.';
+  if (attempt === 1) msg += ' Try once more.';
+  if (prof.impulsive && item.secs < 4) msg += ' <i>And breathe — that answer came in under four seconds.</i>';
+  return msg;
+}
+
+function coachHome(){
+  const P = S.profile, prof = profileRead();
+  const mathM = realmMastery('math'), readM = realmMastery('read');
+  if (!S.scanned) return `Before we build anything, I need to see how you think. The Skill Scan takes about six minutes and there is no way to fail it.`;
+  if (S.lastDay !== today() && S.streak>0) return `Day ${S.streak+1}. Three quests below — about ten minutes and you are done for today.`;
+  if (P.answered < 10) return `Welcome back, ${S.name}. I am still learning your style, so the first few will feel like I am poking around. That is on purpose.`;
+
+  const settled = [...MATH_SKILLS, ...READ_SKILLS].filter(k=>!isLocked(k) && S.mastery[k].seen>=3);
+  if (!settled.length){
+    const top = MATH_SKILLS.filter(k=>!isLocked(k)).sort((a,b)=>masteryOf(b)-masteryOf(a))[0];
+    return `The scan puts your math around <b>${SKILLS[top].name}</b> and your reading at
+            <b>${Math.round(readM*100)}%</b>. Those are starting estimates — the next few sessions
+            will correct them fast. Start anywhere.`;
+  }
+  const weak = settled.sort((a,b)=>masteryOf(a)-masteryOf(b))[0];
+  const topTrap = Object.entries(S.traps).sort((a,b)=>b[1]-a[1])[0];
+
+  const lines = [];
+  if (weak) lines.push(`Today I want to spend time on <b>${SKILLS[weak].name}</b> — it is the one holding the rest back.`);
+  if (topTrap && topTrap[1]>=3 && TRAPS[topTrap[0]]) lines.push(`I have also seen "<b>${TRAPS[topTrap[0]].label}</b>" ${topTrap[1]} times. We will aim at that.`);
+  if (prof.needsVisual) lines.push(`You read bricks better than symbols, so I will keep showing you the array.`);
+  if (prof.impulsive) lines.push(`Slow-down mode is on — your fast answers are the ones that miss.`);
+  if (!lines.length) lines.push(`Math is at ${Math.round(mathM*100)}%, reading at ${Math.round(readM*100)}%. Pick a lane.`);
+  return lines.slice(0,2).join(' ');
+}
+
+/* ---------------------------------------------------------------------------
+   9. SESSION RUNNER
+   --------------------------------------------------------------------------- */
+let SESH = null;
+
+const SCAN_LADDER = [
+  ['m-mult-low',1], ['m-mult-low',2], ['m-div-low',1], ['m-mult-high',2],
+  ['m-div-high',2], ['m-missing',2],  ['m-multidigit',2], ['m-remainder',2]
+];
+
+function startSession(opts){
+  SESH = Object.assign({
+    realm:'math', len:8, items:[], idx:0, right:0, xp:0,
+    marks:[], runStreak:0, missRun:0, hintsUsed:0, scaffoldNext:false,
+    scan:false, ladder:1, touched:{}, startedAt:Date.now(), quest:null, passage:null
+  }, opts);
+  touchStreak();
+  nextItem();
+  show('scr-session');
+}
+
+function pickPassage(){
+  let band = 1;
+  const rm = realmMastery('read');
+  if (rm > 0.35) band = 2;
+  if (rm > 0.68) band = 3;
+  const done = S.passages || {};
+  let pool = PASSAGES.filter(p=>p.band===band && !done[p.id]);
+  if (!pool.length) pool = PASSAGES.filter(p=>p.band===band);
+  if (!pool.length) pool = PASSAGES;
+  return pick(pool);
+}
+
+function nextItem(){
+  const s = SESH;
+  if (s.idx >= s.len) return finishSession();
+
+  if (s.scan){
+    if (s.idx < 8){
+      const [sk, df] = SCAN_LADDER[Math.max(0, Math.min(7, s.ladder))];
+      s.current = makeMathItem(sk, df, false);
+      s.current.diff = Math.max(1, Math.min(3, Math.ceil((s.ladder+1)/3)));
+    } else {
+      if (!s.passage){ s.passage = PASSAGES.find(p=>p.band===1) || PASSAGES[0]; s.qi = 0; }
+      s.current = readingItem(s.passage, s.qi++);
+    }
+  } else if (s.realm === 'read'){
+    if (!s.passage){ s.passage = s.forcePassage || pickPassage(); s.qi = 0; s.len = s.passage.qs.length; }
+    s.current = readingItem(s.passage, s.qi++);
+  } else {
+    const prof = profileRead();
+    const skill = chooseSkill('math');
+    const df = s.scaffoldNext ? 1 : diffOf(skill);
+    const visual = s.scaffoldNext || wantsVisual(skill, prof);
+    s.current = makeMathItem(skill, df, visual);
+    if (s.scaffoldNext){ s.current.scaffolded = true; s.current.autoScaffold = true; }
+    s.scaffoldNext = false;
+  }
+  s.attempt = 0; s.hintLevel = 0; s.answered = false; s.shownAt = Date.now();
+  renderItem();
+}
+
+function readingItem(p, i){
+  const q = p.qs[i % p.qs.length];
+  return Object.assign({}, q, {
+    realm:'read', kind:'choice', diff:p.band,
+    passage:p, prompt:p.id+'#'+(i%p.qs.length),
+    opts: shuffle(q.opts.map(o=>Object.assign({}, o)))
+  });
+}
+
+/* When a typed answer isn't one of the anticipated slips, work out what kind
+   of wrong it is so the coach still has something specific to say. */
+function diagnoseNumeric(item, val){
+  const v = Number(val), ans = Number(item.answer);
+  if (!Number.isFinite(v) || !Number.isFinite(ans)) return null;
+  const d = v - ans;
+  if (Math.abs(d) <= 2) return 'count-slip';
+  if (item.build){
+    const {rows, cols} = item.build;
+    if (rows && d % rows === 0) return 'off-group';
+    if (cols && d % cols === 0) return 'off-group';
+  }
+  if (v > ans*1.5) return 'too-high';
+  if (v < ans*0.6) return 'too-low';
+  return null;
+}
+
+/* --- answer handling ------------------------------------------------------ */
+function submitAnswer(chosen, btn){
+  const s = SESH, item = s.current;
+  s.lastBtn = btn || null;
+  if (s.answered) return;
+  const secs = (Date.now() - s.shownAt)/1000;
+  item.secs = secs;
+  const prof = profileRead();
+
+  let correct, trap = null;
+  if (item.kind === 'choice'){
+    correct = !!chosen.ok;
+    trap = chosen.why || null;
+  } else {
+    const val = String(chosen).trim();
+    correct = val === String(item.answer);
+    if (!correct) trap = (item.wrongMap && item.wrongMap[val]) || diagnoseNumeric(item, val);
+  }
+
+  // first miss on a multiple-choice item = one free retry, with a diagnosis
+  if (!correct && item.kind==='choice' && s.attempt === 0 && !s.scan){
+    s.attempt = 1;
+    item.trap = trap;
+    if (btn){ btn.classList.add('wrong'); btn.disabled = true; }
+    setCoach(coachWrong(item, trap, 1, prof), 'miss');
+    renderNav();
+    return;
+  }
+
+  s.answered = true;
+  item.trap = trap;
+  if (s.scan && s.idx < 8) s.ladder = Math.max(0, Math.min(7, s.ladder + (correct ? 1 : -1)));
+  record(item, correct, Date.now()-s.shownAt, s.hintLevel>0);
+  s.marks.push(correct);
+  if (correct){
+    s.right++; s.runStreak++;
+    S.bestRun = Math.max(S.bestRun||0, s.runStreak);
+    s.missRun = 0;
+    const base = 10 + 6*((item.diff||1)-1) + (s.attempt? -4 : 0) + (s.hintLevel? -3 : 0);
+    s.xp += Math.max(4, base);
+  } else {
+    s.runStreak = 0; s.missRun++;
+  }
+  s.touched[item.skill] = true;
+
+  // frustration guard — two misses in a row means the level was wrong, not him
+  if (s.missRun >= 2 && !s.scan) s.scaffoldNext = true;
+
+  revealAnswer(correct);
+  setCoach(correct
+    ? coachRight(item, s.runStreak, secs, s.hintLevel>0)
+    : coachWrong(item, trap, 2, prof), correct ? 'good' : 'miss');
+  s.lastTrap = correct ? null : trap;
+  renderNav();
+  save();
+}
+
+function finishSession(){
+  const s = SESH;
+  S.xp += s.xp;
+  if (s.realm==='read' && s.passage){
+    const perfect = s.right === s.marks.length && s.marks.length>0;
+    S.passages[s.passage.id] = {at:today(), right:s.right, total:s.marks.length, perfect};
+  }
+  if (s.scan){ S.scanned = true; seedFromScan(s); }
+  if (s.quest != null && S.quests) {
+    S.quests.done = S.quests.done || [];
+    if (!S.quests.done.includes(s.quest)) S.quests.done.push(s.quest);
+  }
+  S.log.unshift({at:today(), realm:s.scan?'scan':s.realm, right:s.right, total:s.marks.length, xp:s.xp,
+                 mins:Math.max(1, Math.round((Date.now()-s.startedAt)/60000))});
+  if (S.log.length>30) S.log.pop();
+  const fresh = checkBadges();
+  save();
+  renderResult(fresh);
+  show('scr-result');
+}
+
+/* After the scan, give unprobed skills a sensible starting estimate so the
+   first real sessions aren't wasted re-discovering what we just measured. */
+function seedFromScan(s){
+  // The ladder is the measurement. A single probe can't produce a fair mastery
+  // number on its own, so the height reached sets a floor for everything at or
+  // below it — climbing to remainders means the ×2s are not at 20%.
+  const reached = Math.max(0, Math.min(7, s.ladder));
+  SCAN_LADDER.forEach(([sk], i)=>{
+    const rec = S.mastery[sk];
+    const floor = i < reached ? 0.62 : i === reached ? 0.45 : Math.max(0.1, 0.3 - 0.07*(i-reached));
+    rec.m = Math.max(rec.m, floor);
+    S.diff[sk] = i <= reached-2 ? 3 : i <= reached ? 2 : 1;
+  });
+  // skills the ladder never probed inherit from their nearest relative
+  S.mastery['m-mult-big'].m = Math.max(S.mastery['m-mult-big'].m, masteryOf('m-mult-high')*0.75);
+  S.mastery['m-word'].m     = Math.max(S.mastery['m-word'].m,
+                                (masteryOf('m-mult-low')+masteryOf('m-div-low'))/2*0.7);
+  // reading band comes from how the scan story went
+  const readMarks = s.marks.slice(8);
+  const readRight = readMarks.filter(Boolean).length;
+  const seedRead = readMarks.length===0 ? 0.15
+    : readRight>=4 ? 0.6 : readRight===3 ? 0.45 : readRight===2 ? 0.3 : 0.15;
+  READ_SKILLS.forEach(k=>{ S.mastery[k].m = Math.max(S.mastery[k].m, seedRead); });
+}
+
+/* ---------------------------------------------------------------------------
+   10. RENDERING
+   --------------------------------------------------------------------------- */
+const $  = id => document.getElementById(id);
+const el = (tag, cls, html) => { const n=document.createElement(tag); if(cls)n.className=cls; if(html!=null)n.innerHTML=html; return n; };
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on', s.id===id));
+  const chrome = id!=='scr-welcome';
+  $('topbar').hidden = !chrome;
+  $('navBar').hidden = !chrome || id==='scr-session';
+  window.scrollTo(0,0);
+}
+
+function renderHUD(){
+  const L = levelInfo();
+  $('hudName').textContent = S.name;
+  $('hudLevel').textContent = `Level ${L.num} · ${L.title}`;
+  $('hudXP').textContent = S.xp;
+  $('hudStreak').textContent = S.streak;
+  $('avatarBox').textContent = S.avatar;
+}
+
+/* ---------- session chrome ---------- */
+function renderProgressStrip(){
+  const s = SESH;
+  $('seshBar').style.width = Math.round(s.idx / s.len * 100) + '%';
+  const dots = $('seshDots'); dots.innerHTML = '';
+  for (let i=0;i<s.len;i++){
+    const d = el('div','dot');
+    if (i < s.marks.length) d.classList.add(s.marks[i] ? 'hit' : 'miss');
+    else if (i === s.marks.length) d.classList.add('now');
+    dots.appendChild(d);
+  }
+}
+
+function setCoach(html, tone){
+  const box = $('seshCoach');
+  box.innerHTML =
+    `<div class="coach ${tone?'tone-'+tone:''}">
+       <div class="coach-face">${tone==='good'?'⚡':tone==='miss'?'🔧':tone==='hint'?'💡':'🤖'}</div>
+       <div class="coach-body">
+         <div class="coach-name">Bolt</div>
+         <div class="coach-text">${html}</div>
+       </div>
+     </div>`;
+}
+
+function renderItem(){
+  const s = SESH, item = s.current;
+  renderProgressStrip();
+  $('seshCoach').innerHTML = '';
+  const body = $('seshBody');
+  body.innerHTML = '';
+
+  if (item.realm === 'read' && item.passage){
+    const p = item.passage;
+    // Question 1 opens with the whole story. After that it folds away, so he
+    // isn't scrolling past fourteen paragraphs to reach every later question.
+    const fold = s.qi > 1;
+    const card = el('div','passage-card');
+    card.innerHTML =
+      `<div class="passage-title">${p.title}</div>
+       <div class="passage-meta">${p.kind} · ${(p.meta.split('·')[1]||'').trim()}</div>
+       <div class="story-frame ${fold?'folded':''}" id="storyBody">${
+          p.paras.map((t,i)=>`<p><span class="para-n">${i+1}</span>${t}</p>`).join('')}</div>`;
+    const btn = el('button','fold-btn', fold ? '📖 Open the story again' : '📖 Fold the story away');
+    btn.onclick = ()=>{
+      const sb = card.querySelector('#storyBody');
+      const nowFolded = sb.classList.toggle('folded');
+      btn.textContent = nowFolded ? '📖 Open the story again' : '📖 Fold the story away';
+      if (!nowFolded) sb.scrollIntoView({block:'start', behavior:'smooth'});
+    };
+    card.appendChild(btn);
+    body.appendChild(card);
+  }
+
+  const prompt = el('div','prompt');
+  const sk = SKILLS[item.skill] || {name:'Practice', icon:'🎯'};
+  prompt.innerHTML =
+    `<div class="qskill">
+       <span class="tag ${bandOf(masteryOf(item.skill)).key}">${sk.icon} ${sk.name}</span>
+       ${item.diff>=3?'<span class="tag learning">Stretch</span>':''}
+     </div>
+     <div class="qtext">${item.q}</div>`;
+  body.appendChild(prompt);
+
+  if (item.kind === 'build'){
+    body.appendChild(buildBuilder(item));
+  } else if (item.kind === 'choice'){
+    const wrap = el('div','opts');
+    item.opts.forEach((o,i)=>{
+      const b = el('button','opt' + (item.realm==='math' && String(o.t).length<=6 ? ' mathy' : ''));
+      b.innerHTML = `<span class="ol">${'ABCD'[i]}</span><span>${o.t}</span>`;
+      b.onclick = () => submitAnswer(o, b);
+      wrap.appendChild(b);
+    });
+    prompt.appendChild(wrap);
+    maybeLock(wrap);
+  } else {
+    prompt.appendChild(buildKeypad(item));
+  }
+
+  // Two misses in a row means the level was wrong, not him — so the next one
+  // arrives easier, with the picture already open and no need to ask for it.
+  if (item.autoScaffold){
+    if (item.build && item.kind !== 'build') showScaffold(item);
+    setCoach(`Let us reset. Here is an easier one with the picture already up — no need to ask.
+              ${item.hints && item.hints[0] ? '<br>' + item.hints[0] : ''}`, 'hint');
+  }
+
+  renderNav();
+}
+
+/* Slow-down mode: for a learner whose fast answers are the ones that miss,
+   the options stay locked for a beat with a reason attached. */
+function maybeLock(wrap){
+  const prof = profileRead();
+  if (!prof.impulsive || !prof.enough) return;
+  const btns = wrap.querySelectorAll('.opt');
+  btns.forEach(b=>b.disabled=true);
+  const note = el('div','tiny','⏳ Slow-down mode — read all four before they unlock.');
+  note.style.marginTop = '8px';
+  wrap.appendChild(note);
+  setTimeout(()=>{ btns.forEach(b=>b.disabled=false); note.remove(); }, 1400);
+}
+
+function buildKeypad(item){
+  const wrap = el('div','answerbox');
+  wrap.style.marginTop = '14px';
+  const field = el('input','ansfield');
+  field.type = 'text'; field.inputMode = 'numeric'; field.value = '';
+  field.setAttribute('aria-label','Your answer');
+  field.placeholder = '?';
+  wrap.appendChild(field);
+
+  const pad = el('div','pad');
+  ['1','2','3','4','5','6','7','8','9','⌫','0','✓'].forEach(k=>{
+    const b = el('button', k==='✓' ? 'act' : (k==='⌫' ? 'sub' : ''), k);
+    b.type='button';
+    b.onclick = ()=>{
+      if (SESH.answered) return;
+      if (k==='⌫') field.value = field.value.slice(0,-1);
+      else if (k==='✓'){ if (field.value !== '') submitAnswer(field.value); }
+      else if (field.value.length < 5) field.value += k;
+    };
+    pad.appendChild(b);
+  });
+  wrap.appendChild(pad);
+  field.addEventListener('keydown', e=>{ if(e.key==='Enter' && field.value!=='' && !SESH.answered) submitAnswer(field.value); });
+  setTimeout(()=>field.focus(), 60);
+  item._field = field;
+  return wrap;
+}
+
+/* ---------- the brick builder ---------- */
+function buildBuilder(item){
+  const cfg = item.build;
+  const wrap = el('div','builder');
+  const isDiv = cfg.mode === 'div';
+  const rows = cfg.rows, cols = cfg.cols, total = rows*cols;
+
+  wrap.innerHTML = `<div class="builder-head">
+      <span class="bl">${isDiv ? 'Split into equal groups' : 'Build the array'}</span>
+      <span class="bl tnum" id="bCount">0 / ${total}</span>
+    </div>`;
+
+  const grid = el('div','grid-rows');
+  for (let r=0;r<rows;r++){
+    const row = el('div','grow' + (r===0?' live':''));
+    row.dataset.row = r;
+    row.appendChild(el('div','rl', isDiv ? `G${r+1}` : `R${r+1}`));
+    for (let c=0;c<cols;c++) row.appendChild(el('div','brick ghost'));
+    row.appendChild(el('div','rowcount tnum', `0/${cols}`));
+    grid.appendChild(row);
+  }
+  wrap.appendChild(grid);
+
+  const tray = el('div','supply-tray');
+  for (let i=0;i<total;i++){
+    const b = el('div','brick supply');
+    b.onclick = () => placeBrick(b, wrap, item);
+    tray.appendChild(b);
+  }
+  wrap.appendChild(tray);
+
+  const ask = el('div','', '');
+  ask.id = 'buildAsk';
+  ask.style.marginTop = '12px';
+  wrap.appendChild(ask);
+  return wrap;
+}
+
+function placeBrick(brick, wrap, item){
+  const cfg = item.build, cols = cfg.cols, isDiv = cfg.mode==='div';
+  const row = wrap.querySelector('.grow.live');
+  if (!row) return;
+  const ghost = row.querySelector('.brick.ghost');
+  if (!ghost) return;
+
+  const placed = el('div','brick pop');
+  if (isDiv){ placed.style.setProperty('--bk-l','#C3AEFF'); placed.style.setProperty('--bk-d','#7A4DEA'); }
+  row.replaceChild(placed, ghost);
+  brick.remove();
+
+  const filled = row.querySelectorAll('.brick:not(.ghost)').length;
+  row.querySelector('.rowcount').textContent = `${filled}/${cols}`;
+  const totalPlaced = wrap.querySelectorAll('.grow .brick:not(.ghost)').length;
+  wrap.querySelector('#bCount').textContent = `${totalPlaced} / ${cfg.rows*cols}`;
+
+  if (filled === cols){
+    row.classList.remove('live'); row.classList.add('full');
+    const next = row.nextElementSibling;
+    if (next && next.classList.contains('grow')) next.classList.add('live');
+  }
+  if (totalPlaced === cfg.rows*cols){
+    wrap.querySelector('.supply-tray').style.display = 'none';
+    const ask = wrap.querySelector('#buildAsk');
+    ask.innerHTML = `<div class="qtext" style="margin-bottom:10px">Built it. So <span class="num">${item.prompt} = ?</span></div>`;
+    ask.appendChild(buildKeypad(item));
+    setCoach(isDiv
+      ? `${cfg.rows} equal groups, all full. Now count what landed in <b>one</b> group.`
+      : `${cfg.rows} rows of ${cfg.cols}. Count the whole grid.`, 'hint');
+  }
+}
+
+/* ---------- reveal + hints + nav ---------- */
+function revealAnswer(correct){
+  const item = SESH.current;
+  if (item.kind === 'choice'){
+    document.querySelectorAll('.opt').forEach((b,i)=>{
+      b.disabled = true;
+      const o = item.opts[i];
+      if (o.ok) b.classList.add('right');
+      else if (b === SESH.lastBtn || b.classList.contains('wrong')) b.classList.add('wrong');
+      else b.classList.add('faded');
+    });
+  } else if (item._field){
+    item._field.classList.add(correct ? 'right' : 'wrong');
+    item._field.disabled = true;
+    if (!correct) item._field.value = String(item.answer);
+  }
+}
+
+function renderNav(){
+  const s = SESH, item = s.current, nav = $('seshNav');
+  nav.innerHTML = '';
+  const row = el('div','row');
+  row.style.flexWrap = 'wrap';
+
+  if (!s.answered){
+    if (item.hints && s.hintLevel < item.hints.length){
+      const h = el('button','btn ghost sm', s.hintLevel===0 ? '💡 Give me a nudge' : s.hintLevel===1 ? '💡 More help' : '💡 Show me');
+      h.onclick = () => {
+        setCoach(item.hints[s.hintLevel], 'hint');
+        s.hintLevel++;
+        if (s.hintLevel >= 2 && item.build && item.kind!=='build'){ showScaffold(item); item.scaffolded = true; }
+        renderNav();
+      };
+      row.appendChild(h);
+    }
+    if (item.realm==='read' && item.evidence){
+      const e = el('button','btn ghost sm','🔎 Where to look');
+      e.onclick = () => {
+        setCoach(`Read this line again:<div class="evidence">${item.evidence}</div>`, 'hint');
+        SESH.hintLevel = Math.max(SESH.hintLevel, 1);
+        renderNav();
+      };
+      row.appendChild(e);
+    }
+  } else {
+    const explain = el('button','btn ghost sm','🧠 Why');
+    explain.onclick = () => {
+      const w = item.worked
+        ? `<div class="worked"><ol>${item.worked.map(x=>`<li>${x}</li>`).join('')}</ol></div>`
+        : `<div class="worked">${item.why||''}${item.evidence?`<div class="evidence">${item.evidence}</div>`:''}</div>`;
+      setCoach((item.why && item.realm==='read' ? item.why : 'Here is the build:') + w, 'hint');
+      explain.remove();
+    };
+    row.appendChild(explain);
+
+    const go = el('button','btn' + (s.realm==='read'?' story':''), s.idx+1 >= s.len ? 'Finish ✓' : 'Next →');
+    go.onclick = () => { s.idx++; nextItem(); };
+    row.appendChild(go);
+  }
+  nav.appendChild(row);
+}
+
+function showScaffold(item){
+  if (!item.build || document.getElementById('scaffoldBox')) return;
+  const cfg = item.build;
+  const box = el('div','builder');
+  box.id = 'scaffoldBox';
+  const isDiv = cfg.mode==='div';
+  box.innerHTML = `<div class="builder-head"><span class="bl">${isDiv?'Picture it as groups':'Picture it as an array'}</span></div>`;
+  if (isDiv){
+    const groups = el('div','groups');
+    for (let r=0;r<cfg.rows;r++){
+      const g = el('div','group');
+      g.appendChild(el('div','gl',`G${r+1}`));
+      for (let c=0;c<cfg.cols;c++) g.appendChild(el('div','brick'));
+      groups.appendChild(g);
+    }
+    box.appendChild(groups);
+  } else {
+    const grid = el('div','grid-rows');
+    for (let r=0;r<cfg.rows;r++){
+      const row = el('div','grow full');
+      row.appendChild(el('div','rl',`R${r+1}`));
+      for (let c=0;c<cfg.cols;c++) row.appendChild(el('div','brick'));
+      row.appendChild(el('div','rowcount tnum',`${cfg.cols}`));
+      grid.appendChild(row);
+    }
+    box.appendChild(grid);
+  }
+  $('seshBody').appendChild(box);
+}
+
+/* ---------------------------------------------------------------------------
+   11. RESULT SCREEN
+   --------------------------------------------------------------------------- */
+function renderResult(freshBadges){
+  const s = SESH;
+  const total = s.marks.length || 1;
+  const pct = s.right/total;
+
+  $('resRight').textContent = s.right;
+  $('resTotal').textContent = total;
+  $('resXP').textContent = '+' + s.xp;
+
+  let ico, title, sub;
+  if (s.scan){ ico='🛰️'; title='Scan complete'; sub='I have a starting picture of how you think. It will sharpen every session.'; }
+  else if (pct === 1){ ico='🏆'; title='Flawless run'; sub='Every single one.'; }
+  else if (pct >= 0.75){ ico='🏗️'; title='Strong build'; sub='That is the zone — hard enough to matter, not hard enough to hurt.'; }
+  else if (pct >= 0.5){ ico='🔧'; title='Good reps'; sub='The misses are the useful part. I logged all of them.'; }
+  else { ico='🧱'; title='Reps banked'; sub='That set was pitched too high. I am dropping the level for next time.'; }
+  $('resIcon').textContent = ico; $('resTitle').textContent = title; $('resSub').textContent = sub;
+
+  // what Bolt noticed
+  const notes = [];
+  if (s.scan){
+    const lvl = Math.max(0, Math.min(7, s.ladder));
+    notes.push(`On math you climbed to <b>${SKILLS[SCAN_LADDER[lvl][0]].name}</b> before it got hard. That is where we start.`);
+    const rr = s.marks.slice(8).filter(Boolean).length;
+    notes.push(`On reading you got <b>${rr} of ${s.marks.slice(8).length}</b>, so I am starting you at ${rr>=3?'the harder':'the steady'} band.`);
+  } else {
+    const topTrap = Object.entries(S.traps).sort((a,b)=>b[1]-a[1])[0];
+    if (pct >= 0.85) notes.push(`I am moving you up a level on the skills you cleared.`);
+    if (pct < 0.5) notes.push(`Nothing here says you cannot do this — it says I picked wrong. Fixed.`);
+    if (topTrap && TRAPS[topTrap[0]] && topTrap[1]>=2) notes.push(`Pattern to watch: <b>${TRAPS[topTrap[0]].label}</b>.`);
+    const prof = profileRead();
+    if (prof.enough && prof.needsVisual) notes.push(`You are <b>${Math.round((prof.visAcc-prof.symAcc)*100)}%</b> more accurate when you can see the bricks — so you will keep seeing them.`);
+    if (prof.enough && prof.storyThinker) notes.push(`Word problems are your strong side. I will keep wrapping facts in stories.`);
+    if (!notes.length) notes.push(`Steady run. Come back tomorrow and the streak keeps climbing.`);
+  }
+  $('resCoachText').innerHTML = notes.slice(0,3).join(' ');
+
+  // skill movement
+  const moved = Object.keys(s.touched||{});
+  $('resSkillsCard').style.display = moved.length ? '' : 'none';
+  $('resSkills').innerHTML = moved.map(k=>{
+    const m = masteryOf(k), b = bandOf(m);
+    return `<div class="skillrow">
+      <span class="sname">${SKILLS[k].icon} ${SKILLS[k].name}</span>
+      <span class="sbar"><span class="bar"><i style="width:${Math.round(m*100)}%"></i></span></span>
+      <span class="sval">${Math.round(m*100)}%</span>
+      <span class="tag ${b.key}">${b.label}</span></div>`;
+  }).join('');
+
+  $('resNewBadges').innerHTML = freshBadges.length
+    ? `<div class="card"><div class="eyebrow" style="margin-bottom:9px">New badge${freshBadges.length>1?'s':''}</div>
+       <div class="badges">${freshBadges.map(b=>`<div class="badge got"><span class="bi">${b.ico}</span><span class="bn">${b.name}</span></div>`).join('')}</div></div>`
+    : '';
+
+  if (pct >= 0.75) confetti(pct === 1 ? 70 : 34);
+  renderHUD();
+}
+
+function confetti(n){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cols = ['#2C63F0','#7A4DEA','#0E9B58','#E39A0C','#D63E58','#5D8DFF'];
+  for (let i=0;i<n;i++){
+    setTimeout(()=>{
+      const c = el('div','confetti');
+      c.style.left = Math.random()*100 + 'vw';
+      c.style.background = pick(cols);
+      c.style.animationDuration = (1.6 + Math.random()*1.9) + 's';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(), 4000);
+    }, i*22);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   12. HOME
+   --------------------------------------------------------------------------- */
+function buildQuests(){
+  if (S.quests && S.quests.date === today()) return S.quests;
+  const weakMath = MATH_SKILLS.filter(k=>!isLocked(k)).sort((a,b)=>masteryOf(a)-masteryOf(b))[0];
+  const p = pickPassage();
+  S.quests = {
+    date: today(),
+    done: [],
+    list: [
+      {type:'math', len:6, name:'Warm-up', meta:`6 questions · aimed at ${SKILLS[weakMath].name}`, ico:'🔩', focus:weakMath},
+      {type:'read', name:'Story server', meta:`${p.title} · ${p.qs.length} questions`, ico:'📖', passageId:p.id},
+      {type:'math', len:8, name:'Boss round', meta:'8 questions · mixed, one level up', ico:'⚔️', boss:true}
+    ]
+  };
+  save();
+  return S.quests;
+}
+
+function renderHome(){
+  renderHUD();
+  const q = buildQuests();
+  $('homeCoachText').innerHTML = coachHome();
+
+  const list = $('questList'); list.innerHTML = '';
+  q.list.forEach((item, i)=>{
+    const done = (q.done||[]).includes(i);
+    const b = el('button','quest' + (done?' done':''));
+    b.innerHTML = `<span class="qbadge ${done?'done':(item.type==='read'?'story':'build')}">${done?'✓':item.ico}</span>
+      <span class="qinfo"><span class="qname">${item.name}</span><span class="qmeta">${item.meta}</span></span>
+      <span class="qgo">${done?'':'→'}</span>`;
+    b.onclick = ()=> launchQuest(i);
+    list.appendChild(b);
+  });
+  $('questProgress').textContent = `${(q.done||[]).length}/${q.list.length}`;
+
+  const mm = realmMastery('math'), rm = realmMastery('read');
+  $('mathBar').style.width = Math.round(mm*100)+'%';
+  $('readBar').style.width = Math.round(rm*100)+'%';
+  $('mathPct').textContent = Math.round(mm*100)+'% mastered';
+  $('readPct').textContent = Math.round(rm*100)+'% mastered';
+
+  const L = levelInfo();
+  $('lvlBar').style.width = L.pct + '%';
+  $('lvlText').textContent = L.next ? `${L.into} / ${L.span} XP` : 'Max level';
+  $('lvlNote').textContent = L.next ? `${L.span - L.into} XP to ${L.next.title}.` : 'Top of the ladder.';
+}
+
+function launchQuest(i){
+  const q = S.quests.list[i];
+  if (q.type === 'read'){
+    const p = PASSAGES.find(x=>x.id===q.passageId) || pickPassage();
+    startSession({realm:'read', forcePassage:p, len:p.qs.length, quest:i});
+  } else {
+    startSession({realm:'math', len:q.len || 6, quest:i});
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   13. PROGRESS / GROWN-UP VIEW
+   --------------------------------------------------------------------------- */
+function renderProgress(){
+  const prof = profileRead();
+
+  const dial = (label, value, note) =>
+    `<div class="dial"><div class="dl">${label}</div><div class="dv">${value}</div><div class="dnote">${note}</div></div>`;
+
+  const dials = [];
+  dials.push(dial('How he takes it in',
+    prof.visual===null ? 'Still measuring' : prof.needsVisual ? 'Visual builder' : (prof.visual < -0.12 ? 'Symbol thinker' : 'Both work'),
+    prof.visual===null ? 'Needs a few more brick-built questions to tell.'
+      : `Bricks ${Math.round((prof.visAcc||0)*100)}% vs symbols ${Math.round((prof.symAcc||0)*100)}%. ${prof.needsVisual?'Arrays stay switched on.':'No scaffold needed by default.'}`));
+
+  dials.push(dial('Pace',
+    prof.median===null ? 'Still measuring' : prof.impulsive ? 'Fast — slow-down mode ON' : (prof.median>18?'Deliberate':'Steady'),
+    prof.median===null ? '—' : `Typical answer takes ${Math.max(1, prof.median)}s. ${prof.impulsive?`${Math.round(prof.fastWrongRate*100)}% of answers are wrong AND under 4 seconds — options now lock briefly.`:'Speed and accuracy are in balance.'}`));
+
+  dials.push(dial('Words vs numbers',
+    prof.verbal===null ? 'Still measuring' : prof.storyThinker ? 'Story thinker' : (prof.verbal < -0.12 ? 'Numbers first' : 'Even'),
+    prof.verbal===null ? 'Needs more word problems.'
+      : `Word problems ${Math.round((prof.wordAcc||0)*100)}% vs bare facts ${Math.round((prof.bareAcc||0)*100)}%.`));
+
+  dials.push(dial('Use of hints',
+    S.profile.answered<6 ? 'Still measuring' : prof.hintRate>0.4 ? 'Leans on the ladder' : prof.hintRate>0.15 ? 'Uses it when stuck' : 'Independent',
+    `Asks for help on ${Math.round(prof.hintRate*100)}% of questions. Hinted answers count for less mastery, on purpose.`));
+
+  $('profileDials').innerHTML = dials.join('');
+
+  const skillRows = ks => ks.map(k=>{
+    const m = masteryOf(k), b = bandOf(m), rec = S.mastery[k];
+    const locked = isLocked(k), est = rec.seen === 0 && m > 0;
+    return `<div class="skillrow" style="${locked?'opacity:.45':''}">
+      <span class="sname">${SKILLS[k].icon} ${SKILLS[k].name}${locked?' <span class="tiny">· locked until the basics hold</span>':''}</span>
+      <span class="sbar"><span class="bar"><i style="width:${Math.round(m*100)}%"></i></span></span>
+      <span class="sval">${rec.seen ? Math.round(m*100)+'%' : est ? '~'+Math.round(m*100)+'%' : '—'}</span>
+      <span class="tag ${rec.seen ? b.key : 'new'}">${rec.seen ? b.label : est ? 'Estimated' : 'Not started'}</span></div>`;
+  }).join('');
+  $('mathSkills').innerHTML = skillRows(MATH_SKILLS);
+  $('readSkills').innerHTML = skillRows(READ_SKILLS);
+
+  const traps = Object.entries(S.traps).filter(([k])=>TRAPS[k]).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  $('patternList').innerHTML = traps.length
+    ? traps.map(([k,v])=>`<div class="notecard"><b>${TRAPS[k].label}</b> — seen ${v}×. ${TRAPS[k].say}</div>`).join('')
+    : `<p class="tiny">Nothing repeating yet. Patterns show up here once the same kind of mistake happens more than once.</p>`;
+
+  $('badgeGrid').innerHTML = BADGES.map(b=>{
+    const got = S.badges.includes(b.id);
+    return `<div class="badge ${got?'got':''}"><span class="bi">${b.ico}</span><span class="bn">${b.name}</span></div>`;
+  }).join('');
+
+  $('logTable').innerHTML = S.log.length
+    ? `<thead><tr><th>Date</th><th>Set</th><th>Score</th><th>Mins</th><th>XP</th></tr></thead><tbody>` +
+      S.log.slice(0,12).map(r=>`<tr><td class="tnum">${r.at.slice(5)}</td><td>${r.realm==='read'?'📖 Reading':r.realm==='scan'?'🛰️ Scan':'🧮 Math'}</td>
+        <td class="tnum">${r.right}/${r.total}</td><td class="tnum">${r.mins}</td><td class="tnum">+${r.xp}</td></tr>`).join('') +
+      `</tbody>`
+    : `<tbody><tr><td class="tiny">No sessions logged yet.</td></tr></tbody>`;
+}
+
+/* Progress export: copy to the clipboard where that is allowed, and always
+   leave the text on screen so it can be selected by hand. */
+function showExport(txt){
+  const host = document.getElementById('exportOut');
+  host.innerHTML = '';
+  const ta = el('textarea');
+  ta.value = txt;
+  ta.rows = 8;
+  ta.setAttribute('aria-label','Progress data');
+  ta.style.cssText = 'width:100%;font-family:var(--f-ui);font-size:.74rem;line-height:1.5;'
+    + 'padding:10px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)';
+  host.appendChild(ta);
+  const note = el('div','tiny','Comma-separated — paste it into a spreadsheet or an email.');
+  note.style.marginTop = '6px';
+  host.appendChild(note);
+  ta.select();
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(
+      ()=>{ note.textContent = 'Copied to the clipboard — and left here in case that did not stick.'; },
+      ()=>{}
+    );
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   14. WIRING
+   --------------------------------------------------------------------------- */
+const AVATARS = ['🧱','🤖','🐉','🦈','⚡','🎮','🛸','🐺','🔥','👾'];
+
+function go(where){
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on', b.dataset.go===where));
+  if (where==='home'){ renderHome(); show('scr-home'); }
+  else if (where==='math'){ startSession({realm:'math', len:8}); }
+  else if (where==='read'){ startSession({realm:'read'}); }
+  else if (where==='progress'){ renderProgress(); show('scr-progress'); }
+}
+
+function applyTheme(){
+  if (S.theme) document.documentElement.setAttribute('data-theme', S.theme);
+  else document.documentElement.removeAttribute('data-theme');
+}
+
+function boot(){
+  load();
+  applyTheme();
+
+  const picker = $('avatarPicker');
+  AVATARS.forEach(a=>{
+    const b = el('button','pill' + (a===S.avatar?' on':''), a);
+    b.style.fontSize = '1.05rem';
+    b.onclick = ()=>{ S.avatar = a; picker.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); b.classList.add('on'); save(); renderHUD(); };
+    picker.appendChild(b);
+  });
+  $('nameInput').value = S.name;
+  $('nameInput').addEventListener('input', e=>{ S.name = e.target.value.trim() || 'Builder'; save(); renderHUD(); });
+
+  $('startScanBtn').onclick = ()=>{ startSession({realm:'math', scan:true, len:12}); };
+  $('skipScanBtn').onclick = ()=>{ S.scanned = true; save(); go('home'); };
+  $('quitBtn').onclick = ()=>{ if (SESH && SESH.marks.length) { finishSession(); } else { go('home'); } };
+  $('resHomeBtn').onclick = ()=> go('home');
+  $('resAgainBtn').onclick = ()=>{
+    const s = SESH;
+    startSession(s.realm==='read' ? {realm:'read'} : {realm:'math', len:s.len||8});
+  };
+  $('realmMath').onclick = ()=> go('math');
+  $('realmRead').onclick = ()=> go('read');
+  document.querySelectorAll('.nav button').forEach(b=> b.onclick = ()=> go(b.dataset.go));
+
+  $('themeBtn').onclick = ()=>{
+    const isDark = document.documentElement.getAttribute('data-theme')==='dark'
+      || (!S.theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    S.theme = isDark ? 'light' : 'dark';
+    applyTheme(); save();
+  };
+
+  $('redoScanBtn').onclick = ()=>{ startSession({realm:'math', scan:true, len:12}); };
+  $('resetBtn').onclick = ()=>{
+    if (!confirm('Erase all of Adam\'s progress on this device? This cannot be undone.')) return;
+    localStorage.removeItem(SAVE_KEY); location.reload();
+  };
+  $('exportBtn').onclick = ()=>{
+    const rows = [['date','set','right','total','minutes','xp']].concat(S.log.map(r=>[r.at,r.realm,r.right,r.total,r.mins,r.xp]));
+    const skills = [['skill','mastery_pct','seen','right','wrong']].concat(
+      Object.keys(SKILLS).map(k=>[SKILLS[k].name, Math.round(masteryOf(k)*100), S.mastery[k].seen, S.mastery[k].right, S.mastery[k].wrong]));
+    const txt = 'SESSIONS\n' + rows.map(r=>r.join(',')).join('\n') + '\n\nSKILLS\n' + skills.map(r=>r.join(',')).join('\n');
+    showExport(txt);
+  };
+
+  renderHUD();
+  if (S.scanned || S.profile.answered>0){ go('home'); }
+  else show('scr-welcome');
+}
+boot();
+</script>
