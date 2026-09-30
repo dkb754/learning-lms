@@ -702,6 +702,21 @@ p{line-height:1.6}
         <button class="btn wide" id="startScanBtn">Start the Skill Scan →</button>
         <button class="btn ghost wide sm" id="skipScanBtn" style="margin-top:8px">Skip — just start practicing</button>
       </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:8px">Been here before?</div>
+        <p class="tiny">
+          If Adam has used this on another device — or this Chromebook cleared itself —
+          bring his progress back instead of starting over.
+        </p>
+        <div class="row" style="flex-wrap:wrap;margin-top:11px">
+          <button class="btn ghost sm" id="wSync">☁️ I have a sync code</button>
+          <button class="btn ghost sm" id="wFile">📂 Open a save file</button>
+          <button class="btn ghost sm" id="wPaste">📋 Paste a save code</button>
+        </div>
+        <input type="file" id="wFileInput" accept="application/json,.json" hidden>
+        <div id="wOut" style="margin-top:11px"></div>
+      </div>
     </div>
   </section>
 
@@ -831,6 +846,29 @@ p{line-height:1.6}
       </div>
 
       <div class="card">
+        <div class="eyebrow" style="margin-bottom:9px">Saving &amp; backup</div>
+        <div id="storageStatus"></div>
+        <div class="divider"></div>
+        <div class="eyebrow" style="margin-bottom:8px">Sync across devices</div>
+        <div id="syncBox"></div>
+        <div class="divider"></div>
+        <div class="eyebrow" style="margin-bottom:8px">Keep a copy</div>
+        <div class="row" style="flex-wrap:wrap;margin-top:2px">
+          <button class="btn sm" id="saveFileBtn">💾 Download save file</button>
+          <button class="btn ghost sm" id="saveLinkBtn">🔗 Copy save link</button>
+        </div>
+        <div class="divider"></div>
+        <div class="eyebrow" style="margin-bottom:8px">Put progress back</div>
+        <div class="row" style="flex-wrap:wrap">
+          <button class="btn ghost sm" id="loadFileBtn">📂 Open a save file</button>
+          <button class="btn ghost sm" id="pasteBtn">📋 Paste a code</button>
+        </div>
+        <input type="file" id="fileInput" accept="application/json,.json" hidden>
+        <div id="backupOut" style="margin-top:11px"></div>
+      </div>
+
+
+      <div class="card">
         <div class="eyebrow" style="margin-bottom:11px">Builder profile · how Adam learns</div>
         <div class="dials" id="profileDials"></div>
       </div>
@@ -858,28 +896,6 @@ p{line-height:1.6}
       <div class="card">
         <div class="eyebrow" style="margin-bottom:10px">Session log</div>
         <div class="scroll-x"><table class="table" id="logTable"></table></div>
-      </div>
-
-      <div class="card">
-        <div class="eyebrow" style="margin-bottom:9px">Saving &amp; backup</div>
-        <div id="storageStatus"></div>
-        <div class="divider"></div>
-        <div class="eyebrow" style="margin-bottom:8px">Sync across devices</div>
-        <div id="syncBox"></div>
-        <div class="divider"></div>
-        <div class="eyebrow" style="margin-bottom:8px">Keep a copy</div>
-        <div class="row" style="flex-wrap:wrap;margin-top:2px">
-          <button class="btn sm" id="saveFileBtn">💾 Download save file</button>
-          <button class="btn ghost sm" id="saveLinkBtn">🔗 Copy save link</button>
-        </div>
-        <div class="divider"></div>
-        <div class="eyebrow" style="margin-bottom:8px">Put progress back</div>
-        <div class="row" style="flex-wrap:wrap">
-          <button class="btn ghost sm" id="loadFileBtn">📂 Open a save file</button>
-          <button class="btn ghost sm" id="pasteBtn">📋 Paste a code</button>
-        </div>
-        <input type="file" id="fileInput" accept="application/json,.json" hidden>
-        <div id="backupOut" style="margin-top:11px"></div>
       </div>
 
       <div class="card">
@@ -4704,8 +4720,8 @@ function renderProgress(){
     : `<tbody><tr><td class="tiny">No sessions logged yet.</td></tr></tbody>`;
 }
 
-function backupNote(html, tone){
-  const host = $('backupOut');
+function backupNote(html, tone, hostId){
+  const host = $(hostId || 'backupOut');
   host.innerHTML = `<div class="notecard" style="border-left-color:var(--${tone||'good'});
     background:var(--${tone||'good'}-soft)">${html}</div>`;
 }
@@ -4804,15 +4820,52 @@ function renderStorageBanner(){
     Finish your quests, then go to <b>Progress → Download save file</b> to keep them.</div>`;
 }
 
-function doRestore(obj, source){
+function doRestore(obj, source, hostId){
   if (!applyState(obj)){
-    backupNote('That file or code could not be read. Make sure the whole thing was copied.', 'miss');
+    backupNote('That file or code could not be read. Make sure the whole thing was copied.', 'miss', hostId);
     return;
   }
   renderHUD();
   backupNote(`Progress restored from ${source} — <b>${S.profile.answered||0} questions</b>,
-              ${S.xp} XP, level ${levelInfo().num}.`, 'good');
-  renderProgress();
+              ${S.xp} XP, level ${levelInfo().num}.`, 'good', hostId);
+  if (hostId === 'wOut') setTimeout(()=> go('home'), 1100);
+  else renderProgress();
+}
+
+/* Shared by the Progress card and the welcome screen. */
+function readSaveFile(evt, hostId){
+  const f = evt.target.files && evt.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    let obj = null;
+    try{
+      const parsed = JSON.parse(r.result);
+      obj = parsed.code ? decodeState(parsed.code) : (parsed.mastery ? parsed : null);
+    }catch(err){ obj = decodeState(String(r.result)); }
+    doRestore(obj, 'the save file', hostId);
+  };
+  r.readAsText(f);
+  evt.target.value = '';
+}
+
+function pasteRestoreBox(hostId){
+  const host = $(hostId);
+  host.innerHTML = '';
+  const ta = el('textarea');
+  ta.rows = 4; ta.placeholder = 'Paste the save code or the save link here…';
+  ta.style.cssText = 'width:100%;font-size:.72rem;padding:9px;border-radius:10px;'
+    + 'border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)';
+  host.appendChild(ta);
+  const go2 = el('button','btn sm','Restore from this');
+  go2.style.marginTop = '8px';
+  go2.onclick = ()=>{
+    const v = ta.value.trim();
+    const m = v.match(/[#&]s=([A-Za-z0-9\-_]+)/);
+    doRestore(decodeState(m ? m[1] : v), 'the code', hostId);
+  };
+  host.appendChild(go2);
+  ta.focus();
 }
 
 /* Progress export: copy to the clipboard where that is allowed, and always
@@ -4943,37 +4996,36 @@ function boot(){
     ta.select();
   }
   $('loadFileBtn').onclick = ()=> $('fileInput').click();
-  $('fileInput').onchange = e=>{
-    const f = e.target.files && e.target.files[0];
-    if (!f) return;
-    const r = new FileReader();
-    r.onload = ()=>{
-      let obj = null;
-      try{
-        const parsed = JSON.parse(r.result);
-        obj = parsed.code ? decodeState(parsed.code) : (parsed.mastery ? parsed : null);
-      }catch(err){ obj = decodeState(String(r.result)); }
-      doRestore(obj, 'the save file');
-    };
-    r.readAsText(f);
-    e.target.value = '';
-  };
-  $('pasteBtn').onclick = ()=>{
-    $('backupOut').innerHTML = '';
-    const ta = el('textarea');
-    ta.rows = 4; ta.placeholder = 'Paste the save code or the save link here…';
-    ta.style.cssText = 'width:100%;font-size:.72rem;padding:9px;border-radius:10px;'
-      + 'border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)';
-    $('backupOut').appendChild(ta);
-    const go = el('button','btn sm','Restore from this');
-    go.style.marginTop = '8px';
-    go.onclick = ()=>{
-      const v = ta.value.trim();
-      const m = v.match(/[#&]s=([A-Za-z0-9\-_]+)/);
-      doRestore(decodeState(m ? m[1] : v), 'the code');
-    };
-    $('backupOut').appendChild(go);
-    ta.focus();
+  $('fileInput').onchange = e=> readSaveFile(e, 'backupOut');
+  $('pasteBtn').onclick = ()=> pasteRestoreBox('backupOut');
+
+  // Welcome screen: a reset or a wiped Chromebook lands here with the nav
+  // hidden, so the way back in has to be on this screen itself.
+  $('wFile').onclick = ()=> $('wFileInput').click();
+  $('wFileInput').onchange = e=> readSaveFile(e, 'wOut');
+  $('wPaste').onclick = ()=> pasteRestoreBox('wOut');
+  $('wSync').onclick = ()=>{
+    const typed = prompt('Enter the sync code (it looks like ABCD-2345-WXYZ):', '');
+    if (!typed) return;
+    const code = typed.trim().toUpperCase();
+    if (!CODE_RE.test(code)){
+      backupNote('That does not look like a sync code. They are 12 characters, like ABCD-2345-WXYZ.', 'miss', 'wOut');
+      return;
+    }
+    backupNote('Looking for that code…', 'warn', 'wOut');
+    cloudPull(code).then(r=>{
+      if (!r.ok){
+        backupNote('Could not reach the sync service from this network. If you have a save file, use that instead.', 'miss', 'wOut');
+        return;
+      }
+      if (!r.found){
+        backupNote('Nothing is stored under that code yet. Check it and try again.', 'warn', 'wOut');
+        return;
+      }
+      S.syncCode = code; save(); renderHUD();
+      backupNote(`Found it — <b>${r.answered} questions</b> answered. Loading…`, 'good', 'wOut');
+      setTimeout(()=> go('home'), 900);
+    });
   };
 
   $('redoScanBtn').onclick = ()=>{ startSession({realm:'math', scan:true, len:14}); };
