@@ -474,6 +474,97 @@ p{line-height:1.6}
 /* ============================================================
    FEEDBACK / HINTS / RESULTS
    ============================================================ */
+/* ── fractions, mini charts, rule cards ─────────────────────────────────── */
+.frac{
+  display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;
+  line-height:1.05;margin:0 4px;font-family:var(--f-display);font-weight:800;
+}
+.frac i{font-style:normal;border-bottom:2px solid currentColor;padding:0 5px 1px}
+.frac b{padding:1px 5px 0;font-weight:800}
+
+.minichart{
+  background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);
+  padding:13px 14px;margin:12px 0;
+}
+.mc-title{font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);margin-bottom:11px}
+.mc-body{
+  display:flex;align-items:flex-end;gap:8px;height:104px;
+  border-left:2px solid var(--line-strong);border-bottom:2px solid var(--line-strong);padding-left:8px;
+}
+.mc-col{flex:1;display:flex;align-items:flex-end;justify-content:center;height:100%}
+.mc-bar{width:100%;max-width:32px;min-height:4px;border-radius:4px 4px 0 0;
+  background:linear-gradient(180deg,var(--build),var(--build-edge));}
+.mc-labs{display:flex;gap:8px;padding-left:10px;margin-top:5px}
+.mc-labs span{flex:1;text-align:center;font-size:.66rem;font-weight:800;color:var(--ink-2)}
+.mc-scale{font-size:.73rem;color:var(--ink-2);margin-top:10px;line-height:1.5}
+.mc-scale b{color:var(--ink)}
+
+/* rule card */
+.rulecard{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:17px;margin-bottom:12px;
+}
+.rule-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.rule-ico{
+  width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:1.2rem;
+  background:var(--build-soft);border:1.5px solid var(--line);flex-shrink:0;
+}
+.rule-name{font-family:var(--f-display);font-weight:800;font-size:1.1rem;line-height:1.15}
+.rule-what{font-size:.78rem;color:var(--ink-2);margin-top:2px;line-height:1.4}
+.rule-sec{margin-top:14px}
+.rule-lab{
+  font-size:.64rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.rule-box{
+  background:var(--build-soft);border:1.5px solid color-mix(in srgb,var(--build) 30%,var(--line));
+  border-radius:var(--r-s);padding:12px 13px;font-size:.93rem;line-height:1.6;
+}
+.rule-terms{display:flex;flex-direction:column;gap:7px}
+.rule-term{font-size:.88rem;line-height:1.55}
+.rule-term b{font-family:var(--f-display);font-weight:800;color:var(--build)}
+.rule-when{font-size:.9rem;line-height:1.6;color:var(--ink)}
+.rule-steps{margin:0;padding-left:20px}
+.rule-steps li{font-size:.88rem;line-height:1.6;margin-bottom:5px}
+.rule-eg{
+  background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);padding:12px 13px;
+}
+.rule-eg .eg-q{font-family:var(--f-display);font-weight:800;font-size:1rem;margin-bottom:8px}
+.rule-eg ol{margin:0;padding-left:19px}
+.rule-eg li{font-size:.86rem;line-height:1.6;margin-bottom:4px}
+.rule-eg .eg-a{
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
+  font-family:var(--f-display);font-weight:800;font-size:.95rem;color:var(--good);
+}
+.rule-trap{
+  border-left:3px solid var(--warn);background:var(--warn-soft);
+  padding:11px 13px;border-radius:0 var(--r-s) var(--r-s) 0;font-size:.89rem;line-height:1.6;
+}
+.grade-pill{
+  font-size:.6rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  padding:3px 8px;border-radius:999px;white-space:nowrap;
+}
+.grade-4{background:var(--warn-soft);color:var(--warn)}
+.grade-5{background:var(--build-soft);color:var(--build)}
+
+/* lessons tab */
+.strand{margin-bottom:16px}
+.strand-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.strand-ico{font-size:1.15rem}
+.strand-name{font-family:var(--f-display);font-weight:800;font-size:1rem;flex:1;min-width:0}
+.strand-blurb{font-size:.76rem;color:var(--ink-2);line-height:1.45;margin:-4px 0 9px 29px}
+.lesson-row{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-s);
+  box-shadow:0 2px 0 var(--line-strong);padding:10px 12px;margin-bottom:7px;
+  font-family:var(--f-ui);color:var(--ink);
+}
+.lesson-row:hover{border-color:var(--build);transform:translateX(2px)}
+.lesson-ico{font-size:1.05rem;flex-shrink:0}
+.lesson-name{flex:1;min-width:0;font-size:.89rem;font-weight:700}
+.lesson-bar{width:56px;flex-shrink:0}
+.lesson-pct{width:38px;text-align:right;font-size:.72rem;font-weight:800;color:var(--ink-3);flex-shrink:0}
+
 .hintbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
 .worked{
   background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);
@@ -593,8 +684,9 @@ p{line-height:1.6}
       <div class="card">
         <div class="eyebrow" style="margin-bottom:10px">Step 3 · The Skill Scan</div>
         <p style="font-size:.92rem;line-height:1.6;color:var(--ink-2)">
-          12 questions — eight math, then one short story. It gets <b>harder when you're right</b>
-          and <b>easier when you're not</b>, so it finds your real level in about six minutes.
+          14 questions — ten math, then one short story. It climbs from adding and subtracting
+          up through primes and order of operations, getting <b>harder when you're right</b> and
+          <b>easier when you're not</b>, so it finds his real level in about seven minutes.
           You can't fail it. It's a scan, not a test.
         </p>
         <div class="divider"></div>
@@ -607,6 +699,7 @@ p{line-height:1.6}
   <!-- ══════════════════ HOME BASE ══════════════════ -->
   <section class="screen" id="scr-home">
     <div class="stack">
+      <div id="storageBanner"></div>
       <div class="coach" id="homeCoach">
         <div class="coach-face" id="homeCoachFace">🤖</div>
         <div class="coach-body">
@@ -696,6 +789,30 @@ p{line-height:1.6}
     </div>
   </section>
 
+  <!-- ══════════════════ LESSONS ══════════════════ -->
+  <section class="screen" id="scr-lessons">
+    <div class="stack">
+      <div>
+        <h2>Lessons</h2>
+        <p class="tiny" style="margin-top:4px">
+          Every topic, with the rule written out. Pick any one — nothing here is locked,
+          so tonight's homework is always one tap away.
+        </p>
+      </div>
+      <div class="pill-row" id="gradeFilter"></div>
+      <div id="strandList"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ ONE SKILL ══════════════════ -->
+  <section class="screen" id="scr-skill">
+    <div class="sesh-top">
+      <button class="icon-btn" id="skillBack" aria-label="Back to lessons">←</button>
+      <div style="flex:1"></div>
+    </div>
+    <div id="skillBody"></div>
+  </section>
+
   <!-- ══════════════════ PROGRESS ══════════════════ -->
   <section class="screen" id="scr-progress">
     <div class="stack">
@@ -735,6 +852,23 @@ p{line-height:1.6}
       </div>
 
       <div class="card">
+        <div class="eyebrow" style="margin-bottom:9px">Saving &amp; backup</div>
+        <div id="storageStatus"></div>
+        <div class="row" style="flex-wrap:wrap;margin-top:11px">
+          <button class="btn sm" id="saveFileBtn">💾 Download save file</button>
+          <button class="btn ghost sm" id="saveLinkBtn">🔗 Copy save link</button>
+        </div>
+        <div class="divider"></div>
+        <div class="eyebrow" style="margin-bottom:8px">Put progress back</div>
+        <div class="row" style="flex-wrap:wrap">
+          <button class="btn ghost sm" id="loadFileBtn">📂 Open a save file</button>
+          <button class="btn ghost sm" id="pasteBtn">📋 Paste a code</button>
+        </div>
+        <input type="file" id="fileInput" accept="application/json,.json" hidden>
+        <div id="backupOut" style="margin-top:11px"></div>
+      </div>
+
+      <div class="card">
         <div class="eyebrow" style="margin-bottom:9px">Grown-up controls</div>
         <div class="row" style="flex-wrap:wrap">
           <button class="btn ghost sm" id="redoScanBtn">Re-run Skill Scan</button>
@@ -755,6 +889,7 @@ p{line-height:1.6}
       <button data-go="home" class="on"><span class="ni">🏠</span>Base</button>
       <button data-go="math"><span class="ni">🧮</span>Math</button>
       <button data-go="read"><span class="ni">📖</span>Reading</button>
+      <button data-go="lessons"><span class="ni">📚</span>Lessons</button>
       <button data-go="progress"><span class="ni">📊</span>Progress</button>
     </div>
   </nav>
@@ -772,26 +907,373 @@ p{line-height:1.6}
 /* ---------------------------------------------------------------------------
    1. SKILLS — the things we track mastery on
    --------------------------------------------------------------------------- */
-const SKILLS = {
-  // ── math ──
-  'm-mult-low'  :{realm:'math', name:'×2 through ×5',        icon:'✖️'},
-  'm-mult-high' :{realm:'math', name:'×6 through ×9',        icon:'✖️'},
-  'm-mult-big'  :{realm:'math', name:'×10, ×11, ×12',        icon:'✖️'},
-  'm-div-low'   :{realm:'math', name:'Division facts',       icon:'➗'},
-  'm-div-high'  :{realm:'math', name:'Tough division',       icon:'➗'},
-  'm-missing'   :{realm:'math', name:'Missing factor',       icon:'❓'},
-  'm-remainder' :{realm:'math', name:'Remainders',           icon:'🧩'},
-  'm-multidigit':{realm:'math', name:'2-digit × 1-digit',    icon:'🏗️'},
-  'm-word'      :{realm:'math', name:'Word problems',        icon:'📝'},
-  // ── reading ──
-  'r-detail'    :{realm:'read', name:'Finding the facts',    icon:'🔍'},
-  'r-vocab'     :{realm:'read', name:'Word detective',       icon:'🔤'},
-  'r-infer'     :{realm:'read', name:'Reading between lines',icon:'🕵️'},
-  'r-main'      :{realm:'read', name:'The big idea',         icon:'💡'},
-  'r-struct'    :{realm:'read', name:'How a text is built',  icon:'🧱'},
-  'r-purpose'   :{realm:'read', name:"Author's move",        icon:'🎯'},
-  'r-theme'     :{realm:'read', name:'Deeper meaning',       icon:'🌊'},
+/* Strands group the skills the way the Virginia grade 4 and 5 standards do, so
+   the Lessons tab can show plainly what is catch-up and what is current work. */
+const STRANDS = {
+  'whole'   :{name:'Whole numbers',            icon:'🧱', grade:4, blurb:'Adding, subtracting, and what multiplication actually means'},
+  'facts'   :{name:'Times tables & division',  icon:'✖️', grade:4, blurb:'Fluency through the twelves and the division facts that match'},
+  'bigger'  :{name:'Bigger numbers',           icon:'🏗️', grade:4, blurb:'Multiplying larger numbers, remainders, and estimating'},
+  'numsense':{name:'Number sense',             icon:'🔢', grade:5, blurb:'Even and odd, factors, primes, and order of operations'},
+  'fracdec' :{name:'Fractions & decimals',     icon:'🍕', grade:5, blurb:'Reading them, comparing them, adding and subtracting them'},
+  'data'    :{name:'Data & probability',       icon:'📊', grade:5, blurb:'Reading graphs and working out how likely something is'},
+  'reading' :{name:'Reading comprehension',    icon:'📖', grade:5, blurb:'Clues, meaning, structure, and the big idea'},
 };
+
+const SKILLS = {
+  // ── grade 4 · whole numbers ──
+  'm-add-sub'    :{realm:'math', strand:'whole',    name:'Adding & subtracting',   icon:'➕'},
+  'm-mult-concept':{realm:'math',strand:'whole',    name:'What × really means',    icon:'🟦'},
+  'm-word'       :{realm:'math', strand:'whole',    name:'Word problems',          icon:'📝'},
+  // ── grade 4 · fact fluency ──
+  'm-mult-low'   :{realm:'math', strand:'facts',    name:'×2 through ×5',          icon:'✖️'},
+  'm-mult-high'  :{realm:'math', strand:'facts',    name:'×6 through ×9',          icon:'✖️'},
+  'm-mult-big'   :{realm:'math', strand:'facts',    name:'×10, ×11, ×12',          icon:'✖️'},
+  'm-div-low'    :{realm:'math', strand:'facts',    name:'Division facts',         icon:'➗'},
+  'm-div-high'   :{realm:'math', strand:'facts',    name:'Tough division',         icon:'➗'},
+  'm-missing'    :{realm:'math', strand:'facts',    name:'Missing factor',         icon:'❓'},
+  // ── grade 4 · larger numbers ──
+  'm-multidigit' :{realm:'math', strand:'bigger',   name:'2-digit × 1-digit',      icon:'🏗️'},
+  'm-remainder'  :{realm:'math', strand:'bigger',   name:'Remainders',             icon:'🧩'},
+  'm-estimate'   :{realm:'math', strand:'bigger',   name:'Rounding & estimating',  icon:'📏'},
+  // ── grade 5 · number sense ──
+  'm-evenodd'    :{realm:'math', strand:'numsense', name:'Even & odd',             icon:'⚖️'},
+  'm-factors'    :{realm:'math', strand:'numsense', name:'Factors & multiples',    icon:'🧮'},
+  'm-primes'     :{realm:'math', strand:'numsense', name:'Prime & composite',      icon:'🔢'},
+  'm-order-ops'  :{realm:'math', strand:'numsense', name:'Order of operations',    icon:'🔣'},
+  // ── grade 5 · fractions and decimals ──
+  'm-frac-concept':{realm:'math',strand:'fracdec',  name:'Reading fractions',      icon:'🍕'},
+  'm-frac-addsub':{realm:'math', strand:'fracdec',  name:'Adding fractions',       icon:'🍕'},
+  'm-dec-place'  :{realm:'math', strand:'fracdec',  name:'Decimal place value',    icon:'🔟'},
+  'm-dec-addsub' :{realm:'math', strand:'fracdec',  name:'Adding decimals',        icon:'🔟'},
+  'm-frac-dec'   :{realm:'math', strand:'fracdec',  name:'Fractions ↔ decimals',   icon:'🔁'},
+  // ── grade 5 · data ──
+  'm-data'       :{realm:'math', strand:'data',     name:'Reading data',           icon:'📊'},
+  'm-probability':{realm:'math', strand:'data',     name:'Probability',            icon:'🎲'},
+  // ── reading ──
+  'r-detail'    :{realm:'read', strand:'reading', name:'Finding the facts',    icon:'🔍'},
+  'r-vocab'     :{realm:'read', strand:'reading', name:'Word detective',       icon:'🔤'},
+  'r-infer'     :{realm:'read', strand:'reading', name:'Reading between lines',icon:'🕵️'},
+  'r-main'      :{realm:'read', strand:'reading', name:'The big idea',         icon:'💡'},
+  'r-struct'    :{realm:'read', strand:'reading', name:'How a text is built',  icon:'🧱'},
+  'r-purpose'   :{realm:'read', strand:"reading", name:"Author's move",        icon:'🎯'},
+  'r-theme'     :{realm:'read', strand:'reading', name:'Deeper meaning',       icon:'🌊'},
+};
+const GRADE_OF = k => (STRANDS[(SKILLS[k]||{}).strand] || {}).grade || 5;
+
+/* ---------------------------------------------------------------------------
+   RULE CARDS — the part that teaches instead of testing.
+   Every skill gets: what it is, the words defined, the rule itself, how to
+   recognise a question that needs it, the steps, one worked example, and the
+   mistake that catches most people. Shown before the first question on a skill
+   and available from any question via "Show the rule".
+   --------------------------------------------------------------------------- */
+const RULES = {
+'m-add-sub':{
+  what:'Putting amounts together, and taking them apart.',
+  terms:[['Sum','The answer to an addition problem.'],
+         ['Difference','The answer to a subtraction problem.'],
+         ['Regroup','Trading 10 ones for 1 ten (or 10 tens for 1 hundred) so a column works out. Some people call it carrying or borrowing.']],
+  rule:'Line the numbers up by place value — ones under ones, tens under tens. Work right to left. If a column goes over 9, regroup into the next column. If the top digit is too small to subtract from, regroup from the next column first.',
+  when:'Use addition for words like <b>in all, total, altogether, combined</b>. Use subtraction for <b>how many more, how many left, difference, fewer</b>.',
+  steps:['Stack the numbers so the place values line up.',
+         'Start in the ones column, on the right.',
+         'Add or subtract that column, regrouping if you need to.',
+         'Move left one column and repeat.'],
+  example:{q:'463 − 178', work:['Ones: 3 − 8 will not go, so regroup. Take 1 ten from the 6: the 3 becomes 13, the 6 becomes 5. 13 − 8 = 5.',
+                                'Tens: 5 − 7 will not go, so regroup. Take 1 hundred from the 4: the 5 becomes 15, the 4 becomes 3. 15 − 7 = 8.',
+                                'Hundreds: 3 − 1 = 2.'], answer:'285'},
+  trap:'In subtraction, never just take the smaller digit from the bigger one in a column. 3 − 8 is not 5. If the top digit is smaller, you regroup.'
+},
+'m-mult-concept':{
+  what:'What multiplication actually is, underneath the times tables.',
+  terms:[['Factor','A number being multiplied.'],
+         ['Product','The answer to a multiplication problem.'],
+         ['Array','A rectangle of rows and columns — a picture of a multiplication.']],
+  rule:'<span class="k">a × b</span> means <b>a groups of b</b>. It is repeated addition: adding b to itself a times. It is not a plus b.',
+  when:'Use multiplication whenever you have <b>equal groups</b> — the same amount, several times. Phrases like "each", "every", "per", and "rows of" are the signal.',
+  steps:['Find the size of one group.',
+         'Find how many groups there are.',
+         'Multiply: groups × size of each group.',
+         'Check it makes sense — the answer should be much bigger than either number.'],
+  example:{q:'6 × 4', work:['6 groups, with 4 in each group.',
+                            'Repeated addition: 4 + 4 + 4 + 4 + 4 + 4.',
+                            'As an array: 6 rows of 4 squares.'], answer:'24'},
+  trap:'6 × 4 is 24, not 10. Adding gives 10. Multiplying repeats the whole group six times.'
+},
+'m-mult-low':{
+  what:'The twos, threes, fours and fives.',
+  terms:[['Fact','A times table answer you know without working it out.']],
+  rule:'These are the tables to know cold, because every harder fact gets built out of them.',
+  when:'Any time you see × with a small factor — and inside bigger problems too.',
+  steps:['×2 is doubling.','×4 is doubling twice.','×5 always ends in 0 or 5 — it is half of ×10.','×3 is ×2 plus one more group.'],
+  example:{q:'4 × 7', work:['×4 is double, then double again.','Double 7 is 14.','Double 14 is 28.'], answer:'28'},
+  trap:'Speed comes last. Get it right slowly first; fast and wrong is not fluency.'
+},
+'m-mult-high':{
+  what:'The sixes, sevens, eights and nines — the ones most people find hardest.',
+  terms:[['Partial product','A piece of the answer that you add to other pieces.']],
+  rule:'Build a hard fact out of an easy one. Every one of these is a ×5 or a ×10 fact plus or minus a group.',
+  when:'When a fact does not come to you instantly, do not guess — build it.',
+  steps:['Find the nearest fact you already know (usually ×5 or ×10).',
+         'Work out how many groups away from it you are.',
+         'Add or subtract that many groups.'],
+  example:{q:'7 × 6', work:['I know 5 × 6 = 30.','7 is two groups more than 5, so add two more 6s.','30 + 6 + 6 = 42.'], answer:'42'},
+  trap:'The ×9 shortcut: the digits of every ×9 answer add to 9. 9 × 7 = 63, and 6 + 3 = 9. Use it to check yourself.'
+},
+'m-mult-big':{
+  what:'The tens, elevens and twelves.',
+  terms:[],
+  rule:'×10 shifts every digit one place left and puts a 0 in the ones. ×11 is ×10 plus one more group. ×12 is ×10 plus ×2.',
+  when:'These show up constantly in money, time and measurement.',
+  steps:['For ×10, write the number and add a zero.','For ×11, do ×10 then add the number once more.','For ×12, do ×10 and ×2, then add them.'],
+  example:{q:'12 × 7', work:['10 × 7 = 70.','2 × 7 = 14.','70 + 14 = 84.'], answer:'84'},
+  trap:'×10 adds a zero to a whole number only. It does not work that way with decimals — 4.2 × 10 is 42, not 4.20.'
+},
+'m-div-low':{
+  what:'Splitting a total into equal groups.',
+  terms:[['Dividend','The total you are splitting up.'],
+         ['Divisor','How many groups you are splitting into.'],
+         ['Quotient','The answer — how many end up in each group.']],
+  rule:'Division undoes multiplication. <span class="k">a ÷ b</span> asks: <b>what times b gives a?</b>',
+  when:'Words like <b>share equally, split, each, per, how many groups</b> mean divide.',
+  steps:['Turn it around into a multiplication with a blank: b × ? = a.',
+         'Walk up the b times table until you reach a.',
+         'The number of steps you took is the answer.',
+         'Check by multiplying back.'],
+  example:{q:'42 ÷ 6', work:['Ask: 6 × ? = 42.','Count sixes: 6, 12, 18, 24, 30, 36, 42 — that is 7 of them.','Check: 7 × 6 = 42. ✓'], answer:'7'},
+  trap:'Answer the question that was asked. 42 ÷ 6 = 7 means 7 in each group, not 6. Mixing up the divisor and the quotient is the most common division slip there is.'
+},
+'m-div-high':{
+  what:'Division facts with bigger divisors.',
+  terms:[],
+  rule:'Same rule as every division: find what times the divisor gives the total. The bigger the divisor, the more the matching times table saves you.',
+  when:'Whenever the total is large but splits evenly.',
+  steps:['Recall the matching multiplication family.','Find the factor that lands exactly on the total.','Check by multiplying back.'],
+  example:{q:'56 ÷ 8', work:['Ask: 8 × ? = 56.','8 × 7 = 56.','So the answer is 7.'], answer:'7'},
+  trap:'If nothing lands exactly, you have a remainder problem, not a mistake.'
+},
+'m-missing':{
+  what:'A multiplication with a hole in it.',
+  terms:[['Missing factor','The number that was taken out of the multiplication.']],
+  rule:'A missing factor is a division problem in disguise. To find it, divide the product by the factor you can see.',
+  when:'Any time you see a blank, a box or a letter inside a multiplication.',
+  steps:['Find the product (the answer side).','Find the factor you have.','Divide: product ÷ known factor.','Put it back in and check.'],
+  example:{q:'8 × ? = 56', work:['Divide the product by the factor I have: 56 ÷ 8.','56 ÷ 8 = 7.','Check: 8 × 7 = 56. ✓'], answer:'7'},
+  trap:'Do not subtract. 56 − 8 is 48, and 8 × 48 is nowhere near 56.'
+},
+'m-multidigit':{
+  what:'Multiplying a larger number by a single digit.',
+  terms:[['Place value','What a digit is worth because of where it sits — the 4 in 47 is worth 40.'],
+         ['Partial product','One piece of the answer, before the pieces are added.']],
+  rule:'Break the big number apart by place value, multiply each piece, then add the pieces back together.',
+  when:'Any multiplication where one number is bigger than 12.',
+  steps:['Split the larger number into tens and ones.',
+         'Multiply the tens part by the single digit.',
+         'Multiply the ones part by the single digit.',
+         'Add the two partial products.'],
+  example:{q:'47 × 6', work:['Split 47 into 40 and 7.','40 × 6 = 240.','7 × 6 = 42.','240 + 42 = 282.'], answer:'282'},
+  trap:'Do not lose the place value. 40 × 6 is 240, not 24. The zero is doing real work.'
+},
+'m-remainder':{
+  what:'Division where the groups do not come out even.',
+  terms:[['Remainder','What is left over after you have made as many full equal groups as you can.']],
+  rule:'Fill as many complete groups as possible. Whatever is left over is the remainder, and it must always be smaller than the divisor.',
+  when:'Whenever a total will not split evenly — and in any word problem about leftovers, extras, or who does not get one.',
+  steps:['Find the biggest multiple of the divisor that is not over the total.',
+         'That multiple tells you how many full groups you have.',
+         'Subtract it from the total — what is left is the remainder.',
+         'Check: the remainder must be smaller than the divisor.'],
+  example:{q:'29 ÷ 4', work:['4 × 7 = 28, and 4 × 8 = 32 which is too big.','So 7 full groups.','29 − 28 = 1 left over.'], answer:'7 r1'},
+  trap:'If your remainder is as big as the divisor or bigger, you did not make enough groups. A remainder of 5 when dividing by 4 means one more group fits.'
+},
+'m-estimate':{
+  what:'Getting close on purpose, quickly.',
+  terms:[['Round','Replace a number with a nearby easier one.'],
+         ['Estimate','An answer that is close enough to be useful, on purpose.']],
+  rule:'To round, look at the digit to the <b>right</b> of the place you are rounding to. 5 or more rounds up; 4 or less stays. Then estimate by computing with the rounded numbers.',
+  when:'When a question says <b>about, roughly, approximately, or estimate</b> — and always as a check on an exact answer.',
+  steps:['Decide what place you are rounding to.',
+         'Look at the digit just to the right of it.',
+         '5 or more, round up. 4 or less, keep it.',
+         'Replace every digit to the right with zeros, then compute.'],
+  example:{q:'Estimate 38 × 7', work:['Round 38 to the nearest ten: the 8 is 5 or more, so 38 → 40.','40 × 7 = 280.','So the answer is about 280. (Exactly, it is 266.)'], answer:'about 280'},
+  trap:'Look only at the one digit to the right. For 448 to the nearest hundred, you look at the 4 in the tens place, not the 8. So it rounds down to 400.'
+},
+'m-evenodd':{
+  what:'Whether a number splits into two equal whole parts.',
+  terms:[['Even','A whole number that can be split into two equal whole groups.'],
+         ['Odd','A whole number that cannot — there is always one left over.']],
+  rule:'Look only at the <b>ones digit</b>. If it is 0, 2, 4, 6 or 8 the number is even. If it is 1, 3, 5, 7 or 9 it is odd. The rest of the number does not matter at all.',
+  when:'Whenever a question asks about even or odd, and inside prime questions — every even number above 2 is composite.',
+  steps:['Find the ones digit — the very last one.','Check it against 0, 2, 4, 6, 8.','That is your answer. Ignore every other digit.'],
+  example:{q:'Is 3,847 even or odd?', work:['The ones digit is 7.','7 is not in 0, 2, 4, 6, 8.'], answer:'odd'},
+  trap:'The size of the number tells you nothing. 1,000,000 is even and 3 is odd. Only the last digit counts.'
+},
+'m-factors':{
+  what:'The numbers that divide into a number evenly.',
+  terms:[['Factor','A whole number that divides into another with no remainder. 3 is a factor of 12.'],
+         ['Multiple','The result of multiplying a number by a whole number. 12 is a multiple of 3.'],
+         ['Factor pair','Two factors that multiply to give the number: 3 and 4 are a factor pair of 12.']],
+  rule:'Factors go <b>into</b> a number and are never bigger than it. Multiples come <b>out of</b> a number and are never smaller than it.',
+  when:'When a question asks to list factors, find common factors, or decide whether a number is prime.',
+  steps:['Start at 1 and work upward.',
+         'Ask: does this divide in evenly? If yes, write down the pair.',
+         'Stop once the pairs start repeating.',
+         'Count what you have.'],
+  example:{q:'List the factors of 18', work:['1 × 18 ✓','2 × 9 ✓','3 × 6 ✓','4? No. 5? No. 6 × 3 — already have it, so stop.'], answer:'1, 2, 3, 6, 9, 18'},
+  trap:'Factors and multiples get swapped constantly. Factors of 6: 1, 2, 3, 6 — a short list. Multiples of 6: 6, 12, 18, 24… — a list that never ends.'
+},
+'m-primes':{
+  what:'Sorting numbers by how many factors they have.',
+  terms:[['Prime','A whole number greater than 1 with exactly two factors: 1 and itself.'],
+         ['Composite','A whole number greater than 1 with more than two factors.'],
+         ['Neither','1 is neither prime nor composite — it has only one factor.']],
+  rule:'Count the factors. <b>Exactly two → prime. More than two → composite.</b> 1 is neither, because it only has one factor.',
+  when:'When a question asks prime or composite, asks for prime factors, or asks you to sort a list of numbers.',
+  steps:['Try dividing by 2, then 3, then 5, then 7.',
+         'If any of them divide in evenly, you have found a third factor — it is composite.',
+         'If none of them do, it is prime.',
+         'You only need to test up to numbers whose square is not over your number.'],
+  example:{q:'Is 51 prime or composite?', work:['Even? No, it ends in 1.','Divisible by 3? 5 + 1 = 6, and 6 is in the 3 times table, so yes: 51 = 3 × 17.','That is a third factor, so it is not prime.'], answer:'composite'},
+  trap:'Two classics. <b>1 is not prime</b> — it has one factor, not two. And <b>2 is prime</b> — it is even, but its only factors are 1 and 2. It is the only even prime there is.'
+},
+'m-order-ops':{
+  what:'The agreed order for working out an expression with more than one operation.',
+  terms:[['Expression','A string of numbers and operations, like 3 + 4 × 2.'],
+         ['Operation','Adding, subtracting, multiplying or dividing.']],
+  rule:'<b>Brackets first. Then multiply and divide, left to right. Then add and subtract, left to right.</b> Multiply and divide rank equally — you do not do all the multiplying first, you go left to right.',
+  when:'Any time an expression has more than one operation in it.',
+  steps:['Do anything inside brackets.',
+         'Sweep left to right doing every × and ÷ as you meet them.',
+         'Sweep left to right again doing every + and − as you meet them.',
+         'Rewrite the whole expression after each step so you do not lose your place.'],
+  example:{q:'3 + 4 × 2', work:['No brackets.','Multiply first: 4 × 2 = 8. Expression is now 3 + 8.','Add: 3 + 8 = 11.'], answer:'11'},
+  trap:'Left to right is not the rule. 3 + 4 × 2 is 11, not 14. Doing it in reading order gets it wrong.'
+},
+'m-frac-concept':{
+  what:'What the two numbers in a fraction are telling you.',
+  terms:[['Numerator','The top number — how many parts you have.'],
+         ['Denominator','The bottom number — how many equal parts the whole was cut into.'],
+         ['Equivalent fractions','Different fractions that are worth the same amount, like 1/2 and 2/4.']],
+  rule:'The denominator says how many pieces the whole was cut into. The numerator says how many of those pieces you have. <b>A bigger denominator means smaller pieces.</b>',
+  when:'Whenever you need to read, compare or draw a fraction.',
+  steps:['Read the bottom first: how many pieces is the whole cut into?',
+         'Read the top: how many of those do I have?',
+         'To find an equivalent fraction, multiply or divide top AND bottom by the same number.'],
+  example:{q:'Which is bigger, 1/3 or 1/5?', work:['Both have 1 piece.','Thirds cut the whole into 3, fifths cut it into 5.','More cuts means smaller pieces, so a third is the bigger piece.'], answer:'1/3'},
+  trap:'A bigger bottom number does not mean a bigger fraction — it means the opposite. 1/8 is smaller than 1/2, even though 8 is bigger than 2.'
+},
+'m-frac-addsub':{
+  what:'Putting fractions together and taking them apart.',
+  terms:[['Like denominators','Bottom numbers that already match.'],
+         ['Common denominator','A shared bottom number you convert both fractions to.']],
+  rule:'You can only add or subtract fractions when the denominators match. <b>Add the tops. Leave the bottom alone.</b> If the bottoms differ, convert first.',
+  when:'Any time fractions are being combined or compared by how much bigger one is.',
+  steps:['Check the denominators. Do they match?',
+         'If not, find a number both go into, and convert each fraction by multiplying top and bottom.',
+         'Add or subtract the numerators only.',
+         'Keep the denominator exactly as it is.'],
+  example:{q:'1/4 + 2/4', work:['The denominators already match — both are quarters.','Add the tops: 1 + 2 = 3.','Keep the bottom: quarters.'], answer:'3/4'},
+  trap:'Never add the denominators. 1/4 + 2/4 is 3/4, not 3/8. The bottom number is the <i>size of the pieces</i>, and the pieces do not change size when you collect more of them.'
+},
+'m-dec-place':{
+  what:'What each digit after the decimal point is worth.',
+  terms:[['Tenths','The first place after the point — one tenth of a whole.'],
+         ['Hundredths','The second place after the point.'],
+         ['Decimal point','The marker that separates whole numbers from parts of a whole.']],
+  rule:'Going right from the point, the places are <b>tenths, then hundredths, then thousandths</b>. Each place is ten times smaller than the one before it.',
+  when:'When reading, comparing or lining up decimals — especially money and measurements.',
+  steps:['Find the decimal point.',
+         'Count places to the right: first is tenths, second is hundredths.',
+         'To compare, line up the points and compare place by place from the left.'],
+  example:{q:'Which is bigger, 0.7 or 0.65?', work:['0.7 has 7 tenths. 0.65 has 6 tenths.','Compare the tenths first: 7 tenths beats 6 tenths.','The extra hundredths in 0.65 cannot make up the difference.'], answer:'0.7'},
+  trap:'More digits does not mean bigger. 0.65 looks longer than 0.7, but 0.7 is worth more. Compare from the left, one place at a time.'
+},
+'m-dec-addsub':{
+  what:'Adding and subtracting numbers with decimal points.',
+  terms:[['Align','Line the decimal points up vertically so the place values match.']],
+  rule:'<b>Line up the decimal points</b>, not the ends of the numbers. Fill empty places with zeros, then add or subtract exactly as you would with whole numbers. The point in the answer goes straight below the others.',
+  when:'Money, measurement, and any addition or subtraction with a point in it.',
+  steps:['Write the numbers with the decimal points stacked.',
+         'Add zeros so every number has the same number of decimal places.',
+         'Add or subtract as normal, right to left.',
+         'Bring the decimal point straight down into the answer.'],
+  example:{q:'3.4 + 12.75', work:['Stack them with points aligned, and write 3.4 as 3.40.','Hundredths: 0 + 5 = 5.','Tenths: 4 + 7 = 11, write 1 and regroup 1.','Ones: 3 + 2 + 1 = 6. Tens: 1.'], answer:'16.15'},
+  trap:'Do not line the numbers up by their last digit. 3.4 + 12.75 lines up as 3.40 + 12.75. Right-aligning them gives a wrong answer every time.'
+},
+'m-frac-dec':{
+  what:'The same amount, written two ways.',
+  terms:[['Equivalent','Worth the same, written differently.']],
+  rule:'A fraction is a division. To turn it into a decimal, divide the top by the bottom. The common ones are worth memorising.',
+  when:'When a question mixes fractions and decimals, or asks you to order them together.',
+  steps:['Try to match it to one you know: 1/2 = 0.5, 1/4 = 0.25, 3/4 = 0.75, 1/10 = 0.1, 1/5 = 0.2.',
+         'If it is not one of those, divide the numerator by the denominator.',
+         'Check that the size feels right — less than half should be under 0.5.'],
+  example:{q:'Write 3/4 as a decimal', work:['3/4 means 3 ÷ 4.','Quarters are 0.25 each.','Three of them: 0.25 × 3 = 0.75.'], answer:'0.75'},
+  trap:'1/4 is not 0.14 and 1/2 is not 0.12. You are not just writing the digits down next to each other — you are dividing.'
+},
+'m-data':{
+  what:'Pulling answers out of a graph or table.',
+  terms:[['Scale','What each step on the axis is worth — it is not always 1.'],
+         ['Axis','The labelled side of a graph.'],
+         ['Range','The biggest value minus the smallest.']],
+  rule:'Read the labels and the scale <b>before</b> you read the bars. A graph where each step is 5 will fool you completely if you assume each step is 1.',
+  when:'Any question with a table, bar graph, line graph or pictograph attached.',
+  steps:['Read the title — what is this even about?',
+         'Read both axis labels.',
+         'Work out the scale: how much is one step worth?',
+         'Only then find the value the question is asking for.'],
+  example:{q:'A bar reaches the third line up, and the axis is labelled 0, 10, 20, 30. What is its value?',
+           work:['The scale goes up in 10s, not 1s.','Third line up from zero: 10, 20, 30.'], answer:'30'},
+  trap:'Counting lines instead of reading the scale. Three lines up is not always 3.'
+},
+'m-probability':{
+  what:'How likely something is, written as a number.',
+  terms:[['Outcome','One thing that could happen.'],
+         ['Sample space','Every possible outcome, all listed out.'],
+         ['Probability','Favourable outcomes ÷ total outcomes.']],
+  rule:'<b>Probability = the outcomes you want ÷ all the outcomes there are.</b> It is always between 0 (impossible) and 1 (certain).',
+  when:'Questions with spinners, dice, coins, or drawing from a bag — and any question asking how likely, or what are the chances.',
+  steps:['List the sample space — every outcome that could happen.',
+         'Count the total number of outcomes.',
+         'Count how many of those are the ones the question wants.',
+         'Write it as wanted ÷ total.'],
+  example:{q:'A bag has 3 red and 5 blue marbles. What is the probability of drawing red?',
+           work:['Total outcomes: 3 + 5 = 8 marbles.','Outcomes I want: 3 red.','Probability = 3/8.'], answer:'3/8'},
+  trap:'The bottom number is the <b>total</b>, not the leftovers. With 3 red and 5 blue it is 3/8, not 3/5.'
+},
+'m-word':{
+  what:'Working out which operation a story is asking for.',
+  terms:[],
+  rule:'Decide the operation from what is happening, not from a keyword alone. Equal groups mean multiply. Splitting a total into equal parts means divide. Combining means add. Comparing or removing means subtract.',
+  when:'Every word problem, on every test.',
+  steps:['Read it once without doing anything.',
+         'Say out loud what is happening in the story.',
+         'Decide the operation, then write the equation.',
+         'Solve it, then check the answer against the story — does that size make sense?'],
+  example:{q:'8 shelves hold 7 books each. How many books?',
+           work:['Equal groups: 8 groups of 7.','That is multiplication: 8 × 7.','8 × 7 = 56 books.'], answer:'56'},
+  trap:'Keywords lie sometimes. "Each" usually means multiply, but "they shared them equally so each got…" means divide. Picture the story before you pick.'
+},
+};
+const READING_RULE = {
+  what:'Answering questions about something you have read.',
+  terms:[['Evidence','The exact words in the text that prove your answer.'],
+         ['Inference','A conclusion the text supports but never states outright.']],
+  rule:'Every right answer is supported by something actually in the text. If you cannot point at the line that proves it, it is not the answer.',
+  when:'Every reading question.',
+  steps:['Read the question before you hunt for the answer.',
+         'Find the part of the text it points to.',
+         'Rule out options that are true but were not asked, and options that go further than the text does.',
+         'Check your pick against the exact wording.'],
+  example:{q:'A question asks why a character stayed quiet.',
+           work:['Find where the text shows the reason — usually right before or after the action.',
+                 'Cross off options that never appear in the text at all.',
+                 'Cross off options that overstate what the text says.'], answer:'the one you can point at'},
+  trap:'The most common wrong answer is one that is completely true but answers a different question. Re-read the question before you commit.'
+};
+const ruleFor = k => RULES[k] || (String(k).startsWith('r-') ? READING_RULE : null);
+
 const MATH_SKILLS = Object.keys(SKILLS).filter(k=>SKILLS[k].realm==='math');
 const READ_SKILLS = Object.keys(SKILLS).filter(k=>SKILLS[k].realm==='read');
 
@@ -1828,6 +2310,24 @@ const TRAPS = {
   'place-value'   :{label:'Place-value slip',            say:'Your facts were right — the tens and ones got mixed up on the way out.'},
   'wrong-op'      :{label:'Wrong operation',             say:'That is the right numbers, wrong job. Re-read what is being done to them.'},
   'count-slip'    :{label:'Counting slip',               say:'The thinking was right; the count wobbled. Slow the last step down.'},
+  'no-regroup'    :{label:'Skipped the regroup',          say:'A column went over 9 (or the top digit was too small) and the regroup never happened. That is the whole job in column arithmetic.'},
+  'sub-order'     :{label:'Subtracted the wrong way',     say:'In a column you cannot just take the smaller digit from the bigger one. If the top is smaller, borrow from the column to its left first.'},
+  'round-wrong'   :{label:'Rounded to the wrong place',   say:'Look at the single digit immediately to the right of the place you are rounding to — no further.'},
+  'one-is-prime'  :{label:'Miscounted the factors',       say:'Prime means <b>exactly two</b> factors. 1 has only one factor, so it is neither prime nor composite.'},
+  'two-not-prime' :{label:'Ruled out 2 for being even',   say:'2 is prime. Its only factors are 1 and 2. It is the one even prime there is.'},
+  'missed-factor' :{label:'Missed a factor',              say:'There is a third factor hiding in there. Test 2, then 3, then 5, then 7 before deciding something is prime.'},
+  'factor-multiple':{label:'Swapped factors and multiples',say:'Factors go <i>into</i> a number and are never bigger than it. Multiples come <i>out of</i> it and are never smaller.'},
+  'left-to-right' :{label:'Went straight left to right',  say:'Multiplication and division happen before addition and subtraction, wherever they sit in the line.'},
+  'add-denoms'    :{label:'Added the bottom numbers',     say:'The denominator is the <i>size</i> of the pieces. Collecting more pieces does not change their size, so it stays put.'},
+  'unlike-denoms' :{label:'Added before matching bottoms',say:'You can only add fractions once the denominators match. Convert first, then add the tops.'},
+  'bigger-denom'  :{label:'Bigger bottom, bigger fraction',say:'A bigger denominator means the whole was cut into more pieces, so each piece is <i>smaller</i>.'},
+  'align-dec'     :{label:'Decimal points not lined up',  say:'Stack the points in a straight line, not the last digits. Fill the gaps with zeros.'},
+  'more-digits'   :{label:'More digits read as bigger',   say:'0.65 has more digits than 0.7 but is worth less. Compare one place at a time, starting at the tenths.'},
+  'place-mix'     :{label:'Place values mixed up',        say:'Count the places out from the decimal point: tenths, then hundredths. Position is what gives a digit its value.'},
+  'digits-not-division':{label:'Wrote the digits, not the value', say:'A fraction is a division, not two digits shoved together. 1/4 is 0.25, not 0.14.'},
+  'part-part'     :{label:'Compared part to part',        say:'Probability puts the <i>total</i> on the bottom, not the leftovers.'},
+  'count-outcomes':{label:'Sample space miscounted',      say:'List every possible outcome before you count. A tree diagram makes them impossible to miss.'},
+  'read-scale'    :{label:'Ignored the scale',            say:'One step up the axis was not worth 1. Read the scale before you read a single bar.'},
   // reading
   'first-detail'  :{label:'Grabbed an early detail',     say:'That is real — it is just from a different part of the text than the question asked about.'},
   'word-lure'     :{label:'Matched a word, not an idea', say:'That option reuses a word straight from the passage. Test makers do that on purpose. Match the <i>idea</i>, not the vocabulary.'},
@@ -2100,8 +2600,9 @@ function wordItem(skill, diff){
 
 /* A pure visual item: he builds the array himself, then reads the answer off it.
    Sizes are chosen so no grid ever needs more than ~45 taps. */
-const VISUAL_SKILLS = ['m-mult-low','m-mult-high','m-div-low','m-div-high'];
+const VISUAL_SKILLS = ['m-mult-concept','m-mult-low','m-mult-high','m-div-low','m-div-high'];
 const BUILD_PAIR = {
+  'm-mult-concept': ()=>[2+rnd(4), 2+rnd(6)],
   'm-mult-low' : ()=>[pick([2,3,4,5]),  2+rnd(7)],
   'm-mult-high': ()=>[pick([6,7,8,9]),  2+rnd(4)],
   'm-div-low'  : ()=>{ const v=pick([2,3,4,5]), q=2+rnd(6); return [v,q]; },
@@ -2144,11 +2645,601 @@ function buildItem(skill){
   };
 }
 
+
+/* ── helpers for the grade 4-5 generators ───────────────────────────────── */
+const frac = (n,d)=>`<span class="frac"><i>${n}</i><b>${d}</b></span>`;
+const gcd = (a,b)=>b?gcd(b,a%b):a;
+/* option builder for answers that are text, not plain numbers */
+function mcText(correct, wrongs){
+  const seen = new Set([String(correct)]);
+  const opts = [{t:String(correct), ok:true}];
+  for (const w of wrongs){
+    const t = String(w.t);
+    if (seen.has(t)) continue;
+    seen.add(t); opts.push({t, why:w.why});
+    if (opts.length === 4) break;
+  }
+  return shuffle(opts);
+}
+const roundTo = (n,place)=>Math.round(n/place)*place;
+
+/* ── grade 4 · adding and subtracting ───────────────────────────────────── */
+function addSubItem(skill, diff){
+  const digits = diff>=3 ? 4 : diff>=2 ? 3 : 2;
+  const lo = Math.pow(10,digits-1), hi = Math.pow(10,digits)-1;
+  const isAdd = Math.random()<0.5;
+  let a = lo + rnd(hi-lo), b = lo + rnd(hi-lo);
+  if (!isAdd && b > a) [a,b] = [b,a];
+  const ans = isAdd ? a+b : a-b;
+
+  // the classic slip: work each column without regrouping
+  const cols = n => String(n).padStart(digits,'0').split('').map(Number);
+  const A = cols(a), B = cols(b);
+  const noRegroup = Number(A.map((d,i)=> isAdd ? (d+B[i])%10 : Math.abs(d-B[i])).join('')) || ans+1;
+
+  return {
+    realm:'math', skill, diff, kind: diff>=2 ? 'input':'choice',
+    q:`<span class="num">${a} ${isAdd?'+':'−'} ${b} = ?</span>`,
+    prompt:`${a} ${isAdd?'+':'-'} ${b}`, answer:ans,
+    hints:[ isAdd ? `Stack them so the ones line up under the ones. Start on the right.`
+                  : `Stack them with the ones lined up. If a top digit is too small, regroup from the column to its left.`,
+            isAdd ? `Ones column first: ${A[digits-1]} + ${B[digits-1]}. If that is over 9, write the ones digit and carry 1.`
+                  : `Ones column: ${A[digits-1]} − ${B[digits-1]}. Will it go? If not, borrow a ten first.`,
+            `${a} ${isAdd?'+':'−'} ${b} = <b>${ans}</b>.` ],
+    worked:[`Line up the place values — ones under ones, tens under tens.`,
+            `Work right to left, regrouping whenever a column will not hold.`,
+            `<span class="k">${a} ${isAdd?'+':'−'} ${b} = ${ans}</span>`],
+    wrongMap:{ [noRegroup]:isAdd?'no-regroup':'sub-order', [ans+10]:'no-regroup', [Math.abs(ans-10)]:'no-regroup',
+               [isAdd?a-b:a+b]:'wrong-op' },
+    opts: diff>=2 ? null : mcOpts(ans, [
+      {v:noRegroup, why:isAdd?'no-regroup':'sub-order'},
+      {v:isAdd?a-b:a+b, why:'wrong-op'},
+      {v:ans+10, why:'no-regroup'}, {v:Math.max(1,ans-10), why:'no-regroup'}])
+  };
+}
+
+/* ── grade 4 · what multiplication means ────────────────────────────────── */
+function multConceptItem(skill, diff){
+  const a = 3+rnd(6), b = 3+rnd(6), p = a*b;
+  const type = rnd(3);
+  if (type===0){
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Which one shows <span class="num">${a} × ${b}</span>?`,
+      prompt:`meaning of ${a} × ${b}`, answer:`${Array(a).fill(b).join(' + ')}`,
+      opts: mcText(Array(a).fill(b).join(' + '), [
+        {t:`${a} + ${b}`, why:'add-instead'},
+        {t:Array(Math.max(2,a-1)).fill(b).join(' + '), why:'off-group'},
+        {t:Array(a).fill(a).join(' + '), why:'count-slip'}]),
+      hints:[`${a} × ${b} means <b>${a} groups</b>, each with <b>${b}</b> in it.`,
+             `So you are adding ${b} to itself ${a} times — not adding ${a} and ${b} once.`,
+             `${Array(a).fill(b).join(' + ')} — that is ${a} lots of ${b}.`],
+      worked:[`× means equal groups repeated.`,
+              `<span class="k">${a} × ${b}</span> = ${b} added ${a} times.`,
+              `Which comes to ${p}.`],
+      build:{mode:'mult', rows:a, cols:b} };
+  }
+  if (type===1){
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`A shelf holds <b>${b}</b> blocks. There are <b>${a}</b> shelves.<br>Which equation matches?`,
+      prompt:`array ${a}x${b}`, answer:`${a} × ${b} = ${p}`,
+      opts: mcText(`${a} × ${b} = ${p}`, [
+        {t:`${a} + ${b} = ${a+b}`, why:'add-instead'},
+        {t:`${a} × ${a} = ${a*a}`, why:'count-slip'},
+        {t:`${p} ÷ ${a} = ${b}`, why:'wrong-op'}]),
+      hints:[`How many groups are there, and how many in each?`,
+             `${a} groups of ${b} → ${a} × ${b}.`,
+             `${a} × ${b} = <b>${p}</b>.`],
+      worked:[`Groups: <span class="k">${a}</span>. In each group: <span class="k">${b}</span>.`,
+              `Equal groups means multiply: ${a} × ${b}.`,
+              `= <span class="k">${p}</span>.`],
+      build:{mode:'mult', rows:a, cols:b} };
+  }
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`Why is <span class="num">${a} × ${b}</span> so much bigger than <span class="num">${a} + ${b}</span>?`,
+    prompt:`concept ${a}x${b}`, answer:`Adding joins the two numbers once; multiplying repeats a whole group ${a} times`,
+    opts: mcText(`Adding joins the two numbers once; multiplying repeats a whole group ${a} times`, [
+      {t:`Multiplying always gives a bigger answer than adding`, why:'overclaim'},
+      {t:`Because ${a} and ${b} are both larger than 1`, why:'true-not-asked'},
+      {t:`They are actually the same size`, why:'add-instead'}]),
+    hints:[`${a} + ${b} puts the two numbers together one time.`,
+           `${a} × ${b} takes a group of ${b} and repeats it ${a} times over.`,
+           `${a}+${b} = ${a+b}, but ${a}×${b} = ${p}.`],
+    worked:[`Addition combines, once.`,`Multiplication repeats a whole group.`,
+            `<span class="k">${a}+${b}=${a+b}</span> but <span class="k">${a}×${b}=${p}</span>.`] };
+}
+
+/* ── grade 4 · rounding and estimating ──────────────────────────────────── */
+function estimateItem(skill, diff){
+  if (diff>=2 && Math.random()<0.5){
+    const a = 21+rnd(70), b = 3+rnd(7);
+    const ra = roundTo(a,10), est = ra*b;
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`<b>Estimate</b> <span class="num">${a} × ${b}</span> by rounding to the nearest ten.`,
+      prompt:`est ${a}x${b}`, answer:String(est),
+      opts: mcOpts(est, [{v:a*b, why:'true-not-asked'},{v:roundTo(a,100)*b||100*b, why:'round-wrong'},
+                         {v:(Math.floor(a/10)*10)*b, why:'round-wrong'},{v:est+10*b, why:'round-wrong'}]),
+      hints:[`Round ${a} to the nearest ten first. Look at its ones digit.`,
+             `${a%10>=5?`The ones digit is ${a%10}, which is 5 or more, so round up to ${ra}.`:`The ones digit is ${a%10}, which is under 5, so round down to ${ra}.`}`,
+             `${ra} × ${b} = <b>${est}</b>.`],
+      worked:[`Round: ${a} → <span class="k">${ra}</span> (ones digit is ${a%10}).`,
+              `Multiply the easy numbers: ${ra} × ${b}.`,
+              `About <span class="k">${est}</span>. The exact answer is ${a*b}.`] };
+  }
+  const place = diff>=2 ? 100 : 10;
+  const n = place===100 ? 120+rnd(800) : 12+rnd(88);
+  const ans = roundTo(n,place);
+  const digit = place===100 ? Math.floor(n/10)%10 : n%10;
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`Round <span class="num">${n}</span> to the nearest <b>${place===100?'hundred':'ten'}</b>.`,
+    prompt:`round ${n} to ${place}`, answer:String(ans),
+    opts: mcOpts(ans, [{v:ans===Math.floor(n/place)*place ? ans+place : Math.floor(n/place)*place, why:'round-wrong'},
+                       {v:roundTo(n, place===100?10:100)||place, why:'round-wrong'},
+                       {v:ans+place, why:'round-wrong'},{v:Math.max(0,ans-place), why:'round-wrong'}]),
+    hints:[`Look at the digit just to the <b>right</b> of the ${place===100?'hundreds':'tens'} place.`,
+           `That digit is <b>${digit}</b>. ${digit>=5?'5 or more, so round up.':'Under 5, so it stays.'}`,
+           `${n} rounds to <b>${ans}</b>.`],
+    worked:[`Rounding to the nearest ${place===100?'hundred':'ten'}, so check the ${place===100?'tens':'ones'} digit.`,
+            `It is <span class="k">${digit}</span> — ${digit>=5?'round up':'round down'}.`,
+            `<span class="k">${ans}</span>`] };
+}
+
+/* ── grade 5 · even and odd ─────────────────────────────────────────────── */
+function evenOddItem(skill, diff){
+  const n = diff>=2 ? 100+rnd(9000) : 10+rnd(90);
+  const isEven = n%2===0;
+  if (Math.random()<0.55){
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Is <span class="num">${n.toLocaleString()}</span> even or odd?`,
+      prompt:`evenodd ${n}`, answer:isEven?'Even':'Odd',
+      opts: mcText(isEven?'Even':'Odd', [{t:isEven?'Odd':'Even', why:'count-slip'},
+        {t:'It depends on the other digits', why:'place-mix'},{t:'Neither', why:'count-slip'}]),
+      hints:[`Only the <b>ones digit</b> matters. Nothing else in the number counts.`,
+             `The ones digit here is <b>${n%10}</b>. Is it in 0, 2, 4, 6, 8?`,
+             `${n%10} is ${isEven?'in':'not in'} that list, so ${n.toLocaleString()} is <b>${isEven?'even':'odd'}</b>.`],
+      worked:[`Find the ones digit: <span class="k">${n%10}</span>.`,
+              `Even digits are 0, 2, 4, 6, 8.`,
+              `So ${n.toLocaleString()} is <span class="k">${isEven?'even':'odd'}</span>.`] };
+  }
+  const evens=[], odds=[];
+  while(evens.length<3){ const x=10+rnd(90); if(x%2===0) evens.push(x); }
+  while(odds.length<3){ const x=10+rnd(90); if(x%2===1) odds.push(x); }
+  const wantEven = Math.random()<0.5;
+  const right = wantEven?evens[0]:odds[0];
+  const wrongs = (wantEven?odds:evens).slice(0,3).map(v=>({v, why:'count-slip'}));
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`Which of these numbers is <b>${wantEven?'even':'odd'}</b>?`,
+    prompt:`pick ${wantEven?'even':'odd'} ${right}`, answer:String(right),
+    opts: mcOpts(right, wrongs),
+    hints:[`Check the last digit of each one.`,
+           `${wantEven?'Even numbers end in 0, 2, 4, 6 or 8.':'Odd numbers end in 1, 3, 5, 7 or 9.'}`,
+           `<b>${right}</b> ends in ${right%10}.`],
+    worked:[`Look only at ones digits.`,`${wantEven?'Even = ends in 0,2,4,6,8':'Odd = ends in 1,3,5,7,9'}.`,
+            `<span class="k">${right}</span>`] };
+}
+
+/* ── grade 5 · factors and multiples ────────────────────────────────────── */
+const factorsOf = n => { const f=[]; for(let i=1;i<=n;i++) if(n%i===0) f.push(i); return f; };
+function factorsItem(skill, diff){
+  const type = rnd(3);
+  if (type===0){
+    const n = diff>=2 ? 24+rnd(40) : 12+rnd(14);
+    const f = factorsOf(n);
+    const good = pick(f.filter(x=>x>1&&x<n)) || 1;
+    const bad = [];
+    for(let i=2;i<n && bad.length<3;i++) if(n%i!==0) bad.push(i);
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Which number is a <b>factor</b> of <span class="num">${n}</span>?`,
+      prompt:`factor of ${n}`, answer:String(good),
+      opts: mcOpts(good, bad.map(v=>({v, why:'factor-multiple'}))),
+      hints:[`A factor divides in with <b>nothing left over</b>.`,
+             `Try each one: does ${n} ÷ it come out even?`,
+             `${n} ÷ ${good} = ${n/good}, exactly. So ${good} is a factor.`],
+      worked:[`A factor divides evenly, no remainder.`,
+              `${n} ÷ <span class="k">${good}</span> = ${n/good} with nothing left.`,
+              `All factors of ${n}: ${f.join(', ')}.`] };
+  }
+  if (type===1){
+    const n = 3+rnd(7), k = 2+rnd(8), m = n*k;
+    const bad=[]; for(let i=m-3;i<m+4 && bad.length<3;i++) if(i>0 && i%n!==0) bad.push(i);
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Which number is a <b>multiple</b> of <span class="num">${n}</span>?`,
+      prompt:`multiple of ${n}`, answer:String(m),
+      opts: mcOpts(m, bad.map(v=>({v, why:'factor-multiple'}))),
+      hints:[`A multiple is what you get when you multiply ${n} by a whole number.`,
+             `Count up in ${n}s: ${Array.from({length:5},(_,i)=>n*(i+1)).join(', ')}…`,
+             `${n} × ${k} = <b>${m}</b>, so ${m} is a multiple of ${n}.`],
+      worked:[`Multiples come <span class="k">out of</span> a number.`,
+              `${n} × ${k} = ${m}.`,`So <span class="k">${m}</span> is a multiple of ${n}.`] };
+  }
+  const n = pick([12,16,18,20,24,28,30,36]);
+  const f = factorsOf(n);
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`How many <b>factors</b> does <span class="num">${n}</span> have altogether?`,
+    prompt:`count factors ${n}`, answer:String(f.length),
+    opts: mcOpts(f.length, [{v:f.length-1, why:'count-slip'},{v:f.length+1, why:'one-is-prime'},
+                            {v:Math.max(2,f.length-2), why:'count-slip'}]),
+    hints:[`Work in pairs, starting at 1 × ${n}.`,
+           `Try 1, 2, 3, 4… and write down each pair that works.`,
+           `The factors are ${f.join(', ')} — that is <b>${f.length}</b> of them.`],
+    worked:[`Go up in order looking for pairs.`,
+            `Factors of ${n}: <span class="k">${f.join(', ')}</span>.`,
+            `Count them: <span class="k">${f.length}</span>.`] };
+}
+
+/* ── grade 5 · prime and composite (current homework) ───────────────────── */
+const isPrime = n => { if(n<2) return false; for(let i=2;i*i<=n;i++) if(n%i===0) return false; return true; };
+const PRIMES = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47];
+function primesItem(skill, diff){
+  const type = rnd(10) < 3 ? 2 : rnd(2);   // 30% of the time, an edge-case question
+  if (type===2){
+    const edge = pick([1,2]);
+    const correct = edge===1 ? 'Neither — 1 has only one factor' : 'Prime — its only factors are 1 and 2';
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Is <span class="num">${edge}</span> prime, composite, or neither?`,
+      prompt:`edge ${edge}`, answer:correct,
+      opts: mcText(correct, edge===1
+        ? [{t:'Prime — it can only be divided by 1', why:'one-is-prime'},
+           {t:'Composite — every number has factors', why:'one-is-prime'},
+           {t:'Prime — it is not even', why:'one-is-prime'}]
+        : [{t:'Composite — it is an even number', why:'two-not-prime'},
+           {t:'Neither — it is too small', why:'two-not-prime'},
+           {t:'Composite — 2 divides into it', why:'two-not-prime'}]),
+      hints:[ edge===1 ? `Count the factors of 1. How many are there?` : `List every factor of 2.`,
+              edge===1 ? `Prime means <b>exactly two</b> factors. 1 has only itself.`
+                       : `The factors of 2 are 1 and 2 — exactly two of them.`,
+              edge===1 ? `So 1 is <b>neither</b> prime nor composite.`
+                       : `So 2 is <b>prime</b>. It is the only even prime.`],
+      worked:[ edge===1 ? `Factors of 1: just <span class="k">1</span>.` : `Factors of 2: <span class="k">1 and 2</span>.`,
+               `Prime needs exactly two factors.`,
+               edge===1 ? `One factor, so 1 is <span class="k">neither</span>.` : `Two factors, so 2 is <span class="k">prime</span>.`] };
+  }
+  if (type===0){
+    const n = Math.random()<0.5 ? pick(PRIMES.filter(x=>x>2 && x < (diff>=2?50:25)))
+                                : pick([9,15,21,25,27,33,35,39,49,51,55].filter(x=>x < (diff>=2?60:30)));
+    const prime = isPrime(n), f = factorsOf(n);
+    const why = prime ? `Nothing divides into ${n} except 1 and ${n}` : `${n} = ${f[1]} × ${n/f[1]}`;
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Is <span class="num">${n}</span> prime or composite?`,
+      prompt:`prime? ${n}`, answer: prime?'Prime':'Composite',
+      opts: mcText(prime?'Prime':'Composite', [{t:prime?'Composite':'Prime', why:prime?'count-slip':'missed-factor'},
+        {t:'Neither', why:'one-is-prime'},{t:'Both', why:'count-slip'}]),
+      hints:[`Test small divisors: 2, then 3, then 5, then 7.`,
+             prime ? `None of them go in evenly — keep checking and you will find nothing.`
+                   : `Try ${f[1]}: does it divide ${n} evenly?`,
+             `${why}, so ${n} is <b>${prime?'prime':'composite'}</b>.`],
+      worked:[`Count the factors of ${n}.`,
+              `Factors: <span class="k">${f.join(', ')}</span>.`,
+              `${f.length===2?'Exactly two → prime.':'More than two → composite.'} <span class="k">${prime?'Prime':'Composite'}</span>`] };
+  }
+  const p = pick(PRIMES.filter(x=>x<(diff>=2?50:25)));
+  const comps=[]; for(let i=4;i<60 && comps.length<3;i++) if(!isPrime(i) && i!==p) comps.push(i);
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`Which of these numbers is <b>prime</b>?`,
+    prompt:`pick prime ${p}`, answer:String(p),
+    opts: mcOpts(p, shuffle(comps).slice(0,3).map(v=>({v, why:'missed-factor'}))),
+    hints:[`A prime has exactly two factors: 1 and itself.`,
+           `Cross off anything even (except 2) and anything in the 3s or 5s.`,
+           `<b>${p}</b> — nothing divides it but 1 and ${p}.`],
+    worked:[`Check each for a third factor.`,
+            `Evens above 2 are out. Multiples of 3 and 5 are out.`,
+            `<span class="k">${p}</span> survives — it is prime.`] };
+}
+
+/* ── grade 5 · order of operations ──────────────────────────────────────── */
+function orderOpsItem(skill, diff){
+  const a=2+rnd(8), b=2+rnd(8), c=2+rnd(8);
+  if (diff>=2 && Math.random()<0.5){
+    const ans = a*(b+c), leftRight = (a*b)+c;
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`<span class="num">${a} × (${b} + ${c}) = ?</span>`,
+      prompt:`${a}x(${b}+${c})`, answer:ans,
+      opts: mcOpts(ans, [{v:leftRight, why:'left-to-right'},{v:a+b+c, why:'wrong-op'},
+                         {v:a*b*c, why:'wrong-op'},{v:ans+c, why:'count-slip'}]),
+      hints:[`Brackets always go first. Do not touch anything outside them yet.`,
+             `${b} + ${c} = ${b+c}. Now the problem is ${a} × ${b+c}.`,
+             `${a} × ${b+c} = <b>${ans}</b>.`],
+      worked:[`Brackets first: <span class="k">${b} + ${c} = ${b+c}</span>.`,
+              `Rewrite: ${a} × ${b+c}.`,`= <span class="k">${ans}</span>`] };
+  }
+  const plusFirst = Math.random()<0.5;
+  const expr = plusFirst ? `${a} + ${b} × ${c}` : `${a} × ${b} + ${c}`;
+  const ans = plusFirst ? a + b*c : a*b + c;
+  const lr  = plusFirst ? (a+b)*c : a*(b+c);
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`<span class="num">${expr} = ?</span>`,
+    prompt:expr, answer:ans,
+    opts: mcOpts(ans, [{v:lr, why:'left-to-right'},{v:a+b+c, why:'wrong-op'},
+                       {v:ans+1, why:'count-slip'},{v:a*b*c, why:'wrong-op'}]),
+    hints:[`There are no brackets, so multiplication happens before addition.`,
+           plusFirst ? `Do ${b} × ${c} = ${b*c} first, then add ${a}.`
+                     : `Do ${a} × ${b} = ${a*b} first, then add ${c}.`,
+           `That gives <b>${ans}</b>.`],
+    worked:[`No brackets, so × before +.`,
+            plusFirst ? `${b} × ${c} = <span class="k">${b*c}</span>, leaving ${a} + ${b*c}.`
+                      : `${a} × ${b} = <span class="k">${a*b}</span>, leaving ${a*b} + ${c}.`,
+            `= <span class="k">${ans}</span>. Left to right would have given ${lr} — wrong.`] };
+}
+
+/* ── grade 5 · reading fractions ────────────────────────────────────────── */
+function fracConceptItem(skill, diff){
+  const type = rnd(3);
+  if (type===0){
+    const d1 = pick([3,4,5,6,8]), d2 = pick([3,4,5,6,8,10].filter(x=>x!==d1));
+    const bigger = d1<d2 ? d1 : d2, smaller = d1<d2 ? d2 : d1;
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Which is <b>bigger</b>: ${frac(1,d1)} or ${frac(1,d2)}?`,
+      prompt:`compare 1/${d1} 1/${d2}`, answer:`1/${bigger}`,
+      opts: mcText(`1/${bigger}`, [{t:`1/${smaller}`, why:'bigger-denom'},
+        {t:'They are equal', why:'bigger-denom'},{t:'You cannot tell', why:'bigger-denom'}]),
+      hints:[`Both have 1 piece. So the question is really: which piece is bigger?`,
+             `The bottom number says how many pieces the whole was cut into. More cuts = smaller pieces.`,
+             `${bigger} is fewer cuts than ${smaller}, so <b>1/${bigger}</b> is the bigger piece.`],
+      worked:[`Same numerator, so compare the piece size.`,
+              `Cut into ${bigger} → bigger pieces. Cut into ${smaller} → smaller pieces.`,
+              `<span class="k">1/${bigger}</span> is bigger.`] };
+  }
+  if (type===1){
+    const d = pick([2,3,4,5]), k = 2+rnd(3), n = 1+rnd(d-1);
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Which fraction is <b>equivalent</b> to ${frac(n,d)}?`,
+      prompt:`equiv ${n}/${d}`, answer:`${n*k}/${d*k}`,
+      opts: mcText(`${n*k}/${d*k}`, [{t:`${n+k}/${d+k}`, why:'add-instead'},
+        {t:`${n*k}/${d}`, why:'count-slip'},{t:`${n}/${d*k}`, why:'count-slip'}]),
+      hints:[`Equivalent fractions are the same amount, written with different numbers.`,
+             `To make one, multiply the top <b>and</b> the bottom by the same number.`,
+             `${n} × ${k} = ${n*k}, and ${d} × ${k} = ${d*k}. So ${frac(n,d)} = ${frac(n*k,d*k)}.`],
+      worked:[`Multiply top and bottom by the same number.`,
+              `<span class="k">${n}×${k}=${n*k}</span> and <span class="k">${d}×${k}=${d*k}</span>.`,
+              `${n}/${d} = <span class="k">${n*k}/${d*k}</span>`] };
+  }
+  const d = pick([4,5,6,8]), n = 1+rnd(d-1);
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`In the fraction ${frac(n,d)}, what does the <b>${d}</b> tell you?`,
+    prompt:`denominator meaning ${n}/${d}`, answer:`The whole was cut into ${d} equal pieces`,
+    opts: mcText(`The whole was cut into ${d} equal pieces`, [
+      {t:`You have ${d} pieces`, why:'bigger-denom'},
+      {t:`There are ${d} wholes altogether`, why:'place-mix'},
+      {t:`Each piece is worth ${d}`, why:'place-mix'}]),
+    hints:[`Top and bottom do different jobs. Which one is the ${d}?`,
+           `The bottom number is the denominator. It counts the cuts, not what you have.`,
+           `${d} = the whole was split into ${d} equal parts. The ${n} on top is how many you have.`],
+    worked:[`Bottom = denominator = how many equal parts the whole became.`,
+            `Top = numerator = how many of those you have.`,
+            `So ${d} means <span class="k">${d} equal pieces</span> in the whole.`] };
+}
+
+/* ── grade 5 · adding and subtracting fractions ─────────────────────────── */
+function fracAddSubItem(skill, diff){
+  if (diff>=3){   // unlike denominators, one a multiple of the other
+    const d1 = pick([2,3,4]), k = 2+rnd(2), d2 = d1*k;
+    const n1 = 1, n2 = 1+rnd(d2-1);
+    const top = n1*k + n2, ans = `${top}/${d2}`;
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`${frac(n1,d1)} + ${frac(n2,d2)} = ?`,
+      prompt:`${n1}/${d1}+${n2}/${d2}`, answer:ans,
+      opts: mcText(ans, [{t:`${n1+n2}/${d1+d2}`, why:'add-denoms'},
+        {t:`${n1+n2}/${d2}`, why:'unlike-denoms'},{t:`${top}/${d1}`, why:'count-slip'}]),
+      hints:[`The bottoms do not match yet, so you cannot add them as they are.`,
+             `${d1} goes into ${d2}. Multiply top and bottom of ${frac(n1,d1)} by ${k} to get ${frac(n1*k,d2)}.`,
+             `Now ${frac(n1*k,d2)} + ${frac(n2,d2)} = <b>${ans}</b>.`],
+      worked:[`Make the bottoms match: ${n1}/${d1} = <span class="k">${n1*k}/${d2}</span>.`,
+              `Now add the tops only: ${n1*k} + ${n2} = ${top}.`,
+              `<span class="k">${ans}</span> — the bottom stays ${d2}.`] };
+  }
+  const d = pick([4,5,6,8,10]);
+  const isAdd = Math.random()<0.6;
+  let n1 = 1+rnd(d-1), n2 = 1+rnd(d-1);
+  if (isAdd && n1+n2 > d) n2 = Math.max(1, d-n1);
+  if (!isAdd && n2 >= n1) [n1,n2] = [Math.max(n1,n2), Math.min(n1,n2)];
+  const top = isAdd ? n1+n2 : n1-n2;
+  const ans = `${top}/${d}`;
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`${frac(n1,d)} ${isAdd?'+':'−'} ${frac(n2,d)} = ?`,
+    prompt:`${n1}/${d}${isAdd?'+':'-'}${n2}/${d}`, answer:ans,
+    opts: mcText(ans, [{t:`${top}/${isAdd?d+d:d}`, why:'add-denoms'},
+      {t:`${isAdd?n1+n2:n1-n2}/${d*2}`, why:'add-denoms'},
+      {t:`${isAdd?n1*n2:Math.max(1,n1-n2)}/${d}`, why:'wrong-op'},
+      {t:`${top+1}/${d}`, why:'count-slip'}]),
+    hints:[`The bottoms already match — these are both ${d===4?'quarters':d===5?'fifths':d===6?'sixths':d===8?'eighths':'tenths'}.`,
+           `${isAdd?'Add':'Subtract'} the <b>top</b> numbers only. The bottom does not change.`,
+           `${n1} ${isAdd?'+':'−'} ${n2} = ${top}, so the answer is <b>${ans}</b>.`],
+    worked:[`Same denominator, so the pieces are the same size.`,
+            `${isAdd?'Add':'Subtract'} the numerators: <span class="k">${n1} ${isAdd?'+':'−'} ${n2} = ${top}</span>.`,
+            `Keep the denominator: <span class="k">${ans}</span>. It is never ${isAdd?`${top}/${d+d}`:'over a changed bottom'}.`] };
+}
+
+/* ── grade 5 · decimal place value ──────────────────────────────────────── */
+function decPlaceItem(skill, diff){
+  if (Math.random()<0.5){
+    const whole = 1+rnd(9), t = rnd(10), h = rnd(10);
+    const n = Number(`${whole}.${t}${h}`);
+    const askTenths = Math.random()<0.5;
+    const digit = askTenths ? t : h;
+    const val = askTenths ? `${digit} tenths` : `${digit} hundredths`;
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`In <span class="num">${n.toFixed(2)}</span>, what is the <b>${digit}</b> in the ${askTenths?'first':'second'} place after the point worth?`,
+      prompt:`place ${n} ${askTenths?'t':'h'}`, answer:val,
+      opts: mcText(val, [{t:askTenths?`${digit} hundredths`:`${digit} tenths`, why:'place-mix'},
+        {t:`${digit} ones`, why:'place-mix'},{t:`${digit} tens`, why:'place-mix'}]),
+      hints:[`Count places to the right of the decimal point.`,
+             `First place after the point is tenths. Second is hundredths.`,
+             `This digit sits in the ${askTenths?'tenths':'hundredths'} place, so it is worth <b>${val}</b>.`],
+      worked:[`Places after the point: tenths, then hundredths.`,
+              `This one is the <span class="k">${askTenths?'first':'second'}</span> place.`,
+              `So it is worth <span class="k">${val}</span>.`] };
+  }
+  const a = Number((Math.random()*0.9+0.1).toFixed(1));
+  let b = Number((Math.random()*0.99+0.01).toFixed(2));
+  if (Math.abs(a-b) < 0.02) b = Number((a - 0.07).toFixed(2));
+  const bigger = a>b ? a.toFixed(1) : b.toFixed(2);
+  const smaller = a>b ? b.toFixed(2) : a.toFixed(1);
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`Which is <b>bigger</b>: <span class="num">${a.toFixed(1)}</span> or <span class="num">${b.toFixed(2)}</span>?`,
+    prompt:`cmp ${a} ${b}`, answer:String(bigger),
+    opts: mcText(String(bigger), [{t:String(smaller), why:'more-digits'},
+      {t:'They are equal', why:'more-digits'},{t:'You need more information', why:'more-digits'}]),
+    hints:[`More digits does not mean bigger. Compare place by place.`,
+           `Start with the tenths — the first digit after the point.`,
+           `${String(bigger)} has more tenths, so it is bigger.`],
+    worked:[`Line up the decimal points and compare from the left.`,
+            `Tenths first: ${String(a.toFixed(1))[2]} vs ${String(b.toFixed(2))[2]}.`,
+            `<span class="k">${bigger}</span> is bigger.`] };
+}
+
+/* ── grade 5 · adding and subtracting decimals ──────────────────────────── */
+function decAddSubItem(skill, diff){
+  const a = Number((1+Math.random()*20).toFixed(diff>=2?2:1));
+  const b = Number((1+Math.random()*9).toFixed(diff>=2?2:1));
+  const isAdd = Math.random()<0.6;
+  const hi = Math.max(a,b), lo = Math.min(a,b);
+  const ans = Number((isAdd ? a+b : hi-lo).toFixed(2));
+  const mis = Number((isAdd ? a + b*10 : hi - lo*10).toFixed(2));  // point ignored
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`<span class="num">${isAdd?a:hi} ${isAdd?'+':'−'} ${isAdd?b:lo} = ?</span>`,
+    prompt:`${isAdd?a:hi}${isAdd?'+':'-'}${isAdd?b:lo}`, answer:String(ans),
+    opts: mcText(String(ans), [{t:String(Math.abs(mis)), why:'align-dec'},
+      {t:String(Number((ans*10).toFixed(2))), why:'align-dec'},
+      {t:String(Number((ans/10).toFixed(3))), why:'align-dec'},
+      {t:String(Number((ans+0.1).toFixed(2))), why:'count-slip'}]),
+    hints:[`Line up the <b>decimal points</b>, not the ends of the numbers.`,
+           `Fill in zeros so both have the same number of decimal places.`,
+           `${isAdd?a:hi} ${isAdd?'+':'−'} ${isAdd?b:lo} = <b>${ans}</b>.`],
+    worked:[`Stack them with the points in a straight line.`,
+            `Add zeros so the places match, then work right to left.`,
+            `Bring the point straight down: <span class="k">${ans}</span>.`] };
+}
+
+/* ── grade 5 · fractions and decimals together ──────────────────────────── */
+const FD = [[1,2,'0.5'],[1,4,'0.25'],[3,4,'0.75'],[1,10,'0.1'],[3,10,'0.3'],[1,5,'0.2'],[2,5,'0.4'],[4,5,'0.8'],[1,100,'0.01']];
+function fracDecItem(skill, diff){
+  const [n,d,dec] = pick(FD);
+  if (Math.random()<0.5){
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Write ${frac(n,d)} as a <b>decimal</b>.`,
+      prompt:`${n}/${d} to dec`, answer:dec,
+      opts: mcText(dec, [{t:`0.${n}${d}`, why:'digits-not-division'},
+        {t:`0.${d}`, why:'digits-not-division'},{t:`${n}.${d}`, why:'digits-not-division'}]),
+      hints:[`A fraction is a division: ${n} ÷ ${d}.`,
+             `Think what one ${d===2?'half':d===4?'quarter':d===5?'fifth':d===10?'tenth':'part'} is worth as a decimal.`,
+             `${frac(n,d)} = <b>${dec}</b>.`],
+      worked:[`${n}/${d} means <span class="k">${n} ÷ ${d}</span>.`,
+              `Not the digits written side by side.`,`= <span class="k">${dec}</span>`] };
+  }
+  const wrongs = shuffle(FD.filter(f=>f[2]!==dec)).slice(0,3).map(f=>({t:`${f[0]}/${f[1]}`, why:'digits-not-division'}));
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`Which fraction is the same as <span class="num">${dec}</span>?`,
+    prompt:`${dec} to frac`, answer:`${n}/${d}`,
+    opts: mcText(`${n}/${d}`, wrongs),
+    hints:[`Say the decimal out loud. "${dec}" is how many tenths or hundredths?`,
+           `Write that as a fraction, then simplify if you can.`,
+           `${dec} = <b>${n}/${d}</b>.`],
+    worked:[`Read the place value of the decimal.`,`Write it over 10 or 100.`,
+            `Simplify: <span class="k">${n}/${d}</span>.`] };
+}
+
+/* ── grade 5 · reading data ─────────────────────────────────────────────── */
+const CHART_SETS = [
+  {title:'Players online this week', unit:'players', labels:['Mon','Tue','Wed','Thu','Fri']},
+  {title:'Games finished per class', unit:'games',  labels:['4A','4B','5A','5B','5C']},
+  {title:'Books read this month',    unit:'books',  labels:['Ava','Ben','Cruz','Dee','Eli']},
+];
+function dataItem(skill, diff){
+  const set = pick(CHART_SETS);
+  const step = diff>=2 ? pick([5,10]) : pick([2,5]);          // the scale is never 1
+  const vals = set.labels.map(()=> step * (1+rnd(6)));
+  const max = Math.max(...vals), min = Math.min(...vals);
+  const maxLabel = set.labels[vals.indexOf(max)], minLabel = set.labels[vals.indexOf(min)];
+  const top = Math.max(...vals);
+  const chart = `<div class="minichart"><div class="mc-title">${set.title}</div>`
+    + `<div class="mc-body">${set.labels.map((l,i)=>
+        `<div class="mc-col"><div class="mc-bar" style="height:${Math.round(vals[i]/top*100)}%"></div></div>`).join('')}</div>`
+    + `<div class="mc-labs">${set.labels.map(l=>`<span>${l}</span>`).join('')}</div>`
+    + `<div class="mc-scale">Each step up the side = <b>${step} ${set.unit}</b></div></div>`;
+
+  const kind = rnd(3);
+  let q, ans, wrongs, hints, worked;
+  if (kind===0){
+    q = `${chart}<br>How many ${set.unit} for <b>${maxLabel}</b>?`;
+    ans = max;
+    wrongs = [{v:max/step, why:'read-scale'},{v:max+step, why:'count-slip'},{v:max-step, why:'count-slip'}];
+    hints = [`Check the scale line under the chart before you count anything.`,
+             `Each step is worth <b>${step}</b>, not 1.`,
+             `${maxLabel}'s bar is the tallest: <b>${max} ${set.unit}</b>.`];
+    worked = [`Read the scale: one step = <span class="k">${step}</span>.`,
+              `Find ${maxLabel}'s bar and multiply steps by ${step}.`,
+              `<span class="k">${max} ${set.unit}</span>`];
+  } else if (kind===1){
+    q = `${chart}<br>How many <b>more</b> ${set.unit} did ${maxLabel} have than ${minLabel}?`;
+    ans = max-min;
+    wrongs = [{v:max+min, why:'wrong-op'},{v:(max-min)/step, why:'read-scale'},{v:max, why:'true-not-asked'}];
+    hints = [`"How many more" means subtract.`,
+             `Read both bars using the scale (each step = ${step}), then take one from the other.`,
+             `${max} − ${min} = <b>${max-min}</b>.`];
+    worked = [`${maxLabel} = <span class="k">${max}</span>, ${minLabel} = <span class="k">${min}</span>.`,
+              `"More than" means subtract.`,`${max} − ${min} = <span class="k">${max-min}</span>`];
+  } else {
+    const total = vals.reduce((a,b)=>a+b,0);
+    q = `${chart}<br>What is the <b>total</b> number of ${set.unit} for the whole chart?`;
+    ans = total;
+    wrongs = [{v:total/step, why:'read-scale'},{v:max, why:'true-not-asked'},{v:total-min, why:'count-slip'}];
+    hints = [`Read every bar first, using the scale.`,
+             `The values are ${vals.join(', ')}.`,
+             `Add them all: <b>${total}</b>.`];
+    worked = [`Read each bar with the scale (one step = ${step}).`,
+              `Values: <span class="k">${vals.join(' + ')}</span>.`,
+              `Total = <span class="k">${total}</span>`];
+  }
+  return { realm:'math', skill, diff, kind:'choice', q, prompt:`data ${set.title} ${kind}`,
+           answer:ans, opts:mcOpts(ans, wrongs), hints, worked };
+}
+
+/* ── grade 5 · probability ──────────────────────────────────────────────── */
+function probabilityItem(skill, diff){
+  if (diff>=2 && Math.random()<0.4){
+    const a = 2+rnd(3), b = 2+rnd(3);
+    const ans = a*b;
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`A spinner has <b>${a}</b> colours. A bag has <b>${b}</b> shapes.<br>You spin once and draw once. How many different outcomes are possible altogether?`,
+      prompt:`sample space ${a}x${b}`, answer:ans,
+      opts: mcOpts(ans, [{v:a+b, why:'add-instead'},{v:Math.max(a,b), why:'count-outcomes'},{v:ans+1, why:'count-slip'}]),
+      hints:[`Draw a tree: each of the ${a} colours branches into ${b} shapes.`,
+             `Every colour pairs with every shape.`,
+             `${a} × ${b} = <b>${ans}</b> different outcomes.`],
+      worked:[`A tree diagram gives ${a} first branches.`,
+              `Each splits into ${b}.`,`<span class="k">${a} × ${b} = ${ans}</span> outcomes in the sample space.`] };
+  }
+  const colours = shuffle(['red','blue','green','yellow']).slice(0,2);
+  const c1 = 2+rnd(5), c2 = 2+rnd(5), total = c1+c2;
+  const g = gcd(c1,total);
+  const ans = `${c1/g}/${total/g}`;
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`A bag holds <b>${c1} ${colours[0]}</b> and <b>${c2} ${colours[1]}</b> marbles.<br>What is the probability of drawing <b>${colours[0]}</b>?`,
+    prompt:`prob ${c1}/${total}`, answer:ans,
+    opts: mcText(ans, [{t:`${c1}/${c2}`, why:'part-part'},{t:`${c2}/${total}`, why:'count-outcomes'},
+      {t:`${c1}/${total+1}`, why:'count-slip'},{t:`${total}/${c1}`, why:'part-part'}]),
+    hints:[`Probability = the outcomes you want ÷ <b>all</b> the outcomes.`,
+           `How many marbles are in the bag altogether? ${c1} + ${c2} = ${total}.`,
+           `${c1} wanted out of ${total} total = <b>${ans}</b>.`],
+    worked:[`Total marbles: <span class="k">${c1} + ${c2} = ${total}</span>.`,
+            `Wanted: <span class="k">${c1}</span> ${colours[0]}.`,
+            `Probability = wanted ÷ total = <span class="k">${ans}</span>. Not ${c1}/${c2} — the bottom is the total, not the leftovers.`] };
+}
+
 const MATH_GEN = {
+  // grade 4 · whole numbers
+  'm-add-sub':addSubItem, 'm-mult-concept':multConceptItem, 'm-word':wordItem,
+  // grade 4 · fact fluency
   'm-mult-low':factItem, 'm-mult-high':factItem, 'm-mult-big':factItem,
-  'm-div-low':divItem, 'm-div-high':divItem,
-  'm-missing':missingItem, 'm-remainder':remainderItem,
-  'm-multidigit':multidigitItem, 'm-word':wordItem
+  'm-div-low':divItem, 'm-div-high':divItem, 'm-missing':missingItem,
+  // grade 4 · bigger numbers
+  'm-multidigit':multidigitItem, 'm-remainder':remainderItem, 'm-estimate':estimateItem,
+  // grade 5 · number sense
+  'm-evenodd':evenOddItem, 'm-factors':factorsItem, 'm-primes':primesItem, 'm-order-ops':orderOpsItem,
+  // grade 5 · fractions and decimals
+  'm-frac-concept':fracConceptItem, 'm-frac-addsub':fracAddSubItem,
+  'm-dec-place':decPlaceItem, 'm-dec-addsub':decAddSubItem, 'm-frac-dec':fracDecItem,
+  // grade 5 · data
+  'm-data':dataItem, 'm-probability':probabilityItem,
 };
 
 function makeMathItem(skill, diff, forceVisual){
@@ -2176,10 +3267,125 @@ let S = {
             visTries:0, visRight:0, symTries:0, symRight:0,
             fastWrong:0, slowRight:0, wordSeen:0, wordRight:0, bareSeen:0, bareRight:0,
             readSeen:0, readRight:0, readRoll:[] },
-  review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0
+  review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0, rulesSeen:{}
 };
 
-function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+let STORAGE_OK = null;
+
+/* Does this browser actually let us keep anything? A managed school Chromebook
+   can refuse outright, and can also wipe on sign-out — which nothing at runtime
+   can detect. So we test what we can, and never rely on the answer alone. */
+function storageHealth(){
+  if (STORAGE_OK !== null) return STORAGE_OK;
+  try {
+    const probe = SAVE_KEY + '.probe';
+    localStorage.setItem(probe, '1');
+    STORAGE_OK = localStorage.getItem(probe) === '1';
+    localStorage.removeItem(probe);
+  } catch(e){ STORAGE_OK = false; }
+  return STORAGE_OK;
+}
+
+function save(){
+  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){ STORAGE_OK = false; }
+  try{ history.replaceState(null, '', '#s=' + encodeState()); }catch(e){}
+}
+
+/* ---------------------------------------------------------------------------
+   BACKUP — progress that outlives the browser
+   A compact code that round-trips through a link, a file, or a paste box.
+   --------------------------------------------------------------------------- */
+const SKILL_ORDER = Object.keys(SKILLS);
+const b64e = str => btoa(unescape(encodeURIComponent(str))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64d = str => decodeURIComponent(escape(atob(str.replace(/-/g,'+').replace(/_/g,'/'))));
+
+function encodeState(){
+  const P = S.profile;
+  const head = [1, encodeURIComponent(S.name||'Adam'), encodeURIComponent(S.avatar||'🧱'),
+                S.xp|0, S.streak|0, S.bestStreak|0, S.lastDay||'', S.scanned?1:0,
+                S.bestRun|0, S.passageSeq|0, S.bonusCount|0].join('|');
+  const mast = SKILL_ORDER.map(k=>{ const r=S.mastery[k]||{m:0,seen:0,right:0};
+                return `${Math.round(r.m*1000)}.${r.seen|0}.${r.right|0}`; }).join(',');
+  const diff = Object.keys(S.diff||{}).map(k=>`${SKILL_ORDER.indexOf(k)}.${S.diff[k]}`)
+                 .filter(x=>x[0]!=='-').join(',');
+  const trap = Object.keys(S.traps||{}).map(k=>`${k}.${S.traps[k]}`).join(',');
+  const pass = Object.keys(S.passages||{}).map(k=>{ const v=S.passages[k];
+                return `${k}.${v.right|0}.${v.total|0}.${v.perfect?1:0}.${v.seq|0}`; }).join(',');
+  const prof = [P.answered,P.hintsUsed,P.visTries,P.visRight,P.symTries,P.symRight,P.fastWrong,
+                P.slowRight,P.wordSeen,P.wordRight,P.bareSeen,P.bareRight,P.readSeen,P.readRight]
+                .map(x=>x|0).join('.');
+  const rules = Object.keys(S.rulesSeen||{}).map(k=>SKILL_ORDER.indexOf(k)).filter(i=>i>=0).join(',');
+  return b64e([head, mast, diff, trap, pass, (S.badges||[]).join(','), prof, rules].join('~'));
+}
+
+function decodeState(code){
+  try{
+    const parts = b64d(String(code).trim()).split('~');
+    if (parts.length < 7) return null;
+    const [h, mast, diff, trap, pass, badges, prof, rules=''] = parts;
+    const H = h.split('|');
+    if (H[0] !== '1') return null;
+
+    const out = {
+      name:decodeURIComponent(H[1]||'Adam'), avatar:decodeURIComponent(H[2]||'🧱'),
+      xp:+H[3]||0, streak:+H[4]||0, bestStreak:+H[5]||0, lastDay:H[6]||null,
+      scanned:H[7]==='1', bestRun:+H[8]||0, passageSeq:+H[9]||0, bonusCount:+H[10]||0,
+      mastery:{}, diff:{}, traps:{}, passages:{}, badges:badges?badges.split(','):[],
+      rulesSeen:{}, review:[], log:[], quests:null
+    };
+    mast.split(',').forEach((chunk,i)=>{
+      const k = SKILL_ORDER[i]; if(!k) return;
+      const [m,seen,right] = chunk.split('.').map(Number);
+      out.mastery[k] = {m:(m||0)/1000, seen:seen||0, right:right||0,
+                        wrong:Math.max(0,(seen||0)-(right||0)), recent:[]};
+    });
+    if (diff) diff.split(',').forEach(c=>{ const [i,v]=c.split('.').map(Number);
+      if (SKILL_ORDER[i]) out.diff[SKILL_ORDER[i]] = v; });
+    if (trap) trap.split(',').forEach(c=>{ const i=c.lastIndexOf('.');
+      if(i>0) out.traps[c.slice(0,i)] = +c.slice(i+1)||0; });
+    if (pass) pass.split(',').forEach(c=>{ const f=c.split('.');
+      if(f[0]) out.passages[f[0]] = {right:+f[1]||0, total:+f[2]||0, perfect:f[3]==='1', seq:+f[4]||0, at:''}; });
+    const PR = (prof||'').split('.').map(Number);
+    const keys = ['answered','hintsUsed','visTries','visRight','symTries','symRight','fastWrong',
+                  'slowRight','wordSeen','wordRight','bareSeen','bareRight','readSeen','readRight'];
+    out.profile = {times:[], readRoll:[]};
+    keys.forEach((k,i)=> out.profile[k] = PR[i]||0);
+    if (rules) rules.split(',').forEach(i=>{ const k=SKILL_ORDER[+i]; if(k) out.rulesSeen[k]=true; });
+    return out;
+  }catch(e){ return null; }
+}
+
+function applyState(obj){
+  if (!obj) return false;
+  S = Object.assign(S, obj);
+  S.mastery = Object.assign(blankMastery(), obj.mastery||{});
+  Object.keys(SKILLS).forEach(k=>{ if(!S.mastery[k].recent) S.mastery[k].recent=[]; });
+  save();
+  return true;
+}
+
+/* location.origin is the string "null" on a file:// page, which would build a
+   broken link — split the current URL instead so this works everywhere. */
+function saveLink(){ return location.href.split('#')[0] + '#s=' + encodeState(); }
+
+async function downloadSave(){
+  const data = JSON.stringify({app:'adams-build-mode', saved:new Date().toISOString(), code:encodeState(), full:S}, null, 2);
+  const filename = `adam-build-mode-${today()}.json`;
+  try{
+    if (window.claude && typeof claude.use === 'function'){
+      const dl = await claude.use('downloads');
+      if (dl){ await dl.save({filename, data}); return true; }
+    }
+  }catch(e){}
+  try{
+    const url = URL.createObjectURL(new Blob([data], {type:'application/json'}));
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 4000);
+    return true;
+  }catch(e){ return false; }
+}
 function load(){
   try{
     const raw = localStorage.getItem(SAVE_KEY);
@@ -2226,11 +3432,16 @@ function realmMastery(realm){
 
 /* Some skills only make sense once their foundations hold. */
 const PREREQ = {
-  'm-remainder' :['m-div-low'],
-  'm-multidigit':['m-mult-high'],
-  'm-div-high'  :['m-div-low'],
-  'm-mult-big'  :['m-mult-low'],
-  'm-missing'   :['m-mult-low'],
+  'm-remainder'   :['m-div-low'],
+  'm-multidigit'  :['m-mult-high'],
+  'm-div-high'    :['m-div-low'],
+  'm-mult-big'    :['m-mult-low'],
+  'm-missing'     :['m-mult-low'],
+  'm-mult-low'    :['m-mult-concept'],
+  'm-primes'      :['m-factors'],
+  'm-frac-addsub' :['m-frac-concept'],
+  'm-dec-addsub'  :['m-dec-place'],
+  'm-frac-dec'    :['m-frac-concept'],
 };
 function isLocked(skill){
   const pre = PREREQ[skill];
@@ -2464,16 +3675,17 @@ function coachHome(){
 let SESH = null;
 
 const SCAN_LADDER = [
-  ['m-mult-low',1], ['m-mult-low',2], ['m-div-low',1], ['m-mult-high',2],
-  ['m-div-high',2], ['m-missing',2],  ['m-multidigit',2], ['m-remainder',2]
+  ['m-add-sub',1], ['m-mult-concept',1], ['m-mult-low',2], ['m-div-low',2], ['m-mult-high',2],
+  ['m-multidigit',2], ['m-evenodd',2], ['m-factors',2], ['m-primes',2], ['m-order-ops',2]
 ];
+const SCAN_MATH = SCAN_LADDER.length;
 
 function startSession(opts){
   SESH = Object.assign({
     realm:'math', len:8, items:[], idx:0, right:0, xp:0,
     marks:[], runStreak:0, missRun:0, hintsUsed:0, scaffoldNext:false,
     scan:false, ladder:1, touched:{}, startedAt:Date.now(), quest:null, passage:null,
-    passageStart:0, recent:[], lastSkill:null, lastTrap:null
+    passageStart:0, recent:[], lastSkill:null, lastTrap:null, focusSkill:null
   }, opts);
   touchStreak();
   nextItem();
@@ -2522,10 +3734,10 @@ function nextItem(){
   if (s.idx >= s.len) return finishSession();
 
   if (s.scan){
-    if (s.idx < 8){
-      const [sk, df] = SCAN_LADDER[Math.max(0, Math.min(7, s.ladder))];
+    if (s.idx < SCAN_MATH){
+      const [sk, df] = SCAN_LADDER[Math.max(0, Math.min(SCAN_MATH-1, s.ladder))];
       s.current = makeMathItem(sk, df, false);
-      s.current.diff = Math.max(1, Math.min(3, Math.ceil((s.ladder+1)/3)));
+      s.current.diff = Math.max(1, Math.min(3, Math.ceil((s.ladder+1)/4)));
     } else {
       if (!s.passage){
         s.passage = PASSAGES.find(p=>p.band===1) || PASSAGES[0];
@@ -2547,7 +3759,7 @@ function nextItem(){
     s.current = readingItem(s.passage, s.qi++);
   } else {
     const prof = profileRead();
-    const skill = chooseSkill('math', s.lastSkill);
+    const skill = s.focusSkill || chooseSkill('math', s.lastSkill);
     const df = s.scaffoldNext ? 1 : diffOf(skill);
     const visual = s.scaffoldNext || wantsVisual(skill, prof);
     // reroll an exact repeat of a question he has just had
@@ -2623,7 +3835,8 @@ function submitAnswer(chosen, btn){
 
   s.answered = true;
   item.trap = trap;
-  if (s.scan && s.idx < 8) s.ladder = Math.max(0, Math.min(7, s.ladder + (correct ? 1 : -1)));
+  if (s.scan && s.idx < SCAN_MATH)
+    s.ladder = Math.max(0, Math.min(SCAN_MATH-1, s.ladder + (correct ? 1 : -1)));
   record(item, correct, Date.now()-s.shownAt, s.hintLevel>0);
   s.marks.push(correct);
   if (correct){
@@ -2689,7 +3902,7 @@ function seedFromScan(s){
   // The ladder is the measurement. A single probe can't produce a fair mastery
   // number on its own, so the height reached sets a floor for everything at or
   // below it — climbing to remainders means the ×2s are not at 20%.
-  const reached = Math.max(0, Math.min(7, s.ladder));
+  const reached = Math.max(0, Math.min(SCAN_MATH-1, s.ladder));
   SCAN_LADDER.forEach(([sk], i)=>{
     const rec = S.mastery[sk];
     const floor = i < reached ? 0.62 : i === reached ? 0.45 : Math.max(0.1, 0.3 - 0.07*(i-reached));
@@ -2701,7 +3914,7 @@ function seedFromScan(s){
   S.mastery['m-word'].m     = Math.max(S.mastery['m-word'].m,
                                 (masteryOf('m-mult-low')+masteryOf('m-div-low'))/2*0.7);
   // reading band comes from how the scan story went
-  const readMarks = s.marks.slice(8);
+  const readMarks = s.marks.slice(SCAN_MATH);
   const readRight = readMarks.filter(Boolean).length;
   const seedRead = readMarks.length===0 ? 0.15
     : readRight>=4 ? 0.6 : readRight===3 ? 0.45 : readRight===2 ? 0.3 : 0.15;
@@ -2783,6 +3996,16 @@ function renderItem(){
     };
     card.appendChild(btn);
     body.appendChild(card);
+  }
+
+  // A skill he has never met opens with its rule, not with a question.
+  S.rulesSeen = S.rulesSeen || {};
+  if (item.skill && ruleFor(item.skill) && !S.rulesSeen[item.skill]){
+    const card = el('div','');
+    card.innerHTML = ruleCardHTML(item.skill, true);
+    body.appendChild(card);
+    S.rulesSeen[item.skill] = true;
+    save();
   }
 
   const prompt = el('div','prompt');
@@ -2969,6 +4192,17 @@ function renderNav(){
       };
       row.appendChild(h);
     }
+    if (item.skill && ruleFor(item.skill)){
+      const r = el('button','btn ghost sm','📐 The rule');
+      r.onclick = ()=>{
+        if (document.getElementById('ruleInline')) { document.getElementById('ruleInline').remove(); return; }
+        const box = el('div',''); box.id = 'ruleInline';
+        box.innerHTML = ruleCardHTML(item.skill, false);
+        $('seshBody').appendChild(box);
+        box.scrollIntoView({block:'nearest', behavior:'smooth'});
+      };
+      row.appendChild(r);
+    }
     if (item.realm==='read' && item.evidence){
       const e = el('button','btn ghost sm','🔎 Where to look');
       e.onclick = () => {
@@ -3026,6 +4260,119 @@ function showScaffold(item){
   $('seshBody').appendChild(box);
 }
 
+/* Render a rule card. `compact` trims it to the parts worth reading mid-question. */
+function ruleCardHTML(skill, compact){
+  const R = ruleFor(skill); if (!R) return '';
+  const sk = SKILLS[skill] || {name:'This skill', icon:'📐'};
+  const grade = GRADE_OF(skill);
+  const sec = (label, inner) => `<div class="rule-sec"><div class="rule-lab">${label}</div>${inner}</div>`;
+
+  let html = `<div class="rulecard">
+    <div class="rule-head">
+      <div class="rule-ico">${sk.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="rule-name">${sk.name}</div>
+        <div class="rule-what">${R.what}</div>
+      </div>
+      <span class="grade-pill grade-${grade}">Grade ${grade}</span>
+    </div>`;
+
+  if (R.terms && R.terms.length)
+    html += sec('Words to know', `<div class="rule-terms">${
+      R.terms.map(([t,d])=>`<div class="rule-term"><b>${t}</b> — ${d}</div>`).join('')}</div>`);
+
+  html += sec('The rule', `<div class="rule-box">${R.rule}</div>`);
+  html += sec('When to use it', `<div class="rule-when">${R.when}</div>`);
+
+  if (!compact && R.steps && R.steps.length)
+    html += sec('How to do it', `<ol class="rule-steps">${R.steps.map(x=>`<li>${x}</li>`).join('')}</ol>`);
+
+  if (!compact && R.example)
+    html += sec('Worked example', `<div class="rule-eg">
+        <div class="eg-q">${R.example.q}</div>
+        <ol>${R.example.work.map(x=>`<li>${x}</li>`).join('')}</ol>
+        <div class="eg-a">Answer: ${R.example.answer}</div>
+      </div>`);
+
+  if (R.trap) html += sec('Watch out', `<div class="rule-trap">${R.trap}</div>`);
+  return html + `</div>`;
+}
+
+/* ---------------------------------------------------------------------------
+   LESSONS — every topic, nothing locked
+   --------------------------------------------------------------------------- */
+let gradeFilter = 'all';
+
+function renderLessons(){
+  const filt = $('gradeFilter');
+  filt.innerHTML = '';
+  [['all','Everything'],['4','Grade 4 catch-up'],['5','Grade 5 now']].forEach(([v,label])=>{
+    const b = el('button','pill'+(gradeFilter===v?' on':''), label);
+    b.onclick = ()=>{ gradeFilter = v; renderLessons(); };
+    filt.appendChild(b);
+  });
+
+  const host = $('strandList'); host.innerHTML = '';
+  Object.keys(STRANDS).forEach(sid=>{
+    const st = STRANDS[sid];
+    if (gradeFilter !== 'all' && String(st.grade) !== gradeFilter) return;
+    const keys = Object.keys(SKILLS).filter(k => SKILLS[k].strand === sid);
+    if (!keys.length) return;
+
+    const wrap = el('div','strand');
+    wrap.innerHTML = `<div class="strand-head">
+        <span class="strand-ico">${st.icon}</span>
+        <span class="strand-name">${st.name}</span>
+        <span class="grade-pill grade-${st.grade}">Grade ${st.grade}</span>
+      </div><div class="strand-blurb">${st.blurb}</div>`;
+
+    keys.forEach(k=>{
+      const m = masteryOf(k), rec = S.mastery[k];
+      const row = el('button','lesson-row');
+      row.innerHTML = `<span class="lesson-ico">${SKILLS[k].icon}</span>
+        <span class="lesson-name">${SKILLS[k].name}</span>
+        <span class="lesson-bar"><span class="bar"><i style="width:${Math.round(m*100)}%"></i></span></span>
+        <span class="lesson-pct">${rec.seen ? Math.round(m*100)+'%' : '–'}</span>`;
+      row.onclick = ()=> openSkill(k);
+      wrap.appendChild(row);
+    });
+    host.appendChild(wrap);
+  });
+}
+
+function openSkill(skill){
+  const body = $('skillBody');
+  const isRead = SKILLS[skill].realm === 'read';
+  const m = masteryOf(skill), b = bandOf(m), rec = S.mastery[skill];
+
+  body.innerHTML = ruleCardHTML(skill, false) + `
+    <div class="card" style="margin-bottom:12px">
+      <div class="spread">
+        <span class="eyebrow">Where Adam is</span>
+        <span class="tag ${rec.seen?b.key:'new'}">${rec.seen ? b.label : 'Not started'}</span>
+      </div>
+      <div class="bar" style="margin-top:10px"><i style="width:${Math.round(m*100)}%"></i></div>
+      <div class="tiny" style="margin-top:7px">${
+        rec.seen ? `${rec.right} right of ${rec.seen} tried.` : 'No questions answered on this yet.'}</div>
+    </div>`;
+
+  const go = el('button','btn wide'+(isRead?' story':''), isRead ? 'Read a story →' : 'Practise this — 8 questions →');
+  go.onclick = ()=> isRead
+    ? startSession({realm:'read', len:8})
+    : startSession({realm:'math', len:8, focusSkill:skill});
+  body.appendChild(go);
+
+  if (!isRead){
+    const long = el('button','btn ghost wide','Drill it — 15 questions');
+    long.style.marginTop = '8px';
+    long.onclick = ()=> startSession({realm:'math', len:15, focusSkill:skill});
+    body.appendChild(long);
+  }
+  S.rulesSeen = S.rulesSeen || {};
+  S.rulesSeen[skill] = true; save();
+  show('scr-skill');
+}
+
 /* ---------------------------------------------------------------------------
    11. RESULT SCREEN
    --------------------------------------------------------------------------- */
@@ -3049,10 +4396,10 @@ function renderResult(freshBadges){
   // what Bolt noticed
   const notes = [];
   if (s.scan){
-    const lvl = Math.max(0, Math.min(7, s.ladder));
+    const lvl = Math.max(0, Math.min(SCAN_MATH-1, s.ladder));
     notes.push(`On math you climbed to <b>${SKILLS[SCAN_LADDER[lvl][0]].name}</b> before it got hard. That is where we start.`);
-    const rr = s.marks.slice(8).filter(Boolean).length;
-    notes.push(`On reading you got <b>${rr} of ${s.marks.slice(8).length}</b>, so I am starting you at ${rr>=3?'the harder':'the steady'} band.`);
+    const rr = s.marks.slice(SCAN_MATH).filter(Boolean).length;
+    notes.push(`On reading you got <b>${rr} of ${s.marks.slice(SCAN_MATH).length}</b>, so I am starting you at ${rr>=3?'the harder':'the steady'} band.`);
   } else {
     const topTrap = Object.entries(S.traps).sort((a,b)=>b[1]-a[1])[0];
     if (pct >= 0.85) notes.push(`I am moving you up a level on the skills you cleared.`);
@@ -3081,6 +4428,24 @@ function renderResult(freshBadges){
     ? `<div class="card"><div class="eyebrow" style="margin-bottom:9px">New badge${freshBadges.length>1?'s':''}</div>
        <div class="badges">${freshBadges.map(b=>`<div class="badge got"><span class="bi">${b.ico}</span><span class="bn">${b.name}</span></div>`).join('')}</div></div>`
     : '';
+
+  const sessionsDone = (S.log||[]).length;
+  const nudge = !storageHealth() || (sessionsDone > 0 && sessionsDone % 4 === 0);
+  const nudgeBox = $('resNewBadges');
+  if (nudge){
+    const extra = el('div','card');
+    extra.style.marginTop = '12px';
+    extra.innerHTML = `<div class="eyebrow" style="margin-bottom:8px">Keep this safe</div>
+      <div class="tiny" style="margin-bottom:10px">${ storageHealth()
+        ? `${sessionsDone} sessions in. A school Chromebook can clear saved data without warning —
+           grab a save file so none of this can go missing.`
+        : `This browser is <b>not</b> saving progress. Download a save file now or this run is lost.` }</div>`;
+    const b = el('button','btn wide sm','💾 Download save file');
+    b.onclick = async ()=>{ const ok = await downloadSave();
+      b.textContent = ok ? '✓ Saved to Downloads' : 'Blocked — use Progress → Copy save link'; };
+    extra.appendChild(b);
+    nudgeBox.appendChild(extra);
+  }
 
   if (pct >= 0.75) confetti(pct === 1 ? 70 : 34);
   renderHUD();
@@ -3123,6 +4488,7 @@ function buildQuests(){
 
 function renderHome(){
   renderHUD();
+  renderStorageBanner();
   const q = buildQuests();
   $('homeCoachText').innerHTML = coachHome();
 
@@ -3227,12 +4593,55 @@ function renderProgress(){
     return `<div class="badge ${got?'got':''}"><span class="bi">${b.ico}</span><span class="bn">${b.name}</span></div>`;
   }).join('');
 
+  renderStorageStatus();
+
   $('logTable').innerHTML = S.log.length
     ? `<thead><tr><th>Date</th><th>Set</th><th>Score</th><th>Mins</th><th>XP</th></tr></thead><tbody>` +
       S.log.slice(0,12).map(r=>`<tr><td class="tnum">${r.at.slice(5)}</td><td>${r.realm==='read'?'📖 Reading':r.realm==='scan'?'🛰️ Scan':'🧮 Math'}</td>
         <td class="tnum">${r.right}/${r.total}</td><td class="tnum">${r.mins}</td><td class="tnum">+${r.xp}</td></tr>`).join('') +
       `</tbody>`
     : `<tbody><tr><td class="tiny">No sessions logged yet.</td></tr></tbody>`;
+}
+
+function backupNote(html, tone){
+  const host = $('backupOut');
+  host.innerHTML = `<div class="notecard" style="border-left-color:var(--${tone||'good'});
+    background:var(--${tone||'good'}-soft)">${html}</div>`;
+}
+
+function renderStorageStatus(){
+  const ok = storageHealth();
+  const box = $('storageStatus');
+  if (!box) return;
+  box.innerHTML = ok
+    ? `<div class="tiny">This browser <b>is</b> saving Adam's progress right now.
+         On a school Chromebook that saved data can still be wiped when the account signs out or the
+         device is re-enrolled — nothing on this page can prevent that or detect it in advance.
+         <b>Download a save file</b> after a good session and it cannot be lost.</div>`
+    : `<div class="notecard" style="border-left-color:var(--miss);background:var(--miss-soft)">
+         <b>This browser is not letting the app save.</b> Progress will vanish when the tab closes.
+         Download a save file at the end of every session and open it again next time — that path
+         works even with site data switched off.</div>`;
+}
+
+function renderStorageBanner(){
+  const box = $('storageBanner');
+  if (!box) return;
+  if (storageHealth()){ box.innerHTML = ''; return; }
+  box.innerHTML = `<div class="notecard" style="border-left-color:var(--miss);background:var(--miss-soft)">
+    <b>Heads up — this browser will not remember your progress.</b>
+    Finish your quests, then go to <b>Progress → Download save file</b> to keep them.</div>`;
+}
+
+function doRestore(obj, source){
+  if (!applyState(obj)){
+    backupNote('That file or code could not be read. Make sure the whole thing was copied.', 'miss');
+    return;
+  }
+  renderHUD();
+  backupNote(`Progress restored from ${source} — <b>${S.profile.answered||0} questions</b>,
+              ${S.xp} XP, level ${levelInfo().num}.`, 'good');
+  renderProgress();
 }
 
 /* Progress export: copy to the clipboard where that is allowed, and always
@@ -3269,6 +4678,7 @@ function go(where){
   if (where==='home'){ renderHome(); show('scr-home'); }
   else if (where==='math'){ startSession({realm:'math', len:8}); }
   else if (where==='read'){ startSession({realm:'read', len:8}); }
+  else if (where==='lessons'){ renderLessons(); show('scr-lessons'); }
   else if (where==='progress'){ renderProgress(); show('scr-progress'); }
 }
 
@@ -3279,6 +4689,15 @@ function applyTheme(){
 
 function boot(){
   load();
+  // A save link beats an empty browser — and never silently overwrites more progress
+  // than it carries, so a restore on the wrong device cannot cost him anything.
+  try{
+    const m = location.hash.match(/[#&]s=([A-Za-z0-9\-_]+)/);
+    if (m){
+      const inc = decodeState(m[1]);
+      if (inc && (inc.profile.answered||0) > (S.profile.answered||0)) applyState(inc);
+    }
+  }catch(e){}
   applyTheme();
 
   const picker = $('avatarPicker');
@@ -3291,7 +4710,7 @@ function boot(){
   $('nameInput').value = S.name;
   $('nameInput').addEventListener('input', e=>{ S.name = e.target.value.trim() || 'Builder'; save(); renderHUD(); });
 
-  $('startScanBtn').onclick = ()=>{ startSession({realm:'math', scan:true, len:12}); };
+  $('startScanBtn').onclick = ()=>{ startSession({realm:'math', scan:true, len:14}); };
   $('skipScanBtn').onclick = ()=>{ S.scanned = true; save(); go('home'); };
   $('quitBtn').onclick = ()=>{ if (SESH && SESH.marks.length) { finishSession(); } else { go('home'); } };
   $('resHomeBtn').onclick = ()=> go('home');
@@ -3299,6 +4718,7 @@ function boot(){
     const s = SESH;
     startSession(s.realm==='read' ? {realm:'read', len:8} : {realm:'math', len:s.len||8});
   };
+  $('skillBack').onclick = ()=> go('lessons');
   $('realmMath').onclick = ()=> go('math');
   $('realmRead').onclick = ()=> go('read');
   document.querySelectorAll('.nav button').forEach(b=> b.onclick = ()=> go(b.dataset.go));
@@ -3310,7 +4730,68 @@ function boot(){
     applyTheme(); save();
   };
 
-  $('redoScanBtn').onclick = ()=>{ startSession({realm:'math', scan:true, len:12}); };
+  $('saveFileBtn').onclick = async ()=>{
+    const ok = await downloadSave();
+    backupNote(ok
+      ? `Save file downloaded. On a Chromebook it lands in <b>Files → Downloads</b> — drag it into
+         Google Drive and it will survive anything the school does to the device.`
+      : `This browser blocked the download. Use <b>Copy save link</b> instead and paste it somewhere safe.`,
+      ok ? 'good' : 'warn');
+  };
+  $('saveLinkBtn').onclick = ()=>{
+    const link = saveLink();
+    const done = ()=> backupNote(`Save link copied. Opening it on any device restores this progress —
+                                  bookmark it, or paste it into an email to yourself.`, 'good');
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(link).then(done, ()=>showPaste(link));
+    } else showPaste(link);
+  };
+  function showPaste(text){
+    const ta = el('textarea');
+    ta.value = text; ta.rows = 4;
+    ta.style.cssText = 'width:100%;font-size:.72rem;padding:9px;border-radius:10px;'
+      + 'border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)';
+    $('backupOut').innerHTML = '';
+    $('backupOut').appendChild(ta);
+    const n = el('div','tiny','Copy this and keep it somewhere safe.');
+    n.style.marginTop='6px'; $('backupOut').appendChild(n);
+    ta.select();
+  }
+  $('loadFileBtn').onclick = ()=> $('fileInput').click();
+  $('fileInput').onchange = e=>{
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = ()=>{
+      let obj = null;
+      try{
+        const parsed = JSON.parse(r.result);
+        obj = parsed.code ? decodeState(parsed.code) : (parsed.mastery ? parsed : null);
+      }catch(err){ obj = decodeState(String(r.result)); }
+      doRestore(obj, 'the save file');
+    };
+    r.readAsText(f);
+    e.target.value = '';
+  };
+  $('pasteBtn').onclick = ()=>{
+    $('backupOut').innerHTML = '';
+    const ta = el('textarea');
+    ta.rows = 4; ta.placeholder = 'Paste the save code or the save link here…';
+    ta.style.cssText = 'width:100%;font-size:.72rem;padding:9px;border-radius:10px;'
+      + 'border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink)';
+    $('backupOut').appendChild(ta);
+    const go = el('button','btn sm','Restore from this');
+    go.style.marginTop = '8px';
+    go.onclick = ()=>{
+      const v = ta.value.trim();
+      const m = v.match(/[#&]s=([A-Za-z0-9\-_]+)/);
+      doRestore(decodeState(m ? m[1] : v), 'the code');
+    };
+    $('backupOut').appendChild(go);
+    ta.focus();
+  };
+
+  $('redoScanBtn').onclick = ()=>{ startSession({realm:'math', scan:true, len:14}); };
   $('resetBtn').onclick = ()=>{
     if (!confirm('Erase all of Adam\'s progress on this device? This cannot be undone.')) return;
     localStorage.removeItem(SAVE_KEY); location.reload();
@@ -3322,6 +4803,18 @@ function boot(){
     const txt = 'SESSIONS\n' + rows.map(r=>r.join(',')).join('\n') + '\n\nSKILLS\n' + skills.map(r=>r.join(',')).join('\n');
     showExport(txt);
   };
+
+  // Opening a save link while the app is already open is a same-document
+  // navigation, so boot() never reruns — catch it here instead.
+  window.addEventListener('hashchange', ()=>{
+    const m = location.hash.match(/[#&]s=([A-Za-z0-9\-_]+)/);
+    if (!m) return;
+    const inc = decodeState(m[1]);
+    if (!inc || (inc.profile.answered||0) <= (S.profile.answered||0)) return;
+    if (!confirm(`This link holds ${inc.profile.answered} answered questions and `
+               + `${inc.xp} XP — more than this browser has. Load it?`)) return;
+    applyState(inc); renderHUD(); go('home');
+  });
 
   renderHUD();
   if (S.scanned || S.profile.answered>0){ go('home'); }
