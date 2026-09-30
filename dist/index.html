@@ -691,7 +691,7 @@ p{line-height:1.6}
         <div id="resSkills"></div>
       </div>
       <div id="resNewBadges"></div>
-      <button class="btn wide" id="resAgainBtn">Run it again</button>
+      <button class="btn wide" id="resAgainBtn">Keep going →</button>
       <button class="btn ghost wide" id="resHomeBtn">Back to base</button>
     </div>
   </section>
@@ -1300,6 +1300,517 @@ const PASSAGES = [
              'Two options just pick a winner. Synthesis does not pick a winner.',
              'The facts describe the game; the disagreement describes the audience.']}
   ]
+},
+{
+  id:'trade', band:1, kind:'Story', title:'The Trade',
+  meta:'Fiction · 290 words',
+  paras:[
+    `Ruby had wanted the shadow wolf pet for four months. She had a spreadsheet about it. She had a countdown.`,
+    `So when Bex offered the straight swap — shadow wolf for Ruby's old frost dragon — Ruby said yes in under two seconds. She did not ask why Bex wanted the dragon. She did not check anything. She clicked accept and felt the good feeling land in her chest like a coin dropping.`,
+    `It lasted about a day.`,
+    `On Tuesday, the game's developers posted an update. The frost dragon, it turned out, had been broken since launch: a coding error had made only forty of them, instead of the forty thousand that were planned. They were about to become the rarest item in the game.`,
+    `The server chat went loud. Ruby read it three times before the number really arrived in her head. Forty. She had owned one of forty.`,
+    `Bex had known. Bex had been reading the developer forum, where people had been arguing about the dragon count for a week, and Bex had gone looking for someone who had not been reading it.`,
+    `That was the part Ruby kept turning over. Not that she had lost the dragon — she had never even liked the dragon. What bothered her was how fast she had said yes. Four months of wanting the wolf, and she had spent all of that wanting in two seconds, without asking one single question.`,
+    `She still had the wolf. It sat in her inventory looking exactly as good as she had imagined it would.`,
+    `She opened the developer forum and started reading from the top.`
+  ],
+  qs:[
+    { skill:'r-theme', q:'What does Ruby learn by the end of the story?',
+      opts:[
+        {t:'Wanting something badly can make you skip the questions you should ask', ok:true},
+        {t:'You should never trade items with other players', why:'overclaim'},
+        {t:'Rare items are always worth more than common ones', why:'true-not-asked'},
+        {t:'Bex is a dishonest person who should be reported', why:'overclaim'}
+      ],
+      why:'The last three paragraphs tell you what bothered her, and it is not the dragon — she says she never liked it. It is "how fast she had said yes." The final image seals it: she goes and reads the forum, which is the question-asking she skipped. The story is about wanting clouding judgment, not about trading being bad.',
+      evidence:'"What bothered her was how fast she had said yes."',
+      hints:['The story tells you directly what bothered her. Find that sentence.',
+             'One option is much harsher than anything the story actually says. Cross it off.',
+             'She did not lose something she loved. She lost four months of patience in two seconds.']},
+    { skill:'r-struct', q:'Why does the author put the short paragraph "It lasted about a day." on its own?',
+      opts:[
+        {t:'To snap the good feeling shut and warn the reader that something is coming', ok:true},
+        {t:'To show that exactly twenty-four hours passed', why:'literal-only'},
+        {t:'Because the paragraph before it was getting too long', why:'true-not-asked'},
+        {t:'To signal that the story is about to end', why:'literal-only'}
+      ],
+      why:'The paragraph before ends on a warm image — a coin dropping in her chest. Then one flat, six-word line cuts it off. The shortness is the point: it changes the temperature of the story in one beat and tells you the happiness is temporary before you learn why.',
+      evidence:'"…like a coin dropping. / It lasted about a day."',
+      hints:['Read the sentence right before it. What mood is it in?',
+             'What does a very short paragraph do to your reading speed?',
+             'It ends the good feeling on purpose, before explaining anything.']},
+    { skill:'r-infer', q:'Why did Bex specifically want to trade with Ruby?',
+      opts:[
+        {t:'Bex had read the forum and went looking for someone who had not', ok:true},
+        {t:'Bex had always wanted a frost dragon for the collection', why:'literal-only'},
+        {t:'Bex and Ruby were close friends who traded often', why:'true-not-asked'},
+        {t:'Bex did not want the shadow wolf anymore', why:'first-detail'}
+      ],
+      why:'The paragraph states it almost outright: Bex had been reading the developer forum "and had gone looking for someone who had not been reading it." The target was not the dragon, exactly — it was an uninformed trading partner.',
+      evidence:'"Bex had gone looking for someone who had not been reading it."',
+      hints:['One paragraph explains exactly what Bex knew and when.',
+             'The word "looking" is doing real work there. Looking for what?',
+             'Bex needed someone out of the loop — that was the whole plan.']},
+    { skill:'r-vocab', q:'"She had spent all of that wanting in two seconds." What does "spent" mean here?',
+      opts:[
+        {t:'Used up something she had built over time, as if it were money', ok:true},
+        {t:'Paid real money for the shadow wolf pet', why:'literal-only'},
+        {t:'Wasted two seconds of her time deciding', why:'literal-only'},
+        {t:'Grew tired of waiting for the trade to happen', why:'true-not-asked'}
+      ],
+      why:'The author treats four months of wanting like savings: something you build up, then spend. The comparison is what makes the sentence sting — she had a lot of it and used it all at once on a decision she did not think about. Nothing is literally bought.',
+      evidence:'"Four months of wanting the wolf, and she had spent all of that wanting in two seconds."',
+      hints:['What do you usually "spend"? What is being compared to that here?',
+             'Nobody pays money in this sentence. So what is being used up?',
+             'Four months of patience, gone at once — like emptying an account.']}
+  ]
+},
+{
+  id:'coords', band:1, kind:'Explains how something works', title:'How a Game Knows Where You Are',
+  meta:'Nonfiction · 280 words',
+  paras:[
+    `Stand still in almost any 3-D game and the game is still doing arithmetic about you, sixty times a second.`,
+    `Every object in a game world has an address made of three numbers, usually written X, Y, and Z. X is how far east or west you are. Z is how far north or south. Y is how high up. Your character is not really a body standing on a floor — it is a set of three numbers that the game redraws, over and over, faster than your eye can follow.`,
+    `This is why falling through the floor happens. If a character's Y number changes faster than the game can check the floor beneath it, the check happens too late. The floor was there. The character was simply never measured against it at the right moment.`,
+    `Games also do not use your character's actual shape for collisions. Testing the exact outline of a detailed model would be far too slow, so most games wrap each object in a simpler invisible box called a hitbox. When the game asks "did the arrow hit the player?", it is really asking whether two boxes overlapped.`,
+    `That shortcut explains a lot of strange moments. A shot that clearly missed can still count, because the hitbox is slightly larger than the character. A shot that clearly hit can miss, for the same reason in reverse.`,
+    `None of this is the game being broken. It is the game choosing speed over precision, sixty times a second, so that the world can keep moving while you play in it.`
+  ],
+  qs:[
+    { skill:'r-main', q:'What is the main idea of this article?',
+      opts:[
+        {t:'Games use simplified numbers and shapes so the world can run fast enough to play', ok:true},
+        {t:'Characters sometimes fall through the floor in 3-D games', why:'too-narrow'},
+        {t:'Video games are built by very skilled programmers', why:'too-broad'},
+        {t:'Hitboxes are slightly larger than the characters they surround', why:'first-detail'}
+      ],
+      why:'Falling through floors and hitbox size are two examples used to support one bigger point, stated in the final paragraph: the game trades precision for speed. A main idea has to cover the coordinates paragraph AND the hitbox paragraph AND the ending — only one option does.',
+      evidence:'"It is the game choosing speed over precision, sixty times a second."',
+      hints:['Two of these are examples from inside the article, not the point of it.',
+             'Read the last paragraph — articles often state the main idea there.',
+             'Simpler numbers, simpler shapes, all so it can run fast. That is the whole piece.']},
+    { skill:'r-vocab', q:'The article says a character "is not really a body standing on a floor — it is a set of three numbers." What is the author explaining?',
+      opts:[
+        {t:'That what looks solid on screen is really just position data being redrawn', ok:true},
+        {t:'That characters in games are invisible until they are drawn', why:'literal-only'},
+        {t:'That three is the maximum number of objects a game can track', why:'word-lure'},
+        {t:'That players should think of themselves as numbers while playing', why:'literal-only'}
+      ],
+      why:'The author is correcting a natural assumption. You see a body on a floor; the machine only has X, Y and Z and a redraw loop. Once you accept that, the next paragraph — falling through the floor — makes immediate sense, which is exactly why the author puts it here.',
+      evidence:'"…it is a set of three numbers that the game redraws, over and over."',
+      hints:['The author is replacing one picture in your head with a different one. Which two?',
+             'What you SEE versus what the machine actually HAS.',
+             'The body is the appearance. The three numbers are the reality.']},
+    { skill:'r-struct', q:'How does the author organise the middle of the article?',
+      opts:[
+        {t:'Each explanation is followed by a strange thing it causes', ok:true},
+        {t:'Events are listed in the order they were invented', why:'literal-only'},
+        {t:'Two opposite opinions about games are compared', why:'true-not-asked'},
+        {t:'A problem is described and then several solutions are ranked', why:'too-narrow'}
+      ],
+      why:'The pattern repeats twice: coordinates → falling through floors; hitboxes → shots that hit when they look like misses. That is cause-and-effect, and spotting it lets you predict what a paragraph will do before you read it.',
+      evidence:'"This is why falling through the floor happens."',
+      hints:['Look at how the floor paragraph and the hitbox paragraph are each set up.',
+             'Both follow the same shape. What comes first, and what follows?',
+             'Explanation, then the weird result it causes. Cause and effect.']},
+    { skill:'r-detail', q:'According to the article, why do games use hitboxes instead of a character\'s real shape?',
+      opts:[
+        {t:'Testing the exact outline of a detailed model would be too slow', ok:true},
+        {t:'Because characters change shape as they move', why:'true-not-asked'},
+        {t:'So that shots are fairer to every player', why:'word-lure'},
+        {t:'Because the X, Y and Z numbers are not accurate enough', why:'word-lure'}
+      ],
+      why:'The reason is stated plainly: "Testing the exact outline of a detailed model would be far too slow." Fairness is never mentioned, and the coordinates are not described as inaccurate. Detail questions reward finding the sentence rather than reasoning about what sounds sensible.',
+      evidence:'"Testing the exact outline of a detailed model would be far too slow."',
+      hints:['Find the sentence that introduces the word "hitbox".',
+             'The reason comes right before the word is defined.',
+             'It is about speed, not fairness.']}
+  ]
+},
+{
+  id:'bench', band:1, kind:'Story', title:'The Bench',
+  meta:'Fiction · 300 words',
+  paras:[
+    `Theo had been on the bench for six games. He knew the exact grain of the wood by now, the crack near the left end, the way the paint had worn through where hundreds of kids had sat before him being exactly this useful.`,
+    `He was not a bad player. That was the confusing part. In practice he was fine — better than fine on Tuesdays, when Coach ran the passing drills and something in Theo's brain clicked and the ball went precisely where he had decided it would go.`,
+    `But games moved faster than Tuesdays.`,
+    `In the second half, Marcus came off holding his ankle, and Coach said Theo's name without looking up from the clipboard, the way you say something you have said a hundred times.`,
+    `Theo's legs did not feel like his. He jogged out and the field was enormous and full of shouting, and for three minutes he did nothing at all except run near things.`,
+    `Then the ball came to him, and it came badly — spinning, low, from behind his left shoulder — and there was no time to decide anything. So he did not decide. He just did the Tuesday thing, the thing his feet already knew, and the ball went out to Priya on the wing exactly the way it was supposed to.`,
+    `Priya scored eleven seconds later.`,
+    `Afterwards everybody said nice things about Priya's shot, which was fair, because it had been a very good shot. Nobody mentioned the pass.`,
+    `Theo did not mind as much as he had expected to. He sat back down on the bench, on the worn place in the paint, and thought: <em>I can do it when I stop deciding.</em>`,
+    `Next Tuesday he was going to try doing that on purpose.`
+  ],
+  qs:[
+    { skill:'r-infer', q:'What has actually been holding Theo back in games?',
+      opts:[
+        {t:'He thinks too much under pressure instead of trusting what he has practised', ok:true},
+        {t:'He is not as skilled as the other players on the team', why:'literal-only'},
+        {t:'The coach does not like him and refuses to play him', why:'overclaim'},
+        {t:'He has been injured and is not fully recovered', why:'true-not-asked'}
+      ],
+      why:'The story rules out lack of skill directly — "He was not a bad player. That was the confusing part." His good pass happens precisely when "there was no time to decide anything," and he names it himself at the end: "I can do it when I stop deciding."',
+      evidence:'"He just did the Tuesday thing, the thing his feet already knew."',
+      hints:['The story tells you outright that skill is not the problem. So what is?',
+             'What was different about the moment the pass worked?',
+             'He had no time to think — and that was when his feet got it right.']},
+    { skill:'r-theme', q:'Which statement best expresses the theme of the story?',
+      opts:[
+        {t:'Practised skill shows up when you get out of your own way', ok:true},
+        {t:'Hard work always earns you a spot in the starting line-up', why:'literal-only'},
+        {t:'Team sports are more about luck than ability', why:'overclaim'},
+        {t:'The best players are the ones who score the goals', why:'true-not-asked'}
+      ],
+      why:'Nothing in the story rewards Theo publicly — nobody mentions the pass and he stays on the bench. The change is internal, and the last two lines carry it: he has worked out the condition under which he is good, and plans to practise that. Themes are not always about winning.',
+      evidence:'"I can do it when I stop deciding."',
+      hints:['He does not get a reward at the end. So what does he get?',
+             'One option promises something the story deliberately does not give him.',
+             'The lesson is about how his own thinking gets in the way.']},
+    { skill:'r-vocab', q:'The bench paint is "worn through where hundreds of kids had sat before him being exactly this useful." What does this suggest?',
+      opts:[
+        {t:'Many others have sat there feeling just as sidelined as he does', ok:true},
+        {t:'The bench is very old and needs to be repainted', why:'literal-only'},
+        {t:'The team has had hundreds of players over the years', why:'true-not-asked'},
+        {t:'Theo has been sitting on the bench for hundreds of games', why:'literal-only'}
+      ],
+      why:'"Being exactly this useful" is a bitter joke — it means not useful at all. The worn paint turns his private frustration into something shared by every kid who ever sat there. A physical detail is carrying a feeling, which is what good description does.',
+      evidence:'"…where hundreds of kids had sat before him being exactly this useful."',
+      hints:['"Exactly this useful" — is that a compliment?',
+             'The worn paint is a fact. What feeling is it carrying?',
+             'He is not the first person to feel spare on that bench.']},
+    { skill:'r-struct', q:'Why does the author place the one-line paragraph "But games moved faster than Tuesdays" where it is?',
+      opts:[
+        {t:'It turns the description of his practice skill into the reason he sits on the bench', ok:true},
+        {t:'It shows that the team plays its matches on weekends', why:'literal-only'},
+        {t:'It proves that Theo needs more practice than the others', why:'overclaim'},
+        {t:'It marks a jump backwards to an earlier part of the season', why:'literal-only'}
+      ],
+      why:'The paragraph before builds him up: on Tuesdays something clicks and the ball goes exactly where he decides. That single line takes the build-up and turns it into a problem. It is a hinge — everything before it is ability, everything after is what happens to that ability under pressure.',
+      evidence:'"But games moved faster than Tuesdays."',
+      hints:['Notice the word it starts with: "But".',
+             'What was the paragraph before it saying about him?',
+             'It flips a strength into an explanation for the bench.']}
+  ]
+},
+{
+  id:'speedrun', band:2, kind:'Explains how something works', title:'The Rules Nobody Wrote Down',
+  meta:'Nonfiction · 300 words',
+  paras:[
+    `A speedrun is simple to describe: finish a game as fast as possible. Almost everything after that sentence gets complicated.`,
+    `The first problem is where to start and stop the clock. Does timing begin when you press "new game," or when control of the character begins? Those differ by a few seconds, and in a community where records fall by tenths, a few seconds is enormous. So runners agreed on a standard, wrote it down, and now every submitted run is timed the same way.`,
+    `The second problem is harder, because it is about what counts as playing. Most games contain mistakes — a wall you can clip through, a cutscene you can cancel, a door that opens early if you approach it backwards. None of these were intended. All of them save time.`,
+    `Communities generally do not ban them. Instead they split into categories. "Any%" allows nearly everything and asks only that you reach the ending. "Glitchless" bars the known exploits. "100%" requires collecting everything, which usually takes longer and rewards completely different skills.`,
+    `This solves an argument that has no correct answer. A runner who thinks clipping through walls is not really playing the game can compete in Glitchless and never has to convince anybody. A runner who finds it the most interesting part of the game has Any%.`,
+    `It is worth noticing what the communities did here. Faced with a disagreement about values, they did not hold a vote and force everyone onto one side. They built more than one finish line.`
+  ],
+  qs:[
+    { skill:'r-purpose', q:'Why does the author write that "they built more than one finish line"?',
+      opts:[
+        {t:'To praise a solution that let people with different values both compete fairly', ok:true},
+        {t:'To explain that speedrun courses have several possible endings', why:'literal-only'},
+        {t:'To argue that Any% is the most exciting category to watch', why:'true-not-asked'},
+        {t:'To show that speedrunning rules are confusing for newcomers', why:'true-not-asked'}
+      ],
+      why:'The sentence before it sets up the contrast: they did NOT vote and force one side. The finish-line image is figurative — separate categories. The final paragraph opens with "It is worth noticing," which is an author telling you plainly that admiration is coming.',
+      evidence:'"Faced with a disagreement about values, they did not hold a vote and force everyone onto one side."',
+      hints:['"It is worth noticing" — that phrase signals the author\'s opinion is arriving.',
+             'What is the finish line being compared to? Is it a real finish line?',
+             'Different values, different categories, nobody forced to give in.']},
+    { skill:'r-struct', q:'How is this article organised?',
+      opts:[
+        {t:'A simple definition, then two problems with it, each followed by how the community solved it', ok:true},
+        {t:'A list of speedrun categories ranked from easiest to hardest', why:'too-narrow'},
+        {t:'A history of speedrunning told in the order events happened', why:'literal-only'},
+        {t:'Two opposing arguments given equal space and left unresolved', why:'true-not-asked'}
+      ],
+      why:'The signposts are right there: "The first problem is…", "The second problem is harder…", and each is followed by the fix (an agreed timing standard; split categories). The opening definition sets up both. Nothing is ranked and nothing is left hanging.',
+      evidence:'"The first problem is… The second problem is harder…"',
+      hints:['Look for the phrases that open paragraphs two and three.',
+             'Each problem is followed by something. What?',
+             'Definition, problem, solution, problem, solution.']},
+    { skill:'r-detail', q:'According to the article, what does the "Glitchless" category require?',
+      opts:[
+        {t:'That the runner avoids the known exploits in the game', ok:true},
+        {t:'That the runner collects every item in the game', why:'word-lure'},
+        {t:'That the runner only needs to reach the ending', why:'word-lure'},
+        {t:'That the run contains no mistakes of any kind', why:'literal-only'}
+      ],
+      why:'"Glitchless bars the known exploits." The other two categories are defined in the same paragraph, which is exactly why they are offered as wrong answers — a detail question often puts the neighbouring definitions in the list. And "no mistakes of any kind" misreads the word: glitches are the game\'s errors, not the player\'s.',
+      evidence:'"\'Glitchless\' bars the known exploits."',
+      hints:['All three categories are defined in one paragraph. Find the right sentence.',
+             'Two wrong answers are the definitions of the OTHER categories.',
+             'A glitch is the game\'s mistake, not the runner\'s.']},
+    { skill:'r-infer', q:'What does the article suggest about disagreements where nobody is simply wrong?',
+      opts:[
+        {t:'Sometimes the better move is to make room for both sides rather than pick one', ok:true},
+        {t:'They should be settled by a vote of everyone involved', why:'literal-only'},
+        {t:'They usually mean the original rules were written badly', why:'overclaim'},
+        {t:'They cannot be resolved and are best ignored', why:'overclaim'}
+      ],
+      why:'The author calls it "an argument that has no correct answer" and then admires the response: separate categories instead of one enforced winner. The vote is explicitly what they did NOT do. The article is quietly making a point that reaches well past video games.',
+      evidence:'"This solves an argument that has no correct answer."',
+      hints:['Find the phrase "no correct answer" and read what follows it.',
+             'One option is the exact thing the article says they avoided doing.',
+             'They did not settle it. They made it so it did not need settling.']}
+  ]
+},
+{
+  id:'patch', band:2, kind:'Story', title:'Nobody Reads the Patch Notes',
+  meta:'Fiction · 320 words',
+  paras:[
+    `The complaints started at 4:02 p.m., about ninety seconds after the update went live.`,
+    `<em>you RUINED the jump</em><br><em>why would you nerf movement???</em><br><em>whoever did this should be fired</em>`,
+    `Sadie read them from the dev account with her chin on her hand. She had written the patch notes herself, four days earlier. They were pinned to the top of the forum, the announcements channel, and the loading screen. Line three said, in plain words, that the jump height was going up by six percent, not down.`,
+    `Up. It was going <em>up</em>.`,
+    `She typed a reply, deleted it, typed a shorter one, deleted that too.`,
+    `What she wanted to say was: <em>you are describing the opposite of what happened.</em> What was actually happening, she suspected, was something more interesting and more annoying. The jump felt wrong because it <em>was</em> different, and different feels wrong first. Everybody's hands had four months of practice at the old number. Their hands had opinions before their brains got a turn.`,
+    `By six o'clock the tone had shifted. <em>ok actually the jump is fine once you get used to it.</em> By eight: <em>wait was it always this good?</em>`,
+    `Nobody apologised, which Sadie had stopped expecting years ago. Around nine, one player posted a careful comparison video proving the jump was higher, and forty people replied that they had known that all along.`,
+    `Sadie closed the laptop.`,
+    `The thing she had learned, slowly, over six years of doing this: people are almost never lying when they complain. They are reporting a real feeling with a wrong explanation attached. The feeling is data. The explanation is a guess. Her job was to take the first one seriously and the second one lightly, and most days she could still tell which was which.`
+  ],
+  qs:[
+    { skill:'r-theme', q:'What is the central idea Sadie arrives at?',
+      opts:[
+        {t:'People report real feelings accurately but explain their causes badly', ok:true},
+        {t:'Players who complain online should be ignored completely', why:'overclaim'},
+        {t:'Game developers should stop changing things that already work', why:'true-not-asked'},
+        {t:'Most people online are dishonest about their opinions', why:'literal-only'}
+      ],
+      why:'The final paragraph states it: "people are almost never lying… They are reporting a real feeling with a wrong explanation attached." She takes the feeling seriously and the explanation lightly. That is the opposite of ignoring them, and the opposite of calling them liars.',
+      evidence:'"The feeling is data. The explanation is a guess."',
+      hints:['The last paragraph is Sadie stating what she has learned. Read it closely.',
+             'Two options say to dismiss players. Does she dismiss them?',
+             'The feeling was true — the jump DID feel wrong. The reason they gave was not.']},
+    { skill:'r-infer', q:'Why did the jump feel wrong to players even though it had been improved?',
+      opts:[
+        {t:'Four months of practice had trained their hands on the old height, so any change felt like a mistake', ok:true},
+        {t:'The patch notes were hidden where nobody could find them', why:'literal-only'},
+        {t:'A second bug was making the jump behave inconsistently', why:'overclaim'},
+        {t:'Six percent is too large a change for players to adjust to', why:'overclaim'}
+      ],
+      why:'The story explains it: "Everybody\'s hands had four months of practice at the old number. Their hands had opinions before their brains got a turn." And the notes were not hidden — they were pinned in three places, which the author lists precisely to rule this out.',
+      evidence:'"Their hands had opinions before their brains got a turn."',
+      hints:['The paragraph beginning "What she wanted to say" contains her actual theory.',
+             'The notes were pinned in three places — so that option is ruled out on purpose.',
+             'Their bodies were trained on the old number. New felt wrong simply by being new.']},
+    { skill:'r-struct', q:'Why does the author include the timestamps — 4:02, six o\'clock, eight, around nine?',
+      opts:[
+        {t:'To show the anger cooling into acceptance on its own, without Sadie doing anything', ok:true},
+        {t:'To prove that the update took all evening to install', why:'literal-only'},
+        {t:'To show how long Sadie had to work that day', why:'true-not-asked'},
+        {t:'To build suspense about whether the game would be fixed', why:'true-not-asked'}
+      ],
+      why:'Track what the quotes say at each time: ruined → fine once you get used to it → was it always this good? The clock is doing the argument for the author. Sadie never posts. The change in opinion comes entirely from time passing, which is exactly her point about hands needing to adjust.',
+      evidence:'"By six o\'clock the tone had shifted… By eight: wait was it always this good?"',
+      hints:['Read only the player quotes, in time order. What happens to them?',
+             'Notice what Sadie does in between those times: nothing.',
+             'The complaints fix themselves. The clock is the evidence.']},
+    { skill:'r-vocab', q:'"Their hands had opinions before their brains got a turn." What does this mean?',
+      opts:[
+        {t:'Trained physical habit reacted before conscious thought could assess the change', ok:true},
+        {t:'The players were typing complaints without reading them first', why:'literal-only'},
+        {t:'The players were more skilled with their hands than with strategy', why:'literal-only'},
+        {t:'The players argued with each other before checking the facts', why:'true-not-asked'}
+      ],
+      why:'Hands cannot hold opinions — the author gives them one to make a point about muscle memory. Four months of practice had built a reflex, and the reflex registered "wrong" before anyone consciously judged anything. The comparison names something real about how skill lives in the body.',
+      evidence:'"Everybody\'s hands had four months of practice at the old number."',
+      hints:['Can hands really have opinions? So what is being described?',
+             'Read the sentence right before it about four months of practice.',
+             'The body reacted first; the thinking came second.']}
+  ]
+},
+{
+  id:'mapless', band:3, kind:'Story', title:'What the Map Doesn\'t Show',
+  meta:'Fiction · 330 words',
+  paras:[
+    `The game had a map, and Wren had memorised it by the second week. She could name every shortcut, every respawn point, every spot where the terrain let you climb somewhere you were not supposed to be. When new players joined, they followed her, because following her worked.`,
+    `What the map did not show was Callum, who had been playing on the same server for two years and had never once used a shortcut.`,
+    `Wren noticed him because he was slow in a way that seemed deliberate. He would stop at the ridge above the lake for no reason. He built a bench there — an actual bench, out of planks, facing west — and it did nothing. It gave no bonus. It could not be sold.`,
+    `"What's it for?" she asked him once.`,
+    `"The sun goes down over there," Callum said.`,
+    `Wren waited for the rest of the answer. There wasn't one.`,
+    `She thought about it for a long time afterwards, in the way you think about a sentence that will not fit anywhere. She had nine hundred hours in this game. She had never watched the sun go down in it. She was not sure she had ever noticed it had one.`,
+    `That was not a failure, exactly. The shortcuts were real. The knowledge was real, and useful, and other people relied on it. But it occurred to her, standing on the ridge one evening with nothing scheduled, that she had learned the whole map the way you learn a hallway — as the distance between two rooms that actually matter.`,
+    `The sun went down over the lake. It took about ninety seconds. The light did a thing on the water that she would not have been able to describe to anyone, least of all Callum, who was not online.`,
+    `The next day she went back to running shortcuts, because she still liked running shortcuts.`,
+    `But she left the bench alone, and once or twice a week, without telling anyone, she sat on it.`
+  ],
+  qs:[
+    { skill:'r-theme', q:'Which statement best expresses the theme of this story?',
+      opts:[
+        {t:'Knowing how to get somewhere fast is not the same as knowing a place', ok:true},
+        {t:'Playing games efficiently is a waste of time', why:'overclaim'},
+        {t:'Making friends matters more than being skilled', why:'true-not-asked'},
+        {t:'You should slow down and appreciate nature more', why:'too-broad'}
+      ],
+      why:'The hallway image is the key: she learned the map "as the distance between two rooms that actually matter." Efficiency was never wrong — the story is careful to say the shortcuts are real and useful, and she goes back to them. What she gained is a second way of knowing the same place.',
+      evidence:'"…she had learned the whole map the way you learn a hallway."',
+      hints:['She keeps running shortcuts at the end. So the story is not against them.',
+             'One option is a life-lesson so general it could sit on any story.',
+             'Two kinds of knowing the same map: as a route, and as a place.']},
+    { skill:'r-vocab', q:'What does the hallway comparison reveal about how Wren knew the map?',
+      opts:[
+        {t:'She only ever registered it as the space between destinations, never as somewhere itself', ok:true},
+        {t:'She found the map boring and repetitive to look at', why:'literal-only'},
+        {t:'The map was narrow and difficult to move through', why:'literal-only'},
+        {t:'She had memorised the map but often got lost anyway', why:'true-not-asked'}
+      ],
+      why:'Nobody looks at a hallway; you pass through it to reach a room. That is precisely her relationship to nine hundred hours of terrain — every part of it was a route to somewhere else. The comparison also explains the sentence before it: she never noticed the game had a sun.',
+      evidence:'"…as the distance between two rooms that actually matter."',
+      hints:['What do you normally do in a hallway? Do you look at it?',
+             'The sentence defines itself: "the distance between two rooms that actually matter."',
+             'A hallway is never the destination — that is the whole comparison.']},
+    { skill:'r-infer', q:'Why does the author tell us the bench "gave no bonus" and "could not be sold"?',
+      opts:[
+        {t:'To rule out every practical reason, so the only reason left is that Callum wanted it there', ok:true},
+        {t:'To show that Callum did not understand the game\'s systems', why:'overclaim'},
+        {t:'To suggest the bench was a bug the developers had missed', why:'literal-only'},
+        {t:'To explain why other players never visited the ridge', why:'true-not-asked'}
+      ],
+      why:'The author is closing doors. If the bench paid out, Wren\'s framework would absorb it and nothing would change. By stating it does nothing useful, the author forces both Wren and the reader to accept a motive that has no payoff — which is the idea the whole story turns on.',
+      evidence:'"It did nothing. It gave no bonus. It could not be sold."',
+      hints:['What explanations do those two facts eliminate?',
+             'If the bench were useful, would the story still work?',
+             'Removing every practical reason leaves only one kind of reason.']},
+    { skill:'r-struct', q:'What does the final short paragraph add to the story?',
+      opts:[
+        {t:'It shows the change was small, private and permanent rather than dramatic', ok:true},
+        {t:'It reveals that Wren and Callum became close friends', why:'overclaim'},
+        {t:'It shows Wren gave up speedrunning the map for good', why:'literal-only'},
+        {t:'It explains who originally built the bench', why:'literal-only'}
+      ],
+      why:'Note the size of it. She does not quit, announce anything, or befriend Callum — who is not even online for her one sunset. "Once or twice a week, without telling anyone" is deliberately modest. The author is refusing the big transformation ending, and that restraint is what makes the change believable.',
+      evidence:'"…once or twice a week, without telling anyone, she sat on it."',
+      hints:['Notice how small the change is. Why would an author choose small?',
+             'The paragraph before says she went back to running shortcuts.',
+             '"Without telling anyone" — this is for her, not for anybody else.']}
+  ]
+},
+{
+  id:'frog', band:3, kind:'Science', title:'The Frog That Freezes Solid',
+  meta:'Nonfiction · 330 words',
+  paras:[
+    `In an Alaskan winter, a wood frog can freeze until it is hard enough to knock against a table. Its heart stops. Its breathing stops. By any measure a doctor would use on a person, the frog is dead. In spring it thaws, blinks, and hops away.`,
+    `Freezing normally destroys animals for a specific reason. Water expands as it turns to ice, and ice crystals forming inside a cell will tear the cell apart from within. This is why frostbite causes permanent damage, and why most living tissue cannot survive being frozen and returned.`,
+    `The wood frog does not prevent freezing. It controls where the freezing happens.`,
+    `As the temperature drops, the frog's liver floods its body with glucose — a sugar — at concentrations that would put a human into a medical emergency. The sugar packs into the cells and lowers the point at which the liquid inside them would freeze. Ice still forms, but it forms in the spaces <em>between</em> cells, where crystals have room and nothing to tear. Up to two-thirds of the frog's body water turns to ice, and the machinery inside each cell stays intact.`,
+    `Thawing runs the sequence backwards, and not evenly: the heart restarts first, before the limbs have softened, so that blood is moving by the time the rest of the animal needs it.`,
+    `Researchers study this for reasons that have nothing to do with frogs. Human organs for transplant survive roughly a day on ice, which means a kidney and the patient who needs it must be close enough in space and time to meet. An organ that could be frozen and thawed without damage would end that race. Nobody has done it. The frog has been doing it, every winter, for a very long time.`
+  ],
+  qs:[
+    { skill:'r-main', q:'What is the central idea of this article?',
+      opts:[
+        {t:'The wood frog survives freezing by steering where ice forms, and that trick could matter for medicine', ok:true},
+        {t:'Wood frogs in Alaska can stop their own hearts during winter', why:'first-detail'},
+        {t:'Ice crystals destroy cells by tearing them from the inside', why:'too-narrow'},
+        {t:'Human organ transplants are limited by how long organs last on ice', why:'too-narrow'}
+      ],
+      why:'The stopped heart is the hook, and the two mechanisms are supporting explanation. Only one option holds both halves of the article together: the mechanism (controlling where ice forms) and the reason the author bothered to explain it (transplants). Watch for options that are true but cover only one paragraph.',
+      evidence:'"The wood frog does not prevent freezing. It controls where the freezing happens."',
+      hints:['Three of these are true statements from single paragraphs.',
+             'The last paragraph tells you why the author wrote this at all.',
+             'A central idea has to include both the how and the so-what.']},
+    { skill:'r-struct', q:'Why does the author explain frostbite BEFORE describing what the frog does?',
+      opts:[
+        {t:'So the reader understands the problem the frog has solved, making the solution meaningful', ok:true},
+        {t:'Because frostbite and the frog\'s freezing are the same process', why:'literal-only'},
+        {t:'To warn readers about the dangers of extreme cold', why:'true-not-asked'},
+        {t:'Because the events are being told in the order they were discovered', why:'literal-only'}
+      ],
+      why:'Without paragraph two, "ice forms between the cells" is just a fact. With it, that sentence is a solution to a problem you already feel. This is standard science writing: establish why the thing should be impossible, then show how it is done.',
+      evidence:'"…ice crystals forming inside a cell will tear the cell apart from within."',
+      hints:['What would the frog paragraph feel like if you had not read the frostbite one?',
+             'Paragraph 2 explains why freezing SHOULD kill the frog.',
+             'Set up the impossibility first, then reveal the workaround.']},
+    { skill:'r-vocab', q:'The author writes that the frog "does not prevent freezing. It controls where the freezing happens." Why is this distinction important?',
+      opts:[
+        {t:'The frog does freeze — the survival comes from ice forming outside cells instead of inside them', ok:true},
+        {t:'The frog keeps its body just above freezing all winter', why:'literal-only'},
+        {t:'The frog can choose which body parts to freeze and when', why:'overclaim'},
+        {t:'The frog freezes more slowly than other animals do', why:'true-not-asked'}
+      ],
+      why:'This sentence is the hinge of the whole article, which is why it gets a paragraph to itself. Most readers assume survival means avoiding the freeze. It does not: two-thirds of the frog\'s water becomes ice. Location, not prevention, is the entire mechanism — and "controls where" is not the same as consciously choosing.',
+      evidence:'"Ice still forms, but it forms in the spaces between cells."',
+      hints:['Does the frog stay unfrozen? Check the two-thirds sentence.',
+             'The important word is "where", not "whether".',
+             'Inside the cell is fatal; between the cells is survivable.']},
+    { skill:'r-infer', q:'What does the final sentence suggest about the relationship between the frog and the research?',
+      opts:[
+        {t:'Nature solved a problem long ago that human medicine still cannot solve', ok:true},
+        {t:'Researchers will soon be able to freeze human organs safely', why:'overclaim'},
+        {t:'Frogs are being used directly in transplant operations', why:'literal-only'},
+        {t:'The transplant problem is less serious than it first appears', why:'true-not-asked'}
+      ],
+      why:'Set the two sentences against each other: "Nobody has done it" and "The frog has been doing it… for a very long time." The contrast is the point — and note the author stops exactly there. No promise is made about when, or whether, humans will manage it.',
+      evidence:'"Nobody has done it. The frog has been doing it, every winter, for a very long time."',
+      hints:['Read the last two sentences as a pair. They are set against each other.',
+             'Does the author promise a breakthrough? Find the words that would say so.',
+             'One party cannot do it. The other has been doing it all along.']}
+  ]
+},
+{
+  id:'blackout', band:3, kind:'Two texts to compare', title:'Two Accounts of One Blackout',
+  meta:'Paired sources · 300 words',
+  paras:[
+    `<b>Source A — from a city government report, published four months after the event</b>`,
+    `<em>At 8:14 p.m. on July 13th, a protective relay at the Harrow Street substation opened in response to a voltage irregularity. Automated systems transferred load to two neighbouring substations, both of which exceeded capacity within ninety seconds. Power was lost to approximately 340,000 residents. Full restoration required nineteen hours. The relay had been scheduled for replacement in the previous fiscal year; the replacement was deferred.</em>`,
+    `<b>Source B — from a newspaper column, published two days after the event</b>`,
+    `<em>For nineteen hours this city lived by candlelight, and we are owed an explanation. Nineteen hours. Families on the eleventh floor carried groceries up darkened stairwells. A neighbourhood of 340,000 people was abandoned by the agency it pays to keep the lights on — an agency that, we are told, "deferred" a repair. Deferred. There is a shorter word for that, and every parent who spent that night on a stifling landing already knows it.</em>`,
+    `<b>Note:</b> The two sources agree on the duration, the number of residents affected, and the fact that a scheduled replacement did not happen.`
+  ],
+  qs:[
+    { skill:'r-purpose', q:'How does Source B use the word "deferred" differently from Source A?',
+      opts:[
+        {t:'A uses it as a neutral administrative term; B repeats it to expose it as a euphemism', ok:true},
+        {t:'A and B use the word to mean two unrelated things', why:'literal-only'},
+        {t:'B uses it to show the repair was completed on a later date', why:'literal-only'},
+        {t:'A uses it emotionally and B uses it technically', why:'opinion-fact'}
+      ],
+      why:'Source A reports it once, flatly, as the word a schedule would use. Source B quotes it, sets it alone as a one-word sentence — "Deferred." — and says there is "a shorter word for that." Repeating an opponent\'s word to make it sound evasive is a persuasive technique, not a difference in meaning.',
+      evidence:'"…an agency that, we are told, \'deferred\' a repair. Deferred."',
+      hints:['Count how many times each source uses the word, and how.',
+             'Why would a writer put a single word alone as its own sentence?',
+             'B is not defining the word. B is holding it up for you to look at.']},
+    { skill:'r-detail', q:'According to Source A, what happened immediately after the relay at Harrow Street opened?',
+      opts:[
+        {t:'Automated systems moved the load to two neighbouring substations, which were overwhelmed in ninety seconds', ok:true},
+        {t:'Power was lost instantly to all 340,000 residents', why:'first-detail'},
+        {t:'Crews were dispatched to begin the nineteen-hour restoration', why:'word-lure'},
+        {t:'The scheduled replacement relay was installed', why:'word-lure'}
+      ],
+      why:'Source A gives a sequence, and the question asks for one specific link in it. The transfer to neighbouring substations comes first; the loss of power to 340,000 is the result of those substations being overwhelmed, not the immediate next step. Precise reading of order matters in a report like this.',
+      evidence:'"Automated systems transferred load to two neighbouring substations, both of which exceeded capacity within ninety seconds."',
+      hints:['Read Source A one sentence at a time and track the order.',
+             'The blackout is the end of the chain, not the first link.',
+             'Something was transferred before anything went dark.']},
+    { skill:'r-infer', q:'A reader says: "Source A is more reliable because it contains no emotional language." Is that reasoning complete?',
+      opts:[
+        {t:'Not entirely — A is precise, but it is also written by the agency being criticised, which is its own kind of interest', ok:true},
+        {t:'Yes — writing without emotion always means writing without bias', why:'overclaim'},
+        {t:'No — official reports are generally less trustworthy than journalism', why:'overclaim'},
+        {t:'Yes, because Source A was published later and had more time to gather facts', why:'literal-only'}
+      ],
+      why:'Flat language is not the same as neutrality. Source A is a city government report about a city government failure — and notice how the passive voice arranges the last sentence: "the replacement was deferred," with nobody named as deferring it. A is still the more precise source. Both things can be true at once.',
+      evidence:'"…the replacement was deferred."',
+      hints:['Who wrote Source A, and who does the blackout reflect badly on?',
+             'Look hard at the last sentence of A. Who deferred the replacement?',
+             'Calm wording can still be shaped. Ask what it leaves out.']},
+    { skill:'r-main', q:'Using both sources, what is the most defensible conclusion about the blackout?',
+      opts:[
+        {t:'A known repair was postponed and the failure that followed affected 340,000 people for nineteen hours', ok:true},
+        {t:'The agency deliberately allowed the blackout to happen', why:'overclaim'},
+        {t:'The blackout was an unavoidable accident nobody could have prevented', why:'literal-only'},
+        {t:'Source B is exaggerating and the event was not serious', why:'literal-only'}
+      ],
+      why:'Synthesis means standing only on what both sources support — and the note tells you exactly what that is: duration, number affected, and a scheduled replacement that did not happen. "Deliberately allowed" goes beyond either source. "Unavoidable" is contradicted by the deferred repair. The strongest claim is often the most carefully bounded one.',
+      evidence:'"The two sources agree on the duration, the number of residents affected, and the fact that a scheduled replacement did not happen."',
+      hints:['The note at the bottom lists the agreed facts. Start there.',
+             'Two options take a side that neither source establishes.',
+             'Stop exactly where the shared evidence stops.']}
+  ]
 }
 ];
 
@@ -1664,7 +2175,7 @@ let S = {
   profile:{ answered:0, hintsUsed:0, times:[],
             visTries:0, visRight:0, symTries:0, symRight:0,
             fastWrong:0, slowRight:0, wordSeen:0, wordRight:0, bareSeen:0, bareRight:0,
-            readSeen:0, readRight:0 },
+            readSeen:0, readRight:0, readRoll:[] },
   review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0
 };
 
@@ -1678,7 +2189,8 @@ function load(){
     S.mastery = Object.assign(blankMastery(), d.mastery||{});
     Object.keys(SKILLS).forEach(k=>{ if(!S.mastery[k].recent) S.mastery[k].recent=[]; });
     S.profile = Object.assign({answered:0,hintsUsed:0,times:[],visTries:0,visRight:0,symTries:0,symRight:0,
-      fastWrong:0,slowRight:0,wordSeen:0,wordRight:0,bareSeen:0,bareRight:0,readSeen:0,readRight:0}, d.profile||{});
+      fastWrong:0,slowRight:0,wordSeen:0,wordRight:0,bareSeen:0,bareRight:0,
+      readSeen:0,readRight:0,readRoll:[]}, d.profile||{});
   }catch(e){}
 }
 const today = () => new Date().toISOString().slice(0,10);
@@ -1765,6 +2277,9 @@ function record(item, correct, msTaken, hintsUsed){
     if (correct && secs > 12) P.slowRight++;
   } else {
     P.readSeen++; if(correct) P.readRight++;
+    P.readRoll = P.readRoll || [];
+    P.readRoll.push(correct?1:0);
+    if (P.readRoll.length > 12) P.readRoll.shift();
   }
 
   // spaced review queue
@@ -1777,12 +2292,14 @@ function record(item, correct, msTaken, hintsUsed){
 }
 
 /* Which skill should come next? */
-function chooseSkill(realm){
+function chooseSkill(realm, avoid){
   const ks = (realm==='math' ? MATH_SKILLS : READ_SKILLS).filter(k => !isLocked(k));
-  const pool = ks.length ? ks : (realm==='math' ? MATH_SKILLS : READ_SKILLS);
+  let pool = ks.length ? ks : (realm==='math' ? MATH_SKILLS : READ_SKILLS);
+  // never twice in a row — back-to-back repeats are what make a set feel circular
+  if (avoid && pool.length > 1) pool = pool.filter(k => k !== avoid);
 
   // 1. anything overdue for review wins
-  const due = S.review.filter(r => (SKILLS[r.skill]||{}).realm===realm && r.due <= (S.profile.answered||0) && pool.includes(r.skill));
+  const due = S.review.filter(r => (SKILLS[r.skill]||{}).realm===realm && r.due <= (S.profile.answered||0) && pool.indexOf(r.skill) > -1);
   if (due.length && Math.random()<0.55) return pick(due).skill;
 
   // 2. otherwise weight toward the productive-struggle zone
@@ -1915,6 +2432,10 @@ function coachHome(){
   const P = S.profile, prof = profileRead();
   const mathM = realmMastery('math'), readM = realmMastery('read');
   if (!S.scanned) return `Before we build anything, I need to see how you think. The Skill Scan takes about six minutes and there is no way to fail it.`;
+  if (S.quests && S.quests.date === today() && (S.quests.done||[]).length >= (S.quests.list||[]).length){
+    return `Today's three are done — nice. There is a <b>bonus round</b> below if you want more,
+            and free build never runs out.`;
+  }
   if (S.lastDay !== today() && S.streak>0) return `Day ${S.streak+1}. Three quests below — about ten minutes and you are done for today.`;
   if (P.answered < 10) return `Welcome back, ${S.name}. I am still learning your style, so the first few will feel like I am poking around. That is on purpose.`;
 
@@ -1951,23 +2472,49 @@ function startSession(opts){
   SESH = Object.assign({
     realm:'math', len:8, items:[], idx:0, right:0, xp:0,
     marks:[], runStreak:0, missRun:0, hintsUsed:0, scaffoldNext:false,
-    scan:false, ladder:1, touched:{}, startedAt:Date.now(), quest:null, passage:null
+    scan:false, ladder:1, touched:{}, startedAt:Date.now(), quest:null, passage:null,
+    passageStart:0, recent:[], lastSkill:null, lastTrap:null
   }, opts);
   touchStreak();
   nextItem();
   show('scr-session');
 }
 
-function pickPassage(){
-  let band = 1;
+/* Unread stories first, then the one read longest ago, and never the story he
+   just finished. His own band plus the one below it keeps the pool wide enough
+   that a run of sessions doesn't start looping. */
+function pickPassage(){ return pickPassageIn(readingBand()); }
+
+/* A harder band has to be earned twice over: enough mastery AND a recent
+   accuracy saying the current level is actually comfortable. Promoting him
+   while he is still missing four in ten is how reading turns frustrating. */
+function readingBand(){
   const rm = realmMastery('read');
-  if (rm > 0.35) band = 2;
-  if (rm > 0.68) band = 3;
-  const done = S.passages || {};
-  let pool = PASSAGES.filter(p=>p.band===band && !done[p.id]);
-  if (!pool.length) pool = PASSAGES.filter(p=>p.band===band);
-  if (!pool.length) pool = PASSAGES;
-  return pick(pool);
+  const roll = S.profile.readRoll || [];
+  const acc = roll.length >= 6 ? roll.reduce((a,b)=>a+b,0)/roll.length : 1;
+  if (rm > 0.68 && acc >= 0.70) return 3;
+  if (rm > 0.35 && acc >= 0.60) return 2;
+  return 1;
+}
+
+function pickPassageIn(band){
+  const seq = S.passageSeq || 0;
+  const seen = S.passages || {};
+  const age = p => { const r = seen[p.id]; return (r && r.seq != null) ? seq - r.seq : Infinity; };
+
+  const tiers = [
+    PASSAGES.filter(p => p.band === band || p.band === band - 1),
+    PASSAGES,
+  ];
+  for (const tier of tiers){
+    const pool = tier.filter(p => p.id !== S.lastPassage);
+    if (!pool.length) continue;
+    const unread = pool.filter(p => age(p) === Infinity);
+    if (unread.length) return pick(unread);
+    const oldest = Math.max(...pool.map(age));
+    return pick(pool.filter(p => age(p) === oldest));
+  }
+  return pick(PASSAGES);
 }
 
 function nextItem(){
@@ -1980,18 +2527,38 @@ function nextItem(){
       s.current = makeMathItem(sk, df, false);
       s.current.diff = Math.max(1, Math.min(3, Math.ceil((s.ladder+1)/3)));
     } else {
-      if (!s.passage){ s.passage = PASSAGES.find(p=>p.band===1) || PASSAGES[0]; s.qi = 0; }
+      if (!s.passage){
+        s.passage = PASSAGES.find(p=>p.band===1) || PASSAGES[0];
+        s.qi = 0; s.passageStart = s.marks.length;
+      }
       s.current = readingItem(s.passage, s.qi++);
     }
   } else if (s.realm === 'read'){
-    if (!s.passage){ s.passage = s.forcePassage || pickPassage(); s.qi = 0; s.len = s.passage.qs.length; }
+    if (!s.passage){
+      s.passage = s.forcePassage || pickPassage();
+      s.qi = 0; s.passageStart = s.marks.length;
+    }
+    // out of questions but not out of set — bring in a new story and keep reading
+    if (s.qi >= s.passage.qs.length){
+      closePassage(s);
+      s.passage = pickPassage();
+      s.qi = 0; s.passageStart = s.marks.length;
+    }
     s.current = readingItem(s.passage, s.qi++);
   } else {
     const prof = profileRead();
-    const skill = chooseSkill('math');
+    const skill = chooseSkill('math', s.lastSkill);
     const df = s.scaffoldNext ? 1 : diffOf(skill);
     const visual = s.scaffoldNext || wantsVisual(skill, prof);
-    s.current = makeMathItem(skill, df, visual);
+    // reroll an exact repeat of a question he has just had
+    s.recent = s.recent || [];
+    let made, tries = 0;
+    do { made = makeMathItem(skill, df, visual); tries++; }
+    while (tries < 8 && s.recent.indexOf(made.prompt) > -1);
+    s.recent.push(made.prompt);
+    if (s.recent.length > 10) s.recent.shift();
+    s.lastSkill = skill;
+    s.current = made;
     if (s.scaffoldNext){ s.current.scaffolded = true; s.current.autoScaffold = true; }
     s.scaffoldNext = false;
   }
@@ -2085,10 +2652,7 @@ function submitAnswer(chosen, btn){
 function finishSession(){
   const s = SESH;
   S.xp += s.xp;
-  if (s.realm==='read' && s.passage){
-    const perfect = s.right === s.marks.length && s.marks.length>0;
-    S.passages[s.passage.id] = {at:today(), right:s.right, total:s.marks.length, perfect};
-  }
+  closePassage(s);
   if (s.scan){ S.scanned = true; seedFromScan(s); }
   if (s.quest != null && S.quests) {
     S.quests.done = S.quests.done || [];
@@ -2101,6 +2665,22 @@ function finishSession(){
   save();
   renderResult(fresh);
   show('scr-result');
+}
+
+/* Log a story the moment it is finished — mid-set or at the end — so the
+   rotation knows it has been read and won't hand it back next time. */
+function closePassage(s){
+  if (!s || !s.passage) return;
+  const slice = s.marks.slice(s.passageStart || 0);
+  const right = slice.filter(Boolean).length;
+  const prev = S.passages[s.passage.id] || {};
+  S.passageSeq = (S.passageSeq || 0) + 1;
+  S.passages[s.passage.id] = {
+    at: today(), right, total: slice.length,
+    perfect: (slice.length > 0 && right === slice.length) || !!prev.perfect,
+    seq: S.passageSeq
+  };
+  S.lastPassage = s.passage.id;
 }
 
 /* After the scan, give unprobed skills a sensible starting estimate so the
@@ -2556,7 +3136,22 @@ function renderHome(){
     b.onclick = ()=> launchQuest(i);
     list.appendChild(b);
   });
-  $('questProgress').textContent = `${(q.done||[]).length}/${q.list.length}`;
+  // Finishing the day's three shouldn't end the app — there is always one more.
+  const doneCount = (q.done||[]).length;
+  if (doneCount >= q.list.length){
+    const bonusRealm = (S.bonusCount||0) % 2 === 0 ? 'math' : 'read';
+    const b = el('button','quest');
+    b.innerHTML = `<span class="qbadge ${bonusRealm==='read'?'story':'build'}">⭐</span>
+      <span class="qinfo"><span class="qname">Bonus round</span>
+      <span class="qmeta">${bonusRealm==='read'?'Another story — as many as you want':'Extra math — as long as you like'}</span></span>
+      <span class="qgo">→</span>`;
+    b.onclick = ()=>{
+      S.bonusCount = (S.bonusCount||0)+1; save();
+      startSession(bonusRealm==='read' ? {realm:'read', len:8} : {realm:'math', len:8});
+    };
+    list.appendChild(b);
+  }
+  $('questProgress').textContent = `${doneCount}/${q.list.length}`;
 
   const mm = realmMastery('math'), rm = realmMastery('read');
   $('mathBar').style.width = Math.round(mm*100)+'%';
@@ -2673,7 +3268,7 @@ function go(where){
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on', b.dataset.go===where));
   if (where==='home'){ renderHome(); show('scr-home'); }
   else if (where==='math'){ startSession({realm:'math', len:8}); }
-  else if (where==='read'){ startSession({realm:'read'}); }
+  else if (where==='read'){ startSession({realm:'read', len:8}); }
   else if (where==='progress'){ renderProgress(); show('scr-progress'); }
 }
 
@@ -2702,7 +3297,7 @@ function boot(){
   $('resHomeBtn').onclick = ()=> go('home');
   $('resAgainBtn').onclick = ()=>{
     const s = SESH;
-    startSession(s.realm==='read' ? {realm:'read'} : {realm:'math', len:s.len||8});
+    startSession(s.realm==='read' ? {realm:'read', len:8} : {realm:'math', len:s.len||8});
   };
   $('realmMath').onclick = ()=> go('math');
   $('realmRead').onclick = ()=> go('read');
