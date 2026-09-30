@@ -717,6 +717,8 @@ p{line-height:1.6}
         <input type="file" id="wFileInput" accept="application/json,.json" hidden>
         <div id="wOut" style="margin-top:11px"></div>
       </div>
+
+      <p class="tiny" style="text-align:center" id="buildStampWelcome"></p>
     </div>
   </section>
 
@@ -907,8 +909,9 @@ p{line-height:1.6}
         </div>
         <div id="exportOut" style="margin-top:10px"></div>
         <p class="tiny" style="margin-top:9px">
-          Progress is saved on this device only, in this browser. Nothing is uploaded, and no account is needed.
+          Progress is saved on this device only, in this browser unless sync is on.
         </p>
+        <p class="tiny" style="margin-top:6px">Build <b id="buildStampProgress"></b></p>
       </div>
     </div>
   </section>
@@ -927,6 +930,9 @@ p{line-height:1.6}
 
 <script>
 "use strict";
+/* Bump on every release. Shown on the welcome screen and under Grown-up
+   controls so anyone can say out loud which build they are actually looking at. */
+const BUILD = 'v6 · 30 Sep 2026 · lessons + sync';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -5052,6 +5058,9 @@ function boot(){
                + `${inc.xp} XP — more than this browser has. Load it?`)) return;
     applyState(inc); renderHUD(); go('home');
   });
+
+  const wb = $('buildStampWelcome'); if (wb) wb.textContent = 'Build ' + BUILD;
+  const pb = $('buildStampProgress'); if (pb) pb.textContent = BUILD;
 
   renderHUD();
   if (S.scanned || S.profile.answered>0){ go('home'); }
