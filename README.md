@@ -117,26 +117,54 @@ icon — opening the same URL in a different browser starts from zero.
 
 ## Saving, and school Chromebooks
 
-Progress lives in `localStorage` under `adamBuildMode.v1` — one browser, one device, no
-account, nothing uploaded. A managed school Chromebook can refuse that outright, and can
-also wipe it on sign-out, which **nothing in a web page can detect in advance**. So the
-app does not rely on it:
+Progress lives in `localStorage` under `adamBuildMode.v1`. A managed school Chromebook
+can refuse that outright, and can wipe it on sign-out, which **nothing in a web page can
+detect in advance**. So there are three independent layers, and the app works if any one
+of them survives:
 
-- On load it tests whether the browser will store anything at all, and says so plainly
-  on the Base and Progress screens if it will not.
-- **Download save file** writes a `.json` to Downloads. Drag it into Google Drive and it
-  outlives the device. Restore with **Open a save file**.
-- **Copy save link** produces a URL with the whole state packed into the fragment (about
-  350–450 characters). Opening it anywhere restores that progress — bookmark it, or mail
-  it to yourself. Opening one while the app is already open asks before overwriting.
-- A restore never overwrites a browser that holds *more* progress than the code carries,
-  so restoring on the wrong device cannot cost anything.
-- The result screen offers a save file every fourth session, and every session if the
-  browser is refusing to store.
+1. **This device** — `localStorage`. The app probes it on load and says plainly on the
+   Base and Progress screens when the browser refuses to store anything.
+2. **A file or a link** — *Download save file* writes a `.json` (drag it into Google
+   Drive and it outlives the device); *Copy save link* packs the whole state into a
+   ~420-character URL fragment. Restore by file, by pasted code, or by opening the link,
+   including while the app is already open.
+3. **Sync** — an optional Supabase row keyed by a random code (below).
 
-None of this needs a network or an account.
+A restore never overwrites a copy that is *further along* than the incoming one, so
+restoring or syncing from a stale device cannot cost him work. The result screen offers
+a save file every fourth session, and every session if the browser is refusing to store.
+
+### Sync backend
+
+Deliberately small: one table and two functions, no SDK, no auth, no email.
+
+```
+public.saves (code text pk, state jsonb, answered int, created_at, updated_at)
+  RLS enabled with NO policies -> the anon role cannot touch the table directly
+public.load_save(p_code)                     security definer, execute granted to anon
+public.put_save(p_code, p_state, p_answered) security definer, execute granted to anon
+```
+
+`put_save` validates the code shape, caps the payload, and **refuses an upsert whose
+`answered` is lower than the stored row's** — that rule is what makes a late sync from a
+stale device harmless. Client side it is two `fetch` calls, so the app still loads zero
+libraries.
+
+The page ships a Supabase **publishable** key, which is designed to be public. The real
+access control is that the table has no RLS policies at all: the only way in is the two
+functions. The save code is a capability — 12 characters from a 31-character alphabet
+with no look-alikes. It is not authentication, and it is not treated as such; the payload
+is a chosen first name, an avatar emoji, and practice statistics.
+
+Sync is never load-bearing. Every call has an 8-second ceiling enforced independently of
+`fetch`, failures are swallowed, and the app behaves exactly as it does offline. If the
+project has auto-paused (Supabase pauses free projects after about a week idle), sync
+reports that it cannot be reached and everything else carries on; unpausing it in the
+Supabase dashboard brings sync straight back.
 
 ## Privacy
 
-Nothing is uploaded and there is no account or back end. Save files and save links are
-generated in the browser and go wherever you put them.
+No account, no email, no password. Save files and save links are generated in the browser
+and go wherever you put them. If sync is switched on, one row holds the progress blob
+under a random code — a chosen first name, an avatar emoji, and practice statistics.
+Turning sync on is an explicit choice; with it off, nothing leaves the device.

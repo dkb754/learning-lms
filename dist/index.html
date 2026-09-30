@@ -540,6 +540,15 @@ p{line-height:1.6}
   border-left:3px solid var(--warn);background:var(--warn-soft);
   padding:11px 13px;border-radius:0 var(--r-s) var(--r-s) 0;font-size:.89rem;line-height:1.6;
 }
+.synccode{
+  font-family:var(--f-display);font-weight:800;font-size:1.22rem;letter-spacing:.09em;
+  text-align:center;padding:11px;border-radius:var(--r-s);user-select:all;
+  background:var(--build-soft);border:1.5px dashed var(--build);color:var(--build);
+  margin:9px 0;word-break:break-all;
+}
+.syncdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.syncdot.on{background:var(--good)} .syncdot.off{background:var(--ink-3)} .syncdot.bad{background:var(--miss)}
+
 .grade-pill{
   font-size:.6rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
   padding:3px 8px;border-radius:999px;white-space:nowrap;
@@ -854,7 +863,12 @@ p{line-height:1.6}
       <div class="card">
         <div class="eyebrow" style="margin-bottom:9px">Saving &amp; backup</div>
         <div id="storageStatus"></div>
-        <div class="row" style="flex-wrap:wrap;margin-top:11px">
+        <div class="divider"></div>
+        <div class="eyebrow" style="margin-bottom:8px">Sync across devices</div>
+        <div id="syncBox"></div>
+        <div class="divider"></div>
+        <div class="eyebrow" style="margin-bottom:8px">Keep a copy</div>
+        <div class="row" style="flex-wrap:wrap;margin-top:2px">
           <button class="btn sm" id="saveFileBtn">💾 Download save file</button>
           <button class="btn ghost sm" id="saveLinkBtn">🔗 Copy save link</button>
         </div>
@@ -2700,7 +2714,13 @@ function addSubItem(skill, diff){
 
 /* ── grade 4 · what multiplication means ────────────────────────────────── */
 function multConceptItem(skill, diff){
-  const a = 3+rnd(6), b = 3+rnd(6), p = a*b;
+  // The two factors must differ: with 3 x 3 the distractors ("3 + 3 + 3" as a
+  // swap, "3 + 3" as the off-by-one-group) collide with the correct answer and
+  // with each other, and the question collapses to two choices.
+  const a = 3+rnd(6);
+  let b = 3+rnd(6);
+  while (b === a) b = 3+rnd(6);
+  const p = a*b;
   const type = rnd(3);
   if (type===0){
     return { realm:'math', skill, diff, kind:'choice',
@@ -3267,7 +3287,8 @@ let S = {
             visTries:0, visRight:0, symTries:0, symRight:0,
             fastWrong:0, slowRight:0, wordSeen:0, wordRight:0, bareSeen:0, bareRight:0,
             readSeen:0, readRight:0, readRoll:[] },
-  review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0, rulesSeen:{}
+  review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0, rulesSeen:{},
+  syncCode:null, syncAt:null
 };
 
 let STORAGE_OK = null;
@@ -3303,7 +3324,7 @@ function encodeState(){
   const P = S.profile;
   const head = [1, encodeURIComponent(S.name||'Adam'), encodeURIComponent(S.avatar||'🧱'),
                 S.xp|0, S.streak|0, S.bestStreak|0, S.lastDay||'', S.scanned?1:0,
-                S.bestRun|0, S.passageSeq|0, S.bonusCount|0].join('|');
+                S.bestRun|0, S.passageSeq|0, S.bonusCount|0, S.syncCode||''].join('|');
   const mast = SKILL_ORDER.map(k=>{ const r=S.mastery[k]||{m:0,seen:0,right:0};
                 return `${Math.round(r.m*1000)}.${r.seen|0}.${r.right|0}`; }).join(',');
   const diff = Object.keys(S.diff||{}).map(k=>`${SKILL_ORDER.indexOf(k)}.${S.diff[k]}`)
@@ -3330,6 +3351,7 @@ function decodeState(code){
       name:decodeURIComponent(H[1]||'Adam'), avatar:decodeURIComponent(H[2]||'🧱'),
       xp:+H[3]||0, streak:+H[4]||0, bestStreak:+H[5]||0, lastDay:H[6]||null,
       scanned:H[7]==='1', bestRun:+H[8]||0, passageSeq:+H[9]||0, bonusCount:+H[10]||0,
+      syncCode:H[11]||null,
       mastery:{}, diff:{}, traps:{}, passages:{}, badges:badges?badges.split(','):[],
       rulesSeen:{}, review:[], log:[], quests:null
     };
@@ -3366,7 +3388,84 @@ function applyState(obj){
 
 /* location.origin is the string "null" on a file:// page, which would build a
    broken link — split the current URL instead so this works everywhere. */
-function saveLink(){ return location.href.split('#')[0] + '#s=' + encodeState(); }
+function saveLink(){
+  const base = location.href.split('#')[0];
+  return base + (S.syncCode ? '#c=' + S.syncCode + '&s=' : '#s=') + encodeState();
+}
+
+/* ---------------------------------------------------------------------------
+   SYNC — optional, and never load-bearing.
+   localStorage stays the source of truth. This copies it to a row keyed by a
+   random code so the same progress shows up on another machine. If the network
+   is blocked, the project is asleep, or anything else goes wrong, every call
+   fails quietly and the app behaves exactly as it does offline.
+   --------------------------------------------------------------------------- */
+const SYNC_URL = 'https://gcgyqsgsjrcthvnbigmr.supabase.co';
+const SYNC_KEY = 'sb_publishable_OtJOYSdncTsuBmFbSZHdbA_MCYn4aA7';
+const CODE_RE  = /^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+
+/* No I, L, O, 0 or 1 — a code should survive being read aloud or copied by hand. */
+function newSyncCode(){
+  const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const part = ()=> Array.from({length:4},()=>A[Math.floor(Math.random()*A.length)]).join('');
+  return `${part()}-${part()}-${part()}`;
+}
+
+async function syncRpc(fn, body, ms){
+  const limit = ms || 8000;
+  const ctl = new AbortController();
+  let timer;
+  // The abort cancels the request; the race guarantees this settles even if a
+  // request somehow ignores the signal, so a spinner can never hang forever.
+  const timeout = new Promise((_, reject)=>{
+    timer = setTimeout(()=>{ try{ ctl.abort(); }catch(e){} reject(new Error('timed out')); }, limit);
+  });
+  const call = (async ()=>{
+    const res = await fetch(`${SYNC_URL}/rest/v1/rpc/${fn}`, {
+      method:'POST', signal:ctl.signal,
+      headers:{'apikey':SYNC_KEY, 'Authorization':'Bearer '+SYNC_KEY, 'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  })();
+  try { return await Promise.race([call, timeout]); }
+  finally { clearTimeout(timer); }
+}
+
+/* Pull a save down. Applies it only when the cloud copy is further along, so
+   syncing from a stale device can never cost him work. */
+async function cloudPull(code){
+  if (!CODE_RE.test(code||'')) return {ok:false, reason:'bad-code'};
+  try{
+    const state = await syncRpc('load_save', {p_code: code});
+    if (!state) return {ok:true, found:false};
+    const theirs = (state.profile && state.profile.answered) || 0;
+    const mine   = (S.profile && S.profile.answered) || 0;
+    if (theirs > mine){
+      const keepCode = code;
+      S = Object.assign(S, state);
+      S.mastery = Object.assign(blankMastery(), state.mastery||{});
+      Object.keys(SKILLS).forEach(k=>{ if(!S.mastery[k].recent) S.mastery[k].recent=[]; });
+      S.syncCode = keepCode;
+      save();
+      return {ok:true, found:true, applied:true, answered:theirs};
+    }
+    return {ok:true, found:true, applied:false, answered:theirs, mine};
+  }catch(e){ return {ok:false, reason:String(e.message||e)}; }
+}
+
+async function cloudPush(){
+  if (!S.syncCode || !CODE_RE.test(S.syncCode)) return {ok:false, reason:'no-code'};
+  try{
+    await syncRpc('put_save', {
+      p_code: S.syncCode, p_state: S, p_answered: (S.profile && S.profile.answered) || 0
+    });
+    S.syncAt = new Date().toISOString();
+    try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){}
+    return {ok:true};
+  }catch(e){ return {ok:false, reason:String(e.message||e)}; }
+}
 
 async function downloadSave(){
   const data = JSON.stringify({app:'adams-build-mode', saved:new Date().toISOString(), code:encodeState(), full:S}, null, 2);
@@ -3876,6 +3975,7 @@ function finishSession(){
   if (S.log.length>30) S.log.pop();
   const fresh = checkBadges();
   save();
+  if (S.syncCode) cloudPush().then(r=>{ if (r.ok) renderSyncBox(); });
   renderResult(fresh);
   show('scr-result');
 }
@@ -4594,6 +4694,7 @@ function renderProgress(){
   }).join('');
 
   renderStorageStatus();
+  renderSyncBox();
 
   $('logTable').innerHTML = S.log.length
     ? `<thead><tr><th>Date</th><th>Set</th><th>Score</th><th>Mins</th><th>XP</th></tr></thead><tbody>` +
@@ -4607,6 +4708,76 @@ function backupNote(html, tone){
   const host = $('backupOut');
   host.innerHTML = `<div class="notecard" style="border-left-color:var(--${tone||'good'});
     background:var(--${tone||'good'}-soft)">${html}</div>`;
+}
+
+function renderSyncBox(){
+  const box = $('syncBox');
+  if (!box) return;
+
+  if (!S.syncCode){
+    box.innerHTML = `<div class="tiny" style="margin-bottom:10px">
+        Sync gives Adam a private code and keeps his progress on it. Open the app on any
+        Chromebook, laptop or tablet and it picks up where he left off — no login, no email.
+        Progress still saves on the device too, so sync going down changes nothing.
+      </div>`;
+    const on = el('button','btn sm','☁️ Turn on sync');
+    on.onclick = async ()=>{
+      on.disabled = true; on.textContent = 'Setting up…';
+      S.syncCode = newSyncCode(); save();
+      const r = await cloudPush();
+      if (!r.ok){
+        S.syncCode = null; save();
+        box.innerHTML = `<div class="notecard" style="border-left-color:var(--miss);background:var(--miss-soft)">
+          <b>Could not reach the sync service.</b> ${r.reason === 'no-code' ? '' :
+          'This network may be blocking it, or the project may be asleep.'}
+          Nothing is lost — use <b>Download save file</b> instead.</div>`;
+        return;
+      }
+      renderSyncBox();
+    };
+    box.appendChild(on);
+    return;
+  }
+
+  const when = S.syncAt ? new Date(S.syncAt).toLocaleString() : 'not yet';
+  box.innerHTML = `<div class="tiny"><span class="syncdot ${S.syncAt?'on':'off'}"></span>
+      Last synced: <b>${when}</b></div>
+    <div class="synccode">${S.syncCode}</div>
+    <div class="tiny" style="margin-bottom:10px">
+      This is his code. To set up another device: open the app there, tap <b>Use another code</b>,
+      and type it in. Or just open the <b>save link</b> on that device — it carries the code.
+    </div>`;
+
+  const row = el('div','row'); row.style.flexWrap = 'wrap';
+  const now = el('button','btn sm','↻ Sync now');
+  now.onclick = async ()=>{
+    now.disabled = true; now.textContent = 'Syncing…';
+    const r = await cloudPush();
+    now.disabled = false; now.textContent = '↻ Sync now';
+    if (r.ok) renderSyncBox();
+    else backupNote('Could not reach the sync service just now. Progress is still saved on this device.', 'warn');
+  };
+  const other = el('button','btn ghost sm','Use another code');
+  other.onclick = ()=>{
+    const input = prompt('Enter the code from the other device (XXXX-XXXX-XXXX):', '');
+    if (!input) return;
+    const code = input.trim().toUpperCase();
+    if (!CODE_RE.test(code)){ backupNote('That does not look like a code. They look like ABCD-2345-WXYZ.', 'miss'); return; }
+    cloudPull(code).then(r=>{
+      if (!r.ok){ backupNote('Could not reach the sync service. Try again on a different network.', 'miss'); return; }
+      if (!r.found){ backupNote('No progress is stored under that code yet. Check it and try again.', 'warn'); return; }
+      if (r.applied){
+        renderHUD(); renderProgress();
+        backupNote(`Pulled in <b>${r.answered} answered questions</b> from that code.`, 'good');
+      } else {
+        S.syncCode = code; save(); renderSyncBox();
+        backupNote(`Linked to that code. This device is further along (${r.mine} answered vs ${r.answered}),
+                    so nothing was overwritten — the next sync will push this progress up.`, 'good');
+      }
+    });
+  };
+  row.appendChild(now); row.appendChild(other);
+  box.appendChild(row);
 }
 
 function renderStorageStatus(){
@@ -4697,7 +4868,21 @@ function boot(){
       const inc = decodeState(m[1]);
       if (inc && (inc.profile.answered||0) > (S.profile.answered||0)) applyState(inc);
     }
+    const c = location.hash.match(/[#&]c=([A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4})/i);
+    if (c) S.syncCode = c[1].toUpperCase();
   }catch(e){}
+  // Pull runs in the background: the app is already usable, and a slow or
+  // blocked network must never hold up the first screen.
+  if (S.syncCode){
+    cloudPull(S.syncCode).then(r=>{
+      if (!r || !r.applied) return;
+      renderHUD();
+      // A new device shows the welcome screen while the pull is still in flight.
+      // Once his progress lands, he should not be asked to sit the scan again.
+      const cur = document.querySelector('.screen.on').id;
+      if (cur === 'scr-welcome' || cur === 'scr-home') go('home');
+    });
+  }
   applyTheme();
 
   const picker = $('avatarPicker');
