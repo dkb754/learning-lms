@@ -44,4 +44,4 @@ Codes are bcrypt-hashed in `student_access_codes` and are **never** stored in th
 `select count(*) from public.student_access_codes where access_code_hash = crypt(upper('OLD-CODE'), access_code_hash);` → must be 0.
 
 ## Resend (90-day check-in)
-Edge Functions → Secrets → add `RESEND_API_KEY`. See docs/CURRICULUM.md. Functions: `validate-login`, `lms-api-v2`, `send-checkins`; migrations `0001`–`0006`.
+Edge Functions → Secrets → add `RESEND_API_KEY`. See docs/CURRICULUM.md. Functions: `validate-login`, `lms-api-v2`, `send-checkins`; migrations `0001`–`0007`.

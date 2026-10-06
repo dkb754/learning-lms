@@ -2,7 +2,7 @@
 // Level I curriculum API (Culinary Entrepreneurship I, Fall 2026). Supersedes lms-api, which stays deployed only
 // until the new page is live. The browser never touches tables or the bucket directly; identity always comes
 // from the server-side session (token -> student_name), never from the request body.
-//   student: load, save, create-upload, record-submission, set-checkin, logout
+//   student: load, save, create-upload, record-submission, set-checkin, submit-exercise, logout
 //   admin:   admin-overview, admin-unlock, admin-file-url, admin-set-attendance, admin-set-servsafe,
 //            admin-save-rubric, admin-set-published
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -30,6 +30,12 @@ const FILE_ASSIGNMENTS: Record<string, { label: string; krp?: string }> = {
 const QUIZ_IDS = [
   "w1d1", "w1d2", "w1d3", "w1d4", "w2d1", "w2d2", "w2d3", "w2d4", "w3d1", "w3d2", "w3d3", "w3d4", "w4d1", "w4d2",
 ];
+// Week 1 scaling exercises: key -> [correct answer, tolerance]. Keep keys in sync with content/level1-exercises.js.
+const EXERCISES: Record<string, Record<string, [number, number]>> = {
+  ex1: { factor: [6, 0.001], oil: [24, 0.01], vinegar: [12, 0.01], dijon: [6, 0.01], salt: [6, 0.01] },
+  ex2: { factor: [0.25, 0.001], onion: [2, 0.01], stock: [2.5, 0.01], cream: [0.5, 0.01], cream_cups: [2, 0.01] },
+  ex3: { factor: [2.5, 0.001], onion_ep: [7.5, 0.01], onion_ap: [8.52, 0.05], chicken_ep: [11.25, 0.01], chicken_ap: [15, 0.05] },
+};
 const LABS = ["lab1", "lab2", "lab3", "lab4"];
 const EXT_MIME: Record<string, string> = {
   pdf: "application/pdf", doc: "application/msword",
@@ -75,12 +81,12 @@ function withSuffix(name: string, suffix: string): string {
 type Row = Record<string, any>;
 const EMPTY_PATCH = () => ({
   quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {},
-  is_l2_eligible: false, checkin_opt_in: false, checkin_email: null, checkin_sent_at: null,
+  is_l2_eligible: false, exercises: {}, checkin_opt_in: false, checkin_email: null, checkin_sent_at: null,
 });
 const toProgress = (r: Row | null | undefined) => ({
   quizzes: r?.quizzes || {}, deliverables: r?.deliverables || {}, w2_unlocked: !!r?.w2_unlocked,
   krp_portfolio: r?.krp_portfolio || {}, lab_attendance: r?.lab_attendance || {}, servsafe: r?.servsafe || {},
-  is_l2_eligible: !!r?.is_l2_eligible,
+  is_l2_eligible: !!r?.is_l2_eligible, exercises: r?.exercises || {},
   checkin: { opt_in: !!r?.checkin_opt_in, email: r?.checkin_email || "", sent: !!r?.checkin_sent_at },
 });
 // A row that belongs to an earlier cohort is shown as empty everywhere until the student signs in and it is archived.
@@ -274,6 +280,30 @@ Deno.serve(async (req) => {
         patch.is_l2_eligible = eligible({ ...row, deliverables });
         const saved = await writeRow(user, patch);
         return json(200, { record: rec, progress: toProgress(saved) });
+      }
+
+      case "submit-exercise": { // graded here; the correct answers are never sent to the browser
+        const id = String(body.exercise_id || "");
+        const key = EXERCISES[id];
+        if (!key) throw new HttpError(400, "unknown_exercise");
+        const given = (body.answers && typeof body.answers === "object" ? body.answers : {}) as Record<string, unknown>;
+        const results: Record<string, boolean> = {};
+        for (const [k, [ans, tol]] of Object.entries(key)) {
+          const v = Number(given[k]);
+          results[k] = Number.isFinite(v) && Math.abs(v - ans) <= tol;
+        }
+        const total = Object.keys(key).length;
+        const correct = Object.values(results).filter(Boolean).length;
+        const passed = correct === total;
+        if (isAdmin) return json(200, { results, correct, total, passed }); // instructor preview: graded, nothing recorded
+        const row = await ensureRow(user);
+        const prev = (row.exercises || {})[id];
+        const rec = {
+          passed: !!(prev?.passed || passed), best: Math.max(prev?.best || 0, correct), total,
+          attempts: (prev?.attempts || 0) + 1, date: new Date().toISOString(),
+        };
+        const saved = await writeRow(user, { exercises: { ...(row.exercises || {}), [id]: rec } });
+        return json(200, { results, correct, total, passed, record: rec, progress: toProgress(saved) });
       }
 
       case "set-checkin": { // student opts in/out of the 90-day follow-up email

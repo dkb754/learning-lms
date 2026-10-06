@@ -24,6 +24,9 @@ const ok = (cond, name, extra = '') => { cond ? pass++ : fail++; console.log(`${
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const L1 = new Function(readFileSync(path.join(ROOT, 'content/level1.js'), 'utf8') + '\nreturn { LEVEL1, CST_RUBRIC };')();
 const LES = new Function(readFileSync(path.join(ROOT, 'content/level1-lessons.js'), 'utf8').replace(/LEVEL1\.days\.forEach[^\n]*\n/, '') + '\nreturn LESSONS;')();
+const SRV = readFileSync(path.join(ROOT, 'supabase/functions/lms-api-v2/index.ts'), 'utf8');
+const EX_KEYS = new Function('return ' + /const EXERCISES: [^=]+= (\{[\s\S]*?\n\});/.exec(SRV)[1])();
+const EX_PROMPTS = new Function('const LEVEL1 = { days: [{ id: "w1d3" }] };' + readFileSync(path.join(ROOT, 'content/level1-exercises.js'), 'utf8') + '\nreturn EXERCISES;')();
 const QB = new Function(readFileSync(path.join(ROOT, 'content/level1-quizzes.js'), 'utf8') + '\nreturn QUIZ_BANK;')();
 const { LEVEL1, CST_RUBRIC } = L1;
 const FILE_LABELS = Object.fromEntries(LEVEL1.days.filter(d => d.file).map(d => [d.id, d.file.label]));
@@ -46,7 +49,7 @@ function makeBackend() {
   const mode = { loginDown: false, apiDown: false, locked: false, storageFails: 0, recordFails: false, expireAll: false, noResend: false };
   const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*', 'content-type': 'application/json' };
   const reply = (route, status, body) => route.fulfill({ status, headers: CORS, body: JSON.stringify(body) });
-  const row = n => { if (!rows.has(n)) rows.set(n, { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, is_l2_eligible: false, checkin: { opt_in: false, email: '', sent: false } }); return rows.get(n); };
+  const row = n => { if (!rows.has(n)) rows.set(n, { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, exercises: {}, is_l2_eligible: false, checkin: { opt_in: false, email: '', sent: false } }); return rows.get(n); };
   const prog = r => ({ ...r });
   const eligible = r => r.servsafe.exam_result === 'passed' && !!r.deliverables.w4lab && QUIZ_IDS.every(q => r.quizzes[q]?.passed);
 
@@ -124,6 +127,17 @@ function makeBackend() {
         if (KRP_KEY[b.assignment]) r.krp_portfolio[KRP_KEY[b.assignment]] = rec;
         r.is_l2_eligible = eligible(r);
         return reply(route, 200, { record: rec, progress: prog(r) });
+      }
+      case 'submit-exercise': {
+        const key = EX_KEYS[b.exercise_id];
+        if (!key) return reply(route, 400, { error: 'unknown_exercise' });
+        const results = {}; let correct = 0;
+        for (const [k, [a, tol]] of Object.entries(key)) { results[k] = Math.abs(Number(b.answers[k]) - a) <= tol; if (results[k]) correct++; }
+        const total = Object.keys(key).length, passed = correct === total;
+        if (s.admin) return reply(route, 200, { results, correct, total, passed });
+        const r = row(s.name), prev = r.exercises[b.exercise_id];
+        r.exercises[b.exercise_id] = { passed: !!(prev?.passed || passed), best: Math.max(prev?.best || 0, correct), total, attempts: (prev?.attempts || 0) + 1, date: new Date().toISOString() };
+        return reply(route, 200, { results, correct, total, passed, record: r.exercises[b.exercise_id], progress: prog(r) });
       }
       case 'set-checkin': {
         if (noAdmin()) return;
@@ -303,6 +317,7 @@ const tracker = '#admin-body';
   ok(/Entrepreneurship I\b(?! ?I)/.test(await text(page, '.nav-brand')), 'course is titled Culinary Entrepreneurship I');
   ok(await page.locator('.day-card').count() === 20, 'all 20 course days render (16 online + 4 labs)');
   ok(await page.locator('.lab-card').count() === 4, 'four lab cards render');
+  ok(!(await page.content()).match(/8\.52/), 'no exercise answers anywhere in the page source');
   ok(await page.locator('.lesson-body').count() === 20, 'every day and lab shows its lesson text');
   ok(await page.locator('.lesson-table').count() >= 3, 'lesson tables (cuts, kitchen calls, lab schedule) render');
 
@@ -541,6 +556,29 @@ const tracker = '#admin-body';
   ok(await page.locator('.sidebar-item[data-page="w2"]').isVisible(), 'sidebar still shows Week 2');
   await page.click('.sidebar-item[data-page="w2"]');
   ok(await page.locator('#page-gate').isVisible(), 'a student without Lab 1 attendance stays gated, even after passing quizzes');
+  // scaling exercises (graded server-side)
+  await page.click('.sidebar-item[data-page="w1"]');
+  await page.click('.day-card-header[onclick*="w1d3"]');
+  ok(await page.locator('.ex-card').count() === 3, 'Week 1 Wednesday shows the three scaling exercises');
+  ok(!/"answer"|\bans(wers?)?\s*:/.test(await page.evaluate(() => JSON.stringify(EXERCISES))), 'exercise definitions on the page carry no answers');
+  await page.fill('#exi-ex1-factor', '6'); await page.fill('#exi-ex1-oil', '24'); await page.fill('#exi-ex1-vinegar', '11'); await page.fill('#exi-ex1-dijon', '6'); await page.fill('#exi-ex1-salt', '6');
+  await page.locator('.ex-card').nth(0).locator('.btn-submit-work').click();
+  await page.waitForFunction(() => /4 of 5 correct/.test(document.getElementById('ex-w1d3').innerText));
+  ok(await page.locator('.ex-mark.no').count() === 1 && await page.locator('.ex-mark.ok').count() === 4, 'wrong box is marked, correct ones are ticked');
+  ok(!be.rows.get('Tameka Green').exercises.ex1.passed && be.rows.get('Tameka Green').exercises.ex1.best === 4, 'partial result recorded on the server without a pass');
+  await page.fill('#exi-ex1-vinegar', '12');
+  await page.locator('.ex-card').nth(0).locator('.btn-submit-work').click();
+  await page.waitForFunction(() => /All correct/.test(document.getElementById('ex-w1d3').innerText));
+  ok(be.rows.get('Tameka Green').exercises.ex1.passed === true && be.rows.get('Tameka Green').exercises.ex1.attempts === 2, 'exercise passes on the retry and counts attempts');
+  for (const [id, vals] of Object.entries({ ex2: ['1/4', 2, '2.5', 0.5, 2], ex3: [2.5, 7.5, 8.52, 11.25, 15] })) {
+    const keys = EX_PROMPTS.find(e => e.id === id).inputs.map(i => i.key);
+    for (const [i, k] of keys.entries()) await page.fill(`#exi-${id}-${k}`, String(vals[i]));
+    await page.locator('.ex-card').nth(id === 'ex2' ? 1 : 2).locator('.btn-submit-work').click();
+    await page.waitForTimeout(250);
+  }
+  await page.waitForTimeout(400);
+  ok(['ex1', 'ex2', 'ex3'].every(id => be.rows.get('Tameka Green').exercises[id]?.passed), 'fractions and decimals are accepted; all three exercises pass');
+  ok(/6 of 8|\d+ of \d+ items done/.test(await text(page, '#wc1-count')), 'exercises count toward week progress');
   ok(errors.length === 0, 'no JS errors in quiz flow', errors.join(' | '));
   await page.context().close();
 }

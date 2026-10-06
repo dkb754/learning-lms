@@ -1328,6 +1328,10 @@ body {
 .qr-actions{margin:8px 0 12px}.qr-q{padding:10px 0;border-top:1px solid var(--gray-100);font-size:14px}
 .qr-q ul{list-style:none;margin:6px 0 4px 8px}.qr-q li.right{color:var(--green-bright);font-weight:600}
 .qr-fb{font-size:12px;color:var(--gray-600);font-style:italic}
+.ex-card.done{border-color:var(--green-bright)}
+.ex-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--gray-100);font-size:14px;flex-wrap:wrap}
+.ex-field{display:flex;align-items:center;gap:6px}.ex-field input{width:96px;padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font:14px var(--font-mono);text-align:right}
+.ex-unit{color:var(--gray-600);font-size:13px;min-width:34px}.ex-mark{font-size:12px;min-width:76px}.ex-mark.ok{color:var(--green-bright);font-weight:600}.ex-mark.no{color:var(--orange);font-weight:600}
 .checkin-input{width:100%;max-width:340px;padding:8px 10px;border:1px solid var(--gray-200);border-radius:8px;font:14px var(--font-body);margin:6px 0}
 .checkin-opt{display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 8px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -1396,7 +1400,7 @@ body {
         </div>
         <div style="overflow-x:auto;background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);">
           <table class="tracker-table" id="admin-table">
-            <thead><tr><th>Student</th><th>Lab attendance</th><th>Quizzes passed</th><th>Deliverables</th><th>ServSafe</th><th>CST rubric</th><th>Weeks 2–4</th><th>Level II</th></tr></thead>
+            <thead><tr><th>Student</th><th>Lab attendance</th><th>Quizzes passed</th><th>Scaling exercises</th><th>Deliverables</th><th>ServSafe</th><th>CST rubric</th><th>Weeks 2–4</th><th>Level II</th></tr></thead>
             <tbody id="admin-body"></tbody>
           </table>
         </div>
@@ -1422,6 +1426,7 @@ body {
 
 <script src="content/level1.js"></script>
 <script src="content/level1-lessons.js"></script>
+<script src="content/level1-exercises.js"></script>
 <script src="content/level1-quizzes.js"></script>
 <script>
 // ============================================================
@@ -1461,7 +1466,7 @@ let syncStatus = 'idle'; // idle | saving | saved | error
 let unsynced = false;     // true while the latest change exists only on this device
 
 function EMPTY() {
-  return { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, is_l2_eligible: false, checkin: { opt_in: false, email: '', sent: false } };
+  return { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, exercises: {}, is_l2_eligible: false, checkin: { opt_in: false, email: '', sent: false } };
 }
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1624,6 +1629,7 @@ const labDone = lab => !!memCache.lab_attendance[lab];
 function dayItems(d) {
   const items = [];
   if (d.quiz && quizOpen(d.quiz)) items.push({ kind: 'quiz', id: d.quiz });
+  (d.exercises || []).forEach(e => items.push({ kind: 'ex', id: e.id }));
   if (d.file) items.push({ kind: 'del', id: d.id });
   if (d.lab) items.push({ kind: 'lab', id: d.id, lab: d.lab });
   return items;
@@ -1632,6 +1638,7 @@ const weekItems = w => DAYS.filter(d => d.week === w).flatMap(dayItems);
 function itemDone(it) {
   if (it.kind === 'quiz') return !!(memCache.quizzes[it.id] && memCache.quizzes[it.id].passed);
   if (it.kind === 'del') return !!memCache.deliverables[it.id];
+  if (it.kind === 'ex') return !!(memCache.exercises[it.id] && memCache.exercises[it.id].passed);
   return labDone(it.lab);
 }
 
@@ -1718,6 +1725,7 @@ function renderDayCard(d) {
       <div class="topics"><h5>Today's topics</h5><ul>${topics}</ul></div>${lesson}
       ${res ? `<div class="resource-list">${res}</div>` : ''}
       ${d.id === 'w3d1' ? menuExampleHtml() : ''}
+      ${d.exercises ? `<div class="ex-wrap" id="ex-${d.id}"></div>` : ''}
       ${d.quiz ? `<div id="quiz-${d.quiz}-container"></div>` : ''}
       ${d.assessment && !d.quiz ? `<div class="assess-line">Assessment: ${esc(d.assessment)}</div>` : ''}
       ${d.file ? fileCardHtml(d) : ''}
@@ -2075,7 +2083,65 @@ function renderPanel(id) {
   }
   el.innerHTML = html;
 }
-function renderAllPanels() { Object.keys(FILES).forEach(renderPanel); }
+function renderAllPanels() { Object.keys(FILES).forEach(renderPanel); renderExercises(); }
+
+// ---- Scaling exercises (answers are graded on the server; the page never holds them)
+const exState = {};   // id -> { vals: {key: text}, results: {key: bool}|null, busy, msg }
+function exParse(t) {
+  t = String(t || '').trim().replace(/,/g, '');
+  const f = /^(-?\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/.exec(t);
+  if (f) return Number(f[2]) ? Number(f[1]) / Number(f[2]) : NaN;
+  return /^-?\d*\.?\d+$/.test(t) ? Number(t) : NaN;
+}
+function renderExercises() {
+  DAYS.filter(d => d.exercises).forEach(d => {
+    const el = document.getElementById('ex-' + d.id);
+    if (!el) return;
+    el.innerHTML = '<div class="section-title" style="margin-top:8px">Scaling exercises</div>' + d.exercises.map(e => {
+      const st = exState[e.id] || (exState[e.id] = { vals: {}, results: null, busy: false, msg: '' });
+      const rec = memCache.exercises[e.id];
+      const rows = e.inputs.map(i => {
+        const r = st.results ? st.results[i.key] : undefined;
+        return `<div class="ex-row"><label for="exi-${e.id}-${i.key}">${esc(i.label)}</label>
+          <span class="ex-field"><input id="exi-${e.id}-${i.key}" inputmode="decimal" autocomplete="off" value="${esc(st.vals[i.key] || '')}" oninput="exInput('${e.id}','${i.key}',this.value)" ${st.busy ? 'disabled' : ''}> <span class="ex-unit">${esc(i.unit)}</span>
+          <span class="ex-mark ${r === true ? 'ok' : r === false ? 'no' : ''}" aria-live="polite">${r === true ? '✓ correct' : r === false ? '✗ try again' : ''}</span></span></div>`;
+      }).join('');
+      const status = rec && rec.passed ? `<span class="score-badge score-pass">✓ Passed · ${rec.attempts} attempt${rec.attempts === 1 ? '' : 's'}</span>`
+        : rec ? `<span class="score-badge score-pending">Best ${rec.best}/${rec.total} · ${rec.attempts} attempt${rec.attempts === 1 ? '' : 's'}</span>` : '';
+      return `<div class="deliverable-card ex-card ${rec && rec.passed ? 'done' : ''}"><h4>🧮 ${esc(e.title)} <span class="layer-chip">${esc(e.level)}</span> ${status}</h4>
+        <p>${esc(e.intro)}</p>
+        <table class="lesson-table"><tbody>${e.recipe.map(r => `<tr><td>${esc(r[0])}</td><td><strong>${esc(r[1])}</strong></td></tr>`).join('')}</tbody></table>
+        ${rows}
+        <div class="sub-actions"><button class="btn-submit-work" onclick="checkExercise('${e.id}')" ${st.busy ? 'disabled' : ''}>${st.busy ? 'Checking…' : rec && rec.passed ? 'Check again' : 'Check my answers'}</button></div>
+        <div class="grade-sub" role="status" aria-live="polite">${esc(st.msg)}</div></div>`;
+    }).join('');
+  });
+}
+function exInput(id, key, v) { const st = exState[id]; st.vals[key] = v; if (st.results && key in st.results) { delete st.results[key]; } }
+async function checkExercise(id) {
+  const ex = DAYS.flatMap(d => d.exercises || []).find(e => e.id === id);
+  const st = exState[id];
+  const answers = {};
+  for (const i of ex.inputs) {
+    const n = exParse(st.vals[i.key]);
+    if (!Number.isFinite(n)) { st.msg = 'Fill in every box with a number (decimals like 2.5 or fractions like 5/2 are fine).'; renderExercises(); return; }
+    answers[i.key] = n;
+  }
+  st.busy = true; st.msg = ''; renderExercises();
+  try {
+    const d = await api('submit-exercise', { exercise_id: id, answers });
+    st.results = d.results;
+    st.msg = d.passed ? 'All correct. Nice work!' : `${d.correct} of ${d.total} correct. Fix the ones marked ✗ and check again.`;
+    if (!isAdmin) { memCache = mergeProgress(fromServer(d.progress), memCache); if (currentUser) writeLocal(currentUser, memCache); }
+    if (d.passed) showToast('✅ ' + ex.title + ' complete', '🧮');
+  } catch (e) {
+    if (e.code === 'session_expired') return;
+    st.msg = 'Could not check right now. Check your connection and try again.';
+  }
+  st.busy = false;
+  renderExercises();
+  updateProgress();
+}
 
 function onFilePicked(id, input) {
   const f = input.files && input.files[0];
@@ -2299,6 +2365,10 @@ function buildMyGrades() {
         : q ? `<span class="score-badge ${q.passed ? 'score-pass' : 'score-fail'}">${q.passed ? '✓ Passed' : '✗ Retry'} · ${q.score}%</span>` : '<span class="score-badge score-pending">Not taken</span>';
       html += `<tr><td>Week ${d.week}</td><td>${esc(quiz ? quiz.title : d.module)}</td><td>Quiz</td><td>${badge}</td></tr>`;
     }
+    (d.exercises || []).forEach(e => {
+      const r = memCache.exercises[e.id];
+      html += `<tr><td>Week ${d.week}</td><td>${esc(e.title)}</td><td>Exercise</td><td>${r ? `<span class="score-badge ${r.passed ? 'score-pass' : 'score-pending'}">${r.passed ? '✓ Passed' : 'Best ' + r.best + '/' + r.total}</span>` : '<span class="score-badge score-pending">Not started</span>'}</td></tr>`;
+    });
     if (d.file) {
       const rec = memCache.deliverables[d.id];
       const badge = rec ? `<span class="score-badge score-pass">✓ Submitted</span><div class="grade-sub">${esc(fmtWhen(rec.date))}${rec.fileName ? '<br>📎 ' + esc(rec.fileName) : ''}</div>` : '<span class="score-badge score-pending">Not submitted</span>';
@@ -2331,10 +2401,10 @@ const adminRubric = (name, lab = 1) => (adminData.rubrics || []).find(r => r.stu
 
 async function buildAdminTable() {
   const tbody = document.getElementById('admin-body');
-  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-600);">⏳ Loading student data…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--gray-600);">⏳ Loading student data…</td></tr>';
   try { await loadAdminData(); } catch (e) {
     if (e.code === 'session_expired') return;
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--orange);">⚠️ Could not load student data. Check your connection and reopen this page.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--orange);">⚠️ Could not load student data. Check your connection and reopen this page.</td></tr>';
     return;
   }
   const openQuizzes = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
@@ -2344,6 +2414,8 @@ async function buildAdminTable() {
     const la = d.lab_attendance || {};
     const labs = LABS.map((l, i) => `<button class="lab-toggle ${la[l.lab] ? 'on' : ''}" data-name="${esc(name)}" data-lab="${l.lab}" onclick="adminToggleLab(this.dataset.name, this.dataset.lab)" title="${esc(l.module)}" aria-pressed="${!!la[l.lab]}">L${i + 1}</button>`).join('');
     const qPassed = openQuizzes.filter(id => d.quizzes[id] && d.quizzes[id].passed).length;
+    const exIds = DAYS.flatMap(x => (x.exercises || []).map(e => e.id));
+    const exDone = exIds.filter(id => (d.exercises || {})[id] && d.exercises[id].passed).length;
     const dels = Object.keys(FILES).filter(id => d.deliverables[id]).length;
     const ss = d.servsafe || {};
     const rub = adminRubric(name);
@@ -2351,6 +2423,7 @@ async function buildAdminTable() {
       <td><strong>${esc(name)}</strong></td>
       <td><div class="lab-toggles">${labs}</div></td>
       <td><span class="score-badge ${openQuizzes.length && qPassed === openQuizzes.length ? 'score-pass' : 'score-pending'}">${qPassed}/${openQuizzes.length}</span></td>
+      <td><span class="score-badge ${exDone === exIds.length ? 'score-pass' : 'score-pending'}">${exDone}/${exIds.length}</span></td>
       <td><span class="score-badge ${dels === Object.keys(FILES).length ? 'score-pass' : 'score-pending'}">${dels}/${Object.keys(FILES).length}</span></td>
       <td><div class="ss-edit">
         <input type="number" min="0" max="100" placeholder="practice %" value="${ss.practice_score ?? ''}" data-ss-practice="${esc(name)}" aria-label="Practice exam score for ${esc(name)}">
@@ -2519,11 +2592,11 @@ async function exportCSV() {
   try { await loadAdminData(); } catch (e) { return; }
   const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
   const open = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
-  let csv = ['Student', 'Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Quizzes passed', 'Deliverables', 'ServSafe practice %', 'ServSafe exam', 'ServSafe exam %', 'CST Lab 1 total', 'CST band', 'Weeks 2-4 unlocked', 'Level II ready', '90-day check-in opt-in', 'Check-in email'].join(',') + '\n';
+  let csv = ['Student', 'Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Quizzes passed', 'Scaling exercises', 'Deliverables', 'ServSafe practice %', 'ServSafe exam', 'ServSafe exam %', 'CST Lab 1 total', 'CST band', 'Weeks 2-4 unlocked', 'Level II ready', '90-day check-in opt-in', 'Check-in email'].join(',') + '\n';
   adminData.roster.forEach(name => {
     const d = adminProg(name), la = d.lab_attendance || {}, ss = d.servsafe || {}, r = adminRubric(name);
     csv += [name, ...LABS.map(l => la[l.lab] ? 'Yes' : 'No'), `${open.filter(id => d.quizzes[id]?.passed).length}/${open.length}`,
-      `${Object.keys(FILES).filter(id => d.deliverables[id]).length}/${Object.keys(FILES).length}`, ss.practice_score ?? '', ss.exam_result || 'pending', ss.exam_score ?? '',
+      `${['ex1', 'ex2', 'ex3'].filter(id => (d.exercises || {})[id]?.passed).length}/3`, `${Object.keys(FILES).filter(id => d.deliverables[id]).length}/${Object.keys(FILES).length}`, ss.practice_score ?? '', ss.exam_result || 'pending', ss.exam_score ?? '',
       r ? r.total : '', r ? r.band : '', d.w2_unlocked ? 'Yes' : 'No', d.is_l2_eligible ? 'Yes' : 'No', (d.checkin || {}).opt_in ? 'Yes' : 'No', (d.checkin || {}).email || ''].map(q).join(',') + '\n';
   });
   const a = document.createElement('a');

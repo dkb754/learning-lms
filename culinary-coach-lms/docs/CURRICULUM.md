@@ -6,6 +6,7 @@ Source: `CE_LevelMap_PlatformBrief.docx`. All course text is **data**, not page 
 |---|---|---|
 | `content/level1.js` | 16 online days + 4 Saturday labs, topics, resources, deliverables, KRP, CST rubric | change dates, topics, links; add full lesson text in a day's `lesson` field (HTML string) |
 | `content/level1-lessons.js` | Full lesson text for all 20 days (from `LevelI_LessonContent.docx`; developer/instructor-only lines such as "Gate:" and "Automation:" were removed) | edit the HTML for a day, or regenerate from the docx |
+| `content/level1-exercises.js` | The three Week 1 scaling exercises (prompts only). Answers and tolerances are in `lms-api-v2` (`EXERCISES`) so students cannot read them | change numbers in BOTH places |
 | `content/level1-quizzes.js` | 14 quizzes (160 questions) written to match the lesson text | fix or replace questions; fill the `todo` items |
 | `supabase/functions/lms-api-v2` | server rules (ids, uploads, rubric keys, eligibility) | only if you add/rename a deliverable or quiz id — keep it in sync with `level1.js` |
 
@@ -19,6 +20,7 @@ Source: `CE_LevelMap_PlatformBrief.docx`. All course text is **data**, not page 
 * Lab 1 attendance is the Weeks 2–4 gate. Level II-ready = ServSafe exam passed + Concept Brief (Lab 4) submitted + all 14 quizzes passed.
 * VCU is not part of this platform. Host kitchen is Parsley's Kitchen, 2600 Nine Mile Rd (the lesson document confirms it).
 * The lesson document's day dates for Wed–Thu of Week 1 and all of Week 4 (and Lab 3/Lab 4: "Nov 1"/"Nov 8") do not match the 2026 calendar; the platform uses Oct 14/15, Oct 31, Nov 3/4/5 and Nov 7.
+* The three scaling exercises are graded automatically on the server. Each box is marked right or wrong; the correct answer is never shown, and a student can retry. A pass means every box correct. They count toward Week 1 progress and show in the tracker and CSV.
 * Deliverables follow the brief (Honest Map Thu Oct 15, Professional Identity Statement Wed Oct 21, Recipe Cost Sheet Thu Oct 29). The lesson document places the Identity Statement on Week 1 Thursday and the Recipe Cost Sheet on Week 2 Wednesday — tell me if that is the intended schedule.
 * Students from an earlier cohort are archived (`student_progress_archive`) and reset the first time they sign in.
 
@@ -31,4 +33,4 @@ Source: `CE_LevelMap_PlatformBrief.docx`. All course text is **data**, not page 
 * Test it any time: Student Tracker → **Send test check-in email**.
 
 ## Not built yet
-Level II content and dual-level switching; the auto-graded scaling exercises the Week 1 lesson mentions; a survey form for the 90-day email (link goes in `checkin_survey_url`).
+Level II content and dual-level switching; a survey form for the 90-day email (link goes in `checkin_survey_url`).
