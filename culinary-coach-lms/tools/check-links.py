@@ -12,7 +12,14 @@ import re, sys, json, urllib.request, urllib.error, urllib.parse, pathlib, concu
 html = (pathlib.Path(__file__).resolve().parent.parent / "index.html").read_text()
 urls = sorted(set(re.findall(r'href="(https?://[^"]+)"', html)) - {"https://fonts.googleapis.com"})
 urls = [u.replace("&amp;", "&") for u in urls if "fonts.googleapis" not in u]
-UA = {"User-Agent": "Mozilla/5.0 (compatible; lms-link-check)"}
+UA = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+# Sites known to answer scripts with 403/404 even for pages that exist (e.g. fda.gov/food returns 404 to bots).
+# A failure here is reported as WARN: open the link in a browser to confirm.
+BOT_BLOCKS_SCRIPTS = ("fda.gov",)
 
 def get(url, method="GET"):
     req = urllib.request.Request(url, headers=UA, method=method)
@@ -29,8 +36,11 @@ def check(url):
         status, final = get(url)
         return "OK", f"{status}" + (f" -> {final}" if final.rstrip('/') != url.rstrip('/') else "")
     except urllib.error.HTTPError as e:
+        host = urllib.parse.urlparse(url).hostname or ""
         if e.code in (401, 403, 429, 999) and "youtube.com" not in url:
             return "WARN", f"HTTP {e.code} (site blocks scripts — open it in a browser)"
+        if e.code == 404 and host.endswith(BOT_BLOCKS_SCRIPTS):
+            return "WARN", "HTTP 404 (this site answers scripts with 404 even for live pages — open it in a browser)"
         return "FAIL", f"HTTP {e.code}"
     except Exception as e:
         return "FAIL", type(e).__name__ + ": " + str(e)[:80]
