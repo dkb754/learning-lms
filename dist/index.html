@@ -540,6 +540,40 @@ p{line-height:1.6}
   border-left:3px solid var(--warn);background:var(--warn-soft);
   padding:11px 13px;border-radius:0 var(--r-s) var(--r-s) 0;font-size:.89rem;line-height:1.6;
 }
+.numline{
+  background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);
+  padding:13px 15px 11px;margin:0 0 14px;
+}
+.nl-title{font-size:.64rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.nl-box{position:relative;height:92px;margin:10px 30px 0}
+.nl-rail{position:absolute;left:0;right:0;top:40px;height:4px;border-radius:3px;background:var(--line-strong)}
+.nl-rail::before,.nl-rail::after{
+  content:'';position:absolute;top:-5px;width:3px;height:14px;border-radius:2px;background:var(--line-strong);
+}
+.nl-rail::before{left:0} .nl-rail::after{right:0}
+.nl-mark{position:absolute;transform:translateX(-50%);text-align:center;width:66px}
+.nl-mark em{
+  font-style:normal;font-family:var(--f-display);font-weight:800;font-size:.95rem;
+  display:block;line-height:1.1;
+}
+.nl-mark i{display:block;width:3px;height:18px;margin:2px auto;border-radius:2px}
+.nl-mark.a{top:2px;color:var(--build)}
+.nl-mark.a i{background:var(--build)}
+.nl-mark.b{top:46px;color:var(--story)}
+.nl-mark.b i{background:var(--story)}
+.nl-ends{
+  position:absolute;left:0;right:0;top:76px;display:flex;justify-content:space-between;
+  font-size:.68rem;font-weight:800;color:var(--ink-3);
+}
+.nl-ends span{transform:translateX(-50%)}
+.nl-ends span:last-child{transform:translateX(50%)}
+.nl-note{font-size:.72rem;color:var(--ink-2);margin-top:4px}
+.cmp-box{
+  display:inline-block;min-width:44px;padding:0 10px;margin:0 4px;
+  border:2px dashed var(--build);border-radius:8px;color:var(--build);
+  background:var(--build-soft);
+}
+
 .synccode{
   font-family:var(--f-display);font-weight:800;font-size:1.22rem;letter-spacing:.09em;
   text-align:center;padding:11px;border-radius:var(--r-s);user-select:all;
@@ -932,7 +966,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v6 · 30 Sep 2026 · lessons + sync';
+const BUILD = 'v7 · 6 Oct 2026 · comparing decimals';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -980,6 +1014,7 @@ const SKILLS = {
   'm-frac-concept':{realm:'math',strand:'fracdec',  name:'Reading fractions',      icon:'🍕'},
   'm-frac-addsub':{realm:'math', strand:'fracdec',  name:'Adding fractions',       icon:'🍕'},
   'm-dec-place'  :{realm:'math', strand:'fracdec',  name:'Decimal place value',    icon:'🔟'},
+  'm-dec-compare':{realm:'math', strand:'fracdec',  name:'Comparing decimals · < >', icon:'⚖️'},
   'm-dec-addsub' :{realm:'math', strand:'fracdec',  name:'Adding decimals',        icon:'🔟'},
   'm-frac-dec'   :{realm:'math', strand:'fracdec',  name:'Fractions ↔ decimals',   icon:'🔁'},
   // ── grade 5 · data ──
@@ -1224,6 +1259,26 @@ const RULES = {
          'To compare, line up the points and compare place by place from the left.'],
   example:{q:'Which is bigger, 0.7 or 0.65?', work:['0.7 has 7 tenths. 0.65 has 6 tenths.','Compare the tenths first: 7 tenths beats 6 tenths.','The extra hundredths in 0.65 cannot make up the difference.'], answer:'0.7'},
   trap:'More digits does not mean bigger. 0.65 looks longer than 0.7, but 0.7 is worth more. Compare from the left, one place at a time.'
+},
+'m-dec-compare':{
+  what:'Deciding which of two decimals is bigger, and writing it with the right symbol.',
+  terms:[['Greater than (&gt;)','The left number is bigger. 0.8 &gt; 0.3'],
+         ['Less than (&lt;)','The left number is smaller. 0.3 &lt; 0.8'],
+         ['Equal to (=)','Both are the same amount. 0.5 = 0.50'],
+         ['Trailing zero','A zero on the end of a decimal. It fills a place without adding any value.']],
+  rule:'Compare <b>place by place, left to right</b> — whole numbers first, then tenths, then hundredths. The first place where they differ decides it. <b>The number of digits never decides it.</b> For the symbol: the open end faces the bigger number, so the mouth always eats the bigger one.',
+  when:'Any question with &lt;, &gt; or =, anything asking which is greater, less, largest or smallest, and any ordering question.',
+  steps:['Give both numbers the same number of decimal places by adding zeros on the end.',
+         'Compare the whole-number parts first. Different? You are done.',
+         'Same? Compare the tenths. Still tied? Compare the hundredths.',
+         'Point the open end of the symbol at the bigger number.'],
+  example:{q:'Which is bigger, 0.7 or 0.65?',
+           work:['Same places first: 0.70 and 0.65.',
+                 'Whole parts are both 0, so move on.',
+                 'Tenths: 7 against 6. Seven tenths beats six tenths — decided already.',
+                 'The extra hundredths in 0.65 cannot close that gap.'],
+           answer:'0.7 &gt; 0.65'},
+  trap:'Longer does not mean larger. 0.65 has more digits than 0.7 but is worth less. And a trailing zero is worth nothing: 0.5 = 0.50, not less than it.'
 },
 'm-dec-addsub':{
   what:'Adding and subtracting numbers with decimal points.',
@@ -2358,6 +2413,8 @@ const TRAPS = {
   'unlike-denoms' :{label:'Added before matching bottoms',say:'You can only add fractions once the denominators match. Convert first, then add the tops.'},
   'bigger-denom'  :{label:'Bigger bottom, bigger fraction',say:'A bigger denominator means the whole was cut into more pieces, so each piece is <i>smaller</i>.'},
   'align-dec'     :{label:'Decimal points not lined up',  say:'Stack the points in a straight line, not the last digits. Fill the gaps with zeros.'},
+  'trailing-zero' :{label:'Trailing zero counted',        say:'A zero on the end of a decimal adds nothing. 0.5 and 0.50 are the same amount — the zero fills a place without putting anything in it.'},
+  'symbol-flip'   :{label:'Symbol pointing the wrong way', say:'Right comparison, wrong symbol. The open end always faces the bigger number — the mouth eats the bigger one.'},
   'more-digits'   :{label:'More digits read as bigger',   say:'0.65 has more digits than 0.7 but is worth less. Compare one place at a time, starting at the tenths.'},
   'place-mix'     :{label:'Place values mixed up',        say:'Count the places out from the decimal point: tenths, then hundredths. Position is what gives a digit its value.'},
   'digits-not-division':{label:'Wrote the digits, not the value', say:'A fraction is a division, not two digits shoved together. 1/4 is 0.25, not 0.14.'},
@@ -3110,22 +3167,197 @@ function decPlaceItem(skill, diff){
               `This one is the <span class="k">${askTenths?'first':'second'}</span> place.`,
               `So it is worth <span class="k">${val}</span>.`] };
   }
-  const a = Number((Math.random()*0.9+0.1).toFixed(1));
-  let b = Number((Math.random()*0.99+0.01).toFixed(2));
-  if (Math.abs(a-b) < 0.02) b = Number((a - 0.07).toFixed(2));
-  const bigger = a>b ? a.toFixed(1) : b.toFixed(2);
-  const smaller = a>b ? b.toFixed(2) : a.toFixed(1);
+  // the other half: name the place a digit sits in
+  const whole = 1+rnd(9), t = rnd(10), h = rnd(10);
+  const n = Number(`${whole}.${t}${h}`);
+  const askTenths = Math.random()<0.5;
+  const target = askTenths ? t : h;
+  const ans = askTenths ? 'The tenths place' : 'The hundredths place';
   return { realm:'math', skill, diff, kind:'choice',
-    q:`Which is <b>bigger</b>: <span class="num">${a.toFixed(1)}</span> or <span class="num">${b.toFixed(2)}</span>?`,
-    prompt:`cmp ${a} ${b}`, answer:String(bigger),
-    opts: mcText(String(bigger), [{t:String(smaller), why:'more-digits'},
-      {t:'They are equal', why:'more-digits'},{t:'You need more information', why:'more-digits'}]),
-    hints:[`More digits does not mean bigger. Compare place by place.`,
-           `Start with the tenths — the first digit after the point.`,
-           `${String(bigger)} has more tenths, so it is bigger.`],
-    worked:[`Line up the decimal points and compare from the left.`,
-            `Tenths first: ${String(a.toFixed(1))[2]} vs ${String(b.toFixed(2))[2]}.`,
-            `<span class="k">${bigger}</span> is bigger.`] };
+    q:`In <span class="num">${n.toFixed(2)}</span>, which place is the <b>${target}</b> in
+       ${askTenths ? 'just after the point' : 'at the very end'}?`,
+    prompt:`namepl ${n} ${askTenths?'t':'h'}`, answer:ans,
+    opts: mcText(ans, [{t:askTenths?'The hundredths place':'The tenths place', why:'place-mix'},
+      {t:'The ones place', why:'place-mix'},{t:'The tens place', why:'place-mix'}]),
+    hints:[`Count the places out from the decimal point, moving right.`,
+           `First place after the point is tenths. Second is hundredths.`,
+           `So it is <b>${ans.toLowerCase()}</b>.`],
+    worked:[`Going right from the point: tenths, then hundredths.`,
+            `This digit is in the <span class="k">${askTenths?'first':'second'}</span> one.`,
+            `<span class="k">${ans}</span>`] };
+}
+
+/* ── grade 5 · comparing decimals with < > = ────────────────────────────────
+   Adam asked for this one by name. The number line is the point: it turns
+   "which is bigger" from a digit-counting guess into something he can see. */
+function numberLine(a, b, lo, hi, aS, bS){
+  const span = (hi - lo) || 1;
+  const fmt = v => String(Number(v.toFixed(3)));
+  // Keep both markers inside a comfortable band, and guarantee a visible gap
+  // between them — otherwise two close values print on top of each other and
+  // the picture says nothing. Genuinely equal values stay on the same spot,
+  // which is exactly the right picture for 0.5 and 0.50.
+  const band = v => Math.max(16, Math.min(84, v));
+  let pa = band((a - lo) / span * 100);
+  let pb = band((b - lo) / span * 100);
+  const equal = Math.abs(a - b) < 0.0005;
+  if (!equal && Math.abs(pa - pb) < 24){
+    const mid = (pa + pb) / 2, dir = a < b ? -1 : 1;
+    pa = band(mid + dir * 12);
+    pb = band(mid - dir * 12);
+  }
+  return `<div class="numline">
+      <div class="nl-title">Where they sit on the line</div>
+      <div class="nl-box">
+        <div class="nl-mark a" style="left:${pa.toFixed(1)}%"><em>${aS || fmt(a)}</em><i></i></div>
+        <div class="nl-rail"></div>
+        <div class="nl-mark b" style="left:${pb.toFixed(1)}%"><i></i><em>${bS || fmt(b)}</em></div>
+        <div class="nl-ends"><span>${fmt(lo)}</span><span>${fmt(hi)}</span></div>
+      </div>
+      <div class="nl-note">${equal
+        ? 'Both land on the same spot — written differently, worth the same.'
+        : 'Further right on the line = bigger.'}</div>
+    </div>`;
+}
+
+/* Pretty-print without JavaScript's floating point noise. */
+const dec = (v, places) => Number(v).toFixed(places);
+
+/* Returns the values AND how they should be shown. The display strings matter:
+   0.5 vs 0.50 is the entire point of the trailing-zero case, and Number() drops
+   that zero, which would print "0.5 = 0.5" and teach nothing. */
+function decComparePair(diff){
+  const style = rnd(4);
+  if (style === 0){            // the classic: more digits looks bigger
+    const t = 1 + rnd(8);
+    const a = Number(dec(t/10, 1));
+    const b = Number(dec((t-1)/10 + (1+rnd(9))/100, 2));
+    return {a, b, aS: dec(a,1), bS: dec(b,2)};
+  }
+  if (style === 1){            // trailing zero — equal, and it must look unequal
+    const v = Number(dec((1+rnd(8))/10, 1));
+    return {a: v, b: v, aS: dec(v,1), bS: dec(v,2)};
+  }
+  if (style === 2){            // whole number part decides it
+    const w1 = 1 + rnd(9);
+    let w2 = 1 + rnd(9);
+    while (w2 === w1) w2 = 1 + rnd(9);   // the whole parts must actually decide it
+    const a = Number(`${w1}.${rnd(10)}`);
+    const b = Number(`${w2}.${rnd(10)}`);
+    return {a, b, aS: dec(a,1), bS: dec(b,1)};
+  }
+  // same tenths, so the hundredths decide — and they have to differ, or the
+  // question is a coin flip dressed up as a comparison
+  const w = diff >= 2 ? 1 + rnd(5) : 0;
+  const t = rnd(10), h1 = rnd(10);
+  let h2 = rnd(10);
+  while (h2 === h1) h2 = rnd(10);
+  const a = Number(`${w}.${t}${h1}`);
+  const b = Number(`${w}.${t}${h2}`);
+  return {a, b, aS: dec(a,2), bS: dec(b,2)};
+}
+
+function decCompareItem(skill, diff){
+  const type = diff >= 3 ? pick([0,0,2,3]) : pick([0,0,1,2,3]);
+
+  // ── order three decimals, smallest first ──
+  if (type === 2){
+    const base = 1 + rnd(5);
+    const set = [];
+    while (set.length < 3){
+      const v = Number(`${diff>=2 ? base : 0}.${rnd(10)}${rnd(10)}`);
+      if (!set.some(x => Math.abs(x - v) < 0.005)) set.push(v);
+    }
+    const sorted = [...set].sort((x,y)=>x-y).map(v=>dec(v,2));
+    const ans = sorted.join(', ');
+    const byDigits = [...set].sort((x,y)=>String(y).length-String(x).length).map(v=>dec(v,2)).join(', ');
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`Put these in order, <b>smallest first</b>:<br><span class="num">${set.map(v=>dec(v,2)).join('  ·  ')}</span>`,
+      prompt:`order ${sorted.join('|')}`, answer:ans,
+      opts: mcText(ans, [
+        {t:[...sorted].reverse().join(', '), why:'symbol-flip'},
+        {t:byDigits === ans ? [sorted[1],sorted[0],sorted[2]].join(', ') : byDigits, why:'more-digits'},
+        {t:[sorted[0],sorted[2],sorted[1]].join(', '), why:'count-slip'}]),
+      hints:[`Line them all up by the decimal point and compare one place at a time.`,
+             `Start with the tenths. If any tie, move on to the hundredths.`,
+             `Smallest to biggest: <b>${ans}</b>.`],
+      worked:[`Stack them with the points lined up.`,
+              `Compare the tenths first, then the hundredths for any that tie.`,
+              `<span class="k">${ans}</span>`] };
+  }
+
+  const {a, b, aS, bS} = decComparePair(diff);
+  const places = Math.max(aS.split('.')[1].length, bS.split('.')[1].length);
+  const equal = Math.abs(a - b) < 0.0005;
+  const sym = equal ? '=' : (a > b ? '>' : '<');
+  // Widen the axis so neither marker lands on an end, where its label would
+  // sit on top of the end label.
+  let lo = Math.floor(Math.min(a,b) * 10) / 10;
+  let hi = Math.ceil(Math.max(a,b) * 10) / 10;
+  if (Math.min(a,b) - lo < 0.02) lo = Number((lo - 0.1).toFixed(1));
+  if (hi - Math.max(a,b) < 0.02) hi = Number((hi + 0.1).toFixed(1));
+  const line = numberLine(a, b, lo, hi, aS, bS);
+  const padded = `${dec(a, places)} and ${dec(b, places)}`;
+
+  const why = equal
+    ? `A zero on the end adds nothing — ${aS} and ${bS} are the same amount.`
+    : `Write them with the same number of places: ${padded}. Now compare left to right.`;
+
+  // ── pick the symbol: the literal greater-than / less-than question ──
+  if (type === 0){
+    const label = {'<':'&lt;  (less than)', '>':'&gt;  (greater than)', '=':'=  (equal to)'};
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`${diff === 1 ? line : ''}Which symbol belongs in the box?<br>
+         <span class="num">${aS} <span class="cmp-box">?</span> ${bS}</span>`,
+      prompt:`sym ${aS}?${bS}`, answer:label[sym],
+      opts: mcText(label[sym], [
+        {t:label[sym === '<' ? '>' : '<'], why: equal ? 'trailing-zero' : 'symbol-flip'},
+        {t:label['='], why:'more-digits'},
+        {t:label[sym === '<' ? '>' : '<'] === label['<'] ? label['>'] : label['<'], why:'symbol-flip'}]),
+      hints:[`The open end of the symbol always faces the <b>bigger</b> number — it eats the bigger one.`,
+             why,
+             `${aS} ${sym} ${bS}, so the answer is <b>${sym}</b>.`],
+      worked:[`Give both the same number of decimal places: <span class="k">${padded}</span>.`,
+              `Compare from the left — whole numbers, then tenths, then hundredths.`,
+              `<span class="k">${aS} ${sym} ${bS}</span>${equal?' — a trailing zero changes nothing.':''}`] };
+  }
+
+  // ── which one is greater / less ──
+  if (type === 1){
+    const wantBigger = Math.random() < 0.5;
+    const ans = equal ? 'They are equal' : ((a > b) === wantBigger ? aS : bS);
+    const other = equal ? (a > b ? aS : bS) : ((a > b) === wantBigger ? bS : aS);
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`${diff === 1 ? line : ''}Which is <b>${wantBigger ? 'greater' : 'less'}</b>:
+         <span class="num">${aS}</span> or <span class="num">${bS}</span>?`,
+      prompt:`which ${wantBigger?'gt':'lt'} ${aS} ${bS}`, answer:ans,
+      opts: mcText(ans, [
+        {t:other, why: String(bS).length !== String(aS).length ? 'more-digits' : 'place-mix'},
+        {t: equal ? aS : 'They are equal', why:'trailing-zero'},
+        {t:'You cannot tell', why:'more-digits'}]),
+      hints:[`The number of digits does not decide it. Compare place by place.`,
+             why,
+             `<b>${ans}</b>.`],
+      worked:[`Same number of places: <span class="k">${padded}</span>.`,
+              `Compare left to right.`, `<span class="k">${ans}</span>`] };
+  }
+
+  // ── true or false ──
+  const claimSym = Math.random() < 0.5 ? sym : (sym === '>' ? '<' : sym === '<' ? '>' : '>');
+  const isTrue = claimSym === sym;
+  return { realm:'math', skill, diff, kind:'choice',
+    q:`True or false?<br><span class="num">${aS} ${claimSym === '>' ? '&gt;' : claimSym === '<' ? '&lt;' : '='} ${bS}</span>`,
+    prompt:`tf ${aS}${claimSym}${bS}`, answer: isTrue ? 'True' : 'False',
+    opts: mcText(isTrue ? 'True' : 'False', [
+      {t: isTrue ? 'False' : 'True', why: equal ? 'trailing-zero' : 'more-digits'},
+      {t:'Only if you round them first', why:'place-mix'},
+      {t:'You cannot tell', why:'more-digits'}]),
+    hints:[`Work out the real answer yourself first, then check it against the claim.`,
+           why,
+           `The truth is ${aS} ${sym} ${bS}, so the claim is <b>${isTrue ? 'true' : 'false'}</b>.`],
+    worked:[`Same number of places: <span class="k">${padded}</span>.`,
+            `Really: <span class="k">${aS} ${sym} ${bS}</span>.`,
+            `So the statement is <span class="k">${isTrue ? 'true' : 'false'}</span>.`] };
 }
 
 /* ── grade 5 · adding and subtracting decimals ──────────────────────────── */
@@ -3279,7 +3511,8 @@ const MATH_GEN = {
   'm-evenodd':evenOddItem, 'm-factors':factorsItem, 'm-primes':primesItem, 'm-order-ops':orderOpsItem,
   // grade 5 · fractions and decimals
   'm-frac-concept':fracConceptItem, 'm-frac-addsub':fracAddSubItem,
-  'm-dec-place':decPlaceItem, 'm-dec-addsub':decAddSubItem, 'm-frac-dec':fracDecItem,
+  'm-dec-place':decPlaceItem, 'm-dec-compare':decCompareItem,
+  'm-dec-addsub':decAddSubItem, 'm-frac-dec':fracDecItem,
   // grade 5 · data
   'm-data':dataItem, 'm-probability':probabilityItem,
 };
@@ -3338,7 +3571,20 @@ function save(){
    BACKUP — progress that outlives the browser
    A compact code that round-trips through a link, a file, or a paste box.
    --------------------------------------------------------------------------- */
-const SKILL_ORDER = Object.keys(SKILLS);
+/* APPEND-ONLY. Save codes address skills by their index in this list, so a save
+   written by an older build must still line up: never reorder or remove an
+   entry, only add to the end. Anything in SKILLS but missing here is appended
+   at runtime, so a forgotten entry degrades instead of corrupting. */
+const SKILL_ORDER = (() => {
+  const fixed = [
+  'm-add-sub', 'm-mult-concept', 'm-word', 'm-mult-low', 'm-mult-high', 'm-mult-big',
+  'm-div-low', 'm-div-high', 'm-missing', 'm-multidigit', 'm-remainder', 'm-estimate',
+  'm-evenodd', 'm-factors', 'm-primes', 'm-order-ops', 'm-frac-concept', 'm-frac-addsub',
+  'm-dec-place', 'm-dec-addsub', 'm-frac-dec', 'm-data', 'm-probability', 'r-detail',
+  'r-vocab', 'r-infer', 'r-main', 'r-struct', 'r-purpose', 'r-theme', 'm-dec-compare'
+  ];
+  return fixed.concat(Object.keys(SKILLS).filter(k => fixed.indexOf(k) < 0));
+})();
 const b64e = str => btoa(unescape(encodeURIComponent(str))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const b64d = str => decodeURIComponent(escape(atob(str.replace(/-/g,'+').replace(/_/g,'/'))));
 
@@ -3562,6 +3808,7 @@ const PREREQ = {
   'm-primes'      :['m-factors'],
   'm-frac-addsub' :['m-frac-concept'],
   'm-dec-addsub'  :['m-dec-place'],
+  'm-dec-compare' :['m-dec-place'],
   'm-frac-dec'    :['m-frac-concept'],
 };
 function isLocked(skill){

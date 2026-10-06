@@ -15,7 +15,7 @@ climbs from adding and subtracting, through what multiplication means and the ti
 tables, up to factors, primes and order of operations — stepping up on a right answer
 and down on a wrong one. Then one short story. It cannot be failed.
 
-**🧮 Math — 23 skills across the grade 4 and grade 5 standards**
+**🧮 Math — 24 skills across the grade 4 and grade 5 standards**
 
 | Strand | Grade | Skills |
 |---|---|---|
@@ -23,7 +23,7 @@ and down on a wrong one. Then one short story. It cannot be failed.
 | Times tables & division | 4 | ×2–×5, ×6–×9, ×10–×12, division facts, tough division, missing factor |
 | Bigger numbers | 4 | 2-digit × 1-digit, remainders, rounding & estimating |
 | Number sense | 5 | Even & odd, factors & multiples, prime & composite, order of operations |
-| Fractions & decimals | 5 | Reading fractions, adding fractions, decimal place value, adding decimals, fractions ↔ decimals |
+| Fractions & decimals | 5 | Reading fractions, adding fractions, decimal place value, **comparing decimals (< > =)**, adding decimals, fractions ↔ decimals |
 | Data & probability | 5 | Reading bar charts with a real scale, probability & sample space |
 
 Items are generated, so practice never runs out — which is the point, since repetition
@@ -33,12 +33,16 @@ is what builds fluency.
 6th): fiction, expository nonfiction, opinion columns, science, and paired sources.
 64 questions tagged by skill.
 
+Comparing decimals draws a **number line** at the easiest level, so "which is
+bigger" becomes something to look at rather than guess. The trailing-zero case is
+deliberate: 0.5 and 0.50 land on the same spot, labelled differently.
+
 **Rule cards — the part that teaches instead of testing.** Every skill has one: the
 words defined, the rule written out plainly, how to recognise a question that needs it,
 the steps, a worked example, and the mistake that catches most people. A rule card opens
 automatically the first time a skill appears, and `📐 The rule` is on every question.
 
-**Lessons tab** — all 30 skills grouped by strand and labelled Grade 4 catch-up or
+**Lessons tab** — all 31 skills grouped by strand and labelled Grade 4 catch-up or
 Grade 5 now. Nothing is locked here, so tonight's homework is always one tap away:
 open the topic, read the rule, then practise 8 or drill 15.
 
@@ -144,6 +148,11 @@ public.saves (code text pk, state jsonb, answered int, created_at, updated_at)
 public.load_save(p_code)                     security definer, execute granted to anon
 public.put_save(p_code, p_state, p_answered) security definer, execute granted to anon
 ```
+
+Save codes address skills by index in an append-only `SKILL_ORDER`, so a code
+written by an older build still lines up — new skills are added to the end, never
+inserted. Anything in `SKILLS` missing from that list is appended at runtime, so a
+forgotten entry degrades rather than corrupting a restore.
 
 `put_save` validates the code shape, caps the payload, and **refuses an upsert whose
 `answered` is lower than the stored row's** — that rule is what makes a late sync from a
