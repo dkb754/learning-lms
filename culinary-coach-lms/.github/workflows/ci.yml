@@ -1,0 +1,43 @@
+# Pre-deploy gate. Netlify deploys whatever lands on `main`, so `main` must only ever receive PRs that pass these checks
+# (enforce it with branch protection — see docs/DEPLOY.md).
+name: CI
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  secret-scan:
+    name: No secrets or codes in the repo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail on service-role keys, real access codes or the admin code
+        run: |
+          set -u
+          fail=0
+          # a service_role JWT payload always contains this base64 fragment
+          if git grep -nI 'c2VydmljZV9yb2xl' -- . ':!.github'; then echo "::error::service_role key found"; fail=1; fi
+          if git grep -nIE 'ADMIN2026|CE2026[A-H]' -- . ':!.github' ':!docs/*.docx' ':!tools/e2e.mjs'; then echo "::error::access code found"; fail=1; fi
+          if git grep -nIE 'SUPABASE_SERVICE_ROLE_KEY\s*=\s*["'\'']eyJ' -- .; then echo "::error::service key assigned"; fail=1; fi
+          exit $fail
+
+  e2e:
+    name: End-to-end tests (mock backend)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: node tools/e2e.mjs
+
+  links:
+    name: External links are live (informational)
+    runs-on: ubuntu-latest
+    continue-on-error: true   # third-party sites sometimes block bots; review the log, don't block the merge
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/check-links.py

@@ -1,5 +1,6 @@
-// End-to-end smoke test for index.html. Runs the real page in headless Chromium against a MOCK
-// Supabase REST endpoint, so it needs no network and never touches production data.
+// End-to-end smoke test for index.html. Runs the real page in headless Chromium against MOCK Edge Functions and a
+// MOCK signed-upload endpoint, so it needs no network and never touches production data. (The real functions were
+// separately exercised against the live project — see docs/SECURITY.md.)
 //
 //   cd culinary-coach-lms && npm i -D playwright && node tools/e2e.mjs
 //   BROWSER=firefox|webkit|chromium (default chromium; install with `npx playwright install <name>`)
@@ -18,93 +19,192 @@ const launchOpts = process.env.CHROMIUM_PATH ? { executablePath: process.env.CHR
 let pass = 0, fail = 0;
 const ok = (cond, name, extra = '') => { cond ? pass++ : fail++; console.log(`${cond ? 'PASS' : 'FAIL'}  ${name}${cond ? '' : '  ' + extra}`); };
 
-// ---- mock Supabase ----
-function makeDb() {
-  const rows = new Map(); // student_name -> row
-  const log = [];
-  const mode = { getFails: false, writeFails: false };
+// Mock credentials — deliberately NOT the real ones.
+const CODES = { 'MOCK-TEST': { name: 'TEST STUDENT' }, 'MOCK-TAMEKA': { name: 'Tameka Green' }, 'MOCK-ADMIN': { name: 'Instructor', admin: true } };
+const ROSTER = ['Tameka Green', 'TEST STUDENT', 'Zed Newstudent'];
+const slug = s => s.normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'x';
+const FILE_LABELS = { w2d1: 'Business Concept Draft (1-page)', w2d4: 'Startup Budget + Projections', w4d1: 'Brand Mood Board + Brand Guide', w3d3: 'Supplier Contact List' };
+const CONFIRM = new Set(['w1d1', 'w1d2', 'w1lab', 'w2lab', 'w3lab']);
+
+function makeBackend() {
+  const rows = new Map();     // student -> {quizzes, deliverables, w2_unlocked}
+  const sessions = new Map(); // token -> {name, admin}
+  const files = [];           // {path, mime, bytes, filename}
+  const subs = [];            // submissions rows
+  const calls = [];           // every function call {fn, action}
+  const urls = [];            // every request URL the page made to Supabase
+  const mode = { loginDown: false, apiDown: false, locked: false, storageFails: 0, recordFails: false, expireAll: false };
   const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*', 'content-type': 'application/json' };
-  async function handler(route) {
-    const req = route.request();
-    const url = new URL(req.url());
-    const m = /student_name=eq\.([^&]+)/.exec(url.search);
-    const name = m ? decodeURIComponent(m[1]) : null;
-    const method = req.method();
-    if (method === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
-    log.push({ method, name, body: req.postData() });
-    if (method === 'GET') {
-      if (mode.getFails) return route.fulfill({ status: 503, headers: CORS, body: JSON.stringify({ message: 'down' }) });
-      return route.fulfill({ status: 200, headers: CORS, body: JSON.stringify(rows.has(name) ? [rows.get(name)] : []) });
-    }
-    if (mode.writeFails) return route.fulfill({ status: 500, headers: CORS, body: JSON.stringify({ message: 'boom' }) });
-    if (method === 'PATCH') {
-      if (!rows.has(name)) return route.fulfill({ status: 200, headers: CORS, body: '[]' });
-      Object.assign(rows.get(name), JSON.parse(req.postData()));
-      return route.fulfill({ status: 200, headers: CORS, body: JSON.stringify([rows.get(name)]) });
-    }
-    if (method === 'POST') {
-      const b = JSON.parse(req.postData());
-      rows.set(b.student_name, b);
-      return route.fulfill({ status: 201, headers: CORS, body: JSON.stringify([b]) });
-    }
-    return route.fulfill({ status: 405, headers: CORS, body: '{}' });
-  }
-  const files = [];   // { path, mime, bytes }
-  mode.storageFails = 0;
-  async function storage(route) {
+  const reply = (route, status, body) => route.fulfill({ status, headers: CORS, body: JSON.stringify(body) });
+  const row = n => { if (!rows.has(n)) rows.set(n, { quizzes: {}, deliverables: {}, w2_unlocked: false }); return rows.get(n); };
+
+  async function login(route) {
     const req = route.request();
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
-    if (mode.storageFails) return route.fulfill({ status: mode.storageFails, headers: CORS, body: JSON.stringify({ message: mode.storageFails === 404 ? 'Bucket not found' : 'nope' }) });
-    const u = new URL(req.url());
-    files.push({ path: decodeURIComponent(u.pathname.replace('/storage/v1/object/submissions/', '')), mime: req.headers()['content-type'], bytes: req.postDataBuffer()?.length ?? 0, key: req.headers()['apikey'] });
-    return route.fulfill({ status: 200, headers: CORS, body: JSON.stringify({ Key: 'submissions/x' }) });
+    calls.push({ fn: 'validate-login' });
+    if (mode.loginDown) return reply(route, 503, { message: 'down' });
+    if (mode.locked) return reply(route, 429, { valid: false, locked: true });
+    const code = String(JSON.parse(req.postData() || '{}').access_code || '').trim().toUpperCase();
+    const hit = CODES[code];
+    if (!hit) return reply(route, 401, { valid: false });
+    const token = 'tok-' + Math.random().toString(16).slice(2);
+    sessions.set(token, { name: hit.name, admin: !!hit.admin });
+    return reply(route, 200, { valid: true, is_admin: !!hit.admin, student_name: hit.name, token, expires_at: new Date(Date.now() + 43200000).toISOString() });
   }
-  return { rows, log, mode, handler, storage, files };
+
+  async function api(route) {
+    const req = route.request();
+    if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+    const b = JSON.parse(req.postData() || '{}');
+    calls.push({ fn: 'lms-api', action: b.action });
+    if (mode.apiDown) return reply(route, 503, { error: 'down' });
+    if (mode.expireAll) sessions.clear();
+    const s = sessions.get(b.token);
+    if (!s) return reply(route, 401, { error: 'session_expired' });
+    const prog = r => ({ quizzes: r.quizzes, deliverables: r.deliverables, w2_unlocked: r.w2_unlocked });
+    switch (b.action) {
+      case 'logout': sessions.delete(b.token); return reply(route, 200, { ok: true });
+      case 'load': return reply(route, 200, { progress: prog(row(s.name)) });
+      case 'save': {
+        if (s.admin) return reply(route, 403, { error: 'admin_preview' });
+        const r = row(s.name);
+        for (const [k, v] of Object.entries(b.quizzes || {})) if (/^w[1-4]d[1-4]$/.test(k)) { const c = r.quizzes[k]; if (!c || v.score > c.score || (v.passed && !c.passed)) r.quizzes[k] = { ...v, passed: v.score >= 70 }; }
+        for (const [k, v] of Object.entries(b.deliverables || {})) if (CONFIRM.has(k) && !r.deliverables[k]) r.deliverables[k] = { submitted: true, kind: 'confirm', date: v.date };
+        return reply(route, 200, { progress: prog(r) });
+      }
+      case 'create-upload': {
+        if (s.admin) return reply(route, 403, { error: 'admin_preview' });
+        const label = FILE_LABELS[b.assignment];
+        if (!label) return reply(route, 400, { error: 'unknown_assignment' });
+        const ext = (/\.([a-z0-9]+)$/i.exec(b.filename) || [])[1]?.toLowerCase();
+        if (!['pdf', 'docx', 'xlsx', 'png', 'doc', 'xls', 'ppt', 'pptx', 'csv', 'txt', 'jpg', 'jpeg', 'zip'].includes(ext)) return reply(route, 400, { error: 'file_type_not_allowed' });
+        const dir = `${slug(s.name)}/${slug(label)}`;
+        let name = b.filename.replace(/[^A-Za-z0-9._-]+/g, '_'), n = 2;
+        while (files.some(f => f.path === `${dir}/${name}`)) name = name.replace(/(-v\d+)?(\.[^.]+)$/, `-v${n++}$2`);
+        const p = `${dir}/${name}`;
+        const mime = ext === 'pdf' ? 'application/pdf' : ext === 'png' ? 'image/png' : 'application/octet-stream';
+        return reply(route, 200, { path: p, signedUrl: `https://mock.supabase.co/storage/v1/object/upload/sign/submissions/${p}?token=t`, mime });
+      }
+      case 'record-submission': {
+        if (s.admin) return reply(route, 403, { error: 'admin_preview' });
+        if (mode.recordFails) return reply(route, 500, { error: 'server_error' });
+        const label = FILE_LABELS[b.assignment];
+        const dir = `${slug(s.name)}/${slug(label)}`;
+        if (!b.path.startsWith(dir + '/')) return reply(route, 403, { error: 'bad_path' });
+        const f = files.find(x => x.path === b.path);
+        if (!f) return reply(route, 409, { error: 'file_missing' });
+        let sub = subs.find(x => x.file_path === b.path);
+        if (!sub) {
+          sub = { id: subs.length + 1, student_name: s.name, assignment_id: b.assignment, assignment: label, file_name: b.filename, file_path: b.path, file_size: f.bytes, file_type: f.mime, attempt: subs.filter(x => x.student_name === s.name && x.assignment_id === b.assignment).length + 1, submitted_at: new Date().toISOString() };
+          subs.push(sub);
+        }
+        const rec = { submitted: true, kind: 'file', date: sub.submitted_at, fileName: sub.file_name, fileSize: sub.file_size, fileType: sub.file_type, filePath: sub.file_path, attempts: sub.attempt };
+        row(s.name).deliverables[b.assignment] = rec;
+        return reply(route, 200, { record: rec, progress: prog(row(s.name)) });
+      }
+      case 'admin-overview': {
+        if (!s.admin) return reply(route, 403, { error: 'forbidden' });
+        const progress = {}; for (const [n, r] of rows) progress[n] = prog(r);
+        return reply(route, 200, { roster: ROSTER, progress, submissions: [...subs].reverse() });
+      }
+      case 'admin-unlock': {
+        if (!s.admin) return reply(route, 403, { error: 'forbidden' });
+        if (!ROSTER.includes(b.student_name)) return reply(route, 404, { error: 'unknown_student' });
+        row(b.student_name).w2_unlocked = true;
+        return reply(route, 200, { ok: true });
+      }
+      case 'admin-file-url': {
+        if (!s.admin) return reply(route, 403, { error: 'forbidden' });
+        if (!subs.some(x => x.file_path === b.path)) return reply(route, 404, { error: 'unknown_file' });
+        return reply(route, 200, { url: 'https://mock.supabase.co/storage/v1/object/sign/submissions/' + b.path + '?token=dl' });
+      }
+      default: return reply(route, 400, { error: 'unknown_action' });
+    }
+  }
+
+  async function signedPut(route) {
+    const req = route.request();
+    if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+    if (mode.storageFails) return reply(route, mode.storageFails, { message: mode.storageFails === 400 ? 'mime type not supported' : 'nope' });
+    const u = new URL(req.url());
+    const p = decodeURIComponent(u.pathname.replace('/storage/v1/object/upload/sign/submissions/', ''));
+    const buf = req.postDataBuffer() || Buffer.alloc(0);
+    const text = buf.toString('latin1');
+    const m = /name=""; filename="([^"]*)"\r\nContent-Type: ([^\r\n]+)\r\n\r\n/.exec(text);
+    let bytes = -1, mime = '';
+    if (m) {
+      const start = m.index + m[0].length;
+      const end = text.lastIndexOf('\r\n--');
+      bytes = end - start; mime = m[2];
+    }
+    if (req.method() !== 'PUT' || !m) return reply(route, 400, { message: 'bad multipart' });
+    files.push({ path: p, mime, bytes, filename: m[1] });
+    return reply(route, 200, { Key: 'submissions/' + p });
+  }
+  return { rows, sessions, files, subs, calls, urls, mode, login, api, signedPut };
 }
 
-async function newPage(browser, db, opts = {}) {
+async function newPage(browser, be, opts = {}) {
   const ctx = opts.ctx || await browser.newContext({ viewport: opts.viewport || { width: 1280, height: 900 } });
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', e => errors.push(String(e)));
-  page.on('console', m => { if (m.type() === 'error' && !/Supabase|Failed to load resource|ERR_/.test(m.text())) errors.push(m.text()); });
-  await page.route('**/rest/v1/student_progress**', db.handler);
-  await page.route('**/storage/v1/object/submissions/**', db.storage);
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort()); // offline-safe
+  page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|ERR_|Save failed|Load failed/.test(m.text())) errors.push(m.text()); });
+  page.on('request', r => { if (/supabase\.co/.test(r.url())) be.urls.push(r.method() + ' ' + r.url()); });
+  await page.route('**/functions/v1/validate-login', be.login);
+  await page.route('**/functions/v1/lms-api', be.api);
+  await page.route('**/storage/v1/object/upload/sign/**', be.signedPut);
+  await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
   await page.goto(PAGE);
   return { page, ctx, errors };
 }
-const login = async (page, code, name = 'x') => { await page.fill('#login-user', name); await page.fill('#login-pass', code); await page.click('#login-btn'); };
+const login = async (page, code, name = '') => { await page.fill('#login-user', name); await page.fill('#login-pass', code); await page.click('#login-btn'); };
 const text = (page, sel) => page.locator(sel).first().innerText();
+const appUp = page => page.waitForSelector('#app', { state: 'visible' });
 
 const browser = await engine.launch(launchOpts);
-const db = makeDb();
+const be = makeBackend();
 
-// ===== 1. login =====
+// ===== 1. login + source hygiene =====
 {
-  const { page, errors } = await newPage(browser, db);
-  await login(page, 'WRONGCODE');
+  const { page, errors } = await newPage(browser, be);
+  const src = await page.content();
+  ok(!/ADMIN2026|CE2026|TEST0000/.test(src), 'no access codes or admin code anywhere in the page source');
+  ok(!/eyJ[A-Za-z0-9_-]{20,}/.test(src) && !/service_role|SERVICE_ROLE/.test(src), 'no API keys / JWTs / service-role key in the page source');
+  ok(!/const STUDENTS|const ADMIN_CODE/.test(src), 'no roster or admin constant in the page script');
+
+  await login(page, 'WRONG');
   await page.waitForSelector('#login-error', { state: 'visible' });
   ok(/Invalid access code/.test(await text(page, '#login-error')), 'bad access code is rejected with a message');
   ok(await page.locator('#login-btn').isEnabled(), 'sign-in button re-enables after a bad code');
+  be.mode.locked = true;
+  await login(page, 'WRONG');
+  await page.waitForFunction(() => /Too many wrong attempts/.test(document.getElementById('login-error').innerText));
+  ok(true, 'throttled login (429) shows a "wait a few minutes" message');
+  be.mode.locked = false;
+  be.mode.loginDown = true;
+  await login(page, 'MOCK-TEST');
+  await page.waitForFunction(() => /Could not sign in right now/.test(document.getElementById('login-error').innerText));
+  ok(true, 'server error at login shows a plain-English message');
+  be.mode.loginDown = false;
 
-  await login(page, 'test0000'); // lower-case should work
-  await page.waitForSelector('#app', { state: 'visible' });
-  ok(/TEST STUDENT/.test(await text(page, '#nav-name')), 'student login works (case-insensitive code)');
-  ok(db.rows.has('TEST STUDENT'), 'first login creates the Supabase row');
+  await page.fill('#login-pass', ''); await page.fill('#login-pass', 'mock-test'); await page.press('#login-pass', 'Enter');
+  await appUp(page);
+  ok(/TEST STUDENT/.test(await text(page, '#nav-name')), 'student login works (case-insensitive code, Enter key)');
+  ok(be.calls.some(c => c.action === 'load'), 'progress is loaded through lms-api');
 
   // ===== 2. content / dates =====
-  const body = await page.content();
-  ok(/Oct 12 – Nov 7, 2026/.test(body) || /Oct 12/.test(body), 'new cohort dates present');
-  ok(!/April|\bMay [0-9]|Spring 2026|Easter/.test(await page.locator('#app').innerText()), 'no leftover Spring-cohort dates in visible text');
+  const body = await page.locator('#app').innerText();
+  ok(/Oct 12/.test(await page.content()), 'new cohort dates present');
+  ok(!/April|\bMay [0-9]|Spring 2026|Easter/.test(body), 'no leftover Spring-cohort dates in visible text');
   ok(/level i/i.test(await text(page, '.dash-header')), 'dashboard says Level I');
-  ok(!/VCU/i.test(await page.locator('#app').innerText()) && !/VCU/i.test(await page.content()), 'no VCU references anywhere on the page');
-  ok(/Food Handler/.test(await page.locator('#app').innerText()) && !/Food Manager/.test(await page.locator('#app').innerText()), 'Level I credential is ServSafe Food Handler (no Manager references)');
+  ok(!/VCU/i.test(await page.content()), 'no VCU references anywhere on the page');
+  ok(/Food Handler/.test(body) && !/Food Manager/.test(body), 'Level I credential is ServSafe Food Handler (no Manager references)');
   ok(/Entrepreneurship I\b(?! ?I)/.test(await text(page, '.nav-brand')), 'course is titled Culinary Entrepreneurship I');
 
   // ===== 3. links =====
   const hrefs = await page.$$eval('a.resource-item', as => as.map(a => a.href));
-  ok(hrefs.length === 34 - 0 || hrefs.length > 25, `resource links rendered as real anchors (${hrefs.length})`);
+  ok(hrefs.length > 25, `resource links rendered as real anchors (${hrefs.length})`);
   ok(hrefs.every(h => /^https:\/\//.test(h)), 'every resource link is https');
   ok(!hrefs.some(h => /youtube\.com\/results/.test(h)), 'no YouTube search-result links remain');
   ok(!hrefs.some(h => /youtube\.com/.test(h) && !/watch\?v=[\w-]{11}$/.test(h)), 'every YouTube link is a direct watch URL');
@@ -113,7 +213,6 @@ const db = makeDb();
   // ===== 4. gate =====
   await page.click('.sidebar-item[data-page="w2"]');
   ok(await page.locator('#page-gate').isVisible(), 'Week 2 is gated until the instructor unlocks it');
-  ok(/sign out and back in/i.test(await text(page, '#page-gate')), 'gate tells students to sign back in after unlock');
 
   // ===== 5. confirm-type deliverable =====
   await page.click('.sidebar-item[data-page="w1"]');
@@ -122,21 +221,21 @@ const db = makeDb();
   ok(/To do/.test(await text(page, '#ds-w1d1')), 'day shows a "To do" text chip');
   await page.click('#sp-w1d1 .btn-submit-work');
   await page.waitForFunction(() => /SUBMITTED/.test(document.getElementById('sp-w1d1').innerText) && !/NOT/.test(document.getElementById('sp-w1d1').innerText));
-  ok(true, 'confirm button flips panel to SUBMITTED');
-  ok(!!db.rows.get('TEST STUDENT').deliverables.w1d1?.date, 'confirmation written to Supabase');
-  ok(/1 of 5 items done|1 of \d+ items done/.test(await text(page, '#wc1-count')), 'week count updates', await text(page, '#wc1-count'));
+  ok(!!be.rows.get('TEST STUDENT').deliverables.w1d1?.date, 'confirmation written to the server');
+  ok(/1 of \d+ items done/.test(await text(page, '#wc1-count')), 'week count updates', await text(page, '#wc1-count'));
   ok(/In progress/.test(await text(page, '#ds-w1d1')), 'day with quiz still open reads "In progress" (not Done)');
-  if (SHOTS) await page.screenshot({ path: `${SHOTS}/desktop-w1.png`, fullPage: true });
+  ok(!be.urls.some(u => /\/rest\/v1\//.test(u)), 'the browser never calls the database REST API directly');
+  ok(be.urls.every(u => /\/functions\/v1\/(validate-login|lms-api)|\/storage\/v1\/object\/upload\/sign\//.test(u)), 'every Supabase call goes to an Edge Function or a signed upload URL', be.urls.filter(u => !/functions\/v1|upload\/sign/.test(u)).join(','));
   ok(errors.length === 0, 'no JS errors in student flow', errors.join(' | '));
   await page.context().close();
 }
 
 // ===== 6. file submission (week 2 pre-unlocked) =====
-db.rows.set('TEST STUDENT', { student_name: 'TEST STUDENT', quizzes: {}, deliverables: {}, w2_unlocked: true });
+be.rows.get('TEST STUDENT').w2_unlocked = true;
 {
-  const { page, errors } = await newPage(browser, db);
-  await login(page, 'TEST0000');
-  await page.waitForSelector('#app', { state: 'visible' });
+  const { page, errors } = await newPage(browser, be);
+  await login(page, 'MOCK-TEST');
+  await appUp(page);
   await page.click('.sidebar-item[data-page="w2"]');
   ok(await page.locator('#page-w2').isVisible(), 'Week 2 opens once unlocked');
   await page.click('.day-card-header[onclick*="w2d1"]');
@@ -148,161 +247,195 @@ db.rows.set('TEST STUDENT', { student_name: 'TEST STUDENT', quizzes: {}, deliver
   await page.setInputFiles(`${panel} input[type=file]`, { name: 'concept-draft.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4 hello') });
   ok(/FILE SELECTED — NOT YET SUBMITTED/.test(await text(page, panel)), 'selected-but-unsubmitted is its own visible state');
   ok(/concept-draft\.pdf/.test(await text(page, panel)), 'chosen filename is shown');
-  ok(!db.rows.get('TEST STUDENT').deliverables.w2d1 && db.files.length === 0, 'nothing is uploaded or saved until Submit is clicked');
+  ok(!be.rows.get('TEST STUDENT').deliverables.w2d1 && be.files.length === 0 && !be.calls.some(c => c.action === 'create-upload'), 'nothing is requested, uploaded or saved until Submit is clicked');
   await page.click(`${panel} .btn-submit-work.big`);
   await page.waitForFunction(() => /SUBMITTED/.test(document.getElementById('sp-w2d1').innerText) && !/NOT|SELECTED/.test(document.getElementById('sp-w2d1').innerText));
-  const rec = db.rows.get('TEST STUDENT').deliverables.w2d1;
-  ok(rec && rec.fileName === 'concept-draft.pdf' && rec.fileSize === 14 && rec.attempts === 1, 'filename, size, timestamp, attempt logged in Supabase', JSON.stringify(rec));
-  ok(db.files.length === 1 && db.files[0].bytes === 14 && db.files[0].mime === 'application/pdf', 'the real file bytes reach storage with the right type', JSON.stringify(db.files));
-  ok(/^test-student\/w2d1\/\d+-concept-draft\.pdf$/.test(db.files[0].path) && rec.filePath === db.files[0].path, 'stored under student/assignment path and the path is recorded', db.files[0].path);
-  ok(/concept-draft\.pdf/.test(await text(page, panel)) && /2026|20\d\d/.test(await text(page, panel)), 'submitted panel shows filename + timestamp');
+  const rec = be.rows.get('TEST STUDENT').deliverables.w2d1;
+  ok(be.files.length === 1 && be.files[0].bytes === 14 && be.files[0].mime === 'application/pdf', 'the real file bytes reach storage through the signed URL', JSON.stringify(be.files));
+  ok(be.files[0].path === 'test-student/business-concept-draft-1-page/concept-draft.pdf', 'path follows {student-name}/{assignment-slug}/{filename}', be.files[0].path);
+  ok(rec && rec.fileName === 'concept-draft.pdf' && rec.fileSize === 14 && rec.attempts === 1 && rec.filePath === be.files[0].path, 'submission recorded: name, size, time, attempt, path', JSON.stringify(rec));
+  ok(be.subs.length === 1 && be.subs[0].student_name === 'TEST STUDENT' && be.subs[0].assignment_id === 'w2d1', 'a row is written to the submissions table');
+  ok(/concept-draft\.pdf/.test(await text(page, panel)) && /20\d\d/.test(await text(page, panel)), 'submitted panel shows filename + timestamp');
+  ok(!be.urls.some(u => /\/rest\/v1\//.test(u)), 'still no direct database calls');
 
-  // resubmission
+  // resubmission (same file name) -> new object, nothing overwritten
   await page.click(`${panel} .link-btn`);
-  await page.setInputFiles(`${panel} input[type=file]`, { name: 'v2.docx', mimeType: 'application/octet-stream', buffer: Buffer.from('x') });
+  await page.setInputFiles(`${panel} input[type=file]`, { name: 'concept-draft.pdf', mimeType: 'application/pdf', buffer: Buffer.from('v2') });
   await page.click(`${panel} .btn-submit-work.big`);
-  await page.waitForFunction(() => /v2\.docx/.test(document.getElementById('sp-w2d1').innerText));
-  ok(db.rows.get('TEST STUDENT').deliverables.w2d1.attempts === 2 && db.files.length === 2 && db.files[1].path !== db.files[0].path, 'resubmission uploads a NEW object (nothing overwritten) and counts the attempt');
+  await page.waitForFunction(() => /2 B/.test(document.getElementById('sp-w2d1').innerText));
+  ok(be.files.length === 2 && be.files[1].path.endsWith('concept-draft-v2.pdf'), 'same filename again is saved as -v2 (nothing overwritten)', be.files.map(f => f.path).join(','));
+  ok(be.rows.get('TEST STUDENT').deliverables.w2d1.attempts === 2, 'attempt count increments');
 
-  // empty file rejected
+  // client-side rejections
   await page.click('.day-card-header[onclick*="w2d4"]');
   await page.setInputFiles('#sp-w2d4 input[type=file]', { name: 'empty.pdf', mimeType: 'application/pdf', buffer: Buffer.alloc(0) });
-  ok(/empty/i.test(await text(page, '#sp-w2d4')) && /NOT SUBMITTED/.test(await text(page, '#sp-w2d4')) || /UPLOAD FAILED/.test(await text(page, '#sp-w2d4')), 'empty file is rejected with a reason');
+  ok(/empty/i.test(await text(page, '#sp-w2d4')), 'empty file is rejected with a reason');
   await page.setInputFiles('#sp-w2d4 input[type=file]', { name: 'virus.exe', mimeType: 'application/octet-stream', buffer: Buffer.from('MZ') });
   ok(/not accepted/i.test(await text(page, '#sp-w2d4')), '.exe is refused with a reason');
   await page.setInputFiles('#sp-w2d4 input[type=file]', { name: 'huge.pdf', mimeType: 'application/pdf', buffer: Buffer.alloc(26 * 1048576, 1) });
   ok(/limit is 25 MB/.test(await text(page, '#sp-w2d4')), '26 MB file is refused with the limit stated');
-  ok(db.files.length === 2, 'rejected files (empty / .exe / 26 MB) are never uploaded');
-
-  // Submit w/o file via console cannot create a record
+  ok(be.files.length === 2, 'rejected files are never uploaded');
   await page.evaluate(() => submitDeliverable('w2d4'));
-  ok(!db.rows.get('TEST STUDENT').deliverables.w2d4, 'assignment cannot be submitted without a file');
+  ok(!be.rows.get('TEST STUDENT').deliverables.w2d4, 'assignment cannot be submitted without a file');
 
-  // My Grades
   await page.click('.sidebar-item[data-page="my-grades"]');
-  ok(/v2\.docx/.test(await text(page, '#my-grades-body')), 'My Grades lists the submitted file');
+  ok(/concept-draft\.pdf/.test(await text(page, '#my-grades-body')), 'My Grades lists the submitted file');
 
-  // ===== 6b. storage down -> upload fails loudly, nothing is recorded, retry succeeds =====
+  // ===== 6b. storage down -> loud failure, no record, retry works =====
   await page.click('.sidebar-item[data-page="w4"]');
   await page.click('.day-card-header[onclick*="w4d1"]');
-  db.mode.storageFails = 404;
-  const before = db.files.length;
+  be.mode.storageFails = 500;
+  const before = be.files.length;
   await page.setInputFiles('#sp-w4d1 input[type=file]', { name: 'moodboard.png', mimeType: 'image/png', buffer: Buffer.from('png') });
   await page.click('#sp-w4d1 .btn-submit-work.big');
   await page.waitForFunction(() => /UPLOAD FAILED/.test(document.getElementById('sp-w4d1').innerText));
-  ok(/not switched on|not sent/i.test(await text(page, '#sp-w4d1')), 'missing bucket gives a plain-English error', await text(page, '#sp-w4d1'));
-  ok(!db.rows.get('TEST STUDENT').deliverables.w4d1 && db.files.length === before, 'failed upload creates NO submitted record');
+  ok(!be.rows.get('TEST STUDENT').deliverables.w4d1 && be.files.length === before && !be.subs.some(s => s.assignment_id === 'w4d1'), 'failed upload creates NO submitted record');
   ok(await page.locator('#sp-w4d1 .btn-submit-work.big').isVisible(), 'student can retry without re-choosing the file');
-  db.mode.storageFails = 0;
+  be.mode.storageFails = 0;
   await page.click('#sp-w4d1 .btn-submit-work.big');
   await page.waitForFunction(() => /SUBMITTED/.test(document.getElementById('sp-w4d1').innerText) && !/NOT|FAILED/.test(document.getElementById('sp-w4d1').innerText));
-  ok(db.rows.get('TEST STUDENT').deliverables.w4d1?.fileName === 'moodboard.png' && db.files.length === before + 1, 'retry after outage uploads and records');
-  ok(db.files.every(f => f.key && f.key.startsWith('eyJ')), 'uploads carry the anon key only (no other credential)');
+  ok(be.rows.get('TEST STUDENT').deliverables.w4d1?.fileName === 'moodboard.png' && be.files.length === before + 1, 'retry after outage uploads and records');
 
-  // ===== 7. sync failure -> retry =====
+  // ===== 6c. uploaded but could not be recorded -> retry does NOT re-upload =====
   await page.click('.sidebar-item[data-page="w3"]');
   await page.click('.day-card-header[onclick*="w3d3"]');
-  db.mode.writeFails = true;
+  be.mode.recordFails = true;
+  const filesBefore = be.files.length;
   await page.setInputFiles('#sp-w3d3 input[type=file]', { name: 'suppliers.xlsx', mimeType: 'application/vnd.ms-excel', buffer: Buffer.from('abc') });
   await page.click('#sp-w3d3 .btn-submit-work.big');
-  await page.waitForSelector('#sp-w3d3 .sub-warn');
-  ok(/has not synced yet/i.test(await text(page, '#sp-w3d3')), 'failed progress-save shows an unambiguous "not yet synced" warning (file itself already stored)');
+  await page.waitForFunction(() => /could not record it yet/.test(document.getElementById('sp-w3d3').innerText));
+  ok(be.files.length === filesBefore + 1 && !be.rows.get('TEST STUDENT').deliverables.w3d3, 'file stored but state stays NOT SUBMITTED until the server confirms');
+  be.mode.recordFails = false;
+  await page.click('#sp-w3d3 .btn-submit-work.big');
+  await page.waitForFunction(() => /SUBMITTED/.test(document.getElementById('sp-w3d3').innerText) && !/NOT|FAILED|could not/.test(document.getElementById('sp-w3d3').innerText));
+  ok(be.files.length === filesBefore + 1 && be.rows.get('TEST STUDENT').deliverables.w3d3?.fileName === 'suppliers.xlsx', 'finishing the record does not upload the file a second time');
+
+  // ===== 7. progress save failure -> warning -> retry (confirm-type) =====
+  await page.click('.sidebar-item[data-page="w2"]');
+  be.mode.apiDown = true;
+  await page.click('.day-card-header[onclick*="w2lab"]');
+  await page.click('#sp-w2lab .btn-submit-work');
+  await page.waitForSelector('#sp-w2lab .sub-warn');
+  ok(/has not synced yet/i.test(await text(page, '#sp-w2lab')), 'failed progress-save shows an unambiguous "not synced" warning');
   ok(/Not synced/.test(await text(page, '#sync-indicator')), 'nav sync indicator shows the failure');
-  ok(!db.rows.get('TEST STUDENT').deliverables.w3d3, 'server row unchanged while writes fail');
-  db.mode.writeFails = false;
-  await page.click('#sp-w3d3 .sub-warn .link-btn');
-  await page.waitForFunction(() => !document.querySelector('#sp-w3d3 .sub-warn'));
-  ok(db.rows.get('TEST STUDENT').deliverables.w3d3?.fileName === 'suppliers.xlsx', 'retry pushes the queued submission');
-  if (SHOTS) {
-    await page.click('.sidebar-item[data-page="w2"]');
-    await page.evaluate(() => document.getElementById('w2d1').scrollIntoView());
-    await page.screenshot({ path: `${SHOTS}/desktop-w2-submitted.png`, fullPage: false });
-  }
+  ok(!be.rows.get('TEST STUDENT').deliverables.w2lab, 'server unchanged while the API is down');
+  be.mode.apiDown = false;
+  await page.click('#sp-w2lab .sub-warn .link-btn');
+  await page.waitForFunction(() => !document.querySelector('#sp-w2lab .sub-warn'));
+  ok(!!be.rows.get('TEST STUDENT').deliverables.w2lab, 'retry pushes the queued confirmation');
   ok(errors.length === 0, 'no JS errors in submission flow', errors.join(' | '));
   await page.context().close();
 }
 
 // ===== 8. persistence across a fresh browser =====
 {
-  const { page } = await newPage(browser, db);
-  await login(page, 'TEST0000');
-  await page.waitForSelector('#app', { state: 'visible' });
+  const { page } = await newPage(browser, be);
+  await login(page, 'MOCK-TEST');
+  await appUp(page);
   await page.click('.sidebar-item[data-page="w2"]');
   await page.click('.day-card-header[onclick*="w2d1"]');
-  ok(/SUBMITTED/.test(await text(page, '#sp-w2d1')) && /v2\.docx/.test(await text(page, '#sp-w2d1')), 'a fresh browser sees the saved submission (read from Supabase)');
+  ok(/SUBMITTED/.test(await text(page, '#sp-w2d1')) && /concept-draft\.pdf/.test(await text(page, '#sp-w2d1')), 'a fresh browser sees the saved submission (read from the server)');
   await page.context().close();
 }
 
-// ===== 9. server down at login must not wipe progress =====
+// ===== 9. session expiry: back to login, work kept =====
 {
-  const before = JSON.stringify(db.rows.get('TEST STUDENT').deliverables);
-  db.mode.getFails = true;
-  const { page } = await newPage(browser, db);
-  await login(page, 'TEST0000');
-  await page.waitForSelector('#app', { state: 'visible' });
-  ok(/Not synced/.test(await text(page, '#sync-indicator')), 'offline login says so');
-  const writes = db.log.filter(l => l.method !== 'GET' && l.method !== 'OPTIONS').length;
-  db.log.length = 0;
+  const { page } = await newPage(browser, be);
+  await login(page, 'MOCK-TEST');
+  await appUp(page);
   await page.click('.sidebar-item[data-page="w1"]');
   await page.click('.day-card-header[onclick*="w1d2"]');
+  be.mode.expireAll = true;
   await page.click('#sp-w1d2 .btn-submit-work');
-  await page.waitForTimeout(400);
-  ok(db.log.every(l => l.method === 'GET' || l.method === 'OPTIONS'), 'while the row cannot be read, nothing is written over it');
-  db.mode.getFails = false;
-  await page.evaluate(() => retrySync());
-  await page.waitForFunction(() => syncStatus === 'saved' || syncStatus === 'idle', null, { timeout: 5000 });
-  const after = db.rows.get('TEST STUDENT').deliverables;
-  ok(Object.keys(JSON.parse(before)).every(k => after[k]) && after.w1d2, 'after reconnect: earlier work kept AND the offline submission merged in', JSON.stringify(Object.keys(after)));
+  await page.waitForSelector('#login-screen', { state: 'visible' });
+  ok(/session ended/i.test(await text(page, '#login-error')), 'expired session returns to login with an explanation');
+  ok(await page.evaluate(() => !!localStorage.getItem('ce_l1f26_cache_TEST STUDENT')), 'the unsynced work is still saved on the device');
+  be.mode.expireAll = false;
+  await login(page, 'MOCK-TEST');
+  await appUp(page);
+  await page.waitForTimeout(500);
+  ok(!!be.rows.get('TEST STUDENT').deliverables.w1d2, 'next login pushes the work that was saved offline');
   await page.context().close();
 }
 
-// ===== 10. admin =====
+// ===== 10. server unreachable must not wipe progress =====
 {
-  db.rows.delete('Zed Newstudent');
-  const { page, errors } = await newPage(browser, db);
-  await login(page, 'ADMIN2026', 'Chef');
-  await page.waitForSelector('#app', { state: 'visible' });
+  const { page } = await newPage(browser, be);
+  await login(page, 'MOCK-TEST');
+  await appUp(page);
+  const snapshot = JSON.stringify(Object.keys(be.rows.get('TEST STUDENT').deliverables).sort());
+  be.mode.apiDown = true;
+  await page.evaluate(() => { currentUser && sbUpsert(currentUser); });
+  await page.waitForTimeout(300);
+  ok(JSON.stringify(Object.keys(be.rows.get('TEST STUDENT').deliverables).sort()) === snapshot, 'server data untouched while the API is down');
+  be.mode.apiDown = false;
+  await page.context().close();
+}
+
+// ===== 11. admin =====
+{
+  const { page, errors } = await newPage(browser, be);
+  await login(page, 'MOCK-ADMIN');
+  await appUp(page);
   ok(await page.locator('#admin-nav').isVisible(), 'admin sees the Instructor nav');
   await page.click('.sidebar-item[data-page="admin"]');
   await page.waitForSelector('#admin-body tr td strong');
-  ok(/TEST STUDENT/.test(await text(page, '#admin-body')), 'tracker lists the roster');
-  await page.waitForSelector('#admin-files tr');
-  ok(/concept|v2\.docx|moodboard|suppliers/.test(await text(page, '#admin-files')) && /test-student\//.test(await text(page, '#admin-files')), 'instructor sees submitted files with their storage paths');
-  const unlocked = await page.evaluate(() => sbUnlockWeek2('Zed Newstudent'));
-  ok(unlocked && db.rows.get('Zed Newstudent')?.w2_unlocked === true, 'unlock works for a student who has never signed in (row is created)');
-  ok(!db.rows.has('Chef'), 'admin browsing never writes an instructor row');
+  ok(/TEST STUDENT/.test(await text(page, '#admin-body')) && /Zed Newstudent/.test(await text(page, '#admin-body')), 'tracker roster comes from the server');
+  await page.waitForSelector('#admin-files .btn-dl');
+  ok(/concept-draft/.test(await text(page, '#admin-files')) && /test-student\//.test(await text(page, '#admin-files')), 'instructor sees submitted files with storage paths');
+  ok(await page.locator('#admin-files .btn-dl').count() >= 4, 'each file has a Download button');
+  await page.evaluate(() => { window.__opened = null; window.open = u => { window.__opened = u; }; });
+  await page.click('#admin-files .btn-dl');
+  await page.waitForFunction(() => window.__opened);
+  ok(/object\/sign\/submissions\//.test(await page.evaluate(() => window.__opened)), 'Download opens a short-lived signed link');
+  ok(/^\d+$/.test((await text(page, '#admin-count')).trim()), 'enrolled count is shown');
+  await page.click('#admin-body button[data-name="Zed Newstudent"]');
+  await page.waitForFunction(() => /Unlocked/.test(document.getElementById('admin-body').innerText.split('Zed Newstudent')[1] || ''));
+  ok(be.rows.get('Zed Newstudent')?.w2_unlocked === true, 'unlock works for a student who has never signed in');
+  ok(!be.rows.has('Instructor'), 'admin browsing never writes an instructor progress row');
+
+  // admin preview upload writes nothing
+  await page.click('.sidebar-item[data-page="w2"]');
+  await page.click('.day-card-header[onclick*="w2d4"]');
+  const nf = be.files.length;
+  await page.setInputFiles('#sp-w2d4 input[type=file]', { name: 'preview.pdf', mimeType: 'application/pdf', buffer: Buffer.from('p') });
+  await page.click('#sp-w2d4 .btn-submit-work.big');
+  await page.waitForFunction(() => /SUBMITTED/.test(document.getElementById('sp-w2d4').innerText));
+  ok(be.files.length === nf && !be.subs.some(s => s.student_name === 'Instructor'), 'instructor preview submits nothing to storage or the database');
+
   await page.evaluate(() => doLogout());
-  await login(page, 'TEST0000');
-  await page.waitForSelector('#app', { state: 'visible' });
-  ok(!(await page.locator('#admin-nav').isVisible()), 'Instructor nav is hidden when a student signs in after an admin on the same screen');
+  ok(!(await page.evaluate(() => sessionToken)), 'sign out clears the session token');
+  await login(page, 'MOCK-TEST');
+  await appUp(page);
+  ok(!(await page.locator('#admin-nav').isVisible()), 'Instructor nav is hidden when a student signs in after an admin');
+  const forbidden = await page.evaluate(async () => { try { await api('admin-overview'); return 'allowed'; } catch (e) { return e.code; } });
+  ok(forbidden === 'forbidden', 'a student session cannot call admin actions', forbidden);
   ok(errors.length === 0, 'no JS errors in admin flow', errors.join(' | '));
   await page.context().close();
 }
 
-// ===== 11. quiz retry works =====
+// ===== 12. quiz retry works =====
 {
-  const { page } = await newPage(browser, db);
-  await login(page, 'TEST0000');
-  await page.waitForSelector('#app', { state: 'visible' });
+  const { page } = await newPage(browser, be);
+  await login(page, 'MOCK-TAMEKA');
+  await appUp(page);
   await page.click('.sidebar-item[data-page="w1"]');
   await page.click('.day-card-header[onclick*="w1d1"]');
-  const qs = await page.$$eval('#quiz-w1d1-container .quiz-q', q => q.length);
-  for (let i = 0; i < qs; i++) await page.click(`#qopt-w1d1-${i}-0`).catch(() => {});
   await page.evaluate(() => { for (let i = 0; i < QUIZZES.w1d1.questions.length; i++) selectOption('w1d1', i, (QUIZZES.w1d1.questions[i].ans + 1) % 4); });
   await page.click('#qsub-w1d1');
   await page.waitForSelector('#quiz-w1d1-container .btn-retry');
   await page.click('#quiz-w1d1-container .btn-retry');
-  ok(await page.locator('#qopt-w1d1-0-0').isEnabled(), 'Retry re-opens a failed quiz (was permanently locked before)');
+  ok(await page.locator('#qopt-w1d1-0-0').isEnabled(), 'Retry re-opens a failed quiz');
   await page.context().close();
 }
 
-// ===== 12. mobile =====
-for (const vp of [{ width: 375, height: 760 }, { width: 768, height: 900 }]) {
-  const { page, errors } = await newPage(browser, db, { viewport: vp });
+// ===== 13. mobile =====
+for (const vp of [{ width: 375, height: 760 }, { width: 360, height: 740 }, { width: 768, height: 900 }]) {
+  const { page, errors } = await newPage(browser, be, { viewport: vp });
   const overflowLogin = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   ok(overflowLogin <= 0, `${vp.width}px: login has no horizontal scroll`, overflowLogin);
-  await login(page, 'TEST0000');
-  await page.waitForSelector('#app', { state: 'visible' });
+  await login(page, 'MOCK-TEST');
+  await appUp(page);
   for (const pg of ['dashboard', 'w1', 'w2', 'w3', 'w4', 'my-grades']) {
     await page.evaluate(p => showPage(p), pg);
     await page.evaluate(() => document.querySelectorAll('.day-card-body').forEach(b => b.classList.add('open')));

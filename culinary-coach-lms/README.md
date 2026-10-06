@@ -3,32 +3,31 @@
 One static page (`index.html`) + `netlify.toml`. Supabase is the backend. No build step.
 
 ## Deploy
-Zip **the contents of this folder's root** (`index.html` + `netlify.toml`, not the folder) and drop it on Netlify, or point
-Netlify at this repo with *Base directory* = `culinary-coach-lms`. (The repo root holds a different app.)
+Auto-deploy from GitHub — see `docs/DEPLOY.md`. (This folder is meant to be the root of its own repo; inside `learning-lms` it lives in `culinary-coach-lms/`.)
 
-## Before go-live — three things only you can do
-1. **Apply the storage migration** `supabase/migrations/0002_submissions_bucket.sql` (Supabase → SQL editor). Until it runs,
-   uploads fail with "Uploads are not switched on yet" and nothing is recorded as submitted.
-2. **Confirm the roster** in the `STUDENTS` array (search `const STUDENTS`). It still holds the 8 names/codes `CE2026A–H`
-   and `TEST STUDENT`/`TEST0000` — delete the test login for go-live.
-3. **Run `python3 tools/check-links.py`** from a machine with normal internet, then work the checklist in `docs/`.
+## Architecture (short)
+`index.html` (static) → `validate-login` / `lms-api` Edge Functions (service role) → Postgres tables (`student_progress`, `submissions`, `student_access_codes`, …) and the private `submissions` bucket.
+**The page holds no keys, codes or database access.** Details and test evidence: `docs/SECURITY.md`. Deploy flow: `docs/DEPLOY.md`.
+
+## Before go-live
+1. **Connect GitHub → Netlify** and turn on branch protection (`docs/DEPLOY.md`).
+2. **Reset last cohort's progress.** The 8 names still have Apr–May progress in `student_progress`; students would see a finished course. Archive then reset (SQL in `supabase/seed.example.sql`).
+3. **Replace the short access codes** (`docs/SECURITY.md` → "Still weak"). Remove the `TEST STUDENT` login when you no longer need it.
+4. **Run `python3 tools/check-links.py`** from a normal connection, then work the checklist in `docs/`.
+5. Confirm host kitchen/address and the Nov 6 final-deliverable deadline in the page text.
 
 ## How submissions work
-* Assignments (type *Assignment* / *Final*) show **Choose file → Submit**. The file uploads to the private Supabase Storage bucket
-  `submissions` at `<student>/<assignment>/<timestamp>-<file>`; only then is it recorded in `student_progress.deliverables`
-  (`fileName, fileSize, fileType, filePath, date, attempts`). No schema change — `deliverables` is already jsonb.
+* Assignments (type *Assignment* / *Final*): **Choose file → Submit**. The page asks `lms-api` for an upload slot (checks who you are, type, size), uploads the file straight to the private bucket at
+  `{student-name}/{assignment-slug}/{filename}` (`-v2`, `-v3` if the name repeats — nothing is ever overwritten), then `lms-api` confirms the object exists and records it in `submissions`
+  and in the student's progress. "Submitted" is shown only after that confirmation.
 * Check-ins, study days and lab attendance stay one-click confirmations.
-* Resubmitting uploads a new object (nothing is overwritten) and bumps `attempts`.
-* The bucket is write-only for the public key: no list/read/overwrite/delete. Instructors open files from
-  **Supabase → Storage → submissions**; the Student Tracker has a *Submitted files* table and **Export Files CSV** with each path.
+* Instructor: Student Tracker → **Submitted files** → Download (5-minute signed link) or Export Files CSV.
 * Limits: 25 MB; PDF, Word, Excel, PowerPoint, CSV, text, PNG/JPG, ZIP.
 
 ## Tests
-`npm i && node tools/e2e.mjs` — 80 checks in headless Chromium against a **mock** Supabase (login, gating, uploads, failure and
-retry, offline-login safety, admin, mobile widths). `BROWSER=firefox|webkit` after `npx playwright install firefox webkit`.
+`npm i && node tools/e2e.mjs` — 100+ checks in headless Chromium against **mock** Edge Functions (login, gating, signed uploads, failure and
+retry, session expiry, admin, no-direct-DB-calls, mobile widths). `BROWSER=firefox|webkit` after `npx playwright install firefox webkit`.
 `tools/check-links.py` verifies every external link and YouTube video.
 
-## Known security limits (pre-existing, not changed here)
-* Access codes and `ADMIN2026` are in the page source — anyone can read them.
-* `public.student_progress` has an `Allow all access` RLS policy and `anon` holds INSERT/UPDATE/DELETE/TRUNCATE, so anyone with
-  the page's public key can read or wipe every student's progress. Fixing it needs a server-side login (Edge Function or Supabase Auth).
+## Security
+See `docs/SECURITY.md` for what is protected, what was tested, and what is still weak.

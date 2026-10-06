@@ -1220,6 +1220,7 @@ body {
 .sync-indicator.sync-error { cursor:pointer; text-decoration:underline; }
 
 .admin-sub { font-family:var(--font-display); color:var(--green-dark); margin:28px 0 6px; }
+.btn-dl { background:var(--green-mid); color:var(--white); border:none; border-radius:6px; padding:5px 12px; font-size:12px; font-weight:700; cursor:pointer; }
 .path { font-family:var(--font-mono); font-size:11px; word-break:break-all; }
 
 /* submit panel */
@@ -1283,8 +1284,8 @@ body {
       <p>Oct 12 – Nov 7, 2026 · Level I Cohort · Parsley's Kitchen</p>
     </div>
     <div class="login-form">
-      <label for="login-user">Student Name or Email</label>
-      <input type="text" id="login-user" placeholder="Enter your name or email" />
+      <label for="login-user">Name <span style="opacity:.6">(optional)</span></label>
+      <input type="text" id="login-user" placeholder="Your name (optional)" />
       <label for="login-pass">Access Code</label>
       <input type="password" id="login-pass" placeholder="Provided by your instructor" />
       <p class="error-msg" id="login-error">❌ Invalid credentials. Please check with your instructor.</p>
@@ -2187,7 +2188,7 @@ body {
         </div>
 
         <h3 class="admin-sub">Submitted files</h3>
-        <p class="grade-sub" style="margin-bottom:10px">Student files are private. To open one: Supabase dashboard → Storage → <strong>submissions</strong> → the path shown below.</p>
+        <p class="grade-sub" style="margin-bottom:10px">Student files are private. Use <strong>Download</strong> to open one (the link works for 5 minutes). The storage path is also shown for the Supabase dashboard.</p>
         <div class="table-scroll">
           <table class="tracker-table">
             <thead><tr><th>Student</th><th>Assignment</th><th>File</th><th>Size</th><th>Submitted</th><th>Storage path</th></tr></thead>
@@ -2208,23 +2209,19 @@ body {
 
 <script>
 // ============================================================
-// SUPABASE CONFIG
+// BACKEND — Supabase Edge Functions. The page holds NO database key, NO access codes and NO admin code:
+//   validate-login  checks the access code on the server and returns a short-lived session token
+//   lms-api         every read/write (progress, uploads, admin views) using that token
 // ============================================================
 const SUPABASE_URL = 'https://mddvqxesxfifqxhuzhsi.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZHZxeGVzeGZpZnF4aHV6aHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjQzOTEsImV4cCI6MjA4ODk0MDM5MX0.Hp13mfQlwSoKr3ob2aTeF9_f8_JArESZZL2PgJZXoxU';
+const FN_URL = SUPABASE_URL + '/functions/v1/';
 
-const sbHeaders = {
-  'Content-Type': 'application/json',
-  'apikey': SUPABASE_KEY,
-  'Authorization': 'Bearer ' + SUPABASE_KEY,
-  'Prefer': 'return=representation'
-};
+let sessionToken = null;
 
 // In-memory cache — loaded on login, written on every action
 let memCache = { quizzes: {}, deliverables: {}, w2_unlocked: false };
 let syncStatus = 'idle'; // idle | saving | saved | error
 let unsynced = false;     // true while the latest change exists only on this device
-let serverLoaded = false; // true once this session has read the student's row from Supabase
 
 const EMPTY = () => ({ quizzes: {}, deliverables: {}, w2_unlocked: false });
 
@@ -2244,21 +2241,43 @@ function setSyncStatus(s) {
   el.onclick = s === 'error' ? retrySync : null;
 }
 
-// fetch with a hard 10-second ceiling so a dead network never hangs the page
-function sbFetch(url, opts = {}) {
+async function fnPost(name, payload, timeoutMs = 15000) {
   const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 10000);
-  return fetch(url, { ...opts, headers: sbHeaders, signal: ctl.signal }).finally(() => clearTimeout(timer));
+  const timer = setTimeout(() => ctl.abort(), timeoutMs);
+  try {
+    const res = await fetch(FN_URL + name, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: ctl.signal
+    });
+    let data = null;
+    try { data = await res.json(); } catch (e) { /* non-JSON error page */ }
+    return { ok: res.ok, status: res.status, data };
+  } finally { clearTimeout(timer); }
 }
-const rowUrl = name => `${SUPABASE_URL}/rest/v1/student_progress?student_name=eq.${encodeURIComponent(name)}`;
+
+class ApiError extends Error { constructor(code, status) { super(code); this.code = code; this.status = status; } }
+
+async function api(action, payload = {}, timeoutMs) {
+  const r = await fnPost('lms-api', { token: sessionToken, action, ...payload }, timeoutMs);
+  if (r.status === 401 && r.data && r.data.error === 'session_expired') { sessionExpired(); throw new ApiError('session_expired', 401); }
+  if (!r.ok) throw new ApiError((r.data && r.data.error) || 'network', r.status);
+  return r.data;
+}
+
+function sessionExpired() {
+  if (!currentUser) return;
+  doLogout();
+  const err = document.getElementById('login-error');
+  err.textContent = '⏱️ Your session ended. Sign in again — your work is saved.';
+  err.style.display = 'block';
+}
 
 function readLocal(name) {
   try { const v = localStorage.getItem(CACHE_PREFIX + name); return v ? JSON.parse(v) : null; } catch (e) { return null; }
 }
 function writeLocal(name, d) {
-  try { localStorage.setItem(CACHE_PREFIX + name, JSON.stringify(d)); } catch (e) { /* storage blocked — Supabase is still the record */ }
+  try { localStorage.setItem(CACHE_PREFIX + name, JSON.stringify(d)); } catch (e) { /* storage blocked — the server is still the record */ }
 }
-const fromRow = r => ({ quizzes: r.quizzes || {}, deliverables: r.deliverables || {}, w2_unlocked: !!r.w2_unlocked });
+const fromRow = r => ({ quizzes: (r && r.quizzes) || {}, deliverables: (r && r.deliverables) || {}, w2_unlocked: !!(r && r.w2_unlocked) });
 
 // Union two progress blobs so neither side's work is ever lost
 function unionProgress(a, b) {
@@ -2273,31 +2292,27 @@ function unionProgress(a, b) {
   });
   return out;
 }
-// true if `a` holds anything `b` does not
+// true if `a` holds quiz results or confirmations that `b` lacks (file records are written by the server only)
 function isAhead(a, b) {
-  return Object.keys(a.deliverables).some(k => !b.deliverables[k] || b.deliverables[k].date !== a.deliverables[k].date) ||
-         Object.keys(a.quizzes).some(k => !b.quizzes[k] || b.quizzes[k].score !== a.quizzes[k].score) ||
-         (a.w2_unlocked && !b.w2_unlocked);
+  return Object.keys(a.deliverables).some(k => DELIVERABLE_LABELS[k] && !DELIVERABLE_LABELS[k].file && !b.deliverables[k]) ||
+         Object.keys(a.quizzes).some(k => !b.quizzes[k] || b.quizzes[k].score < a.quizzes[k].score);
 }
+const confirmsOnly = d => Object.fromEntries(Object.entries(d).filter(([k]) => DELIVERABLE_LABELS[k] && !DELIVERABLE_LABELS[k].file));
 
-// Pull student row from Supabase. A failed or malformed response NEVER resets progress.
+// Pull this student's progress. A failed load NEVER resets anything.
 async function sbLoad(name) {
   const local = readLocal(name);
   try {
-    const res = await sbFetch(rowUrl(name) + '&select=*');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const rows = await res.json();
-    if (!Array.isArray(rows)) throw new Error('Unexpected response');
-    const remote = rows[0] ? fromRow(rows[0]) : EMPTY();
+    const d = await api('load');
+    const remote = fromRow(d.progress);
     memCache = local ? unionProgress(remote, local) : remote;
-    serverLoaded = true;
     writeLocal(name, memCache);
-    if (!rows[0] || isAhead(memCache, remote)) sbUpsert(name); // create the row / push work that was saved offline
+    if (local && isAhead(memCache, remote)) sbUpsert(name); // push work that was saved offline
     return true;
   } catch (e) {
-    console.error('Supabase load failed:', e);
+    if (e.code === 'session_expired') throw e;
+    console.error('Load failed:', e);
     memCache = local || EMPTY();
-    serverLoaded = false;
     setSyncStatus('error');
     return false;
   }
@@ -2314,42 +2329,19 @@ async function sbUpsertNow(name) {
   setSyncStatus('saving');
   writeLocal(name, memCache);
   try {
-    if (!serverLoaded) {
-      // Login could not reach the server. Read the row before writing so we merge instead of overwrite.
-      const res = await sbFetch(rowUrl(name) + '&select=*');
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const rows = await res.json();
-      if (!Array.isArray(rows)) throw new Error('Unexpected response');
-      if (rows[0]) memCache = unionProgress(fromRow(rows[0]), memCache);
-      serverLoaded = true;
-      writeLocal(name, memCache);
-    }
-    const payload = {
-      quizzes:      memCache.quizzes,
-      deliverables: memCache.deliverables,
-      w2_unlocked:  memCache.w2_unlocked,
-      last_updated: new Date().toISOString()
-    };
-    const patch = await sbFetch(rowUrl(name), { method: 'PATCH', body: JSON.stringify(payload) });
-    if (!patch.ok) throw new Error('PATCH ' + patch.status + ' ' + await patch.text());
-    const patched = await patch.json();
-    if (Array.isArray(patched) && patched.length === 0) { // no row yet — insert
-      const post = await sbFetch(`${SUPABASE_URL}/rest/v1/student_progress`, {
-        method: 'POST', body: JSON.stringify({ student_name: name, ...payload })
-      });
-      if (!post.ok) throw new Error('INSERT ' + post.status + ' ' + await post.text());
-    }
+    // The server merges (never overwrites) and ignores anything it does not own: unlock flag and file records.
+    const d = await api('save', { quizzes: memCache.quizzes, deliverables: confirmsOnly(memCache.deliverables) });
+    memCache = unionProgress(fromRow(d.progress), memCache);
+    writeLocal(name, memCache);
     unsynced = false;
     setSyncStatus('saved');
     setTimeout(() => { if (syncStatus === 'saved') setSyncStatus('idle'); }, 2500);
     return true;
   } catch (e) {
-    console.error('Supabase save failed:', e);
-    unsynced = true;
-    setSyncStatus('error');
+    if (e.code !== 'session_expired') { console.error('Save failed:', e); unsynced = true; setSyncStatus('error'); }
     return false;
   } finally {
-    if (typeof refreshAll === 'function') refreshAll();
+    if (typeof refreshAll === 'function' && sessionToken) refreshAll();
   }
 }
 
@@ -2360,59 +2352,11 @@ async function retrySync() {
   showToast(ok ? 'Synced — your progress is saved' : 'Still offline — your work is safe on this device', ok ? '☁️' : '⚠️');
 }
 
-// Admin: load any student's data from Supabase for the tracker
-async function sbLoadStudent(name) {
-  try {
-    const res = await sbFetch(rowUrl(name) + '&select=*');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const rows = await res.json();
-    if (Array.isArray(rows) && rows[0]) return rows[0];
-    return EMPTY();
-  } catch (e) {
-    return readLocal(name) || EMPTY(); // best effort when the server is unreachable
-  }
-}
-
-// Admin: unlock Week 2 in Supabase for a specific student. Returns true only if the server confirms.
-async function sbUnlockWeek2(name) {
-  const stamp = new Date().toISOString();
-  try {
-    const res = await sbFetch(rowUrl(name), { method: 'PATCH', body: JSON.stringify({ w2_unlocked: true, last_updated: stamp }) });
-    if (!res.ok) throw new Error('PATCH ' + res.status);
-    const rows = await res.json();
-    if (Array.isArray(rows) && rows.length === 0) { // student has not signed in yet — create their row already unlocked
-      const post = await sbFetch(`${SUPABASE_URL}/rest/v1/student_progress`, {
-        method: 'POST',
-        body: JSON.stringify({ student_name: name, quizzes: {}, deliverables: {}, w2_unlocked: true, last_updated: stamp })
-      });
-      if (!post.ok) throw new Error('INSERT ' + post.status);
-    }
-    return true;
-  } catch (e) {
-    console.error('Unlock failed:', e);
-    return false;
-  }
-}
-
 // ============================================================
 // DATA & STATE
 // ============================================================
-// ROSTER — one line per student: { name: 'First Last', code: 'UNIQUE-CODE' }.
-// The name is the Supabase key, so keep it exactly as typed. Confirm these 8 are the Level I cohort before go-live.
-const STUDENTS = [
-  { name: 'TEST STUDENT',     code: 'TEST0000' },   // remove before go-live
-  { name: 'Yamesha Buffaloe', code: 'CE2026A' },
-  { name: 'Wanya Robinson',   code: 'CE2026B' },
-  { name: 'Yodagent Uwa',     code: 'CE2026C' },
-  { name: 'Denisha Bullock',  code: 'CE2026D' },
-  { name: 'Dreame Boyd',      code: 'CE2026E' },
-  { name: 'Mone Jones',       code: 'CE2026F' },
-  { name: 'Tameka Green',     code: 'CE2026G' },
-  { name: 'Brandon Jefferson', code: 'CE2026H' },
-];
 
 const CACHE_PREFIX = 'ce_l1f26_cache_';
-const ADMIN_CODE = 'ADMIN2026';
 
 let currentUser = null;
 let isAdmin = false;
@@ -2685,41 +2629,36 @@ function saveData(d) {
 // LOGIN / LOGOUT
 // ============================================================
 async function doLogin() {
-  const user = document.getElementById('login-user').value.trim();
-  const code = document.getElementById('login-pass').value.trim().toUpperCase();
+  const typedName = document.getElementById('login-user').value.trim();
+  const code = document.getElementById('login-pass').value.trim();
   const err = document.getElementById('login-error');
   const btn = document.getElementById('login-btn');
+  const fail = msg => {
+    if (btn) { btn.textContent = 'Sign In \u2192'; btn.disabled = false; }
+    err.textContent = msg;
+    err.style.display = 'block';
+  };
 
   err.style.display = 'none';
-  if (btn) { btn.textContent = 'Loading\u2026'; btn.disabled = true; }
+  if (!code) return fail('\u274C Enter your access code.');
+  if (btn) { btn.textContent = 'Signing in\u2026'; btn.disabled = true; }
 
   try {
-    if (code === ADMIN_CODE) {
-      isAdmin = true;
-      currentUser = user || 'Instructor';
-      memCache = { quizzes: {}, deliverables: {}, w2_unlocked: true };
-      await launchApp();
-      return;
-    }
+    // The code is checked on the server; this page contains no codes to compare against.
+    const r = await fnPost('validate-login', { student_name: typedName, access_code: code });
+    if (r.status === 429) return fail('\u23F3 Too many wrong attempts. Wait a few minutes and try again.');
+    if (r.status === 401 || (r.ok && r.data && r.data.valid === false)) return fail('\u274C Invalid access code. Check with Chef Duane.');
+    if (!r.ok || !r.data || !r.data.valid) return fail('\u26A0\uFE0F Could not sign in right now. Check your connection and try again.');
 
-    const match = STUDENTS.find(s => s.code === code);
-    if (match) {
-      isAdmin = false;
-      currentUser = match.name;
-      await sbLoad(currentUser);
-      await launchApp();
-      return;
-    }
-
-    // No match
-    if (btn) { btn.textContent = 'Sign In \u2192'; btn.disabled = false; }
-    err.textContent = '\u274C Invalid access code. Check with Chef Duane.';
-    err.style.display = 'block';
-
-  } catch(e) {
-    if (btn) { btn.textContent = 'Sign In \u2192'; btn.disabled = false; }
-    err.textContent = '\u26A0\uFE0F Error: ' + e.message + ' \u2014 Try refreshing.';
-    err.style.display = 'block';
+    sessionToken = r.data.token;
+    isAdmin = !!r.data.is_admin;
+    currentUser = r.data.student_name;
+    if (isAdmin) memCache = { quizzes: {}, deliverables: {}, w2_unlocked: true };
+    else await sbLoad(currentUser);
+    await launchApp();
+  } catch (e) {
+    if (e.code === 'session_expired') return fail('\u26A0\uFE0F Your session ended. Please sign in again.');
+    fail('\u26A0\uFE0F Could not reach the server. Check your connection and try again.');
   }
 }
 
@@ -2736,10 +2675,12 @@ async function launchApp() {
 }
 
 function doLogout() {
+  if (sessionToken) fnPost('lms-api', { token: sessionToken, action: 'logout' }, 5000).catch(() => {});
+  sessionToken = null;
   currentUser = null;
   isAdmin = false;
   memCache = EMPTY();
-  serverLoaded = false; unsynced = false;
+  unsynced = false;
   selectedAnswers = {}; pendingFiles = {}; resubmitting = {}; savingNow = {};
   document.querySelectorAll('.day-card-body.open, .day-toggle.open').forEach(e => e.classList.remove('open'));
   document.querySelectorAll('.day-card-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
@@ -2758,10 +2699,6 @@ function doLogout() {
 function isWeek2Unlocked() {
   if (isAdmin) return true;
   return memCache.w2_unlocked === true;
-}
-
-async function unlockWeek2ForStudent(name) {
-  return sbUnlockWeek2(name);
 }
 
 function showPage(id) {
@@ -2953,7 +2890,6 @@ function applyQuizResults(id, saved) {
 // ============================================================
 // DELIVERABLES — submit panels (files are stored in the Supabase "submissions" bucket)
 // ============================================================
-const STORAGE_BUCKET = 'submissions';
 const MAX_FILE_MB = 25;
 const FILE_TYPES = {
   pdf: 'application/pdf', doc: 'application/msword',
@@ -3030,7 +2966,7 @@ function renderPanel(id) {
     } else {
       html += `<div class="sub-picked">📎 <strong>${esc(pend.name)}</strong> <span>(${fmtSize(pend.size)})</span>
           <button class="link-btn" onclick="clearFile('${id}')">Remove</button></div>
-        <div class="sub-actions"><button class="btn-submit-work big" onclick="submitDeliverable('${id}')">⬆ ${uploadError[id] ? 'Try again — ' : ''}Submit ${esc(meta.label)}</button></div>`;
+        <div class="sub-actions"><button class="btn-submit-work big" onclick="submitDeliverable('${id}')">⬆ ${uploadError[id] ? (pend.uploaded ? 'Finish — ' : 'Try again — ') : ''}Submit ${esc(meta.label)}</button></div>`;
     }
     html += `<p class="sub-note">PDF, Word, Excel, PowerPoint, CSV, text, image or ZIP · up to ${MAX_FILE_MB} MB.</p>`;
   } else if (isFile && d && !resubmitting[id] && !busy) {
@@ -3061,32 +2997,41 @@ function clearFile(id) { delete pendingFiles[id]; delete uploadError[id]; render
 function startResubmit(id) { resubmitting[id] = true; delete uploadError[id]; renderPanel(id); }
 function cancelResubmit(id) { delete resubmitting[id]; delete pendingFiles[id]; delete uploadError[id]; renderPanel(id); }
 
-// Raw-body upload through XHR so we can show real progress (fetch cannot report upload progress)
-function uploadFile(path, file, mime, onProgress) {
+// Upload straight to Supabase Storage through a one-time signed URL that the server issued for THIS student and file.
+// XHR (not fetch) so we can show real upload progress.
+function uploadSigned(signedUrl, file, mime, name, onProgress) {
   return new Promise((resolve, reject) => {
     const x = new XMLHttpRequest();
-    x.open('POST', `${SUPABASE_URL}/storage/v1/object/${STORAGE_BUCKET}/${path.split('/').map(encodeURIComponent).join('/')}`);
-    x.setRequestHeader('apikey', SUPABASE_KEY);
-    x.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_KEY);
-    x.setRequestHeader('Content-Type', mime);
-    x.setRequestHeader('x-upsert', 'false');
+    x.open('PUT', signedUrl);
     x.timeout = 180000;
     x.upload.onprogress = e => { if (e.lengthComputable) onProgress(e.loaded / e.total); };
     x.onload = () => {
       if (x.status >= 200 && x.status < 300) return resolve();
       let msg = '';
       try { msg = JSON.parse(x.responseText).message || ''; } catch (e) { /* not json */ }
-      if (x.status === 413) reject(new Error(`The file is larger than the ${MAX_FILE_MB} MB limit.`));
-      else if (/bucket not found/i.test(msg) || x.status === 404) reject(new Error('Uploads are not switched on yet. Tell your instructor — your file was not sent.'));
-      else if (/mime|type/i.test(msg)) reject(new Error('That file type was refused by the server. Try exporting it as a PDF.'));
-      else if (x.status === 401 || x.status === 403) reject(new Error('The server refused the upload. Tell your instructor — your file was not sent.'));
-      else reject(new Error(`Upload failed (${x.status}). Please try again.`));
+      if (x.status === 413) reject(new UploadError(`The file is larger than the ${MAX_FILE_MB} MB limit.`));
+      else if (/mime|type/i.test(msg)) reject(new UploadError('That file type was refused by the server. Try exporting it as a PDF.'));
+      else if (/exist|duplicate/i.test(msg) || x.status === 409) reject(new UploadError('A file with that name was already uploaded. Rename it and try again.'));
+      else reject(new UploadError(`Upload failed (${x.status}). Please try again.`));
     };
-    x.onerror = () => reject(new Error('Network problem — check your connection and try again. Your file was not sent.'));
-    x.ontimeout = () => reject(new Error('The upload took too long. Check your connection and try again.'));
-    x.send(file);
+    x.onerror = () => reject(new UploadError('Network problem — check your connection and try again. Your file was not sent.'));
+    x.ontimeout = () => reject(new UploadError('The upload took too long. Check your connection and try again.'));
+    const fd = new FormData();
+    fd.append('cacheControl', '3600');
+    fd.append('', new Blob([file], { type: mime }), name);
+    x.send(fd);
   });
 }
+class UploadError extends Error {}
+
+const API_MESSAGES = {
+  file_type_not_allowed: 'That file type is not accepted. Use PDF, Word, Excel, PowerPoint, CSV, text, an image (PNG/JPG) or ZIP.',
+  file_too_large: `That file is over the ${MAX_FILE_MB} MB limit — compress it or export a smaller version.`,
+  empty_file: 'That file is empty — choose a different one.',
+  file_missing: 'The server did not receive the file. Please try again.',
+  unknown_assignment: 'This assignment cannot accept files. Tell your instructor.',
+  bad_path: 'Something went wrong with the upload. Please try again.',
+};
 
 async function submitDeliverable(id) {
   const meta = DELIVERABLE_LABELS[id];
@@ -3094,44 +3039,59 @@ async function submitDeliverable(id) {
   const pend = pendingFiles[id];
   if (meta.file && !pend) { showToast('Choose your file first.', '📎'); return; }
 
-  const rec = { submitted: true, kind: meta.file ? 'file' : 'confirm' };
   const data = getData();
   const prev = data.deliverables[id];
-
   savingNow[id] = true; uploadPct[id] = 0; delete uploadError[id];
   renderPanel(id);
 
   if (meta.file) {
-    // 1) the file itself goes to storage first; only a successful upload can become a "submitted" record
-    const path = `${slug(currentUser)}/${id}/${Date.now()}-${safeName(pend.name)}`;
-    try {
-      if (!isAdmin) {
-        await uploadFile(path, pend.file, pend.mime, f => {
-          uploadPct[id] = f;
-          const bar = document.getElementById('up-' + id);
-          if (bar) bar.style.width = Math.round(f * 100) + '%';
-        });
+    if (isAdmin) { // instructor preview: exercise the UI without writing anything
+      data.deliverables[id] = { submitted: true, kind: 'file', date: new Date().toISOString(), fileName: pend.name, fileSize: pend.size, fileType: pend.mime, filePath: null, attempts: ((prev && prev.attempts) || 0) + 1 };
+    } else {
+      try {
+        // 1) ask the server for an upload slot (it checks who you are, the file type and size)
+        if (!pend.slot) pend.slot = await api('create-upload', { assignment: id, filename: pend.name, size: pend.size });
+        // 2) send the file itself to storage
+        if (!pend.uploaded) {
+          await uploadSigned(pend.slot.signedUrl, pend.file, pend.slot.mime, pend.name, f => {
+            uploadPct[id] = f;
+            const bar = document.getElementById('up-' + id);
+            if (bar) bar.style.width = Math.round(f * 100) + '%';
+          });
+          pend.uploaded = true;
+        }
+        uploadPct[id] = 1;
+        // 3) the server confirms the file is really there, then records the submission
+        const d = await api('record-submission', { assignment: id, path: pend.slot.path, filename: pend.name });
+        data.deliverables[id] = d.record;
+        memCache = unionProgress(fromRow(d.progress), data);
+        memCache.deliverables[id] = d.record;
+        if (currentUser) writeLocal(currentUser, memCache);
+      } catch (e) {
+        delete savingNow[id];
+        if (e.code === 'session_expired') return;
+        let msg;
+        if (e instanceof UploadError) msg = e.message;
+        else if (pend.uploaded) msg = 'Your file was uploaded, but we could not record it yet. Click the button to finish — you do not need to upload again.';
+        else msg = API_MESSAGES[e.code] || 'Could not reach the server. Check your connection and try again. Your file was not sent.';
+        uploadError[id] = msg;
+        renderPanel(id);
+        showToast(pend.uploaded ? 'Uploaded — not recorded yet' : 'Upload failed — not submitted', '⚠️');
+        return;
       }
-    } catch (e) {
-      delete savingNow[id];
-      uploadError[id] = e.message;
-      renderPanel(id);
-      showToast('Upload failed — not submitted', '⚠️');
-      return;
     }
-    uploadPct[id] = 1;
-    Object.assign(rec, { fileName: pend.name, fileSize: pend.size, fileType: pend.mime, filePath: isAdmin ? null : path,
-                         attempts: ((prev && prev.attempts) || (prev ? 1 : 0)) + 1 });
+    delete savingNow[id]; delete pendingFiles[id]; delete resubmitting[id]; delete uploadPct[id];
+    refreshAll();
+    showToast('✅ Submitted: ' + meta.label, '✅');
+    return;
   }
 
-  // 2) record it against the student's progress
-  rec.date = new Date().toISOString();
-  data.deliverables[id] = rec;
-  renderPanel(id);
+  // confirm-type deliverable
+  data.deliverables[id] = { submitted: true, kind: 'confirm', date: new Date().toISOString() };
   const ok = await saveData(data);
-  delete savingNow[id]; delete pendingFiles[id]; delete resubmitting[id]; delete uploadPct[id];
+  delete savingNow[id]; delete uploadPct[id];
   refreshAll();
-  showToast(ok ? '✅ Submitted: ' + meta.label : '⚠️ File received — progress will sync when you reconnect', ok ? '✅' : '⚠️');
+  showToast(ok ? '✅ Recorded: ' + meta.label : '⚠️ Saved on this device only — it will sync when you reconnect', ok ? '✅' : '⚠️');
 }
 
 // ============================================================
@@ -3246,12 +3206,21 @@ function buildMyGrades() {
 // ADMIN TABLE
 // ============================================================
 let adminFileRows = [];
+let adminData = null;
+async function loadAdminData() {
+  adminData = await api('admin-overview');
+  return adminData;
+}
+
 async function buildAdminTable() {
   const tbody = document.getElementById('admin-body');
   tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--gray-600);">⏳ Loading student data…</td></tr>';
-
-  const allStudents = STUDENTS.map(s => s.name);
-  const rows = await Promise.all(allStudents.map(name => sbLoadStudent(name).then(d => ({ name, d }))));
+  try { await loadAdminData(); } catch (e) {
+    if (e.code === 'session_expired') return;
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--orange);">⚠️ Could not load student data. Check your connection and reopen this page.</td></tr>';
+    return;
+  }
+  const rows = adminData.roster.map(name => ({ name, d: adminData.progress[name] || EMPTY() }));
 
   let html = '';
   rows.forEach(({ name, d }) => {
@@ -3284,33 +3253,42 @@ async function buildAdminTable() {
       <td>${overall !== null ? `<span class="score-badge ${overall >= 70 ? 'score-pass' : 'score-fail'}">${overall}%</span>` : '<span class="score-badge score-pending">—</span>'}</td>
     </tr>`;
   });
-
   tbody.innerHTML = html;
-  adminFileRows = [];
-  rows.forEach(({ name, d }) => Object.entries(d.deliverables || {}).forEach(([id, v]) => {
-    if (v.fileName && DELIVERABLE_LABELS[id]) adminFileRows.push({ name, id, v });
-  }));
-  adminFileRows.sort((a, b) => new Date(b.v.date) - new Date(a.v.date));
-  document.getElementById('admin-files').innerHTML = adminFileRows.length ? adminFileRows.map(({ name, id, v }) => `<tr>
-      <td><strong>${esc(name)}</strong></td><td>${esc(DELIVERABLE_LABELS[id].label)}</td>
-      <td>${esc(v.fileName)}${v.attempts > 1 ? ` <span class="grade-sub">(attempt ${v.attempts})</span>` : ''}</td>
-      <td>${fmtSize(v.fileSize)}</td><td>${esc(fmtWhen(v.date))}</td>
-      <td><span class="path">${esc(v.filePath || 'not stored')}</span></td></tr>`).join('')
+
+  adminFileRows = adminData.submissions;
+  document.getElementById('admin-files').innerHTML = adminFileRows.length ? adminFileRows.map(f => `<tr>
+      <td><strong>${esc(f.student_name)}</strong></td><td>${esc(f.assignment)}</td>
+      <td>${esc(f.file_name)}${f.attempt > 1 ? ` <span class="grade-sub">(attempt ${f.attempt})</span>` : ''}</td>
+      <td>${fmtSize(f.file_size)}</td><td>${esc(fmtWhen(f.submitted_at))}</td>
+      <td><button class="btn-dl" data-path="${esc(f.file_path)}" onclick="downloadFile(this.dataset.path)">⬇ Download</button>
+          <div class="path">${esc(f.file_path)}</div></td></tr>`).join('')
     : '<tr><td colspan="6" style="color:var(--gray-600)">No files yet.</td></tr>';
-  document.getElementById('admin-count').textContent = STUDENTS.filter(s => s.name !== 'TEST STUDENT').length;
+  document.getElementById('admin-count').textContent = adminData.roster.filter(n => n !== 'TEST STUDENT').length;
+}
+
+async function downloadFile(path) {
+  try {
+    const d = await api('admin-file-url', { path });
+    window.open(d.url, '_blank', 'noopener');
+  } catch (e) {
+    if (e.code !== 'session_expired') showToast('Could not open that file — try again', '⚠️');
+  }
 }
 
 async function adminUnlockWeek2(name) {
-  const ok = await unlockWeek2ForStudent(name);
-  if (!ok) { showToast(`Could not unlock ${name.split(' ')[0]} — check the connection and try again`, '⚠️'); return; }
+  try { await api('admin-unlock', { student_name: name }); }
+  catch (e) {
+    if (e.code !== 'session_expired') showToast(`Could not unlock ${name.split(' ')[0]} — check the connection and try again`, '⚠️');
+    return;
+  }
   showToast(`🔓 Week 2–4 unlocked for ${name.split(' ')[0]}!`, '🔓');
   buildAdminTable();
 }
 
 async function exportCSV() {
   showToast('📊 Pulling data from cloud…', '📊');
-  const allStudents = STUDENTS.map(s => s.name);
-  const rows = await Promise.all(allStudents.map(name => sbLoadStudent(name).then(d => ({ name, d }))));
+  try { await loadAdminData(); } catch (e) { return; }
+  const rows = adminData.roster.map(name => ({ name, d: adminData.progress[name] || EMPTY() }));
 
   let csv = 'Student,W1 Avg,W2 Avg,W3 Avg,W4 Avg,Deliverables Submitted,Overall Avg,W2 Unlocked\n';
   rows.forEach(({ name, d }) => {
@@ -3333,10 +3311,10 @@ async function exportCSV() {
 }
 
 async function exportFilesCSV() {
-  if (!adminFileRows.length) await buildAdminTable();
+  try { await loadAdminData(); } catch (e) { return; }
   const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-  let csv = 'Student,Assignment,File,Size (bytes),Submitted,Attempts,Storage path\n';
-  adminFileRows.forEach(({ name, id, v }) => { csv += [name, DELIVERABLE_LABELS[id].label, v.fileName, v.fileSize, v.date, v.attempts || 1, v.filePath || ''].map(q).join(',') + '\n'; });
+  let csv = 'Student,Assignment,File,Size (bytes),Submitted,Attempt,Storage path\n';
+  adminData.submissions.forEach(f => { csv += [f.student_name, f.assignment, f.file_name, f.file_size, f.submitted_at, f.attempt, f.file_path].map(q).join(',') + '\n'; });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
   a.download = 'CE_Level1_Fall2026_submissions.csv';
@@ -3354,6 +3332,16 @@ function showToast(msg, icon = '✓') {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+// Staging / preview deploys use the LIVE database — make that impossible to miss
+(function stagingRibbon() {
+  if (!/^(staging--|deploy-preview-|[a-z0-9-]+--)/.test(location.hostname)) return;
+  const r = document.createElement('div');
+  r.textContent = 'STAGING — uses the live database. Test with TEST STUDENT only.';
+  r.setAttribute('role', 'note');
+  r.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#c4522a;color:#fff;text-align:center;font:600 12px system-ui,sans-serif;padding:6px 10px';
+  document.body.appendChild(r);
+})();
 
 // Keyboard access for the clickable rows
 (function enhanceA11y() {
