@@ -7,7 +7,7 @@ YouTube links are checked through the public oEmbed endpoint (a removed/private 
 Exit code 1 if any link fails. Some sites block scripted requests (403/429): those are reported as
 WARN and need a manual click rather than being treated as dead.
 """
-import re, sys, json, urllib.request, urllib.error, urllib.parse, pathlib, concurrent.futures as cf
+import re, sys, json, socket, urllib.request, urllib.error, urllib.parse, pathlib, concurrent.futures as cf
 
 html = (pathlib.Path(__file__).resolve().parent.parent / "index.html").read_text()
 urls = sorted(set(re.findall(r'href="(https?://[^"]+)"', html)) - {"https://fonts.googleapis.com"})
@@ -27,23 +27,35 @@ def get(url, method="GET"):
         return r.status, r.geturl()
 
 def check(url):
-    try:
-        if "youtube.com/watch" in url:
-            q = "https://www.youtube.com/oembed?format=json&url=" + urllib.parse.quote(url, safe="")
-            with urllib.request.urlopen(urllib.request.Request(q, headers=UA), timeout=25) as r:
-                title = json.load(r).get("title", "")
-            return "OK", f"video: {title[:70]}"
-        status, final = get(url)
-        return "OK", f"{status}" + (f" -> {final}" if final.rstrip('/') != url.rstrip('/') else "")
-    except urllib.error.HTTPError as e:
-        host = urllib.parse.urlparse(url).hostname or ""
-        if e.code in (401, 403, 429, 999) and "youtube.com" not in url:
-            return "WARN", f"HTTP {e.code} (site blocks scripts — open it in a browser)"
-        if e.code == 404 and host.endswith(BOT_BLOCKS_SCRIPTS):
-            return "WARN", "HTTP 404 (this site answers scripts with 404 even for live pages — open it in a browser)"
-        return "FAIL", f"HTTP {e.code}"
-    except Exception as e:
-        return "FAIL", type(e).__name__ + ": " + str(e)[:80]
+    """One attempt. Returns (status, message). A timeout is retried once and then reported as WARN: slow servers
+    are not dead servers (restaurantowner.com answers in 200 ms one run and times out the next)."""
+    for attempt in (1, 2):
+        try:
+            if "youtube.com/watch" in url:
+                q = "https://www.youtube.com/oembed?format=json&url=" + urllib.parse.quote(url, safe="")
+                with urllib.request.urlopen(urllib.request.Request(q, headers=UA), timeout=25) as r:
+                    title = json.load(r).get("title", "")
+                return "OK", f"video: {title[:70]}"
+            status, final = get(url)
+            return "OK", f"{status}" + (f" -> {final}" if final.rstrip('/') != url.rstrip('/') else "")
+        except urllib.error.HTTPError as e:
+            host = urllib.parse.urlparse(url).hostname or ""
+            if e.code in (401, 403, 429, 999) and "youtube.com" not in url:
+                return "WARN", f"HTTP {e.code} (site blocks scripts — open it in a browser)"
+            if e.code == 404 and host.endswith(BOT_BLOCKS_SCRIPTS):
+                return "WARN", "HTTP 404 (this site answers scripts with 404 even for live pages — open it in a browser)"
+            return "FAIL", f"HTTP {e.code}"
+        except (TimeoutError, socket.timeout) as e:
+            if attempt == 2:
+                return "WARN", "timed out twice — inconclusive, open it in a browser"
+        except urllib.error.URLError as e:
+            if isinstance(getattr(e, "reason", None), (TimeoutError, socket.timeout)):
+                if attempt == 2:
+                    return "WARN", "timed out twice — inconclusive, open it in a browser"
+            else:
+                return "FAIL", "URLError: " + str(e.reason)[:80]
+        except Exception as e:
+            return "FAIL", type(e).__name__ + ": " + str(e)[:80]
 
 bad = 0
 with cf.ThreadPoolExecutor(8) as ex:
