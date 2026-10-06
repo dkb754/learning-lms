@@ -2,7 +2,7 @@
 // Level I curriculum API (Culinary Entrepreneurship I, Fall 2026). Supersedes lms-api, which stays deployed only
 // until the new page is live. The browser never touches tables or the bucket directly; identity always comes
 // from the server-side session (token -> student_name), never from the request body.
-//   student: load, save, create-upload, record-submission, logout
+//   student: load, save, create-upload, record-submission, set-checkin, logout
 //   admin:   admin-overview, admin-unlock, admin-file-url, admin-set-attendance, admin-set-servsafe,
 //            admin-save-rubric, admin-set-published
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -75,12 +75,13 @@ function withSuffix(name: string, suffix: string): string {
 type Row = Record<string, any>;
 const EMPTY_PATCH = () => ({
   quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {},
-  is_l2_eligible: false,
+  is_l2_eligible: false, checkin_opt_in: false, checkin_email: null, checkin_sent_at: null,
 });
 const toProgress = (r: Row | null | undefined) => ({
   quizzes: r?.quizzes || {}, deliverables: r?.deliverables || {}, w2_unlocked: !!r?.w2_unlocked,
   krp_portfolio: r?.krp_portfolio || {}, lab_attendance: r?.lab_attendance || {}, servsafe: r?.servsafe || {},
   is_l2_eligible: !!r?.is_l2_eligible,
+  checkin: { opt_in: !!r?.checkin_opt_in, email: r?.checkin_email || "", sent: !!r?.checkin_sent_at },
 });
 // A row that belongs to an earlier cohort is shown as empty everywhere until the student signs in and it is archived.
 const view = (r: Row | undefined) => (r && r.cohort === COHORT ? toProgress(r) : toProgress(null));
@@ -273,6 +274,16 @@ Deno.serve(async (req) => {
         patch.is_l2_eligible = eligible({ ...row, deliverables });
         const saved = await writeRow(user, patch);
         return json(200, { record: rec, progress: toProgress(saved) });
+      }
+
+      case "set-checkin": { // student opts in/out of the 90-day follow-up email
+        needStudent();
+        const optIn = !!body.opt_in;
+        const email = String(body.email || "").trim();
+        if (optIn && (email.length > 254 || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email))) throw new HttpError(400, "bad_email");
+        await ensureRow(user);
+        const saved = await writeRow(user, optIn ? { checkin_opt_in: true, checkin_email: email } : { checkin_opt_in: false, checkin_email: null });
+        return json(200, { progress: toProgress(saved) });
       }
 
       case "admin-overview": {

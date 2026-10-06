@@ -37,3 +37,11 @@ only a pull request from `staging` that passed CI and the checklist.
 - Edge Functions: `supabase functions deploy validate-login lms-api-v2 --no-verify-jwt` (or the Supabase dashboard).
 - Migrations: apply `supabase/migrations/*.sql` in order. Do the **page** deploy and the **backend** change in the order that never leaves them out of step
   (additive backend change first → page → destructive backend change last).
+
+## Access codes
+Codes are bcrypt-hashed in `student_access_codes` and are **never** stored in this repo. To add or rotate one, run in the Supabase SQL editor (then clear its history):
+`select public.lms_set_code('First Last', 'THE-NEW-CODE', false);` (`true` for the instructor). Re-running it for an existing name replaces the old code immediately. To check that an old code is dead:
+`select count(*) from public.student_access_codes where access_code_hash = crypt(upper('OLD-CODE'), access_code_hash);` → must be 0.
+
+## Resend (90-day check-in)
+Edge Functions → Secrets → add `RESEND_API_KEY`. See docs/CURRICULUM.md. Functions: `validate-login`, `lms-api-v2`, `send-checkins`; migrations `0001`–`0006`.

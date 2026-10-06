@@ -6,7 +6,7 @@ One static page (`index.html`) + `netlify.toml`. Supabase is the backend. No bui
 Auto-deploy from GitHub — see `docs/DEPLOY.md`. (This folder is meant to be the root of its own repo; inside `learning-lms` it lives in `culinary-coach-lms/`.)
 
 ## Architecture (short)
-`index.html` (static) → `validate-login` / `lms-api-v2` Edge Functions (service role) → Postgres tables (`student_progress`, `submissions`, `student_access_codes`, …) and the private `submissions` bucket.
+`index.html` (static) → `validate-login` / `lms-api-v2` / `send-checkins` Edge Functions (service role) → Postgres tables (`student_progress`, `submissions`, `student_access_codes`, …) and the private `submissions` bucket.
 **The page holds no keys, codes or database access.** Details and test evidence: `docs/SECURITY.md`. Deploy flow: `docs/DEPLOY.md`.
 
 ## Before go-live

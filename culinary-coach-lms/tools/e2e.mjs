@@ -23,6 +23,7 @@ const ok = (cond, name, extra = '') => { cond ? pass++ : fail++; console.log(`${
 // Course data comes straight from the real content files so the mock can never drift from the page.
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const L1 = new Function(readFileSync(path.join(ROOT, 'content/level1.js'), 'utf8') + '\nreturn { LEVEL1, CST_RUBRIC };')();
+const LES = new Function(readFileSync(path.join(ROOT, 'content/level1-lessons.js'), 'utf8').replace(/LEVEL1\.days\.forEach[^\n]*\n/, '') + '\nreturn LESSONS;')();
 const QB = new Function(readFileSync(path.join(ROOT, 'content/level1-quizzes.js'), 'utf8') + '\nreturn QUIZ_BANK;')();
 const { LEVEL1, CST_RUBRIC } = L1;
 const FILE_LABELS = Object.fromEntries(LEVEL1.days.filter(d => d.file).map(d => [d.id, d.file.label]));
@@ -41,10 +42,11 @@ function makeBackend() {
   const sessions = new Map();
   const files = [], subs = [], calls = [], urls = [], rubrics = [];
   const settings = { published_quizzes: [] };
-  const mode = { loginDown: false, apiDown: false, locked: false, storageFails: 0, recordFails: false, expireAll: false };
+  const mails = [];
+  const mode = { loginDown: false, apiDown: false, locked: false, storageFails: 0, recordFails: false, expireAll: false, noResend: false };
   const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*', 'content-type': 'application/json' };
   const reply = (route, status, body) => route.fulfill({ status, headers: CORS, body: JSON.stringify(body) });
-  const row = n => { if (!rows.has(n)) rows.set(n, { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, is_l2_eligible: false }); return rows.get(n); };
+  const row = n => { if (!rows.has(n)) rows.set(n, { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, is_l2_eligible: false, checkin: { opt_in: false, email: '', sent: false } }); return rows.get(n); };
   const prog = r => ({ ...r });
   const eligible = r => r.servsafe.exam_result === 'passed' && !!r.deliverables.w4lab && QUIZ_IDS.every(q => r.quizzes[q]?.passed);
 
@@ -123,6 +125,13 @@ function makeBackend() {
         r.is_l2_eligible = eligible(r);
         return reply(route, 200, { record: rec, progress: prog(r) });
       }
+      case 'set-checkin': {
+        if (noAdmin()) return;
+        if (b.opt_in && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(b.email || '')) return reply(route, 400, { error: 'bad_email' });
+        const r = row(s.name);
+        r.checkin = { opt_in: !!b.opt_in, email: b.opt_in ? b.email : '', sent: false };
+        return reply(route, 200, { progress: prog(r) });
+      }
       case 'admin-overview': {
         if (needAdmin()) return;
         const progress = {}; for (const [n, r] of rows) progress[n] = prog(r);
@@ -173,6 +182,18 @@ function makeBackend() {
     }
   }
 
+  async function sendCheckins(route) {
+    const req = route.request();
+    if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+    const b = JSON.parse(req.postData() || '{}');
+    calls.push({ fn: 'send-checkins', action: 'test' });
+    const s = sessions.get(b.token);
+    if (!s || !s.admin) return reply(route, 401, { error: 'unauthorized' });
+    if (mode.noResend) return reply(route, 503, { error: 'resend_not_configured' });
+    mails.push(b.test_to);
+    return reply(route, 200, { ok: true, sent_to: b.test_to });
+  }
+
   async function signedPut(route) {
     const req = route.request();
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
@@ -192,7 +213,7 @@ function makeBackend() {
     files.push({ path: p, mime, bytes, filename: m[1] });
     return reply(route, 200, { Key: 'submissions/' + p });
   }
-  return { rows, sessions, files, subs, calls, urls, mode, settings, rubrics, login, api, signedPut };
+  return { rows, sessions, files, subs, calls, urls, mode, settings, rubrics, mails, login, api, sendCheckins, signedPut };
 }
 
 async function newPage(browser, be, opts = {}) {
@@ -204,6 +225,7 @@ async function newPage(browser, be, opts = {}) {
   page.on('request', r => { if (/supabase\.co/.test(r.url())) be.urls.push(r.method() + ' ' + r.url()); });
   await page.route('**/functions/v1/validate-login', be.login);
   await page.route('**/functions/v1/lms-api-v2', be.api);
+  await page.route('**/functions/v1/send-checkins', be.sendCheckins);
   await page.route('**/storage/v1/object/upload/sign/**', be.signedPut);
   await page.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
   await page.goto(PAGE);
@@ -228,6 +250,7 @@ const tracker = '#admin-body';
   ok(badDow.length === 0, 'every lesson day\'s weekday matches the real 2026 calendar', badDow.map(d => `${d.id}:${d.date}≠${d.dow}`).join(','));
   ok(LEVEL1.days.length === 20 && LEVEL1.days.filter(d => d.lab).length === 4, '16 online days + 4 Saturday labs');
   ok(LEVEL1.days.filter(d => d.lab).map(d => d.short).join() === 'Oct 17,Oct 24,Oct 31,Nov 7', 'labs fall on Oct 17, 24, 31 and Nov 7');
+  ok(QB.w1d4.questions.length === 15 && QB.w1d2.questions.length === 15 && QB.w4d2.questions.length === 20, 'quiz lengths match the lesson plan (Q2 15, Q4 15, Q14 20)');
   ok(LEVEL1.days.filter(d => d.quiz).length === 14 && QUIZ_IDS.every(id => QB[id]), 'all 14 quizzes have a bank entry');
   const badQ = [];
   for (const id of QUIZ_IDS) for (const [i, q] of QB[id].questions.entries()) {
@@ -237,6 +260,8 @@ const tracker = '#admin-body';
   ok(CST_RUBRIC.sections.reduce((a, s) => a + s.criteria.length, 0) === 25 && RUBRIC_KEYS.length === 25, 'CST rubric has 25 criteria (25 × 4 = 100)');
   ok(CST_RUBRIC.band(80) === 'Pass' && CST_RUBRIC.band(79) === 'Conditional' && CST_RUBRIC.band(70) === 'Conditional' && /Remediation/.test(CST_RUBRIC.band(69)), 'rubric bands: 80+ Pass, 70–79 Conditional, <70 Remediation');
   const all = readFileSync(path.join(ROOT, 'content/level1.js'), 'utf8') + readFileSync(path.join(ROOT, 'content/level1-quizzes.js'), 'utf8');
+  ok(LEVEL1.days.every(d => LES[d.id] && LES[d.id].length > 300), 'every one of the 20 days has full lesson text');
+  ok(!Object.values(LES).some(h => /Resend|is_l2_eligible|Supabase|Proprietary|admin panel|DELIVERABLE/.test(h)), 'lesson text contains no developer-only or instructor-only notes');
   ok(!/VCU|Virginia Commonwealth/i.test(all), 'no VCU references in the course content');
 }
 
@@ -278,6 +303,8 @@ const tracker = '#admin-body';
   ok(/Entrepreneurship I\b(?! ?I)/.test(await text(page, '.nav-brand')), 'course is titled Culinary Entrepreneurship I');
   ok(await page.locator('.day-card').count() === 20, 'all 20 course days render (16 online + 4 labs)');
   ok(await page.locator('.lab-card').count() === 4, 'four lab cards render');
+  ok(await page.locator('.lesson-body').count() === 20, 'every day and lab shows its lesson text');
+  ok(await page.locator('.lesson-table').count() >= 3, 'lesson tables (cuts, kitchen calls, lab schedule) render');
 
   // links
   const hrefs = await page.$$eval('a.resource-item', as => as.map(a => a.href));
@@ -306,7 +333,7 @@ const tracker = '#admin-body';
   ok(/NOT YET RECORDED/.test(await text(page, '#att-w1lab')), 'lab attendance is read-only for students and starts unrecorded');
   ok(await page.locator('#att-w1lab button').count() === 0, 'students have no button to mark their own attendance');
   ok(!be.urls.some(u => /\/rest\/v1\//.test(u)), 'the browser never calls the database REST API directly');
-  ok(be.urls.every(u => /\/functions\/v1\/(validate-login|lms-api-v2)|\/storage\/v1\/object\/upload\/sign\//.test(u)), 'every Supabase call goes to an Edge Function or a signed upload URL', be.urls.filter(u => !/functions\/v1|upload\/sign/.test(u)).join(','));
+  ok(be.urls.every(u => /\/functions\/v1\/(validate-login|lms-api-v2|send-checkins)|\/storage\/v1\/object\/upload\/sign\//.test(u)), 'every Supabase call goes to an Edge Function or a signed upload URL', be.urls.filter(u => !/functions\/v1|upload\/sign/.test(u)).join(','));
   ok(errors.length === 0, 'no JS errors in student flow', errors.join(' | '));
   await page.context().close();
 }
@@ -430,6 +457,12 @@ const tracker = '#admin-body';
   await page.click('.sidebar-item[data-page="krp"]');
   ok(await page.locator('.krp-item.done').count() === 1 && await page.locator('.krp-item').count() === LEVEL1.krp.items.length, 'KRP page shows the Honest Map done and the rest outstanding');
   ok(await page.locator('.krp-phase').count() === LEVEL1.krp.phases.length, 'KRP page lists all phases');
+  await page.fill('#checkin-email', 'not-an-email'); await page.check('#checkin-opt'); await page.click('#checkin-card .btn-submit-work');
+  await page.waitForTimeout(200);
+  ok(!be.rows.get('TEST STUDENT').checkin.opt_in, 'opt-in with an invalid email is refused');
+  await page.fill('#checkin-email', 'student@example.com'); await page.click('#checkin-card .btn-submit-work');
+  await page.waitForFunction(() => /opted in/.test(document.getElementById('checkin-status').innerText));
+  ok(be.rows.get('TEST STUDENT').checkin.opt_in === true && be.rows.get('TEST STUDENT').checkin.email === 'student@example.com', '90-day check-in opt-in is saved on the server with the email');
 
   // client-side rejections (w2d3)
   await page.click('.sidebar-item[data-page="w2"]');
@@ -575,6 +608,16 @@ const tracker = '#admin-body';
   await page.waitForFunction(() => window.__opened);
   ok(/object\/sign\/submissions\//.test(await page.evaluate(() => window.__opened)), 'Download opens a short-lived signed link');
   ok(/^\d+$/.test((await text(page, '#admin-count')).trim()), 'enrolled count is shown');
+  page.once('dialog', d => d.accept('chef@example.com'));
+  await page.click('button:has-text("Send test check-in email")');
+  await page.waitForFunction(() => /Test email sent/.test(document.getElementById('toast-msg').innerText));
+  ok(be.mails.includes('chef@example.com'), 'instructor can send a test check-in email through the send-checkins function');
+  be.mode.noResend = true;
+  page.once('dialog', d => d.accept('chef@example.com'));
+  await page.click('button:has-text("Send test check-in email")');
+  await page.waitForFunction(() => /RESEND_API_KEY/.test(document.getElementById('toast-msg').innerText));
+  ok(true, 'missing Resend secret gives the instructor a clear message');
+  be.mode.noResend = false;
   ok(/Ready/.test(await text(page, tracker)) === false, 'nobody is Level II-ready yet (needs ServSafe pass, Concept Brief and all quizzes)');
   await page.click(`${tracker} button[onclick*="adminUnlockWeek2"][data-name="Zed Newstudent"]`);
   await page.waitForFunction(() => /Unlocked/.test((document.getElementById('admin-body').innerText.split('Zed Newstudent')[1] || '')));

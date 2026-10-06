@@ -1278,7 +1278,14 @@ body {
 .layer-row.on-dark{color:rgba(255,255,255,.85)}
 .topics h5{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-600);margin:0 0 6px}
 .topics ul,.lab-list{margin:0 0 14px 20px;font-size:14px;line-height:1.6}
-.lesson-body{font-size:14px;line-height:1.7;margin:0 0 14px}
+.lesson-body{margin:0 0 16px;font-size:14px;line-height:1.7}
+.lesson-body h4{font:700 15px var(--font-display);color:var(--green-dark);margin:18px 0 6px;padding-top:12px;border-top:1px solid var(--gray-200)}
+.lesson-body h4:first-child{border-top:none;margin-top:0;padding-top:0}
+.lesson-body p{margin:0 0 10px}.lesson-body ul{margin:0 0 12px 20px}.lesson-body li{margin-bottom:6px}
+.lesson-krp{background:rgba(212,168,67,.12);border-left:3px solid var(--gold);border-radius:6px;padding:8px 12px;font-size:13px}
+.lesson-table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px}
+.lesson-table th{background:var(--green-dark);color:#fff;text-align:left;padding:7px 10px;font-weight:600}
+.lesson-table td{padding:7px 10px;border-bottom:1px solid var(--gray-200);vertical-align:top}
 .assess-line{font-size:13px;color:var(--gray-600);margin:10px 0;padding:8px 12px;background:var(--gray-100);border-radius:8px}
 .due-line{font-size:13px;color:var(--gray-600);margin:6px 0 10px}
 .lab-status .sub-note{margin-top:6px}
@@ -1321,6 +1328,8 @@ body {
 .qr-actions{margin:8px 0 12px}.qr-q{padding:10px 0;border-top:1px solid var(--gray-100);font-size:14px}
 .qr-q ul{list-style:none;margin:6px 0 4px 8px}.qr-q li.right{color:var(--green-bright);font-weight:600}
 .qr-fb{font-size:12px;color:var(--gray-600);font-style:italic}
+.checkin-input{width:100%;max-width:340px;padding:8px 10px;border:1px solid var(--gray-200);border-radius:8px;font:14px var(--font-body);margin:6px 0}
+.checkin-opt{display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 8px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:640px){.rb-row{flex-direction:column;align-items:flex-start}}
 </style>
@@ -1383,7 +1392,7 @@ body {
         <div class="admin-header">
           <div><h2>Student Tracker — Level I · Fall 2026</h2>
             <p><span id="admin-count">0</span> enrolled students · Culinary Entrepreneurship I</p></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-export" onclick="exportCSV()">Export CSV</button><button class="btn-export" onclick="exportFilesCSV()">Export Files CSV</button></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-export" onclick="exportCSV()">Export CSV</button><button class="btn-export" onclick="exportFilesCSV()">Export Files CSV</button><button class="btn-export" onclick="sendTestCheckin()">Send test check-in email</button></div>
         </div>
         <div style="overflow-x:auto;background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);">
           <table class="tracker-table" id="admin-table">
@@ -1412,6 +1421,7 @@ body {
 </div>
 
 <script src="content/level1.js"></script>
+<script src="content/level1-lessons.js"></script>
 <script src="content/level1-quizzes.js"></script>
 <script>
 // ============================================================
@@ -1451,7 +1461,7 @@ let syncStatus = 'idle'; // idle | saving | saved | error
 let unsynced = false;     // true while the latest change exists only on this device
 
 function EMPTY() {
-  return { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, is_l2_eligible: false };
+  return { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, is_l2_eligible: false, checkin: { opt_in: false, email: '', sent: false } };
 }
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1729,6 +1739,7 @@ function renderLabCard(d) {
         ${d.layer ? layerChips(d).replace('layer-row', 'layer-row on-dark') : ''}
         <ul class="lab-list">${acts}</ul>
         <div class="lab-assess"><strong>Assessment:</strong> ${esc(d.assessment)}</div></div>
+      ${d.lesson ? `<div class="lesson-body">${d.lesson}</div>` : ''}
       <div class="deliverable-card lab-status"><h4>✅ Lab attendance</h4>
         ${d.unlocks ? `<p>${esc(d.unlocks)}</p>` : ''}
         <div id="att-${d.id}"></div></div>
@@ -1767,10 +1778,40 @@ function renderKrp() {
       <div class="wh-dates">Built across all four weeks · finished with a 90-day check-in after Lab 4</div></div>
     <div class="krp-phases">${phases}</div>
     <div class="section-title">Portfolio deliverables</div><div id="krp-items" class="krp-items"></div>
-    <div class="krp-note">After Lab 4 you will receive a short check-in email 90 days later, with a link to a brief survey.</div>`;
+    <div class="deliverable-card" id="checkin-card"><h4>📬 90-day check-in <span class="layer-chip">optional</span></h4>
+      <p>Opt in and we will email you once, 90 days after Lab 4 (early February 2027), with a short survey about how things are going. We use your email for nothing else, and you can opt out here any time.</p>
+      <label for="checkin-email" class="sr-only">Your email address</label>
+      <input type="email" id="checkin-email" class="checkin-input" placeholder="you@example.com" autocomplete="email" maxlength="254">
+      <label class="checkin-opt"><input type="checkbox" id="checkin-opt"> Yes, email me the 90-day check-in</label>
+      <div class="sub-actions"><button class="btn-submit-work" onclick="saveCheckin()">Save</button></div>
+      <div class="grade-sub" id="checkin-status" role="status" aria-live="polite"></div></div>`;
+}
+
+function renderCheckin() {
+  const em = document.getElementById('checkin-email'), op = document.getElementById('checkin-opt'), st = document.getElementById('checkin-status');
+  if (!em || !op) return;
+  const c = memCache.checkin || { opt_in: false, email: '', sent: false };
+  if (document.activeElement !== em) em.value = c.email || '';
+  if (document.activeElement !== op) op.checked = !!c.opt_in;
+  st.textContent = isAdmin ? 'Instructor preview: students set this themselves.' : c.sent ? 'Your check-in email has been sent.' : c.opt_in ? `✓ You are opted in (${c.email}).` : 'You are not opted in.';
+}
+
+async function saveCheckin() {
+  if (isAdmin) { showToast('Instructor preview: nothing saved', 'ℹ️'); return; }
+  const email = document.getElementById('checkin-email').value.trim();
+  const optIn = document.getElementById('checkin-opt').checked;
+  if (optIn && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email)) { showToast('Enter a valid email address to opt in', '⚠️'); return; }
+  try {
+    const d = await api('set-checkin', { opt_in: optIn, email });
+    memCache = mergeProgress(fromServer(d.progress), memCache);
+    if (currentUser) writeLocal(currentUser, memCache);
+    renderCheckin();
+    showToast(optIn ? 'Opted in to the 90-day check-in' : 'Opted out of the 90-day check-in', '📬');
+  } catch (e) { if (e.code !== 'session_expired') showToast(e.code === 'bad_email' ? 'That email address does not look right' : 'Could not save — try again', '⚠️'); }
 }
 
 function renderKrpItems() {
+  renderCheckin();
   const el = document.getElementById('krp-items');
   if (!el) return;
   el.innerHTML = LEVEL1.krp.items.map(it => {
@@ -2461,17 +2502,29 @@ async function adminTogglePublish(id) {
   updateProgress();
 }
 
+async function sendTestCheckin() {
+  const to = (prompt('Send a sample 90-day check-in email to which address?') || '').trim();
+  if (!to) return;
+  try {
+    const r = await fnPost('send-checkins', { token: sessionToken, test_to: to }, 20000);
+    if (r.status === 401) { sessionExpired(); return; }
+    if (r.ok) showToast('Test email sent to ' + to, '📬');
+    else if (r.data && r.data.error === 'resend_not_configured') showToast('Resend is not set up yet: add the RESEND_API_KEY secret in Supabase', '⚠️');
+    else showToast('Test email failed: ' + ((r.data && r.data.error) || r.status), '⚠️');
+  } catch (e) { showToast('Could not reach the server', '⚠️'); }
+}
+
 async function exportCSV() {
   showToast('📊 Pulling data from cloud…', '📊');
   try { await loadAdminData(); } catch (e) { return; }
   const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
   const open = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
-  let csv = ['Student', 'Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Quizzes passed', 'Deliverables', 'ServSafe practice %', 'ServSafe exam', 'ServSafe exam %', 'CST Lab 1 total', 'CST band', 'Weeks 2-4 unlocked', 'Level II ready'].join(',') + '\n';
+  let csv = ['Student', 'Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Quizzes passed', 'Deliverables', 'ServSafe practice %', 'ServSafe exam', 'ServSafe exam %', 'CST Lab 1 total', 'CST band', 'Weeks 2-4 unlocked', 'Level II ready', '90-day check-in opt-in', 'Check-in email'].join(',') + '\n';
   adminData.roster.forEach(name => {
     const d = adminProg(name), la = d.lab_attendance || {}, ss = d.servsafe || {}, r = adminRubric(name);
     csv += [name, ...LABS.map(l => la[l.lab] ? 'Yes' : 'No'), `${open.filter(id => d.quizzes[id]?.passed).length}/${open.length}`,
       `${Object.keys(FILES).filter(id => d.deliverables[id]).length}/${Object.keys(FILES).length}`, ss.practice_score ?? '', ss.exam_result || 'pending', ss.exam_score ?? '',
-      r ? r.total : '', r ? r.band : '', d.w2_unlocked ? 'Yes' : 'No', d.is_l2_eligible ? 'Yes' : 'No'].map(q).join(',') + '\n';
+      r ? r.total : '', r ? r.band : '', d.w2_unlocked ? 'Yes' : 'No', d.is_l2_eligible ? 'Yes' : 'No', (d.checkin || {}).opt_in ? 'Yes' : 'No', (d.checkin || {}).email || ''].map(q).join(',') + '\n';
   });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));

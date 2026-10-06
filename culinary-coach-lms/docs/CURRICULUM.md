@@ -5,7 +5,8 @@ Source: `CE_LevelMap_PlatformBrief.docx`. All course text is **data**, not page 
 | File | What it holds | Edit it to… |
 |---|---|---|
 | `content/level1.js` | 16 online days + 4 Saturday labs, topics, resources, deliverables, KRP, CST rubric | change dates, topics, links; add full lesson text in a day's `lesson` field (HTML string) |
-| `content/level1-quizzes.js` | 14 quizzes (155 draft questions) | fix or replace questions; fill the `todo` items |
+| `content/level1-lessons.js` | Full lesson text for all 20 days (from `LevelI_LessonContent.docx`; developer/instructor-only lines such as "Gate:" and "Automation:" were removed) | edit the HTML for a day, or regenerate from the docx |
+| `content/level1-quizzes.js` | 14 quizzes (160 questions) written to match the lesson text | fix or replace questions; fill the `todo` items |
 | `supabase/functions/lms-api-v2` | server rules (ids, uploads, rubric keys, eligibility) | only if you add/rename a deliverable or quiz id — keep it in sync with `level1.js` |
 
 ## Instructor controls (sign in with the admin code)
@@ -16,8 +17,18 @@ Source: `CE_LevelMap_PlatformBrief.docx`. All course text is **data**, not page 
 ## Decisions made on your behalf (change if wrong)
 * Real 2026 calendar: labs Sat Oct 17, 24, 31, Nov 7; Week 4 Mon–Thu = Nov 2–5 (the brief's dates were a day off in places).
 * Lab 1 attendance is the Weeks 2–4 gate. Level II-ready = ServSafe exam passed + Concept Brief (Lab 4) submitted + all 14 quizzes passed.
-* VCU is not part of this platform. Host kitchen text is Parsley's Kitchen (`LAB_PLACE` in `index.html`) — **confirm**.
+* VCU is not part of this platform. Host kitchen is Parsley's Kitchen, 2600 Nine Mile Rd (the lesson document confirms it).
+* The lesson document's day dates for Wed–Thu of Week 1 and all of Week 4 (and Lab 3/Lab 4: "Nov 1"/"Nov 8") do not match the 2026 calendar; the platform uses Oct 14/15, Oct 31, Nov 3/4/5 and Nov 7.
+* Deliverables follow the brief (Honest Map Thu Oct 15, Professional Identity Statement Wed Oct 21, Recipe Cost Sheet Thu Oct 29). The lesson document places the Identity Statement on Week 1 Thursday and the Recipe Cost Sheet on Week 2 Wednesday — tell me if that is the intended schedule.
 * Students from an earlier cohort are archived (`student_progress_archive`) and reset the first time they sign in.
 
+## 90-day check-in email (Resend)
+* Students opt in on the **KRP Portfolio** page (email + checkbox). Nothing is sent without an opt-in, and they can opt out there any time.
+* A daily job (`pg_cron`, 15:00 UTC) calls the `send-checkins` function. Until **Feb 5, 2027** (90 days after Lab 4, Nov 7) it does nothing. After that it emails opted-in students whose Lab 4 attendance you recorded, once each.
+* **You must add the secret** `RESEND_API_KEY` (Supabase dashboard → Edge Functions → Secrets). Resend's real endpoint is `https://api.resend.com/emails` (not `resend.com/api/send`); the function already uses it.
+* Verify your sending domain in Resend (add the DNS records it shows in Cloudflare). The default sender is `Culinary Coach <checkin@culinarycoach.org>`; to change it set the secret `CHECKIN_FROM`.
+* Survey link: `update lms_settings set value = '"https://your-survey-link"' where key = 'checkin_survey_url';` Until you set it, the email asks students to reply instead.
+* Test it any time: Student Tracker → **Send test check-in email**.
+
 ## Not built yet
-Level II content and dual-level switching; the 90-day check-in email (needs an email provider key added to Supabase secrets); full lesson bodies; CST-specific quiz items, cut specs and the 25-ingredient library.
+Level II content and dual-level switching; the auto-graded scaling exercises the Week 1 lesson mentions; a survey form for the 90-day email (link goes in `checkin_survey_url`).
