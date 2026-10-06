@@ -1,0 +1,7 @@
+{
+  "name": "culinary-coach-lms",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node tools/e2e.mjs", "links": "python3 tools/check-links.py" },
+  "devDependencies": { "playwright": "^1.56.0" }
+}

@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+"""Check every external link in index.html is live. Run from a machine with normal internet access:
+
+    python3 tools/check-links.py
+
+YouTube links are checked through the public oEmbed endpoint (a removed/private video returns 404/401).
+Exit code 1 if any link fails. Some sites block scripted requests (403/429): those are reported as
+WARN and need a manual click rather than being treated as dead.
+"""
+import re, sys, json, urllib.request, urllib.error, urllib.parse, pathlib, concurrent.futures as cf
+
+html = (pathlib.Path(__file__).resolve().parent.parent / "index.html").read_text()
+urls = sorted(set(re.findall(r'href="(https?://[^"]+)"', html)) - {"https://fonts.googleapis.com"})
+urls = [u.replace("&amp;", "&") for u in urls if "fonts.googleapis" not in u]
+UA = {"User-Agent": "Mozilla/5.0 (compatible; lms-link-check)"}
+
+def get(url, method="GET"):
+    req = urllib.request.Request(url, headers=UA, method=method)
+    with urllib.request.urlopen(req, timeout=25) as r:
+        return r.status, r.geturl()
+
+def check(url):
+    try:
+        if "youtube.com/watch" in url:
+            q = "https://www.youtube.com/oembed?format=json&url=" + urllib.parse.quote(url, safe="")
+            with urllib.request.urlopen(urllib.request.Request(q, headers=UA), timeout=25) as r:
+                title = json.load(r).get("title", "")
+            return "OK", f"video: {title[:70]}"
+        status, final = get(url)
+        return "OK", f"{status}" + (f" -> {final}" if final.rstrip('/') != url.rstrip('/') else "")
+    except urllib.error.HTTPError as e:
+        if e.code in (401, 403, 429, 999) and "youtube.com" not in url:
+            return "WARN", f"HTTP {e.code} (site blocks scripts — open it in a browser)"
+        return "FAIL", f"HTTP {e.code}"
+    except Exception as e:
+        return "FAIL", type(e).__name__ + ": " + str(e)[:80]
+
+bad = 0
+with cf.ThreadPoolExecutor(8) as ex:
+    for url, (st, msg) in zip(urls, ex.map(check, urls)):
+        print(f"{st:5} {url}\n      {msg}")
+        bad += st == "FAIL"
+print(f"\n{len(urls)} links, {bad} failed")
+sys.exit(1 if bad else 0)
