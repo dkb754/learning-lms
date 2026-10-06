@@ -6,16 +6,16 @@
 | Access codes | Hard-coded JS array in the page | bcrypt hashes in `student_access_codes`; checked by `validate-login` |
 | Admin code | In the page source | A row in the same table with `is_admin`; checked server-side |
 | Database access | Public anon key, `Allow all access` RLS, anon had INSERT/UPDATE/DELETE/TRUNCATE | Anon has **no rights** on any LMS table; page holds **no key** |
-| Who can read all rows | Anyone with the page source | Only an admin session, through `lms-api` (service role) |
-| Student writes | Browser PATCHed its own row (and could set `w2_unlocked`) | `lms-api` merges quizzes + confirmations only; unlock flag and file records are server-owned |
+| Who can read all rows | Anyone with the page source | Only an admin session, through `lms-api-v2` (service role) |
+| Student writes | Browser PATCHed its own row (and could set `w2_unlocked`) | `lms-api-v2` merges quizzes + confirmations only; unlock flag and file records are server-owned |
 | Uploads | n/a | One-time signed URL issued for the signed-in student; bucket private; no anon read/list/overwrite/delete |
 
 The service-role key exists only in the Edge Function environment that Supabase injects. It is not in the page, the repo, or CI.
 
 ## How a request is authorised
-`validate-login(code)` → session token (random 256-bit, only its SHA-256 stored, 12 h) → every `lms-api` call carries the token →
+`validate-login(code)` → session token (random 256-bit, only its SHA-256 stored, 12 h) → every `lms-api-v2` call carries the token →
 the **student identity comes from the session, never from the request body** → the function uses the service role against that one name.
-Upload path is `{student-name}/{assignment-slug}/{filename}` built server-side; `record-submission` re-checks the path prefix and that the object really exists.
+Upload path is `L1/{student-name}/{assignment-slug}/{filename}` built server-side; `record-submission` re-checks the path prefix and that the object really exists.
 
 ## Tested against the live project (Oct 6 2026)
 - valid / invalid / throttled login; case + whitespace tolerant; 15 failures per IP per 10 min then refused

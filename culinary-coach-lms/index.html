@@ -1269,19 +1269,71 @@ body {
   .upcoming-item { flex-wrap:wrap; }
   .sub-actions .btn-submit-work.big { width:100%; }
 }
+
+/* ===== Level I curriculum additions ===== */
+.layer-row{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:13px;color:var(--gray-600)}
+.layer-chip{display:inline-block;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.06em;padding:2px 8px;border-radius:99px;background:var(--gray-200);color:var(--gray-800)}
+.layer-chip.krp{background:var(--green-dark);color:var(--gold-light)}
+.layer-chip.cst{background:var(--gold);color:var(--green-dark)}
+.layer-row.on-dark{color:rgba(255,255,255,.85)}
+.topics h5{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-600);margin:0 0 6px}
+.topics ul,.lab-list{margin:0 0 14px 20px;font-size:14px;line-height:1.6}
+.lesson-body{font-size:14px;line-height:1.7;margin:0 0 14px}
+.assess-line{font-size:13px;color:var(--gray-600);margin:10px 0;padding:8px 12px;background:var(--gray-100);border-radius:8px}
+.due-line{font-size:13px;color:var(--gray-600);margin:6px 0 10px}
+.lab-status .sub-note{margin-top:6px}
+.lab-toggles{display:flex;gap:4px}
+.lab-toggle{border:1px solid var(--gray-200);background:var(--white);border-radius:6px;padding:4px 8px;font:500 12px var(--font-mono);cursor:pointer;color:var(--gray-600)}
+.lab-toggle.on{background:var(--green-bright);border-color:var(--green-bright);color:#fff}
+.lab-toggle:focus-visible,.rb-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.ss-edit{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ss-edit input{width:92px}.ss-edit input,.ss-edit select{padding:4px 6px;border:1px solid var(--gray-200);border-radius:6px;font:13px var(--font-body)}
+.quiz-closed{padding:14px 16px;background:var(--gray-100);border:1px dashed var(--gray-200);border-radius:8px;color:var(--gray-600);font-size:14px}
+.draft-tag{display:inline-block;margin:0 0 8px;font:500 11px var(--font-mono);letter-spacing:.06em;color:var(--orange);border:1px solid var(--orange);border-radius:99px;padding:2px 8px}
+.l2-banner{display:flex;gap:12px;align-items:flex-start;background:rgba(212,168,67,.12);border:1px solid var(--gold);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:14px}
+.krp-phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0 24px}
+.krp-phase{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px 16px;font-size:13px}
+.krp-phase h4{font-family:var(--font-display);margin:2px 0}.krp-n{font:500 11px var(--font-mono);color:var(--orange);text-transform:uppercase;letter-spacing:.08em}
+.krp-weeks{color:var(--gray-600);margin-bottom:6px}.krp-out{margin-top:8px;font-weight:600;color:var(--green-mid)}
+.krp-items{display:flex;flex-direction:column;gap:8px}
+.krp-item{display:flex;gap:12px;align-items:center;background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:12px 14px}
+.krp-item>div:nth-child(2){flex:1}.krp-item.done{border-color:var(--green-bright)}
+.krp-check{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--gray-200);font-size:13px}
+.krp-item.done .krp-check{background:var(--green-bright);color:#fff}
+.krp-note{margin-top:16px;font-size:13px;color:var(--gray-600)}
+.link-btn{background:none;border:none;color:var(--green-bright);text-decoration:underline;cursor:pointer;font:600 13px var(--font-body)}
+.rubric-pick{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px}
+.rubric-pick select,.rubric-foot textarea{padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font:14px var(--font-body)}
+.rubric-total{margin-left:auto;display:flex;align-items:baseline;gap:6px}
+.cst-total,.cst-score{font:900 28px var(--font-display);color:var(--green-dark)}.cst-of{color:var(--gray-600);font-size:13px}
+.rb-section{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px}
+.rb-head{display:flex;justify-content:space-between;align-items:baseline}.rb-head h4{font-family:var(--font-display)}
+.rb-note{font-size:12px;color:var(--gray-600);margin:2px 0 8px}
+.rb-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--gray-100);font-size:14px}
+.rb-btns{display:flex;gap:4px;flex-shrink:0}
+.rb-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--gray-200);background:var(--white);font:600 14px var(--font-mono);cursor:pointer}
+.rb-btn.on{background:var(--green-bright);border-color:var(--green-bright);color:#fff}
+.rubric-foot{display:flex;flex-direction:column;gap:8px;align-items:flex-start}.rubric-foot textarea{width:100%}
+.qr-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);margin-bottom:10px;padding:0 16px}
+.qr-card summary{display:flex;gap:12px;align-items:center;padding:12px 0;cursor:pointer;flex-wrap:wrap}
+.qr-title{font-weight:600;flex:1}.qr-meta{font-size:12px;color:var(--gray-600)}
+.qr-todo{background:rgba(196,82,42,.08);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:10px}.qr-todo ul{margin:4px 0 0 18px}
+.qr-actions{margin:8px 0 12px}.qr-q{padding:10px 0;border-top:1px solid var(--gray-100);font-size:14px}
+.qr-q ul{list-style:none;margin:6px 0 4px 8px}.qr-q li.right{color:var(--green-bright);font-weight:600}
+.qr-fb{font-size:12px;color:var(--gray-600);font-style:italic}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:640px){.rb-row{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
+
 <body>
 
-<!-- ==============================
-     LOGIN SCREEN
-     ============================== -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
       <div class="badge">Culinary Coach × OCWB</div>
       <h1>Culinary <span>Entrepreneurship</span> I</h1>
-      <p>Oct 12 – Nov 7, 2026 · Level I Cohort · Parsley's Kitchen</p>
+      <p>Oct 12 – Nov 7, 2026 · Level I Cohort · ServSafe Food Handler</p>
     </div>
     <div class="login-form">
       <label for="login-user">Name <span style="opacity:.6">(optional)</span></label>
@@ -1291,18 +1343,11 @@ body {
       <p class="error-msg" id="login-error">❌ Invalid credentials. Please check with your instructor.</p>
       <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In →</button>
     </div>
-    <div class="login-notice">
-      Need help signing in? Contact your instructor.
-    </div>
+    <div class="login-notice">Need help signing in? Contact your instructor.</div>
   </div>
 </div>
 
-<!-- ==============================
-     MAIN APP
-     ============================== -->
 <div id="app">
-
-  <!-- TOP NAV -->
   <nav class="topnav">
     <div class="nav-brand">Culinary <span>Entrepreneurship I</span></div>
     <div class="nav-right">
@@ -1311,920 +1356,120 @@ body {
       <button class="btn-logout" onclick="doLogout()">Sign Out</button>
     </div>
   </nav>
-
-  <!-- PROGRESS BANNER -->
   <div class="progress-banner">
     <span class="progress-label" id="global-label">Course Progress</span>
-    <div class="progress-track">
-      <div class="progress-fill" id="global-progress" style="width:0%"></div>
-    </div>
+    <div class="progress-track"><div class="progress-fill" id="global-progress" style="width:0%"></div></div>
     <span class="progress-pct" id="global-pct">0%</span>
   </div>
-
   <div class="app-layout">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-heading">Navigation</div>
-        <div class="sidebar-item active" data-page="dashboard" onclick="showPage('dashboard')">
-          <div class="week-badge gold">⌂</div>
-          <span class="sidebar-item-label">Dashboard</span>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-heading">Week 1 · Oct 12–18</div>
-        <div class="sidebar-item" data-page="w1" onclick="showPage('w1')">
-          <div class="week-badge gold" id="sb-w1-badge">1</div>
-          <span class="sidebar-item-label">Food Safety &amp; Foundation</span>
-          <span class="sidebar-check" id="sb-w1-check"></span>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-heading">Week 2 · Oct 19–25</div>
-        <div class="sidebar-item" data-page="w2" onclick="showPage('w2')" id="sb-w2">
-          <div class="week-badge" id="sb-w2-badge">2</div>
-          <span class="sidebar-item-label">Business Concept &amp; Compliance</span>
-          <span class="sidebar-check" id="sb-w2-check"></span>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-heading">Week 3 · Oct 26 – Nov 1</div>
-        <div class="sidebar-item" data-page="w3" onclick="showPage('w3')" id="sb-w3">
-          <div class="week-badge" id="sb-w3-badge">3</div>
-          <span class="sidebar-item-label">Menu Planning &amp; Kitchen Ops</span>
-          <span class="sidebar-check" id="sb-w3-check"></span>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-heading">Week 4 · Nov 2–7</div>
-        <div class="sidebar-item" data-page="w4" onclick="showPage('w4')" id="sb-w4">
-          <div class="week-badge" id="sb-w4-badge">4</div>
-          <span class="sidebar-item-label">Marketing, Sales &amp; Launch</span>
-          <span class="sidebar-check" id="sb-w4-check"></span>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-heading">My Progress</div>
-        <div class="sidebar-item" data-page="my-grades" onclick="showPage('my-grades')">
-          <div class="week-badge" style="background:#6b6558">📊</div>
-          <span class="sidebar-item-label">My Grades &amp; Submissions</span>
-        </div>
-      </div>
-
-      <div class="sidebar-section" id="admin-nav" style="display:none">
-        <div class="sidebar-heading">Instructor</div>
-        <div class="sidebar-item" data-page="admin" onclick="showPage('admin')">
-          <div class="week-badge" style="background:#c4522a">👑</div>
-          <span class="sidebar-item-label">Student Tracker</span>
-        </div>
-      </div>
-    </aside>
-
-    <!-- MAIN CONTENT -->
+    <aside class="sidebar" id="sidebar"></aside>
     <main class="main-content">
-
-      <!-- ====== DASHBOARD ====== -->
-      <div class="page-view active" id="page-dashboard">
-        <div class="dash-header">
-          <div class="eyebrow">Level I Cohort · Fall 2026</div>
-          <h2 id="dash-greeting">Welcome back!</h2>
-          <p>4-week intensive · Parsley's Kitchen, 2600 Nine Mile Rd · Richmond, VA</p>
-        </div>
-
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-value" id="stat-quizzes">0</div>
-            <div class="stat-label">Quizzes Passed</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-deliverables">0</div>
-            <div class="stat-label">Deliverables Submitted</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-weeks">0/4</div>
-            <div class="stat-label">Weeks Complete</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-score">—</div>
-            <div class="stat-label">Avg Quiz Score</div>
-          </div>
-        </div>
-
-        <div class="week-cards">
-          <div class="week-card w1" onclick="showPage('w1')">
-            <div class="wc-meta">
-              <span class="wc-num">WEEK 01</span>
-              <span class="wc-status status-todo" id="wc1-status">Not started</span>
-            </div>
-            <div class="wc-title">Food Safety &amp; Foundation</div>
-            <div class="wc-dates">Oct 12–18, 2026 · ServSafe Food Handler</div>
-            <div class="wc-progress"><div class="wc-progress-fill" id="wc1-bar" style="width:0%"></div></div>
-            <div class="wc-count" id="wc1-count"></div>
-          </div>
-          <div class="week-card w2" onclick="showPage('w2')">
-            <div class="wc-meta">
-              <span class="wc-num">WEEK 02</span>
-              <span class="wc-status status-todo" id="wc2-status">Not started</span>
-            </div>
-            <div class="wc-title">Business Concept &amp; Compliance</div>
-            <div class="wc-dates">Oct 19–25, 2026</div>
-            <div class="wc-progress"><div class="wc-progress-fill" id="wc2-bar" style="width:0%"></div></div>
-            <div class="wc-count" id="wc2-count"></div>
-          </div>
-          <div class="week-card w3" onclick="showPage('w3')">
-            <div class="wc-meta">
-              <span class="wc-num">WEEK 03</span>
-              <span class="wc-status status-todo" id="wc3-status">Not started</span>
-            </div>
-            <div class="wc-title">Menu Planning &amp; Kitchen Ops</div>
-            <div class="wc-dates">Oct 26 – Nov 1, 2026 · Lab 3 Oct 31</div>
-            <div class="wc-progress"><div class="wc-progress-fill" id="wc3-bar" style="width:0%"></div></div>
-            <div class="wc-count" id="wc3-count"></div>
-          </div>
-          <div class="week-card w4" onclick="showPage('w4')">
-            <div class="wc-meta">
-              <span class="wc-num">WEEK 04</span>
-              <span class="wc-status status-todo" id="wc4-status">Not started</span>
-            </div>
-            <div class="wc-title">Marketing, Sales &amp; Launch</div>
-            <div class="wc-dates">Nov 2–7, 2026 · Final Pitch Nov 7</div>
-            <div class="wc-progress"><div class="wc-progress-fill" id="wc4-bar" style="width:0%"></div></div>
-            <div class="wc-count" id="wc4-count"></div>
-          </div>
-        </div>
-
-        <div class="section-title">Upcoming Events</div>
-        <div class="upcoming-list">
-          <div class="upcoming-item">
-            <div class="upcoming-date"><div class="month">Oct</div><div class="day">17</div></div>
-            <div class="upcoming-divider"></div>
-            <div class="upcoming-info">
-              <div class="title">LAB 1: ServSafe Exam + Kitchen Orientation</div>
-              <div class="detail">10:00 AM–2:00 PM · Parsley's Kitchen, 2600 Nine Mile Rd</div>
-            </div>
-            <span class="upcoming-tag tag-lab">In-Person Lab</span>
-          </div>
-          <div class="upcoming-item">
-            <div class="upcoming-date"><div class="month">Oct</div><div class="day">24</div></div>
-            <div class="upcoming-divider"></div>
-            <div class="upcoming-info">
-              <div class="title">LAB 2: Business Planning Workshop + Mentor Meet</div>
-              <div class="detail">10:00 AM–2:00 PM · Parsley's Kitchen</div>
-            </div>
-            <span class="upcoming-tag tag-lab">In-Person Lab</span>
-          </div>
-          <div class="upcoming-item">
-            <div class="upcoming-date"><div class="month">Oct</div><div class="day">31</div></div>
-            <div class="upcoming-divider"></div>
-            <div class="upcoming-info">
-              <div class="title">LAB 3: Commercial Kitchen Practice + Recipe Testing</div>
-              <div class="detail">10:00 AM–2:00 PM · Parsley's Kitchen</div>
-            </div>
-            <span class="upcoming-tag tag-lab">In-Person Lab</span>
-          </div>
-          <div class="upcoming-item">
-            <div class="upcoming-date"><div class="month">Nov</div><div class="day">7</div></div>
-            <div class="upcoming-divider"></div>
-            <div class="upcoming-info">
-              <div class="title">LAB 4: Final Pitch Presentations + Graduation</div>
-              <div class="detail">10:00 AM–2:00 PM · Parsley's Kitchen</div>
-            </div>
-            <span class="upcoming-tag tag-lab">Graduation Day</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ====== WEEK 1 ====== -->
-      <div class="page-view" id="page-w1">
-        <div class="week-header">
-          <div class="wh-eyebrow">Week 1 · October 12–18, 2026</div>
-          <h2>Food Safety &amp; Foundation</h2>
-          <div class="wh-dates">Mon–Thu Asynchronous · Saturday Lab In-Person · Gate: Pass ServSafe to unlock Week 2</div>
-        </div>
-
-        <!-- SERVSAFE FEATURE -->
-        <div class="servsafe-card">
-          <h3>🛡️ ServSafe Food Handler Certification</h3>
-          <p>This is your primary mission for Week 1. You will complete the ServSafe Food Handler online course (about 60–90 minutes, five sections) using the access code your instructor provides, then take the 40-question assessment at Lab 1 on Saturday, October 17. You need 75% or higher to pass.</p>
-          <a class="btn-servsafe" href="https://www.servsafe.com/" target="_blank" rel="noopener noreferrer">→ Go to ServSafe</a>
-        </div>
-
-        <div class="servsafe-steps">
-          <h4>Your Week 1 Path</h4>
-          <div class="ss-step"><div class="ss-num">1</div><div>Mon Oct 12: Log in here, get your ServSafe access code from your instructor, create your ServSafe account</div></div>
-          <div class="ss-step"><div class="ss-num">2</div><div>Tue Oct 13: Start the Food Handler course — Basic Food Safety, Personal Hygiene, Cross-Contamination &amp; Allergens</div></div>
-          <div class="ss-step"><div class="ss-num">3</div><div>Wed Oct 14: Finish the course — Time &amp; Temperature, Cleaning &amp; Sanitation</div></div>
-          <div class="ss-step"><div class="ss-num">4</div><div>Thu Oct 15: Review all five sections and redo any you are unsure of before the assessment</div></div>
-          <div class="ss-step"><div class="ss-num">5</div><div><strong>Sat Oct 17: ServSafe Food Handler assessment at Parsley's Kitchen – arrive by 10:00 AM</strong></div></div>
-        </div>
-
-        <br>
-        <div class="day-list">
-
-          <!-- MON 4/6 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w1d1')">
-              <div class="day-dot" id="dot-w1d1"></div>
-              <div class="day-label">Monday, October 12 — Course Orientation &amp; ServSafe Setup</div>
-              <div class="day-sublabel">~1 hour</div>
-              <span class="day-status todo" id="ds-w1d1">To do</span>
-              <div class="day-toggle" id="tog-w1d1">▾</div>
-            </div>
-            <div class="day-card-body" id="w1d1">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=DbXN_KMr0-A" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div>
-                    <div>Why Food Safety Matters for Food Entrepreneurs</div>
-                    <div class="resource-meta">YouTube · Why Food Hygiene &amp; Safety Matter</div>
-                  </div>
-                </a>
-                <a class="resource-item" href="https://www.fda.gov/food" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div>
-                    <div>FDA Food Safety Resources for Food Businesses</div>
-                    <div class="resource-meta">Reading · FDA.gov · Human Foods Program</div>
-                  </div>
-                </a>
-                <a class="resource-item" href="https://www.servsafe.com/ServSafe-Food-Handler/Get-Certified" target="_blank" rel="noopener noreferrer" data-rtype="link">
-                  <div class="resource-icon ri-link">🔗</div>
-                  <div>
-                    <div>Get Started with ServSafe Food Handler Certification</div>
-                    <div class="resource-meta">ServSafe.com · Create your account with the access code from your instructor</div>
-                  </div>
-                </a>
-              </div>
-              <div id="quiz-w1d1-container">
-                <!-- Quiz injected by JS -->
-              </div>
-              <div class="deliverable-card">
-                <h4>📝 Orientation Check-in</h4>
-                <p>Confirm you have logged into the course platform and created your ServSafe account. Mark complete when done.</p>
-                <div class="submit-panel" id="sp-w1d1"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- TUE–THU: linked to NRAEF -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w1d2')">
-              <div class="day-dot" id="dot-w1d2"></div>
-              <div class="day-label">Tue Oct 13 – Thu Oct 15 — ServSafe Food Handler Course</div>
-              <div class="day-sublabel">~1–2 hrs/day</div>
-              <span class="day-status todo" id="ds-w1d2">To do</span>
-              <div class="day-toggle" id="tog-w1d2">▾</div>
-            </div>
-            <div class="day-card-body" id="w1d2">
-              <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px;">These three days are for completing the ServSafe Food Handler online course (about 60–90 minutes in total) and reviewing it. Use the resources below as supplementary support.</p>
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=-6TvLFNQyZw" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>ServSafe Food Handler Practice Test (Video)</div><div class="resource-meta">YouTube · Practice questions for the assessment</div></div>
-                </a>
-                <a class="resource-item" href="https://www.youtube.com/watch?v=toT5NBLrfJ4" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Personal Hygiene for Food Handlers</div><div class="resource-meta">YouTube · Handwashing &amp; hygiene</div></div>
-                </a>
-                <a class="resource-item" href="https://www.servsafe.com/" target="_blank" rel="noopener noreferrer" data-rtype="link">
-                  <div class="resource-icon ri-link">🔗</div>
-                  <div><div>Open the ServSafe Food Handler Course →</div><div class="resource-meta">Five sections · 40-question assessment · 75% to pass</div></div>
-                </a>
-              </div>
-              <div id="quiz-w1d2-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 Daily Study Log</h4>
-                <p>Complete the ServSafe Food Handler course sections for the day, then mark the study days complete here.</p>
-                <div class="submit-panel" id="sp-w1d2"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SAT 4/11 LAB -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w1lab')">
-              <div class="day-dot lab" id="dot-w1lab"></div>
-              <div class="day-label">Saturday, October 17 — LAB 1: ServSafe Exam + Kitchen Orientation</div>
-              <div class="day-sublabel">10 AM – 2 PM · In-Person</div>
-              <span class="day-status todo" id="ds-w1lab">To do</span>
-              <div class="day-toggle" id="tog-w1lab">▾</div>
-            </div>
-            <div class="day-card-body" id="w1lab">
-              <div class="lab-card">
-                <h3>🧪 LAB 1 — In-Person at Parsley's Kitchen</h3>
-                <div class="lab-meta">Saturday, October 17 · 2600 Nine Mile Rd, Richmond VA · Arrive by 9:50 AM</div>
-                <div class="lab-schedule">
-                  <div class="lab-time-slot"><div class="lab-time">10:00–11:30 AM</div><div>ServSafe Food Handler assessment (40 questions, 75% to pass) — bring your ServSafe login info</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">11:30–12:00 PM</div><div>Commercial kitchen tour and safety walkthrough</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">12:00–1:00 PM</div><div>Lunch and networking with cohort</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">1:00–2:00 PM</div><div>Introduction to food business landscape + Q&amp;A</div></div>
-                </div>
-              </div>
-              <div class="deliverable-card" style="border-color:var(--gold);background:rgba(212,168,67,0.06)">
-                <h4>🛡️ GATE CHECK — ServSafe Food Handler</h4>
-                <p>You must pass the ServSafe Food Handler assessment (75%+) before Week 2 content unlocks. Your instructor will enter your result. Contact Chef Duane Brown at (804) 219-8211 or duane&#64;culinarycoach.org with any course issues.</p>
-                <div class="submit-panel" id="sp-w1lab"></div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ====== WEEK 2 ====== -->
-      <div class="page-view" id="page-w2">
-        <div class="week-header">
-          <div class="wh-eyebrow">Week 2 · October 19–25, 2026</div>
-          <h2>Business Concept &amp; Compliance</h2>
-          <div class="wh-dates">Mon–Thu Asynchronous 6PM · Saturday Lab Oct 24</div>
-        </div>
-
-        <div class="day-list">
-
-          <!-- MON 4/13 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w2d1')">
-              <div class="day-dot" id="dot-w2d1"></div>
-              <div class="day-label">Monday, October 19 — Food Business Models &amp; Market Research</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w2d1">To do</span>
-              <div class="day-toggle" id="tog-w2d1">▾</div>
-            </div>
-            <div class="day-card-body" id="w2d1">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=c2aXLbaWeGg" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Starting a Food Business from Home: Cottage Food Basics</div><div class="resource-meta">YouTube · One of the models covered this week</div></div>
-                </a>
-                <a class="resource-item" href="https://www.sba.gov/business-guide/plan-your-business/market-research-competitive-analysis" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>How to Do Market Research for Your Food Business</div><div class="resource-meta">Reading · SBA.gov</div></div>
-                </a>
-                <a class="resource-item" href="https://www.youtube.com/watch?v=6RXnRSm0xJY" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>How to Find Your Target Customer</div><div class="resource-meta">YouTube</div></div>
-                </a>
-              </div>
-              <div id="quiz-w2d1-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 Assignment: Business Concept Draft</h4>
-                <p>Write a 1-page pitch describing your food business concept, target market, and what makes you different. Upload your file here by Thursday, Oct 22.</p>
-                <div class="submit-panel" id="sp-w2d1"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- TUE 4/14 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w2d2')">
-              <div class="day-dot" id="dot-w2d2"></div>
-              <div class="day-label">Tuesday, October 20 — Licensing, Permits &amp; Regulatory Compliance</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w2d2">To do</span>
-              <div class="day-toggle" id="tog-w2d2">▾</div>
-            </div>
-            <div class="day-card-body" id="w2d2">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=02aZKqvn8tE" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Health Department Requirements for Food Businesses</div><div class="resource-meta">YouTube · Permits &amp; inspections</div></div>
-                </a>
-                <a class="resource-item" href="https://www.vdh.virginia.gov/environmental-health/food-safety-in-virginia/foodapplication/" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>Virginia Food Establishment Permit Guide (VDH)</div><div class="resource-meta">Reading · Virginia Dept. of Health · Official</div></div>
-                </a>
-                <a class="resource-item" href="https://www.sba.gov/business-guide/launch-your-business/apply-licenses-permits" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>Federal &amp; State Business License Guide</div><div class="resource-meta">Reading · SBA.gov</div></div>
-                </a>
-              </div>
-              <div id="quiz-w2d2-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 Compliance Checklist</h4>
-                <p>Download the state/local compliance checklist from the course resources. Review and note which items apply to your business concept.</p>
-                <div class="submit-panel" id="sp-w2d2"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- WED 4/15 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w2d3')">
-              <div class="day-dot" id="dot-w2d3"></div>
-              <div class="day-label">Wednesday, October 21 — Insurance, Liability &amp; Food Safety Laws</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w2d3">To do</span>
-              <div class="day-toggle" id="tog-w2d3">▾</div>
-            </div>
-            <div class="day-card-body" id="w2d3">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=wpynGtslIWk" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>What Business Insurance Does a Food Business Need?</div><div class="resource-meta">YouTube</div></div>
-                </a>
-                <a class="resource-item" href="https://www.vdacs.virginia.gov/pdf/kitchenbillfaq.pdf" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>Virginia Home Kitchen (Cottage Food) Exemptions FAQ</div><div class="resource-meta">Reading (PDF) · Virginia Dept. of Agriculture &amp; Consumer Services</div></div>
-                </a>
-              </div>
-              <div id="quiz-w2d3-container"></div>
-            </div>
-          </div>
-
-          <!-- THU 4/16 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w2d4')">
-              <div class="day-dot" id="dot-w2d4"></div>
-              <div class="day-label">Thursday, October 22 — Business Structure &amp; Financial Basics</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w2d4">To do</span>
-              <div class="day-toggle" id="tog-w2d4">▾</div>
-            </div>
-            <div class="day-card-body" id="w2d4">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=Jxh62PVIwhw" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>LLC vs Sole Proprietorship vs Corporation for Food Business</div><div class="resource-meta">YouTube</div></div>
-                </a>
-                <a class="resource-item" href="https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>How to Get Your EIN (IRS)</div><div class="resource-meta">Reading · IRS.gov · Free &amp; Instant Online</div></div>
-                </a>
-                <a class="resource-item" href="https://www.score.org/business-planning-financial-statements-template-gallery/" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>Bookkeeping &amp; Financial Statement Templates</div><div class="resource-meta">Templates · SCORE.org</div></div>
-                </a>
-              </div>
-              <div id="quiz-w2d4-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 Startup Budget</h4>
-                <p>Create your startup budget and first-year expense projection using the template provided. Upload it here before Saturday Lab (Oct 24).</p>
-                <div class="submit-panel" id="sp-w2d4"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SAT 4/18 LAB -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w2lab')">
-              <div class="day-dot lab" id="dot-w2lab"></div>
-              <div class="day-label">Saturday, October 24 — LAB 2: Business Planning + Mentor Meet</div>
-              <div class="day-sublabel">10 AM – 2 PM · In-Person</div>
-              <span class="day-status todo" id="ds-w2lab">To do</span>
-              <div class="day-toggle" id="tog-w2lab">▾</div>
-            </div>
-            <div class="day-card-body" id="w2lab">
-              <div class="lab-card">
-                <h3>🤝 LAB 2 — Business Planning Workshop</h3>
-                <div class="lab-meta">Saturday, October 24 · Parsley's Kitchen, 2600 Nine Mile Rd</div>
-                <div class="lab-schedule">
-                  <div class="lab-time-slot"><div class="lab-time">10:00–11:00 AM</div><div>Guest Speaker: Successful food entrepreneur shares their journey</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">11:00–12:00 PM</div><div>Business concept peer review and feedback session</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">12:00–1:00 PM</div><div>Working lunch — refine your business concept with cohort input</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">1:00–2:00 PM</div><div>Mentor matching — meet your 90-day mentor for goal-setting</div></div>
-                </div>
-              </div>
-              <div class="deliverable-card">
-                <h4>📝 Lab 2 Attendance</h4>
-                <div class="submit-panel" id="sp-w2lab"></div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ====== WEEK 3 ====== -->
-      <div class="page-view" id="page-w3">
-        <div class="week-header">
-          <div class="wh-eyebrow">Week 3 · October 26 – November 1, 2026</div>
-          <h2>Menu Planning &amp; Kitchen Operations</h2>
-          <div class="wh-dates">Tue–Thu Asynchronous · Saturday Lab Oct 31</div>
-        </div>
-
-        <div class="day-list">
-
-          <!-- MENU MODULE -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w3d1')">
-              <div class="day-dot" id="dot-w3d1"></div>
-              <div class="day-label">Tuesday, October 27 — Menu Development &amp; Recipe Costing</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w3d1">To do</span>
-              <div class="day-toggle" id="tog-w3d1">▾</div>
-            </div>
-            <div class="day-card-body" id="w3d1">
-
-              <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px;">This week's cooking module is built around our live brunch menu. Study each item below — pricing, structure, and food cost principles apply to your own concept.</p>
-
-              <!-- BRUNCH MENU EMBEDDED -->
-              <div class="menu-card">
-                <div class="menu-card-header">
-                  <h4>🍳 Parsley's Kitchen — Live Brunch Menu</h4>
-                  <p>Saturdays 9AM–12PM · Reference for recipe costing and menu design assignments</p>
-                </div>
-                <div class="menu-card-body">
-                  <div class="menu-item">
-                    <div>
-                      <div class="menu-item-name">The Omelette Station — Made to Order</div>
-                      <div class="menu-item-desc">Farm-fresh 3-egg omelette · Choose up to 3 fillings<br>
-                      <em>Fillings: Spinach &amp; Garlic, Bell Peppers, Onions, Cherry Tomatoes, Mushrooms, Bacon, Sausage, Turkey Andouille, Colby Jack</em></div>
-                    </div>
-                    <div class="menu-item-price">$14–16</div>
-                  </div>
-                  <div class="menu-item">
-                    <div>
-                      <div class="menu-item-name">The BRUNCHwich</div>
-                      <div class="menu-item-desc">Farm-fresh scrambled egg patty · White cheddar · Bacon or Sausage · Brioche bun · Garlic aioli · Arugula<br><em>Vegetarian option: Egg &amp; Cheese w/ arugula &amp; tomato $9</em></div>
-                    </div>
-                    <div class="menu-item-price">$10–12</div>
-                  </div>
-                  <div class="menu-item">
-                    <div>
-                      <div class="menu-item-name">Creamy Cajun Chicken Pasta</div>
-                      <div class="menu-item-desc">Grilled chicken · Turkey andouille · Bell peppers · Onions · Spinach · Parmesan · Creamy Cajun sauce · Penne</div>
-                    </div>
-                    <div class="menu-item-price">$13–15</div>
-                  </div>
-                  <div class="menu-item">
-                    <div>
-                      <div class="menu-item-name">Blueberry or Cinnamon Coffee Cake</div>
-                      <div class="menu-item-desc">Moist, freshly baked — bursting with blueberries or warm cinnamon</div>
-                    </div>
-                    <div class="menu-item-price">$3.00</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=Hb35UVBddOI" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Menu Design Principles: Psychology &amp; Profitability</div><div class="resource-meta">YouTube</div></div>
-                </a>
-                <a class="resource-item" href="https://www.restaurantowner.com/public/4753.cfm" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>Calculating Food Cost Percentage</div><div class="resource-meta">Reading · RestaurantOwner.com</div></div>
-                </a>
-                <a class="resource-item" href="https://www.youtube.com/watch?v=EmOziopNT0w" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>How to Price Your Menu Items (Food Cost Calculator)</div><div class="resource-meta">YouTube</div></div>
-                </a>
-              </div>
-              <div id="quiz-w3d1-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 Recipe Costing Assignment</h4>
-                <p>Cost 3 of your own signature recipes. Use the food cost % formula: (Cost of Ingredients ÷ Sale Price) × 100. Target 25–35% food cost. Upload your cost analysis spreadsheet here.</p>
-                <div class="submit-panel" id="sp-w3d1"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- WED 4/22 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w3d2')">
-              <div class="day-dot" id="dot-w3d2"></div>
-              <div class="day-label">Wednesday, October 28 — Commercial Kitchen Equipment &amp; Operations</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w3d2">To do</span>
-              <div class="day-toggle" id="tog-w3d2">▾</div>
-            </div>
-            <div class="day-card-body" id="w3d2">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=RgTsXzrtvlE" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Essential Commercial Kitchen Equipment Guide</div><div class="resource-meta">YouTube</div></div>
-                </a>
-                <a class="resource-item" href="https://www.restaurantowner.com/public/Designing-a-Startup-Kitchen-that-Works-With-Not-Against-You.cfm" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>Designing a Startup Kitchen That Works With You</div><div class="resource-meta">Reading · Layout, Stations &amp; Workflow</div></div>
-                </a>
-                <a class="resource-item" href="https://www.thekitchendoor.com/" target="_blank" rel="noopener noreferrer" data-rtype="link">
-                  <div class="resource-icon ri-link">🔗</div>
-                  <div><div>Find a Shared Commercial Kitchen Near You</div><div class="resource-meta">The Kitchen Door · Shared Kitchen Directory</div></div>
-                </a>
-              </div>
-              <div id="quiz-w3d2-container"></div>
-            </div>
-          </div>
-
-          <!-- THU 4/23 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w3d3')">
-              <div class="day-dot" id="dot-w3d3"></div>
-              <div class="day-label">Thursday, October 29 — Sourcing, Vendors &amp; Supply Chain</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w3d3">To do</span>
-              <div class="day-toggle" id="tog-w3d3">▾</div>
-            </div>
-            <div class="day-card-body" id="w3d3">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=9KYzVWwOZFo" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Negotiating Best Vendor Pricing</div><div class="resource-meta">YouTube</div></div>
-                </a>
-                <a class="resource-item" href="https://www.ams.usda.gov/services/local-regional/food-directories" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>Local Sourcing: USDA Local Food Directories</div><div class="resource-meta">Directory · USDA.gov</div></div>
-                </a>
-              </div>
-              <div id="quiz-w3d3-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 Supplier Contact List</h4>
-                <p>Build your supplier contact list: at least 3 vendors for your key ingredients. Include contact info, pricing tier, and minimum order. Upload it here as a spreadsheet or doc.</p>
-                <div class="submit-panel" id="sp-w3d3"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- LAB 3 OCT 31 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w3lab')">
-              <div class="day-dot lab" id="dot-w3lab"></div>
-              <div class="day-label">Saturday, October 31 — LAB 3: Commercial Kitchen Practice + Recipe Testing</div>
-              <div class="day-sublabel">10 AM – 2 PM · In-Person</div>
-              <span class="day-status todo" id="ds-w3lab">To do</span>
-              <div class="day-toggle" id="tog-w3lab">▾</div>
-            </div>
-            <div class="day-card-body" id="w3lab">
-              <div class="lab-card">
-                <h3>🍽️ LAB 3 — Kitchen Production</h3>
-                <div class="lab-meta">Saturday, October 31 · Parsley's Kitchen · Bring your tested recipes &amp; ingredient list</div>
-                <div class="lab-schedule">
-                  <div class="lab-time-slot"><div class="lab-time">10:00–10:30 AM</div><div>Commercial kitchen equipment demonstration</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">10:30–12:30 PM</div><div>Hands-on recipe production and testing (your signature dishes)</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">12:30–1:00 PM</div><div>Tasting, peer feedback, and quality control review</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">1:00–2:00 PM</div><div>Production workflow optimization and scaling discussion</div></div>
-                </div>
-              </div>
-              <div class="deliverable-card">
-                <h4>📝 Lab 3 Attendance</h4>
-                <p>Confirm once you have attended Lab 3 and tested your recipes. Your final business plan and pitch deck are due before Lab 4 — see Week 4.</p>
-                <div class="submit-panel" id="sp-w3lab"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- MENTOR NOTE -->
-          <div style="background:rgba(212,168,67,0.1);border:1px solid var(--gold);border-radius:var(--radius);padding:20px;margin-top:12px;">
-            <p style="font-weight:700;color:var(--green-dark);margin-bottom:4px;">📅 Mentor Check-in This Week</p>
-            <p style="font-size:13px;color:var(--gray-600);">Reach out to the mentor you met at Lab 2 and schedule your first check-in before the end of the week. Bring your tested recipes and ingredient list to Lab 3 on Saturday, Oct 31.</p>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ====== WEEK 4 ====== -->
-      <div class="page-view" id="page-w4">
-        <div class="week-header">
-          <div class="wh-eyebrow">Week 4 · November 2–7, 2026</div>
-          <h2>Marketing, Sales &amp; Launch Preparation</h2>
-          <div class="wh-dates">Mon–Thu Async · Lab 4 + Graduation on Saturday, Nov 7</div>
-        </div>
-
-        <div class="day-list">
-
-          <!-- MON 4/27 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w4d1')">
-              <div class="day-dot" id="dot-w4d1"></div>
-              <div class="day-label">Monday, November 2 — Branding &amp; Brand Identity</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w4d1">To do</span>
-              <div class="day-toggle" id="tog-w4d1">▾</div>
-            </div>
-            <div class="day-card-body" id="w4d1">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=EXW74igK6gE" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Building a Memorable Food Brand</div><div class="resource-meta">YouTube</div></div>
-                </a>
-                <a class="resource-item" href="https://www.canva.com/create/logos/" target="_blank" rel="noopener noreferrer" data-rtype="link">
-                  <div class="resource-icon ri-link">🔗</div>
-                  <div><div>DIY Logo Design with Canva (Free)</div><div class="resource-meta">Tool · Canva.com · Drag-and-Drop Logo Maker</div></div>
-                </a>
-              </div>
-              <div id="quiz-w4d1-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 Brand Mood Board + 1-Page Brand Guide</h4>
-                <p>Create a brand mood board (colors, fonts, images that represent your brand) and a 1-page brand guide. Use Canva, PowerPoint, or any design tool.</p>
-                <div class="submit-panel" id="sp-w4d1"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- TUE 4/28 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w4d2')">
-              <div class="day-dot" id="dot-w4d2"></div>
-              <div class="day-label">Tuesday, November 3 — Digital Marketing &amp; Social Media Strategy</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w4d2">To do</span>
-              <div class="day-toggle" id="tog-w4d2">▾</div>
-            </div>
-            <div class="day-card-body" id="w4d2">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=fj7cmY-El-c" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Instagram, TikTok &amp; Facebook for Food Businesses</div><div class="resource-meta">YouTube</div></div>
-                </a>
-                <a class="resource-item" href="https://www.youtube.com/watch?v=NsvuyQ48ALI" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Food Photography Tips with Your Phone</div><div class="resource-meta">YouTube</div></div>
-                </a>
-              </div>
-              <div id="quiz-w4d2-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 30-Day Social Media Content Plan</h4>
-                <p>Map out 30 days of content: post types, captions, hashtags, posting frequency. Use a calendar or spreadsheet. Make it realistic and specific to your brand.</p>
-                <div class="submit-panel" id="sp-w4d2"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- WED 4/29 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w4d3')">
-              <div class="day-dot" id="dot-w4d3"></div>
-              <div class="day-label">Wednesday, November 4 — Sales Channels &amp; Customer Acquisition</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w4d3">To do</span>
-              <div class="day-toggle" id="tog-w4d3">▾</div>
-            </div>
-            <div class="day-card-body" id="w4d3">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=K432TTp7LqM" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>Selling at Farmers Markets &amp; Pop-Ups</div><div class="resource-meta">YouTube · Tips for in-person sales channels</div></div>
-                </a>
-                <a class="resource-item" href="https://mailchimp.com/resources/email-marketing-for-restaurants/" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>Email Marketing for Food Businesses (Mailchimp Guide)</div><div class="resource-meta">Reading · Build Your List &amp; Keep Customers</div></div>
-                </a>
-              </div>
-              <div id="quiz-w4d3-container"></div>
-              <div class="deliverable-card">
-                <h4>📝 3 Sales Channels Plan</h4>
-                <p>Map out your first 3 sales channels with specifics: location, pricing, how you'll reach first customers. Include a simple outreach plan.</p>
-                <div class="submit-panel" id="sp-w4d3"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- THU 4/30 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w4d4')">
-              <div class="day-dot" id="dot-w4d4"></div>
-              <div class="day-label">Thursday, November 5 — Scaling, Growth &amp; Funding Options</div>
-              <div class="day-sublabel">~3–4 hours</div>
-              <span class="day-status todo" id="ds-w4d4">To do</span>
-              <div class="day-toggle" id="tog-w4d4">▾</div>
-            </div>
-            <div class="day-card-body" id="w4d4">
-              <div class="resource-list">
-                <a class="resource-item" href="https://www.youtube.com/watch?v=1zpGH1qjVmc" target="_blank" rel="noopener noreferrer" data-rtype="video">
-                  <div class="resource-icon ri-video">▶</div>
-                  <div><div>How to Scale Your Food Business</div><div class="resource-meta">YouTube</div></div>
-                </a>
-                <a class="resource-item" href="https://www.sba.gov/funding-programs/loans" target="_blank" rel="noopener noreferrer" data-rtype="read">
-                  <div class="resource-icon ri-read">📄</div>
-                  <div><div>SBA Loans &amp; Grants for Food Businesses</div><div class="resource-meta">Reading · SBA.gov · Small Business Funding Guide</div></div>
-                </a>
-                <a class="resource-item" href="https://www.virginiasbdc.org/" target="_blank" rel="noopener noreferrer" data-rtype="link">
-                  <div class="resource-icon ri-link">🔗</div>
-                  <div><div>Virginia SBDC — Free Business Counseling</div><div class="resource-meta">Resource · Free Advising for VA Food Entrepreneurs</div></div>
-                </a>
-              </div>
-              <div id="quiz-w4d4-container"></div>
-            </div>
-          </div>
-
-          <!-- LAB 4 NOV 7 -->
-          <div class="day-card">
-            <div class="day-card-header" onclick="toggleDay('w4lab')">
-              <div class="day-dot lab" id="dot-w4lab"></div>
-              <div class="day-label">Saturday, November 7 — LAB 4: FINAL PITCH PRESENTATIONS + GRADUATION 🎓</div>
-              <div class="day-sublabel">10 AM – 2 PM · In-Person</div>
-              <span class="day-status todo" id="ds-w4lab">To do</span>
-              <div class="day-toggle" id="tog-w4lab">▾</div>
-            </div>
-            <div class="day-card-body" id="w4lab">
-              <div class="lab-card" style="background:var(--green-dark)">
-                <h3>🎓 LAB 4 — Final Pitch + Graduation</h3>
-                <div class="lab-meta">Saturday, November 7 · Parsley's Kitchen · Invite your support system!</div>
-                <div class="lab-schedule">
-                  <div class="lab-time-slot"><div class="lab-time">10:00–11:30 AM</div><div>Final pitch presentations — 5 min each + Q&amp;A from panel</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">11:30–12:00 PM</div><div>Panel feedback from instructors and mentors</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">12:00–1:00 PM</div><div>🍽️ Celebration lunch — sample tastings from all participants</div></div>
-                  <div class="lab-time-slot"><div class="lab-time">1:00–2:00 PM</div><div>🏆 Certificate ceremony + alumni network + next steps discussion</div></div>
-                </div>
-              </div>
-              <div class="deliverable-card" style="border-color:var(--gold);background:rgba(212,168,67,0.08)">
-                <h4>🏆 Final Business Plan + Pitch Deck</h4>
-                <p>After Lab 3, finalize your business plan (financials + 90-day action plan), your 90-day launch timeline, and your 5-minute pitch deck. Submit them by Friday, Nov 6 — the day before Lab 4 — and take part in the peer feedback forum.</p>
-                <div class="submit-panel" id="sp-w4lab"></div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ====== MY GRADES ====== -->
+      <div class="page-view active" id="page-dashboard"></div>
+      <div class="page-view" id="page-w1"></div>
+      <div class="page-view" id="page-w2"></div>
+      <div class="page-view" id="page-w3"></div>
+      <div class="page-view" id="page-w4"></div>
+      <div class="page-view" id="page-krp"></div>
       <div class="page-view" id="page-my-grades">
-        <div class="week-header">
-          <div class="wh-eyebrow">Student Progress</div>
-          <h2>My Grades &amp; Submissions</h2>
-          <div class="wh-dates">Track your quiz scores and deliverable submissions</div>
-        </div>
-
+        <div class="week-header"><div class="wh-eyebrow">My Progress</div><h2>My Grades &amp; Submissions</h2></div>
         <div class="table-scroll">
         <table class="tracker-table" id="my-grades-table">
-          <thead>
-            <tr>
-              <th>Week</th>
-              <th>Item</th>
-              <th>Type</th>
-              <th>Status / Score</th>
-            </tr>
-          </thead>
-          <tbody id="my-grades-body">
-          </tbody>
+          <thead><tr><th>Week</th><th>Item</th><th>Type</th><th>Status / Score</th></tr></thead>
+          <tbody id="my-grades-body"></tbody>
         </table>
         </div>
       </div>
-
-      <!-- ====== ADMIN ====== -->
       <div class="page-view" id="page-admin">
         <div class="admin-header">
-          <div>
-            <h2>Student Tracker — Level I · Fall 2026 Cohort</h2>
-            <p><span id="admin-count">0</span> enrolled students · Culinary Entrepreneurship I</p>
-          </div>
+          <div><h2>Student Tracker — Level I · Fall 2026</h2>
+            <p><span id="admin-count">0</span> enrolled students · Culinary Entrepreneurship I</p></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-export" onclick="exportCSV()">Export CSV</button><button class="btn-export" onclick="exportFilesCSV()">Export Files CSV</button></div>
         </div>
-
         <div style="overflow-x:auto;background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);">
           <table class="tracker-table" id="admin-table">
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>ServSafe Gate</th>
-                <th>W1 Quiz</th>
-                <th>W2 Quiz</th>
-                <th>W3 Quiz</th>
-                <th>W4 Quiz</th>
-                <th>Deliverables</th>
-                <th>Overall</th>
-              </tr>
-            </thead>
-            <tbody id="admin-body">
-            </tbody>
+            <thead><tr><th>Student</th><th>Lab attendance</th><th>Quizzes passed</th><th>Deliverables</th><th>ServSafe</th><th>CST rubric</th><th>Weeks 2–4</th><th>Level II</th></tr></thead>
+            <tbody id="admin-body"></tbody>
           </table>
         </div>
-
         <h3 class="admin-sub">Submitted files</h3>
         <p class="grade-sub" style="margin-bottom:10px">Student files are private. Use <strong>Download</strong> to open one (the link works for 5 minutes). The storage path is also shown for the Supabase dashboard.</p>
         <div class="table-scroll">
           <table class="tracker-table">
-            <thead><tr><th>Student</th><th>Assignment</th><th>File</th><th>Size</th><th>Submitted</th><th>Storage path</th></tr></thead>
+            <thead><tr><th>Student</th><th>Assignment</th><th>File</th><th>Size</th><th>Submitted</th><th>Download / path</th></tr></thead>
             <tbody id="admin-files"><tr><td colspan="6" style="color:var(--gray-600)">No files yet.</td></tr></tbody>
           </table>
         </div>
       </div>
-
+      <div class="page-view" id="page-rubric"></div>
+      <div class="page-view" id="page-quizreview"></div>
     </main>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">
   <span class="toast-icon" id="toast-icon">✓</span>
   <span id="toast-msg">Saved!</span>
 </div>
 
+<script src="content/level1.js"></script>
+<script src="content/level1-quizzes.js"></script>
 <script>
 // ============================================================
-// BACKEND — Supabase Edge Functions. The page holds NO database key, NO access codes and NO admin code:
+// Culinary Entrepreneurship I · Level I · Fall 2026
+// The page holds NO database key, NO access codes and NO admin code:
 //   validate-login  checks the access code on the server and returns a short-lived session token
-//   lms-api         every read/write (progress, uploads, admin views) using that token
+//   lms-api-v2      every read/write (progress, uploads, admin views) using that token
+// Course content lives in content/level1.js (curriculum + rubric) and content/level1-quizzes.js (quiz bank).
 // ============================================================
 const SUPABASE_URL = 'https://mddvqxesxfifqxhuzhsi.supabase.co';
 const FN_URL = SUPABASE_URL + '/functions/v1/';
+const API_FN = 'lms-api-v2';
+const CACHE_PREFIX = 'ce_l1f26_cache_';
+const PASS_PCT = 70;
+const MAX_FILE_MB = 25;
+// Host kitchen — confirm with OCWB before go-live (the proposal says the location is confirmed jointly)
+const LAB_PLACE = "Parsley's Kitchen, 2600 Nine Mile Rd, Richmond, VA";
+const LAB_TIME = '10:00 AM – 2:00 PM';
+const CONTACT = 'Chef Duane Brown at (804) 219-8211 or duane&#64;culinarycoach.org';
+
+const DAYS = LEVEL1.days;
+const dayById = Object.fromEntries(DAYS.map(d => [d.id, d]));
+const FILES = Object.fromEntries(DAYS.filter(d => d.file).map(d => [d.id, { ...d.file, week: d.week, day: d }]));
+const QUIZ_IDS = DAYS.filter(d => d.quiz).map(d => d.quiz);
+const LABS = DAYS.filter(d => d.lab);
 
 let sessionToken = null;
+let currentUser = null;
+let isAdmin = false;
+let settings = { published_quizzes: [] };
+let cstResults = [];          // this student's CST rubric results [{lab,total,band}]
+let rendered = false;
 
 // In-memory cache — loaded on login, written on every action
-let memCache = { quizzes: {}, deliverables: {}, w2_unlocked: false };
+let memCache = EMPTY();
 let syncStatus = 'idle'; // idle | saving | saved | error
 let unsynced = false;     // true while the latest change exists only on this device
 
-const EMPTY = () => ({ quizzes: {}, deliverables: {}, w2_unlocked: false });
+function EMPTY() {
+  return { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, is_l2_eligible: false };
+}
 
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function fmtWhen(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+function fmtSize(n) {
+  if (!n && n !== 0) return '';
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return Math.round(n / 1024) + ' KB';
+  return (n / 1048576).toFixed(1) + ' MB';
+}
+
+// ============================================================
+// BACKEND
+// ============================================================
 function setSyncStatus(s) {
   syncStatus = s;
   const el = document.getElementById('sync-indicator');
@@ -2257,7 +1502,7 @@ async function fnPost(name, payload, timeoutMs = 15000) {
 class ApiError extends Error { constructor(code, status) { super(code); this.code = code; this.status = status; } }
 
 async function api(action, payload = {}, timeoutMs) {
-  const r = await fnPost('lms-api', { token: sessionToken, action, ...payload }, timeoutMs);
+  const r = await fnPost(API_FN, { token: sessionToken, action, ...payload }, timeoutMs);
   if (r.status === 401 && r.data && r.data.error === 'session_expired') { sessionExpired(); throw new ApiError('session_expired', 401); }
   if (!r.ok) throw new ApiError((r.data && r.data.error) || 'network', r.status);
   return r.data;
@@ -2277,42 +1522,43 @@ function readLocal(name) {
 function writeLocal(name, d) {
   try { localStorage.setItem(CACHE_PREFIX + name, JSON.stringify(d)); } catch (e) { /* storage blocked — the server is still the record */ }
 }
-const fromRow = r => ({ quizzes: (r && r.quizzes) || {}, deliverables: (r && r.deliverables) || {}, w2_unlocked: !!(r && r.w2_unlocked) });
+const fromServer = p => ({ ...EMPTY(), ...(p || {}) });
 
-// Union two progress blobs so neither side's work is ever lost
-function unionProgress(a, b) {
-  const out = { quizzes: { ...a.quizzes }, deliverables: { ...a.deliverables }, w2_unlocked: !!(a.w2_unlocked || b.w2_unlocked) };
-  Object.entries(b.quizzes || {}).forEach(([k, v]) => {
+// Quizzes and uploads are the only things a student produces. Everything else (attendance, ServSafe, unlock,
+// KRP records, eligibility) is written by the server and always wins.
+function mergeProgress(server, local) {
+  const out = fromServer(server);
+  out.quizzes = { ...out.quizzes }; out.deliverables = { ...out.deliverables }; // never mutate the server copy we compare against
+  Object.entries((local && local.quizzes) || {}).forEach(([k, v]) => {
     const cur = out.quizzes[k];
     if (!cur || (v.passed && !cur.passed) || (!!v.passed === !!cur.passed && v.score > cur.score)) out.quizzes[k] = v;
   });
-  Object.entries(b.deliverables || {}).forEach(([k, v]) => {
+  Object.entries((local && local.deliverables) || {}).forEach(([k, v]) => {
     const cur = out.deliverables[k];
     if (!cur || new Date(v.date) > new Date(cur.date)) out.deliverables[k] = v;
   });
+  out.w2_unlocked = !!(out.w2_unlocked || (local && local.w2_unlocked));
   return out;
 }
-// true if `a` holds quiz results or confirmations that `b` lacks (file records are written by the server only)
-function isAhead(a, b) {
-  return Object.keys(a.deliverables).some(k => DELIVERABLE_LABELS[k] && !DELIVERABLE_LABELS[k].file && !b.deliverables[k]) ||
-         Object.keys(a.quizzes).some(k => !b.quizzes[k] || b.quizzes[k].score < a.quizzes[k].score);
-}
-const confirmsOnly = d => Object.fromEntries(Object.entries(d).filter(([k]) => DELIVERABLE_LABELS[k] && !DELIVERABLE_LABELS[k].file));
+const quizzesAhead = (a, b) => Object.keys(a.quizzes).some(k => !b.quizzes[k] || b.quizzes[k].score < a.quizzes[k].score);
 
 // Pull this student's progress. A failed load NEVER resets anything.
 async function sbLoad(name) {
-  const local = readLocal(name);
+  const local = isAdmin ? null : readLocal(name);
   try {
     const d = await api('load');
-    const remote = fromRow(d.progress);
-    memCache = local ? unionProgress(remote, local) : remote;
+    settings = d.settings || { published_quizzes: [] };
+    cstResults = d.cst || [];
+    if (isAdmin) return true;
+    const remote = fromServer(d.progress);
+    memCache = mergeProgress(remote, local);
     writeLocal(name, memCache);
-    if (local && isAhead(memCache, remote)) sbUpsert(name); // push work that was saved offline
+    if (local && quizzesAhead(memCache, remote)) sbUpsert(name); // push quiz results that were saved offline
     return true;
   } catch (e) {
     if (e.code === 'session_expired') throw e;
     console.error('Load failed:', e);
-    memCache = local || EMPTY();
+    if (!isAdmin) memCache = mergeProgress(EMPTY(), local);
     setSyncStatus('error');
     return false;
   }
@@ -2329,9 +1575,8 @@ async function sbUpsertNow(name) {
   setSyncStatus('saving');
   writeLocal(name, memCache);
   try {
-    // The server merges (never overwrites) and ignores anything it does not own: unlock flag and file records.
-    const d = await api('save', { quizzes: memCache.quizzes, deliverables: confirmsOnly(memCache.deliverables) });
-    memCache = unionProgress(fromRow(d.progress), memCache);
+    const d = await api('save', { quizzes: memCache.quizzes });
+    memCache = mergeProgress(fromServer(d.progress), memCache);
     writeLocal(name, memCache);
     unsynced = false;
     setSyncStatus('saved');
@@ -2341,7 +1586,7 @@ async function sbUpsertNow(name) {
     if (e.code !== 'session_expired') { console.error('Save failed:', e); unsynced = true; setSyncStatus('error'); }
     return false;
   } finally {
-    if (typeof refreshAll === 'function' && sessionToken) refreshAll();
+    if (sessionToken) refreshAll();
   }
 }
 
@@ -2352,272 +1597,7 @@ async function retrySync() {
   showToast(ok ? 'Synced — your progress is saved' : 'Still offline — your work is safe on this device', ok ? '☁️' : '⚠️');
 }
 
-// ============================================================
-// DATA & STATE
-// ============================================================
-
-const CACHE_PREFIX = 'ce_l1f26_cache_';
-
-let currentUser = null;
-let isAdmin = false;
-
-// Quiz definitions
-const QUIZZES = {
-  'w1d1': {
-    title: 'Orientation Knowledge Check',
-    questions: [
-      {
-        q: 'What is the minimum internal cooking temperature for poultry?',
-        opts: ['145°F', '155°F', '165°F', '135°F'],
-        ans: 2,
-        feedback: '165°F is the minimum safe internal temperature for all poultry to kill harmful bacteria including Salmonella.'
-      },
-      {
-        q: 'Which organization administers the ServSafe Food Handler certification?',
-        opts: ['FDA', 'USDA', 'NRAEF (National Restaurant Association)', 'CDC'],
-        ans: 2,
-        feedback: 'The National Restaurant Association Educational Foundation (NRAEF) administers the ServSafe program.'
-      },
-      {
-        q: 'What does "time-temperature abuse" mean in food safety?',
-        opts: ['Cooking food too fast', 'Allowing food to remain in the danger zone (41°F–135°F) too long', 'Using the wrong thermometer', 'Reheating food more than once'],
-        ans: 1,
-        feedback: 'The danger zone is 41°F–135°F. Food held in this range for more than 4 hours total is considered time-temperature abused.'
-      }
-    ]
-  },
-  'w1d2': {
-    title: 'Food Safety Core Concepts',
-    questions: [
-      {
-        q: 'Cross-contamination most commonly occurs when:',
-        opts: ['Food is cooked too quickly', 'Raw meats touch ready-to-eat foods or surfaces', 'Refrigerators are set too cold', 'Handwashing takes too long'],
-        ans: 1,
-        feedback: 'Cross-contamination happens when pathogens transfer from raw proteins (especially meat) to ready-to-eat foods via hands, surfaces, or equipment.'
-      },
-      {
-        q: 'How long should you wash your hands with soap to remove pathogens effectively?',
-        opts: ['5 seconds', '10 seconds', '20 seconds', '60 seconds'],
-        ans: 2,
-        feedback: 'FDA and CDC both recommend scrubbing hands with soap for at least 20 seconds — about the time it takes to sing "Happy Birthday" twice.'
-      }
-    ]
-  },
-  'w2d1': {
-    title: 'Business Models Quiz',
-    questions: [
-      {
-        q: 'A "cottage food business" typically allows you to:',
-        opts: ['Sell food from a licensed restaurant kitchen only', 'Produce and sell certain low-risk foods made in your home kitchen', 'Operate a food truck without any license', 'Wholesale food products nationally without FDA approval'],
-        ans: 1,
-        feedback: 'Cottage food laws allow small-scale production of certain non-hazardous foods (like baked goods, jams) from home kitchens, with restrictions on annual sales and where you can sell.'
-      },
-      {
-        q: 'Which business model typically requires the LOWEST startup capital?',
-        opts: ['Full-service restaurant', 'Food truck', 'CPG (packaged goods)', 'Cottage food / home-based'],
-        ans: 3,
-        feedback: 'Cottage food and home-based food businesses typically have the lowest startup costs because they leverage existing home kitchen equipment and don\'t require commercial lease or equipment.'
-      },
-      {
-        q: 'Market research for a food business should include:',
-        opts: ['Analyzing only your competitors\' menus', 'Understanding your target customer\'s demographics, preferences, and spending habits', 'Copying a proven competitor\'s business model exactly', 'Focusing only on social media trends'],
-        ans: 1,
-        feedback: 'Effective market research requires deep understanding of who your customer is, what they want, how much they\'ll pay, and how they make purchasing decisions.'
-      }
-    ]
-  },
-  'w2d2': {
-    title: 'Licensing & Compliance Quiz',
-    questions: [
-      {
-        q: 'In Virginia, which agency issues food establishment permits?',
-        opts: ['Virginia Department of Motor Vehicles', 'Virginia Department of Health (VDH)', 'Virginia State Corporation Commission', 'Richmond City Council only'],
-        ans: 1,
-        feedback: 'The Virginia Department of Health (VDH) issues food establishment permits and conducts health inspections for food businesses in the state.'
-      },
-      {
-        q: 'Before selling food at a farmers market in Virginia, you typically need:',
-        opts: ['Only a business card', 'A food handler permit or food establishment permit depending on what you sell', 'A federal license from the USDA', 'Nothing if annual sales are under $10,000'],
-        ans: 1,
-        feedback: 'Most Virginia farmers markets require at minimum a food handler certification and potentially a temporary food establishment permit depending on your products.'
-      }
-    ]
-  },
-  'w2d3': {
-    title: 'Insurance & Legal Structures',
-    questions: [
-      {
-        q: 'General Liability insurance for a food business primarily protects against:',
-        opts: ['Equipment breakdown', 'Customer injuries or property damage caused by your business', 'Employee theft', 'Ingredient cost fluctuations'],
-        ans: 1,
-        feedback: 'General Liability (GL) coverage protects your business if a customer is injured at your location or claims your product/service caused damage or harm.'
-      },
-      {
-        q: 'Product Liability insurance is especially important for food businesses because:',
-        opts: ['It covers delivery vehicle accidents', 'It protects against claims that your food product caused illness or injury', 'It is required to use a commercial kitchen', 'It replaces workers\' compensation'],
-        ans: 1,
-        feedback: 'Product liability covers you if a customer claims your food made them sick or caused harm. This is critical for packaged goods, catering, and any direct-to-consumer food sales.'
-      }
-    ]
-  },
-  'w2d4': {
-    title: 'Business Structure & Finance',
-    questions: [
-      {
-        q: 'An LLC (Limited Liability Company) primarily protects the owner by:',
-        opts: ['Eliminating all taxes', 'Separating personal assets from business debts and lawsuits', 'Guaranteeing business loans', 'Making the business tax-exempt'],
-        ans: 1,
-        feedback: 'An LLC creates a legal separation between you and your business. If the business is sued or can\'t pay debts, your personal assets (home, car, savings) are generally protected.'
-      },
-      {
-        q: 'A food cost percentage of 35% means:',
-        opts: ['You spend 35 cents to make every $1 of revenue', 'Your profit margin is 35%', 'You need to raise prices by 35%', 'Labor costs are 35% of revenue'],
-        ans: 0,
-        feedback: 'Food cost % = (Cost of Ingredients ÷ Selling Price) × 100. A 35% food cost means you spend $0.35 in ingredients for every $1.00 in sales. Target 25–35% for most food businesses.'
-      }
-    ]
-  },
-  'w3d1': {
-    title: 'Menu Development & Recipe Costing',
-    questions: [
-      {
-        q: 'Looking at the Parsley\'s Kitchen brunch menu, the BRUNCHwich at $10–12 with a target 30% food cost would require ingredient cost per unit of approximately:',
-        opts: ['$4.50–6.00', '$3.00–3.60', '$1.00–2.00', '$6.00–8.00'],
-        ans: 1,
-        feedback: 'At 30% food cost: $10 × 0.30 = $3.00 and $12 × 0.30 = $3.60. The BRUNCHwich ingredients (egg patty, cheddar, protein, brioche, aioli, arugula) should cost $3.00–$3.60 per serving.'
-      },
-      {
-        q: 'Menu engineering categorizes items as "Stars, Plowhorses, Puzzles, and Dogs" based on:',
-        opts: ['Ingredient complexity and prep time', 'Profitability and popularity (sales volume)', 'Seasonal availability and supplier cost', 'Customer reviews and ratings'],
-        ans: 1,
-        feedback: 'Menu engineering analyzes each item\'s contribution margin (profitability) vs. how many you sell (popularity). Stars are high-profit, high-popularity. Dogs are low on both.'
-      },
-      {
-        q: 'The Cajun Chicken Pasta at $13–15 is an example of:',
-        opts: ['A loss leader', 'A high-value anchor item that justifies premium positioning', 'A commodity item with no margin', 'A vegetarian alternative'],
-        ans: 1,
-        feedback: 'A hearty pasta dish at $13–15 provides strong perceived value and good margins. It anchors the menu as a substantial meal option and helps justify the overall pricing structure.'
-      }
-    ]
-  },
-  'w3d2': {
-    title: 'Kitchen Operations Quiz',
-    questions: [
-      {
-        q: 'In a commercial kitchen, the "flow of food" concept means:',
-        opts: ['How fast orders are delivered to customers', 'The path food takes from receiving through storage, prep, cooking, and service', 'The number of meals produced per hour', 'Kitchen ventilation and airflow systems'],
-        ans: 1,
-        feedback: 'Flow of food describes the journey ingredients take from the moment they\'re received through storage, preparation, cooking, holding, and service. A good kitchen layout minimizes cross-contamination by keeping this flow logical and linear.'
-      },
-      {
-        q: 'A shared commercial kitchen (commissary) benefits food entrepreneurs because:',
-        opts: ['It eliminates the need for food permits', 'It provides licensed commercial kitchen access without the capital cost of building your own', 'It handles all your marketing and sales', 'It guarantees retail shelf placement'],
-        ans: 1,
-        feedback: 'Shared/commissary kitchens let food entrepreneurs access NSF-approved commercial equipment and licensed facilities by the hour or day, dramatically reducing startup costs vs. building or leasing your own.'
-      }
-    ]
-  },
-  'w3d3': {
-    title: 'Sourcing & Supply Chain',
-    questions: [
-      {
-        q: 'A "par level" in inventory management means:',
-        opts: ['The highest price you\'ll pay for an ingredient', 'The minimum quantity of an ingredient you keep on hand before reordering', 'Your daily production capacity', 'The number of approved vendors you maintain'],
-        ans: 1,
-        feedback: 'Par level is the minimum stock level that triggers a reorder. Setting accurate par levels prevents both stockouts (running out mid-service) and overstock (waste/spoilage).'
-      }
-    ]
-  },
-  'w4d1': {
-    title: 'Branding Fundamentals',
-    questions: [
-      {
-        q: 'A brand\'s "visual identity" includes which of the following?',
-        opts: ['Only the logo', 'Logo, color palette, typography, and imagery style', 'The business phone number and address', 'The owner\'s personal social media accounts'],
-        ans: 1,
-        feedback: 'Visual identity is the complete visual system: logo, color palette, fonts, photography style, and how these elements are applied consistently across all touchpoints.'
-      },
-      {
-        q: 'Why is brand consistency important for a food business?',
-        opts: ['It makes the business look more expensive', 'It builds recognition, trust, and professional credibility with customers', 'It is required for business registration', 'It guarantees media coverage'],
-        ans: 1,
-        feedback: 'Consistent branding builds recognition — customers start to recognize your packaging, posts, and signage instantly. This trust and familiarity is one of the biggest drivers of repeat purchase.'
-      }
-    ]
-  },
-  'w4d2': {
-    title: 'Social Media & Marketing',
-    questions: [
-      {
-        q: 'For a local food business, which Instagram content type typically drives the highest engagement?',
-        opts: ['Stock photography of generic food', 'Behind-the-scenes video content showing your real process and personality', 'Reposting competitor content', 'Text-only posts about your menu'],
-        ans: 1,
-        feedback: 'Authentic behind-the-scenes content — prep videos, sourcing stories, your real kitchen and face — consistently outperforms polished stock imagery for local food brands because it builds genuine connection.'
-      },
-      {
-        q: 'A content calendar for a food business should primarily include:',
-        opts: ['Only promotional discount posts', 'A mix of product showcases, educational content, behind-the-scenes, and community engagement', 'Daily menu updates only', 'Reposts from major food influencers'],
-        ans: 1,
-        feedback: 'The 80/20 rule: ~80% value/connection content (process, story, education, community) and ~20% direct promotion. This builds an audience that actually wants to hear from you.'
-      }
-    ]
-  },
-  'w4d3': {
-    title: 'Sales Channels & Customer Acquisition',
-    questions: [
-      {
-        q: 'For a brand-new food business, which sales channel typically provides the fastest feedback loop with customers?',
-        opts: ['Wholesale to grocery stores', 'Your own e-commerce website', 'Farmers markets and pop-up events', 'Restaurant wholesale accounts'],
-        ans: 2,
-        feedback: 'Farmers markets and pop-ups give you direct face-to-face customer interaction where you can test products, get immediate feedback, build your email list, and generate cash flow with minimal overhead.'
-      }
-    ]
-  },
-  'w4d4': {
-    title: 'Scaling & Funding',
-    questions: [
-      {
-        q: 'An SBA 7(a) loan is most appropriate for a food business that:',
-        opts: ['Is in its first week of operation with no revenue', 'Has some operating history and needs capital for equipment, expansion, or working capital', 'Wants to give away equity to investors', 'Needs less than $500 in funding'],
-        ans: 1,
-        feedback: 'SBA 7(a) loans are the most common SBA product for established small businesses needing $50K–$5M for equipment, real estate, inventory, or working capital. They require operating history and personal guarantee.'
-      },
-      {
-        q: 'Crowdfunding platforms like Kickstarter or Indiegogo can benefit food businesses by:',
-        opts: ['Providing guaranteed grants with no strings attached', 'Validating market demand AND raising pre-launch capital simultaneously', 'Replacing the need for a business plan', 'Eliminating all startup costs'],
-        ans: 1,
-        feedback: 'Crowdfunding does double duty: it validates that real people want your product (market validation) while raising the capital to launch. A successful campaign is also powerful social proof.'
-      }
-    ]
-  }
-};
-
-// file: true  -> student picks a file and the name/size/time are logged (assignments + final).
-// otherwise    -> a single confirm button (check-ins, study days, lab attendance).
-const DELIVERABLE_LABELS = {
-  'w1d1':  { week: 'Week 1', label: 'Orientation Check-in',              type: 'Check-in',   action: 'Mark Complete' },
-  'w1d2':  { week: 'Week 1', label: 'ServSafe Study Days Complete',      type: 'Completion', action: 'Mark Study Days Complete' },
-  'w1lab': { week: 'Week 1', label: 'Lab 1 Attendance + ServSafe Assessment',  type: 'Lab',        action: 'Confirm Lab Attendance' },
-  'w2d1':  { week: 'Week 2', label: 'Business Concept Draft (1-page)',   type: 'Assignment', file: true },
-  'w2d2':  { week: 'Week 2', label: 'Compliance Checklist Review',       type: 'Assignment', file: true },
-  'w2d4':  { week: 'Week 2', label: 'Startup Budget + Projections',      type: 'Assignment', file: true },
-  'w2lab': { week: 'Week 2', label: 'Lab 2 Attendance',                  type: 'Lab',        action: 'Confirm Attendance' },
-  'w3d1':  { week: 'Week 3', label: 'Recipe Costing (3 Recipes)',        type: 'Assignment', file: true },
-  'w3d3':  { week: 'Week 3', label: 'Supplier Contact List',             type: 'Assignment', file: true },
-  'w3lab': { week: 'Week 3', label: 'Lab 3 Attendance + Recipe Testing', type: 'Lab',        action: 'Confirm Lab 3 Attendance' },
-  'w4d1':  { week: 'Week 4', label: 'Brand Mood Board + Brand Guide',    type: 'Assignment', file: true },
-  'w4d2':  { week: 'Week 4', label: '30-Day Social Media Plan',          type: 'Assignment', file: true },
-  'w4d3':  { week: 'Week 4', label: '3 Sales Channels Plan',             type: 'Assignment', file: true },
-  'w4lab': { week: 'Week 4', label: 'Final Business Plan + Pitch Deck',  type: 'Final',      file: true },
-};
-
-// ============================================================
-// STORAGE HELPERS — memCache + Supabase
-// ============================================================
-function getData() {
-  return memCache;
-}
-
+function getData() { return memCache; }
 function saveData(d) {
   memCache = d;
   // The instructor preview is never written to the student table
@@ -2626,71 +1606,197 @@ function saveData(d) {
 }
 
 // ============================================================
-// LOGIN / LOGOUT
+// CURRICULUM HELPERS
 // ============================================================
-async function doLogin() {
-  const typedName = document.getElementById('login-user').value.trim();
-  const code = document.getElementById('login-pass').value.trim();
-  const err = document.getElementById('login-error');
-  const btn = document.getElementById('login-btn');
-  const fail = msg => {
-    if (btn) { btn.textContent = 'Sign In \u2192'; btn.disabled = false; }
-    err.textContent = msg;
-    err.style.display = 'block';
-  };
+const quizOpen = id => isAdmin || (settings.published_quizzes || []).includes(id);
+const labDone = lab => !!memCache.lab_attendance[lab];
 
-  err.style.display = 'none';
-  if (!code) return fail('\u274C Enter your access code.');
-  if (btn) { btn.textContent = 'Signing in\u2026'; btn.disabled = true; }
-
-  try {
-    // The code is checked on the server; this page contains no codes to compare against.
-    const r = await fnPost('validate-login', { student_name: typedName, access_code: code });
-    if (r.status === 429) return fail('\u23F3 Too many wrong attempts. Wait a few minutes and try again.');
-    if (r.status === 401 || (r.ok && r.data && r.data.valid === false)) return fail('\u274C Invalid access code. Check with Chef Duane.');
-    if (!r.ok || !r.data || !r.data.valid) return fail('\u26A0\uFE0F Could not sign in right now. Check your connection and try again.');
-
-    sessionToken = r.data.token;
-    isAdmin = !!r.data.is_admin;
-    currentUser = r.data.student_name;
-    if (isAdmin) memCache = { quizzes: {}, deliverables: {}, w2_unlocked: true };
-    else await sbLoad(currentUser);
-    await launchApp();
-  } catch (e) {
-    if (e.code === 'session_expired') return fail('\u26A0\uFE0F Your session ended. Please sign in again.');
-    fail('\u26A0\uFE0F Could not reach the server. Check your connection and try again.');
-  }
+function dayItems(d) {
+  const items = [];
+  if (d.quiz && quizOpen(d.quiz)) items.push({ kind: 'quiz', id: d.quiz });
+  if (d.file) items.push({ kind: 'del', id: d.id });
+  if (d.lab) items.push({ kind: 'lab', id: d.id, lab: d.lab });
+  return items;
+}
+const weekItems = w => DAYS.filter(d => d.week === w).flatMap(dayItems);
+function itemDone(it) {
+  if (it.kind === 'quiz') return !!(memCache.quizzes[it.id] && memCache.quizzes[it.id].passed);
+  if (it.kind === 'del') return !!memCache.deliverables[it.id];
+  return labDone(it.lab);
 }
 
-async function launchApp() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('nav-name').textContent = currentUser;
-  document.getElementById('dash-greeting').textContent = 'Welcome back, ' + currentUser.split(' ')[0] + '!';
-  document.getElementById('admin-nav').style.display = isAdmin ? 'block' : 'none';
-
-  buildAllQuizzes();
-  updateProgress();
-  showPage('dashboard');
+// ============================================================
+// RENDER: shell, dashboard, weeks
+// ============================================================
+function renderSidebar() {
+  let h = `<div class="sidebar-section"><div class="sidebar-heading">Navigation</div>
+    <div class="sidebar-item active" data-page="dashboard" onclick="showPage('dashboard')"><div class="week-badge gold">⌂</div><span class="sidebar-item-label">Dashboard</span></div></div>`;
+  LEVEL1.weeks.forEach(w => {
+    h += `<div class="sidebar-section"><div class="sidebar-heading">Week ${w.n} · ${esc(w.dates)}</div>
+      <div class="sidebar-item" data-page="w${w.n}" onclick="showPage('w${w.n}')" id="sb-w${w.n}">
+        <div class="week-badge${w.n === 1 ? ' gold' : ''}" id="sb-w${w.n}-badge">${w.n}</div>
+        <span class="sidebar-item-label">${esc(w.side)}</span><span class="sidebar-check" id="sb-w${w.n}-check"></span></div></div>`;
+  });
+  h += `<div class="sidebar-section"><div class="sidebar-heading">My Progress</div>
+    <div class="sidebar-item" data-page="krp" onclick="showPage('krp')"><div class="week-badge" style="background:var(--green-mid)">K</div><span class="sidebar-item-label">KRP Portfolio</span></div>
+    <div class="sidebar-item" data-page="my-grades" onclick="showPage('my-grades')"><div class="week-badge" style="background:#6b6558">📊</div><span class="sidebar-item-label">My Grades &amp; Submissions</span></div></div>
+    <div class="sidebar-section" id="admin-nav" style="display:none"><div class="sidebar-heading">Instructor</div>
+    <div class="sidebar-item" data-page="admin" onclick="showPage('admin')"><div class="week-badge" style="background:#c4522a">👑</div><span class="sidebar-item-label">Student Tracker</span></div>
+    <div class="sidebar-item" data-page="rubric" onclick="showPage('rubric')"><div class="week-badge" style="background:#c4522a">📋</div><span class="sidebar-item-label">CST Rubric</span></div>
+    <div class="sidebar-item" data-page="quizreview" onclick="showPage('quizreview')"><div class="week-badge" style="background:#c4522a">✔</div><span class="sidebar-item-label">Quiz Review</span></div></div>`;
+  document.getElementById('sidebar').innerHTML = h;
 }
 
-function doLogout() {
-  if (sessionToken) fnPost('lms-api', { token: sessionToken, action: 'logout' }, 5000).catch(() => {});
-  sessionToken = null;
-  currentUser = null;
-  isAdmin = false;
-  memCache = EMPTY();
-  unsynced = false;
-  selectedAnswers = {}; pendingFiles = {}; resubmitting = {}; savingNow = {};
-  document.querySelectorAll('.day-card-body.open, .day-toggle.open').forEach(e => e.classList.remove('open'));
-  document.querySelectorAll('.day-card-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
-  setSyncStatus('idle');
-  document.getElementById('login-btn').textContent = 'Sign In \u2192';
-  document.getElementById('login-btn').disabled = false;
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('login-error').style.display = 'none';
+function renderDashboard() {
+  const upcoming = LABS.map(l => `<div class="upcoming-item">
+      <div class="upcoming-date"><div class="month">${esc(l.short.split(' ')[0])}</div><div class="day">${esc(l.short.split(' ')[1])}</div></div>
+      <div class="upcoming-divider"></div>
+      <div class="upcoming-info"><div class="title">${esc(l.module)}</div><div class="detail">${LAB_TIME} · ${esc(LAB_PLACE)}</div></div>
+      <span class="upcoming-tag tag-lab">${l.lab === 'lab4' ? 'Graduation Day' : 'In-Person Lab'}</span></div>`).join('');
+  const cards = LEVEL1.weeks.map(w => `<div class="week-card w${w.n}" onclick="showPage('w${w.n}')">
+      <div class="wc-meta"><span class="wc-num">WEEK 0${w.n}</span><span class="wc-status status-todo" id="wc${w.n}-status">Not started</span></div>
+      <div class="wc-title">${esc(w.title)}</div><div class="wc-dates">${esc(w.long)}</div>
+      <div class="wc-progress"><div class="wc-progress-fill" id="wc${w.n}-bar" style="width:0%"></div></div>
+      <div class="wc-count" id="wc${w.n}-count"></div></div>`).join('');
+  document.getElementById('page-dashboard').innerHTML = `
+    <div class="dash-header"><div class="eyebrow">${esc(LEVEL1.cohort)}</div><h2 id="dash-greeting">Welcome back!</h2>
+      <p>4 weeks · Mon–Thu online · Saturday labs in person · ${esc(LAB_PLACE)}</p></div>
+    <div class="l2-banner" id="l2-banner" style="display:none">🎓 <div><strong>You're ready for Level II.</strong> You've passed ServSafe Food Handler, submitted your Concept Brief and passed every quiz. Your instructor will contact you about Culinary Entrepreneurship II.</div></div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value" id="stat-quizzes">0</div><div class="stat-label">Quizzes Passed</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-deliverables">0</div><div class="stat-label">Deliverables Submitted</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-weeks">0/4</div><div class="stat-label">Weeks Complete</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-score">—</div><div class="stat-label">Avg Quiz Score</div></div>
+    </div>
+    <div class="week-cards">${cards}</div>
+    <div class="section-title">Upcoming Labs</div><div class="upcoming-list">${upcoming}</div>`;
+}
+
+function resourceHtml(r) {
+  const icon = r.t === 'video' ? ['ri-video', '▶'] : r.t === 'read' ? ['ri-read', '📄'] : ['ri-link', '🔗'];
+  return `<a class="resource-item" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" data-rtype="${r.t}">
+    <div class="resource-icon ${icon[0]}">${icon[1]}</div><div><div>${esc(r.title)}</div><div class="resource-meta">${esc(r.meta)}</div></div></a>`;
+}
+
+function layerChips(d) {
+  if (!d.layer) return '';
+  const krp = d.layer.startsWith('KRP');
+  return `<div class="layer-row"><span class="layer-chip ${krp ? 'krp' : 'cst'}">${krp ? 'KRP' : 'CST'}</span><span class="layer-text">${esc(d.layer.replace(/^KRP\s*/, '').replace(/^[·—-]\s*/, '') || d.layer)}</span></div>`;
+}
+
+function fileCardHtml(d) {
+  const f = d.file;
+  return `<div class="deliverable-card"><h4>📝 ${esc(f.label)}${f.krp ? ` <span class="layer-chip krp">${esc(f.krp)}</span>` : ''}</h4>
+    <p>${esc(f.blurb)}</p><div class="due-line">Due: <strong>${esc(f.due)}</strong></div>
+    <div class="submit-panel" id="sp-${d.id}"></div></div>`;
+}
+
+function renderDayCard(d) {
+  if (d.lab) return renderLabCard(d);
+  const topics = (d.topics || []).map(t => `<li>${esc(t)}</li>`).join('');
+  const res = (d.resources || []).map(resourceHtml).join('');
+  const lesson = d.lesson ? `<div class="lesson-body">${d.lesson}</div>` : '';
+  return `<div class="day-card">
+    <div class="day-card-header" onclick="toggleDay('${d.id}')">
+      <div class="day-dot" id="dot-${d.id}"></div>
+      <div class="day-label">${esc(d.dow)}, ${esc(d.date)} — ${esc(d.module)}</div>
+      <div class="day-sublabel">${esc(d.hours || '')}</div>
+      <span class="day-status todo" id="ds-${d.id}">To do</span>
+      <div class="day-toggle" id="tog-${d.id}">▾</div></div>
+    <div class="day-card-body" id="${d.id}">
+      ${layerChips(d)}
+      <div class="topics"><h5>Today's topics</h5><ul>${topics}</ul></div>${lesson}
+      ${res ? `<div class="resource-list">${res}</div>` : ''}
+      ${d.id === 'w3d1' ? menuExampleHtml() : ''}
+      ${d.quiz ? `<div id="quiz-${d.quiz}-container"></div>` : ''}
+      ${d.assessment && !d.quiz ? `<div class="assess-line">Assessment: ${esc(d.assessment)}</div>` : ''}
+      ${d.file ? fileCardHtml(d) : ''}
+    </div></div>`;
+}
+
+function renderLabCard(d) {
+  const acts = d.activities.map(a => `<li>${esc(a)}</li>`).join('');
+  return `<div class="day-card">
+    <div class="day-card-header" onclick="toggleDay('${d.id}')">
+      <div class="day-dot lab" id="dot-${d.id}"></div>
+      <div class="day-label">${esc(d.dow)}, ${esc(d.date)} — ${esc(d.module)}</div>
+      <div class="day-sublabel">${LAB_TIME} · In-Person</div>
+      <span class="day-status todo" id="ds-${d.id}">To do</span>
+      <div class="day-toggle" id="tog-${d.id}">▾</div></div>
+    <div class="day-card-body" id="${d.id}">
+      <div class="lab-card"><h3>🧪 ${esc(d.module)}</h3>
+        <div class="lab-meta">${esc(d.dow)}, ${esc(d.date)} · ${LAB_TIME} · ${esc(LAB_PLACE)}</div>
+        ${d.layer ? layerChips(d).replace('layer-row', 'layer-row on-dark') : ''}
+        <ul class="lab-list">${acts}</ul>
+        <div class="lab-assess"><strong>Assessment:</strong> ${esc(d.assessment)}</div></div>
+      <div class="deliverable-card lab-status"><h4>✅ Lab attendance</h4>
+        ${d.unlocks ? `<p>${esc(d.unlocks)}</p>` : ''}
+        <div id="att-${d.id}"></div></div>
+      ${d.lab === 'lab1' ? '<div class="deliverable-card" id="cst-result"></div>' : ''}
+      ${d.lab === 'lab2' || d.lab === 'lab4' ? `<div class="deliverable-card" id="ss-${d.id}"></div>` : ''}
+      ${d.file ? fileCardHtml(d) : ''}
+    </div></div>`;
+}
+
+function menuExampleHtml() {
+  return `<div class="menu-card"><div class="menu-card-header"><h4>🍳 Example menu for costing practice</h4><p>Parsley's Kitchen — live brunch menu (Saturdays 9AM–12PM). Prices are for practice only.</p></div>
+    <div class="menu-card-body">
+      <div class="menu-item"><div><div class="menu-item-name">The Omelette Station — Made to Order</div><div class="menu-item-desc">Farm-fresh 3-egg omelette · Choose up to 3 fillings</div></div><div class="menu-item-price">$14–16</div></div>
+      <div class="menu-item"><div><div class="menu-item-name">The BRUNCHwich</div><div class="menu-item-desc">Scrambled egg patty · White cheddar · Bacon or sausage · Brioche bun · Garlic aioli · Arugula</div></div><div class="menu-item-price">$10–12</div></div>
+      <div class="menu-item"><div><div class="menu-item-name">Creamy Cajun Chicken Pasta</div><div class="menu-item-desc">Grilled chicken · Turkey andouille · Peppers · Onions · Spinach · Parmesan · Penne</div></div><div class="menu-item-price">$13–15</div></div>
+      <div class="menu-item"><div><div class="menu-item-name">Blueberry or Cinnamon Coffee Cake</div><div class="menu-item-desc">Freshly baked</div></div><div class="menu-item-price">$3.00</div></div>
+    </div></div>`;
+}
+
+function renderWeeks() {
+  LEVEL1.weeks.forEach(w => {
+    const ss = w.n === 2 ? `<div class="servsafe-card"><h3>🛡️ ServSafe Food Handler Certification</h3>
+      <p>This is your Level I credential. You prepare online this week, sit a proctored practice exam at Lab 2 (Oct 24), and take the ServSafe Food Handler exam at Lab 4 (Nov 7). The exam is 40 questions and you need 75% or higher. Your instructor provides your ServSafe access.</p>
+      <a class="btn-servsafe" href="https://www.servsafe.com/ServSafe-Food-Handler/Get-Certified" target="_blank" rel="noopener noreferrer">→ ServSafe Food Handler</a></div><br>` : '';
+    document.getElementById('page-w' + w.n).innerHTML = `
+      <div class="week-header"><div class="wh-eyebrow">Week ${w.n} · ${esc(w.long)}</div><h2>${esc(w.title)}</h2><div class="wh-dates">${esc(w.note)}</div></div>
+      ${ss}<div class="day-list">${DAYS.filter(d => d.week === w.n).map(renderDayCard).join('')}</div>`;
+  });
+}
+
+function renderKrp() {
+  const phases = LEVEL1.krp.phases.map(p => `<div class="krp-phase"><div class="krp-n">Phase ${p.n}</div><h4>${esc(p.name)}</h4>
+    <div class="krp-weeks">${esc(p.weeks)}</div><p>${esc(p.focus)}</p><div class="krp-out">${esc(p.out)}</div></div>`).join('');
+  document.getElementById('page-krp').innerHTML = `
+    <div class="week-header"><div class="wh-eyebrow">Kitchen Readiness Protocol</div><h2>My KRP Portfolio</h2>
+      <div class="wh-dates">Built across all four weeks · finished with a 90-day check-in after Lab 4</div></div>
+    <div class="krp-phases">${phases}</div>
+    <div class="section-title">Portfolio deliverables</div><div id="krp-items" class="krp-items"></div>
+    <div class="krp-note">After Lab 4 you will receive a short check-in email 90 days later, with a link to a brief survey.</div>`;
+}
+
+function renderKrpItems() {
+  const el = document.getElementById('krp-items');
+  if (!el) return;
+  el.innerHTML = LEVEL1.krp.items.map(it => {
+    const rec = memCache.krp_portfolio[it.key];
+    return `<div class="krp-item ${rec ? 'done' : ''}"><div class="krp-check">${rec ? '✓' : '○'}</div>
+      <div><strong>${esc(it.label)}</strong><div class="grade-sub">Due ${esc(it.due)}${rec ? ` · submitted ${esc(fmtWhen(rec.date))} · 📎 ${esc(rec.fileName)}` : ''}</div></div>
+      <button class="link-btn" onclick="goToDay('${it.day}')">${rec ? 'View' : 'Open'}</button></div>`;
+  }).join('');
+}
+
+function goToDay(id) {
+  const d = dayById[id];
+  showPage('w' + d.week);
+  const body = document.getElementById(id);
+  if (body && !body.classList.contains('open')) toggleDay(id);
+  setTimeout(() => body && body.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+function renderShell() {
+  renderSidebar();
+  renderDashboard();
+  renderWeeks();
+  renderKrp();
+  document.getElementById('page-rubric').innerHTML = '';
+  rendered = true;
+  enhanceA11y();
 }
 
 // ============================================================
@@ -2701,37 +1807,44 @@ function isWeek2Unlocked() {
   return memCache.w2_unlocked === true;
 }
 
+function showGate() {
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  let page = document.getElementById('page-gate');
+  if (!page) {
+    page = document.createElement('div');
+    page.className = 'page-view';
+    page.id = 'page-gate';
+    document.querySelector('.main-content').appendChild(page);
+  }
+  page.innerHTML = `<div class="gated-overlay"><div class="lock-icon">🔒</div><h3>Weeks 2–4 are locked</h3>
+    <p style="max-width:440px;margin:0 auto 16px;">Weeks 2–4 unlock once your instructor confirms you attended <strong>Lab 1</strong> on Saturday, October 17. If you were there and this is still locked, tell your instructor.</p>
+    <button class="btn-submit-work" onclick="checkUnlock()">Check again</button>
+    <div style="background:rgba(212,168,67,0.1);border:1px solid var(--gold);border-radius:8px;padding:16px;max-width:380px;margin:20px auto 0;font-size:13px;color:var(--gray-600);">
+      <strong style="color:var(--green-dark);">Questions?</strong> Contact ${CONTACT}</div></div>`;
+  page.classList.add('active');
+}
+
+async function checkUnlock() {
+  await sbLoad(currentUser);
+  refreshAll();
+  if (isWeek2Unlocked()) { showToast('Unlocked — welcome to Week 2!', '🔓'); showPage('w2'); }
+  else showToast('Not unlocked yet — your instructor confirms Lab 1 attendance', '🔒');
+}
+
 function showPage(id) {
   document.querySelectorAll('.sidebar-item').forEach(s => s.classList.toggle('active', s.dataset.page === id));
-  // Hard gate: Week 2, 3, 4 require Week 2 unlock
-  if (['w2','w3','w4'].includes(id) && !isWeek2Unlocked()) {
-    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-    const page = document.getElementById('page-gate');
-    if (page) { page.classList.add('active'); return; }
-    // Inject gate page if not yet created
-    const gateDiv = document.createElement('div');
-    gateDiv.className = 'page-view active';
-    gateDiv.id = 'page-gate';
-    gateDiv.innerHTML = `<div class="gated-overlay">
-      <div class="lock-icon">🔒</div>
-      <h3>Week 2–4 Locked</h3>
-      <p style="max-width:420px;margin:0 auto 16px;">You must pass your <strong>ServSafe Food Handler assessment</strong> at Lab 1 on Saturday, October 17 before this content unlocks. Your instructor will unlock Week 2 once your passing score is confirmed. After that, sign out and back in to see it.</p>
-      <div style="background:rgba(212,168,67,0.1);border:1px solid var(--gold);border-radius:8px;padding:16px;max-width:380px;margin:0 auto;font-size:13px;color:var(--gray-600);">
-        <strong style="color:var(--green-dark);">Questions?</strong> Contact Chef Duane Brown at (804) 219-8211 or duane&#64;culinarycoach.org
-      </div>
-    </div>`;
-    document.querySelector('.main-content').appendChild(gateDiv);
-    return;
-  }
+  if (['w2', 'w3', 'w4'].includes(id) && !isWeek2Unlocked()) { showGate(); return; }
 
   document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-  window.scrollTo(0, 0);
-
   const page = document.getElementById('page-' + id);
   if (page) page.classList.add('active');
+  window.scrollTo(0, 0);
 
   if (id === 'admin') buildAdminTable();
+  if (id === 'rubric') buildRubricPage();
+  if (id === 'quizreview') buildQuizReview();
   if (id === 'my-grades') buildMyGrades();
+  if (id === 'krp') renderKrpItems();
   updateProgress();
 }
 
@@ -2747,84 +1860,68 @@ function toggleDay(id) {
 }
 
 // ============================================================
-// QUIZ SYSTEM
+// QUIZZES (bank in content/level1-quizzes.js; only published quizzes are open to students)
 // ============================================================
+let selectedAnswers = {};
+
 function buildAllQuizzes() {
-  Object.keys(QUIZZES).forEach(id => buildQuiz(id));
+  QUIZ_IDS.forEach(id => buildQuiz(id));
   refreshAll();
 }
 
 function buildQuiz(id, fresh = false) {
   const container = document.getElementById('quiz-' + id + '-container');
   if (!container) return;
-  const quiz = QUIZZES[id];
-  const data = getData();
-  const saved = fresh ? null : data.quizzes[id];
+  const quiz = QUIZ_BANK[id];
+  if (!quiz) { container.innerHTML = ''; return; }
+  if (!quizOpen(id)) {
+    container.innerHTML = `<div class="quiz-closed">📝 <strong>${esc(quiz.title)}</strong> opens when your instructor publishes it.</div>`;
+    return;
+  }
+  const saved = fresh ? null : memCache.quizzes[id];
+  const draft = isAdmin && !(settings.published_quizzes || []).includes(id);
 
   let html = `<div class="quiz-section">
-    <div class="quiz-title">📝 ${quiz.title}</div>
-    <div class="quiz-subtitle">${quiz.questions.length} question${quiz.questions.length > 1 ? 's' : ''} · Must score 70%+ to pass</div>`;
-
+    <div class="quiz-title">📝 ${esc(quiz.title)} ${draft ? '<span class="draft-tag">UNPUBLISHED — instructors only</span>' : ''}</div>
+    <div class="quiz-subtitle">${quiz.questions.length} questions · Must score ${PASS_PCT}%+ to pass</div>`;
   quiz.questions.forEach((q, qi) => {
-    html += `<div class="quiz-q" id="quizq-${id}-${qi}">
-      <div class="quiz-q-text">${qi + 1}. ${q.q}</div>
-      <div class="quiz-options">`;
+    html += `<div class="quiz-q" id="quizq-${id}-${qi}"><div class="quiz-q-text">${qi + 1}. ${esc(q.q)}</div><div class="quiz-options">`;
     q.opts.forEach((opt, oi) => {
-      html += `<button class="quiz-option" id="qopt-${id}-${qi}-${oi}" onclick="selectOption('${id}',${qi},${oi})">${opt}</button>`;
+      html += `<button class="quiz-option" id="qopt-${id}-${qi}-${oi}" onclick="selectOption('${id}',${qi},${oi})">${esc(opt)}</button>`;
     });
-    html += `</div>
-      <div class="quiz-feedback" id="qfb-${id}-${qi}"></div>
-    </div>`;
+    html += `</div><div class="quiz-feedback" id="qfb-${id}-${qi}"></div></div>`;
   });
-
   html += `<button class="btn-submit-quiz" id="qsub-${id}" onclick="submitQuiz('${id}')" disabled>Submit Quiz</button>`;
-
   if (saved) {
-    html += `<div class="quiz-score-banner">
-      <div><div class="score-val">${saved.score}%</div><div class="score-label">Score</div></div>
+    html += `<div class="quiz-score-banner"><div><div class="score-val">${saved.score}%</div><div class="score-label">Score</div></div>
       <div class="score-pass ${saved.passed ? 'pass-text' : 'fail-text'}">${saved.passed ? '✅ PASSED' : '❌ Retry recommended'}</div>
-      ${!saved.passed ? `<button class="btn-retry" onclick="retryQuiz('${id}')">Retry</button>` : ''}
-    </div>`;
+      ${!saved.passed ? `<button class="btn-retry" onclick="retryQuiz('${id}')">Retry</button>` : ''}</div>`;
   }
-
   html += '</div>';
   container.innerHTML = html;
-
-  if (saved) applyQuizResults(id, saved);
+  if (saved) applyQuizResults(id);
 }
-
-let selectedAnswers = {};
 
 function selectOption(quizId, qi, oi) {
   if (!selectedAnswers[quizId]) selectedAnswers[quizId] = {};
   selectedAnswers[quizId][qi] = oi;
-
-  const quiz = QUIZZES[quizId];
-  // Update visual selection
+  const quiz = QUIZ_BANK[quizId];
   quiz.questions[qi].opts.forEach((_, idx) => {
     const btn = document.getElementById(`qopt-${quizId}-${qi}-${idx}`);
-    if (btn) {
-      btn.style.borderColor = idx === oi ? 'var(--green-bright)' : 'var(--gray-200)';
-      btn.style.background = idx === oi ? 'rgba(61,122,82,0.06)' : '';
-    }
+    if (btn) { btn.style.borderColor = idx === oi ? 'var(--green-bright)' : 'var(--gray-200)'; btn.style.background = idx === oi ? 'rgba(61,122,82,0.06)' : ''; }
   });
-
-  // Enable submit if all answered
-  const allAnswered = quiz.questions.every((_, i) => selectedAnswers[quizId]?.[i] !== undefined);
+  const all = quiz.questions.every((_, i) => selectedAnswers[quizId]?.[i] !== undefined);
   const sub = document.getElementById('qsub-' + quizId);
-  if (sub) sub.disabled = !allAnswered;
+  if (sub) sub.disabled = !all;
 }
 
 function submitQuiz(quizId) {
-  const quiz = QUIZZES[quizId];
+  const quiz = QUIZ_BANK[quizId];
   let correct = 0;
-
   quiz.questions.forEach((q, qi) => {
     const chosen = selectedAnswers[quizId]?.[qi];
     const isCorrect = chosen === q.ans;
     if (isCorrect) correct++;
-
-    // Color options
     q.opts.forEach((_, oi) => {
       const btn = document.getElementById(`qopt-${quizId}-${qi}-${oi}`);
       if (!btn) return;
@@ -2832,38 +1929,24 @@ function submitQuiz(quizId) {
       if (oi === q.ans) btn.classList.add('correct');
       else if (oi === chosen && !isCorrect) btn.classList.add('wrong');
     });
-
-    // Feedback
     const fb = document.getElementById(`qfb-${quizId}-${qi}`);
-    if (fb) {
-      fb.textContent = q.feedback;
-      fb.className = 'quiz-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
-    }
+    if (fb) { fb.textContent = q.feedback; fb.className = 'quiz-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb'); }
   });
-
   const score = Math.round((correct / quiz.questions.length) * 100);
-  const passed = score >= 70;
-
-  // Save
+  const passed = score >= PASS_PCT;
   const data = getData();
   data.quizzes[quizId] = { score, passed, correct, total: quiz.questions.length };
   saveData(data);
 
-  // Show score banner
-  const container = document.getElementById('quiz-' + quizId + '-container');
   const sub = document.getElementById('qsub-' + quizId);
   if (sub) sub.disabled = true;
-
   const banner = document.createElement('div');
   banner.className = 'quiz-score-banner';
-  banner.innerHTML = `
-    <div><div class="score-val">${score}%</div><div class="score-label">${correct}/${quiz.questions.length} correct</div></div>
-    <div class="score-pass ${passed ? 'pass-text' : 'fail-text'}">${passed ? '✅ PASSED' : '❌ Below 70% — review &amp; retry'}</div>
-    ${!passed ? `<button class="btn-retry" onclick="retryQuiz('${quizId}')">Retry</button>` : ''}
-  `;
-  const qs = container.querySelector('.quiz-section');
+  banner.innerHTML = `<div><div class="score-val">${score}%</div><div class="score-label">${correct}/${quiz.questions.length} correct</div></div>
+    <div class="score-pass ${passed ? 'pass-text' : 'fail-text'}">${passed ? '✅ PASSED' : '❌ Below ' + PASS_PCT + '% — review &amp; retry'}</div>
+    ${!passed ? `<button class="btn-retry" onclick="retryQuiz('${quizId}')">Retry</button>` : ''}`;
+  const qs = document.getElementById('quiz-' + quizId + '-container').querySelector('.quiz-section');
   if (qs) qs.appendChild(banner);
-
   updateProgress();
   showToast(passed ? `✅ Passed! Score: ${score}%` : `Score: ${score}%. Study and try again!`, passed ? '✅' : '📚');
 }
@@ -2873,9 +1956,8 @@ function retryQuiz(quizId) {
   buildQuiz(quizId, true); // keep the recorded score until the new attempt is submitted
 }
 
-function applyQuizResults(id, saved) {
-  const quiz = QUIZZES[id];
-  quiz.questions.forEach((q, qi) => {
+function applyQuizResults(id) {
+  QUIZ_BANK[id].questions.forEach((q, qi) => {
     q.opts.forEach((_, oi) => {
       const btn = document.getElementById(`qopt-${id}-${qi}-${oi}`);
       if (btn) { btn.disabled = true; if (oi === q.ans) btn.classList.add('correct'); }
@@ -2888,9 +1970,8 @@ function applyQuizResults(id, saved) {
 }
 
 // ============================================================
-// DELIVERABLES — submit panels (files are stored in the Supabase "submissions" bucket)
+// SUBMISSIONS — files go to the private Supabase bucket through a one-time signed URL issued for THIS student
 // ============================================================
-const MAX_FILE_MB = 25;
 const FILE_TYPES = {
   pdf: 'application/pdf', doc: 'application/msword',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -2901,45 +1982,28 @@ const FILE_TYPES = {
   csv: 'text/csv', txt: 'text/plain', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', zip: 'application/zip'
 };
 const FILE_ACCEPT = Object.keys(FILE_TYPES).map(e => '.' + e).join(',');
-
-let pendingFiles = {};  // id -> { file, name, size, mime }  chosen, not yet submitted
-let resubmitting = {};  // student chose "submit a different file"
-let savingNow = {};     // id -> true while uploading / recording
-let uploadPct = {};     // id -> 0..1
-let uploadError = {};   // id -> message
-
-const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-
-function fmtWhen(iso) {
-  const d = new Date(iso);
-  if (isNaN(d)) return '';
-  return d.toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
-}
-function fmtSize(n) {
-  if (!n && n !== 0) return '';
-  if (n < 1024) return n + ' B';
-  if (n < 1048576) return Math.round(n / 1024) + ' KB';
-  return (n / 1048576).toFixed(1) + ' MB';
-}
 const extOf = name => (/\.([A-Za-z0-9]+)$/.exec(name) || [])[1]?.toLowerCase() || '';
-const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'student';
-const safeName = n => { const e = extOf(n); const base = n.replace(/\.[^.]*$/, '').replace(/[^A-Za-z0-9._-]+/g, '_').slice(0, 60) || 'file'; return base + (e ? '.' + e : ''); };
+
+let pendingFiles = {};  // id -> { file, name, size, mime, slot, uploaded }
+let resubmitting = {};
+let savingNow = {};
+let uploadPct = {};
+let uploadError = {};
 
 function renderPanel(id) {
   const el = document.getElementById('sp-' + id);
-  const meta = DELIVERABLE_LABELS[id];
+  const meta = FILES[id];
   if (!el || !meta) return;
   const d = getData().deliverables[id];
   const pend = pendingFiles[id];
-  const isFile = !!meta.file;
-  const choosing = isFile && (!d || resubmitting[id]);
+  const choosing = !d || resubmitting[id];
   const busy = !!savingNow[id];
   let status, extra = '';
 
   if (busy) {
     const pct = Math.round((uploadPct[id] || 0) * 100);
-    status = ['saving', '⏳', pct < 100 || !isFile ? 'UPLOADING — DO NOT CLOSE THIS PAGE' : 'SAVING…', ''];
-    if (isFile) extra = `<div class="up-track" aria-hidden="true"><div class="up-fill" id="up-${id}" style="width:${pct}%"></div></div>`;
+    status = ['saving', '⏳', pct < 100 ? 'UPLOADING — DO NOT CLOSE THIS PAGE' : 'SAVING…', ''];
+    extra = `<div class="up-track" aria-hidden="true"><div class="up-fill" id="up-${id}" style="width:${pct}%"></div></div>`;
   } else if (uploadError[id]) {
     status = ['error', '!', 'UPLOAD FAILED — NOT SUBMITTED', esc(uploadError[id])];
   } else if (pend && choosing) {
@@ -2954,10 +2018,6 @@ function renderPanel(id) {
   let html = `<div class="sub-status ${status[0]}" role="status" aria-live="polite"><span class="sub-icon" aria-hidden="true">${status[1]}</span>
     <div><strong>${status[2]}</strong>${status[3] ? `<div class="sub-detail">${status[3]}</div>` : ''}${extra}</div></div>`;
 
-  if (d && unsynced && !busy) {
-    html += `<div class="sub-warn">⚠️ Your file was received, but your progress has not synced yet. <button class="link-btn" onclick="retrySync()">Retry now</button></div>`;
-  }
-
   if (choosing && !busy) {
     if (!pend) {
       html += `<div class="sub-actions"><label class="btn-choose" for="file-${id}">📎 ${d ? 'Choose a different file' : 'Choose file'}</label>
@@ -2969,15 +2029,12 @@ function renderPanel(id) {
         <div class="sub-actions"><button class="btn-submit-work big" onclick="submitDeliverable('${id}')">⬆ ${uploadError[id] ? (pend.uploaded ? 'Finish — ' : 'Try again — ') : ''}Submit ${esc(meta.label)}</button></div>`;
     }
     html += `<p class="sub-note">PDF, Word, Excel, PowerPoint, CSV, text, image or ZIP · up to ${MAX_FILE_MB} MB.</p>`;
-  } else if (isFile && d && !resubmitting[id] && !busy) {
+  } else if (d && !resubmitting[id] && !busy) {
     html += `<div class="sub-actions"><button class="link-btn" onclick="startResubmit('${id}')">Submit a different file</button></div>`;
-  } else if (!isFile && !d && !busy) {
-    html += `<div class="sub-actions"><button class="btn-submit-work" onclick="submitDeliverable('${id}')">${esc(meta.action)}</button></div>`;
   }
   el.innerHTML = html;
 }
-
-function renderAllPanels() { Object.keys(DELIVERABLE_LABELS).forEach(renderPanel); }
+function renderAllPanels() { Object.keys(FILES).forEach(renderPanel); }
 
 function onFilePicked(id, input) {
   const f = input.files && input.files[0];
@@ -2997,8 +2054,7 @@ function clearFile(id) { delete pendingFiles[id]; delete uploadError[id]; render
 function startResubmit(id) { resubmitting[id] = true; delete uploadError[id]; renderPanel(id); }
 function cancelResubmit(id) { delete resubmitting[id]; delete pendingFiles[id]; delete uploadError[id]; renderPanel(id); }
 
-// Upload straight to Supabase Storage through a one-time signed URL that the server issued for THIS student and file.
-// XHR (not fetch) so we can show real upload progress.
+// XHR (not fetch) so we can show real upload progress
 function uploadSigned(signedUrl, file, mime, name, onProgress) {
   return new Promise((resolve, reject) => {
     const x = new XMLHttpRequest();
@@ -3034,97 +2090,104 @@ const API_MESSAGES = {
 };
 
 async function submitDeliverable(id) {
-  const meta = DELIVERABLE_LABELS[id];
+  const meta = FILES[id];
   if (!meta || savingNow[id]) return;
   const pend = pendingFiles[id];
-  if (meta.file && !pend) { showToast('Choose your file first.', '📎'); return; }
+  if (!pend) { showToast('Choose your file first.', '📎'); return; }
 
   const data = getData();
   const prev = data.deliverables[id];
   savingNow[id] = true; uploadPct[id] = 0; delete uploadError[id];
   renderPanel(id);
 
-  if (meta.file) {
-    if (isAdmin) { // instructor preview: exercise the UI without writing anything
-      data.deliverables[id] = { submitted: true, kind: 'file', date: new Date().toISOString(), fileName: pend.name, fileSize: pend.size, fileType: pend.mime, filePath: null, attempts: ((prev && prev.attempts) || 0) + 1 };
-    } else {
-      try {
-        // 1) ask the server for an upload slot (it checks who you are, the file type and size)
-        if (!pend.slot) pend.slot = await api('create-upload', { assignment: id, filename: pend.name, size: pend.size });
-        // 2) send the file itself to storage
-        if (!pend.uploaded) {
-          await uploadSigned(pend.slot.signedUrl, pend.file, pend.slot.mime, pend.name, f => {
-            uploadPct[id] = f;
-            const bar = document.getElementById('up-' + id);
-            if (bar) bar.style.width = Math.round(f * 100) + '%';
-          });
-          pend.uploaded = true;
-        }
-        uploadPct[id] = 1;
-        // 3) the server confirms the file is really there, then records the submission
-        const d = await api('record-submission', { assignment: id, path: pend.slot.path, filename: pend.name });
-        data.deliverables[id] = d.record;
-        memCache = unionProgress(fromRow(d.progress), data);
-        memCache.deliverables[id] = d.record;
-        if (currentUser) writeLocal(currentUser, memCache);
-      } catch (e) {
-        delete savingNow[id];
-        if (e.code === 'session_expired') return;
-        let msg;
-        if (e instanceof UploadError) msg = e.message;
-        else if (pend.uploaded) msg = 'Your file was uploaded, but we could not record it yet. Click the button to finish — you do not need to upload again.';
-        else msg = API_MESSAGES[e.code] || 'Could not reach the server. Check your connection and try again. Your file was not sent.';
-        uploadError[id] = msg;
-        renderPanel(id);
-        showToast(pend.uploaded ? 'Uploaded — not recorded yet' : 'Upload failed — not submitted', '⚠️');
-        return;
+  if (isAdmin) { // instructor preview: exercise the UI without writing anything
+    data.deliverables[id] = { submitted: true, kind: 'file', date: new Date().toISOString(), fileName: pend.name, fileSize: pend.size, fileType: pend.mime, filePath: null, attempts: ((prev && prev.attempts) || 0) + 1 };
+  } else {
+    try {
+      // 1) ask the server for an upload slot (it checks who you are, the file type and size)
+      if (!pend.slot) pend.slot = await api('create-upload', { assignment: id, filename: pend.name, size: pend.size });
+      // 2) send the file itself to storage
+      if (!pend.uploaded) {
+        await uploadSigned(pend.slot.signedUrl, pend.file, pend.slot.mime, pend.name, f => {
+          uploadPct[id] = f;
+          const bar = document.getElementById('up-' + id);
+          if (bar) bar.style.width = Math.round(f * 100) + '%';
+        });
+        pend.uploaded = true;
       }
+      uploadPct[id] = 1;
+      // 3) the server confirms the file is really there, then records the submission
+      const d = await api('record-submission', { assignment: id, path: pend.slot.path, filename: pend.name });
+      memCache = mergeProgress(fromServer(d.progress), memCache);
+      memCache.deliverables[id] = d.record;
+      if (currentUser) writeLocal(currentUser, memCache);
+    } catch (e) {
+      delete savingNow[id];
+      if (e.code === 'session_expired') return;
+      let msg;
+      if (e instanceof UploadError) msg = e.message;
+      else if (pend.uploaded) msg = 'Your file was uploaded, but we could not record it yet. Click the button to finish — you do not need to upload again.';
+      else msg = API_MESSAGES[e.code] || 'Could not reach the server. Check your connection and try again. Your file was not sent.';
+      uploadError[id] = msg;
+      renderPanel(id);
+      showToast(pend.uploaded ? 'Uploaded — not recorded yet' : 'Upload failed — not submitted', '⚠️');
+      return;
     }
-    delete savingNow[id]; delete pendingFiles[id]; delete resubmitting[id]; delete uploadPct[id];
-    refreshAll();
-    showToast('✅ Submitted: ' + meta.label, '✅');
-    return;
   }
-
-  // confirm-type deliverable
-  data.deliverables[id] = { submitted: true, kind: 'confirm', date: new Date().toISOString() };
-  const ok = await saveData(data);
-  delete savingNow[id]; delete uploadPct[id];
+  delete savingNow[id]; delete pendingFiles[id]; delete resubmitting[id]; delete uploadPct[id];
   refreshAll();
-  showToast(ok ? '✅ Recorded: ' + meta.label : '⚠️ Saved on this device only — it will sync when you reconnect', ok ? '✅' : '⚠️');
+  showToast('✅ Submitted: ' + meta.label, '✅');
+}
+
+// ---- lab attendance / ServSafe / CST result panels (instructor-recorded; read-only for students)
+function renderAttendance() {
+  LABS.forEach(d => {
+    const el = document.getElementById('att-' + d.id);
+    if (!el) return;
+    if (isAdmin) { el.innerHTML = '<div class="sub-status todo"><span class="sub-icon">👁</span><div><strong>INSTRUCTOR PREVIEW</strong><div class="sub-detail">Record attendance in Student Tracker.</div></div></div>'; return; }
+    el.innerHTML = labDone(d.lab)
+      ? '<div class="sub-status ok" role="status"><span class="sub-icon">✓</span><div><strong>ATTENDANCE CONFIRMED</strong><div class="sub-detail">Your instructor recorded you at this lab.</div></div></div>'
+      : '<div class="sub-status todo" role="status"><span class="sub-icon">○</span><div><strong>ATTENDANCE NOT YET RECORDED</strong><div class="sub-detail">Your instructor confirms attendance at the lab.</div></div></div>';
+  });
+  const cst = document.getElementById('cst-result');
+  if (cst) {
+    const r = cstResults.find(x => x.lab === 1);
+    cst.innerHTML = r
+      ? `<h4>📋 CST Assessment result</h4><div class="cst-score"><span class="cst-total">${r.total}</span><span class="cst-of">/ 100</span><span class="score-badge ${r.band === 'Pass' ? 'score-pass' : r.band === 'Conditional' ? 'score-pending' : 'score-fail'}">${esc(r.band)}</span></div>
+         <p class="grade-sub">80+ Pass · 70–79 Conditional · below 70 Remediation required</p>`
+      : '<h4>📋 CST Assessment result</h4><p class="grade-sub">Your instructor enters your score after Lab 1.</p>';
+  }
+  const ss = memCache.servsafe || {};
+  ['w2lab', 'w4lab'].forEach(id => {
+    const el = document.getElementById('ss-' + id);
+    if (!el) return;
+    const bits = [];
+    if (ss.practice_score != null) bits.push(`Practice exam: <strong>${ss.practice_score}%</strong>`);
+    if (ss.exam_result && ss.exam_result !== 'pending') bits.push(`ServSafe Food Handler exam: <strong>${ss.exam_result === 'passed' ? 'PASSED ✓' : 'Not passed'}</strong>${ss.exam_score != null ? ` (${ss.exam_score}%)` : ''}`);
+    el.innerHTML = `<h4>🛡️ ServSafe Food Handler</h4>${bits.length ? bits.map(b => `<p>${b}</p>`).join('') : '<p class="grade-sub">Your instructor records your ServSafe results here.</p>'}`;
+  });
 }
 
 // ============================================================
 // PROGRESS
 // ============================================================
-const WEEKS = ['1', '2', '3', '4'];
-const weekItems = w => [
-  ...Object.keys(QUIZZES).filter(id => id[1] === w).map(id => ({ kind: 'quiz', id })),
-  ...Object.keys(DELIVERABLE_LABELS).filter(id => id[1] === w).map(id => ({ kind: 'del', id }))
-];
-const dayItems = id => [
-  ...(QUIZZES[id] ? [{ kind: 'quiz', id }] : []),
-  ...(DELIVERABLE_LABELS[id] ? [{ kind: 'del', id }] : [])
-];
-const itemDone = (it, data) => it.kind === 'quiz' ? !!(data.quizzes[it.id] && data.quizzes[it.id].passed) : !!data.deliverables[it.id];
+const WEEKS = LEVEL1.weeks.map(w => w.n);
 
 function updateProgress() {
-  if (!document.getElementById('global-progress')) return;
-  const data = getData();
+  if (!rendered || !document.getElementById('global-progress')) return;
   const unlocked = isWeek2Unlocked();
   let done = 0, total = 0, weeksDone = 0;
 
   WEEKS.forEach(w => {
     const items = weekItems(w);
-    const d = items.filter(it => itemDone(it, data)).length;
-    const complete = d === items.length;
-    const locked = w !== '1' && !unlocked;
+    const d = items.filter(itemDone).length;
+    const complete = items.length > 0 && d === items.length;
+    const locked = w !== 1 && !unlocked;
     done += d; total += items.length;
     if (complete) weeksDone++;
 
-    document.getElementById('wc' + w + '-bar').style.width = Math.round(d / items.length * 100) + '%';
+    document.getElementById('wc' + w + '-bar').style.width = (items.length ? Math.round(d / items.length * 100) : 0) + '%';
     document.getElementById('wc' + w + '-count').textContent = d + ' of ' + items.length + ' items done';
-
     const chip = document.getElementById('wc' + w + '-status');
     const state = locked ? ['status-locked', '🔒 Locked'] : complete ? ['status-complete', '✓ Complete'] : d > 0 ? ['status-active', 'In progress'] : ['status-todo', 'Not started'];
     chip.className = 'wc-status ' + state[0];
@@ -3135,7 +2198,7 @@ function updateProgress() {
     if (badge) {
       if (locked) { badge.className = 'week-badge locked'; badge.textContent = '🔒'; }
       else if (complete) { badge.className = 'week-badge complete'; badge.textContent = ''; }
-      else { badge.className = 'week-badge' + (w === '1' ? ' gold' : ''); badge.textContent = w; }
+      else { badge.className = 'week-badge' + (w === 1 ? ' gold' : ''); badge.textContent = w; }
     }
     if (check) {
       check.className = 'sidebar-check' + (complete ? ' is-complete' : '');
@@ -3144,13 +2207,13 @@ function updateProgress() {
   });
 
   // per-day dot + text chip (never colour alone)
-  new Set([...Object.keys(QUIZZES), ...Object.keys(DELIVERABLE_LABELS)]).forEach(id => {
-    const items = dayItems(id);
-    const d = items.filter(it => itemDone(it, data)).length;
-    const state = d === 0 ? 'todo' : d === items.length ? 'done' : 'partial';
-    const dot = document.getElementById('dot-' + id);
+  DAYS.forEach(day => {
+    const items = dayItems(day);
+    const d = items.filter(itemDone).length;
+    const state = items.length === 0 ? 'todo' : d === 0 ? 'todo' : d === items.length ? 'done' : 'partial';
+    const dot = document.getElementById('dot-' + day.id);
     if (dot) { dot.classList.remove('done', 'partial'); if (state !== 'todo') dot.classList.add(state); }
-    const chip = document.getElementById('ds-' + id);
+    const chip = document.getElementById('ds-' + day.id);
     if (chip) { chip.className = 'day-status ' + state; chip.textContent = state === 'done' ? '✓ Done' : state === 'partial' ? 'In progress' : 'To do'; }
   });
 
@@ -3159,58 +2222,71 @@ function updateProgress() {
   document.getElementById('global-pct').textContent = pct + '%';
   document.getElementById('global-label').textContent = 'Course Progress · ' + done + ' of ' + total + ' items';
 
-  const passedQuizzes = Object.values(data.quizzes || {}).filter(q => q.passed).length;
-  document.getElementById('stat-quizzes').textContent = passedQuizzes + '/' + Object.keys(QUIZZES).length;
-  document.getElementById('stat-deliverables').textContent = Object.keys(data.deliverables || {}).filter(k => DELIVERABLE_LABELS[k]).length + '/' + Object.keys(DELIVERABLE_LABELS).length;
-  document.getElementById('stat-weeks').textContent = weeksDone + '/4';
-  const scores = Object.values(data.quizzes || {}).map(q => q.score);
+  const open = QUIZ_IDS.filter(quizOpen);
+  const passed = open.filter(id => memCache.quizzes[id] && memCache.quizzes[id].passed).length;
+  document.getElementById('stat-quizzes').textContent = passed + '/' + open.length;
+  document.getElementById('stat-deliverables').textContent = Object.keys(FILES).filter(id => memCache.deliverables[id]).length + '/' + Object.keys(FILES).length;
+  document.getElementById('stat-weeks').textContent = weeksDone + '/' + WEEKS.length;
+  const scores = Object.entries(memCache.quizzes).filter(([k]) => QUIZ_IDS.includes(k)).map(([, q]) => q.score);
   document.getElementById('stat-score').textContent = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) + '%' : '—';
+  const l2 = document.getElementById('l2-banner');
+  if (l2) l2.style.display = memCache.is_l2_eligible && !isAdmin ? 'flex' : 'none';
 }
 
 function refreshAll() {
+  if (!rendered) return;
   renderAllPanels();
+  renderAttendance();
   updateProgress();
-  const grades = document.getElementById('page-my-grades');
-  if (grades && grades.classList.contains('active')) buildMyGrades();
+  const active = ['my-grades', 'krp'].find(p => document.getElementById('page-' + p)?.classList.contains('active'));
+  if (active === 'my-grades') buildMyGrades();
+  if (active === 'krp') renderKrpItems();
 }
 
 // ============================================================
-// MY GRADES VIEW
+// MY GRADES
 // ============================================================
 function buildMyGrades() {
-  const data = getData();
   const tbody = document.getElementById('my-grades-body');
   let html = '';
-
-  Object.keys(QUIZZES).forEach(id => {
-    const q = data.quizzes[id];
-    const quiz = QUIZZES[id];
-    const week = 'Week ' + id[1];
-    const badge = q ? `<span class="score-badge ${q.passed ? 'score-pass' : 'score-fail'}">${q.passed ? '✓ Passed' : '✗ Retry'} · ${q.score}%</span>` : '<span class="score-badge score-pending">Not taken</span>';
-    html += `<tr><td>${week}</td><td>${esc(quiz.title)}</td><td>Quiz</td><td>${badge}</td></tr>`;
+  const ss = memCache.servsafe || {};
+  DAYS.forEach(d => {
+    if (d.quiz) {
+      const q = memCache.quizzes[d.quiz];
+      const quiz = QUIZ_BANK[d.quiz];
+      const badge = !quizOpen(d.quiz) ? '<span class="score-badge score-pending">Not open yet</span>'
+        : q ? `<span class="score-badge ${q.passed ? 'score-pass' : 'score-fail'}">${q.passed ? '✓ Passed' : '✗ Retry'} · ${q.score}%</span>` : '<span class="score-badge score-pending">Not taken</span>';
+      html += `<tr><td>Week ${d.week}</td><td>${esc(quiz ? quiz.title : d.module)}</td><td>Quiz</td><td>${badge}</td></tr>`;
+    }
+    if (d.file) {
+      const rec = memCache.deliverables[d.id];
+      const badge = rec ? `<span class="score-badge score-pass">✓ Submitted</span><div class="grade-sub">${esc(fmtWhen(rec.date))}${rec.fileName ? '<br>📎 ' + esc(rec.fileName) : ''}</div>` : '<span class="score-badge score-pending">Not submitted</span>';
+      html += `<tr><td>Week ${d.week}</td><td>${esc(d.file.label)}</td><td>Deliverable</td><td>${badge}</td></tr>`;
+    }
+    if (d.lab) {
+      html += `<tr><td>Week ${d.week}</td><td>${esc(d.module)}</td><td>Lab attendance</td><td>${labDone(d.lab) ? '<span class="score-badge score-pass">✓ Confirmed</span>' : '<span class="score-badge score-pending">Not recorded</span>'}</td></tr>`;
+    }
   });
-
-  Object.keys(DELIVERABLE_LABELS).forEach(id => {
-    const d = data.deliverables[id];
-    const label = DELIVERABLE_LABELS[id];
-    const badge = d
-      ? `<span class="score-badge score-pass">✓ Submitted</span><div class="grade-sub">${esc(fmtWhen(d.date))}${d.fileName ? '<br>📎 ' + esc(d.fileName) : ''}</div>`
-      : '<span class="score-badge score-pending">Not submitted</span>';
-    html += `<tr><td>${label.week}</td><td>${esc(label.label)}</td><td>${label.type}</td><td>${badge}</td></tr>`;
-  });
-
+  const r = cstResults.find(x => x.lab === 1);
+  html += `<tr><td>Week 1</td><td>CST Lab Assessment (100 pts)</td><td>Rubric</td><td>${r ? `<span class="score-badge ${r.band === 'Pass' ? 'score-pass' : r.band === 'Conditional' ? 'score-pending' : 'score-fail'}">${r.total}/100 · ${esc(r.band)}</span>` : '<span class="score-badge score-pending">Not scored yet</span>'}</td></tr>`;
+  html += `<tr><td>Week 2</td><td>ServSafe practice exam</td><td>Practice</td><td>${ss.practice_score != null ? `<span class="score-badge score-pending">${ss.practice_score}%</span>` : '<span class="score-badge score-pending">Not recorded</span>'}</td></tr>`;
+  html += `<tr><td>Week 4</td><td>ServSafe Food Handler exam</td><td>Credential</td><td>${ss.exam_result === 'passed' ? '<span class="score-badge score-pass">✓ Passed</span>' : ss.exam_result === 'failed' ? '<span class="score-badge score-fail">Not passed</span>' : '<span class="score-badge score-pending">Pending</span>'}</td></tr>`;
   tbody.innerHTML = html;
 }
 
 // ============================================================
-// ADMIN TABLE
+// INSTRUCTOR: tracker, files, CST rubric, quiz review
 // ============================================================
-let adminFileRows = [];
 let adminData = null;
+let adminFileRows = [];
+
 async function loadAdminData() {
   adminData = await api('admin-overview');
+  settings = adminData.settings || settings;
   return adminData;
 }
+const adminProg = name => (adminData.progress[name] || EMPTY());
+const adminRubric = (name, lab = 1) => (adminData.rubrics || []).find(r => r.student_name === name && r.lab === lab);
 
 async function buildAdminTable() {
   const tbody = document.getElementById('admin-body');
@@ -3220,38 +2296,29 @@ async function buildAdminTable() {
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--orange);">⚠️ Could not load student data. Check your connection and reopen this page.</td></tr>';
     return;
   }
-  const rows = adminData.roster.map(name => ({ name, d: adminData.progress[name] || EMPTY() }));
-
+  const openQuizzes = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
   let html = '';
-  rows.forEach(({ name, d }) => {
-    const isUnlocked = d.w2_unlocked === true;
-
-    const wScore = w => {
-      const keys = Object.keys(QUIZZES).filter(k => k.startsWith(w));
-      const scores = keys.map(k => d.quizzes?.[k]?.score).filter(s => s !== undefined);
-      if (!scores.length) return '<span class="score-badge score-pending">—</span>';
-      const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
-      return `<span class="score-badge ${avg >= 70 ? 'score-pass' : 'score-fail'}">${avg}%</span>`;
-    };
-    const dels = Object.keys(d.deliverables || {}).filter(k => DELIVERABLE_LABELS[k]).length;
-    const totalDels = Object.keys(DELIVERABLE_LABELS).length;
-    const allScores = Object.values(d.quizzes || {}).map(q => q.score);
-    const overall = allScores.length ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) : null;
-
-    const unlockBtn = isUnlocked
-      ? `<span class="score-badge score-pass">✅ Unlocked</span>`
-      : `<button data-name="${esc(name)}" onclick="adminUnlockWeek2(this.dataset.name)" style="background:var(--gold);color:var(--green-dark);border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;">🔓 Unlock W2</button>`;
-
+  adminData.roster.forEach(name => {
+    const d = adminProg(name);
+    const la = d.lab_attendance || {};
+    const labs = LABS.map((l, i) => `<button class="lab-toggle ${la[l.lab] ? 'on' : ''}" data-name="${esc(name)}" data-lab="${l.lab}" onclick="adminToggleLab(this.dataset.name, this.dataset.lab)" title="${esc(l.module)}" aria-pressed="${!!la[l.lab]}">L${i + 1}</button>`).join('');
+    const qPassed = openQuizzes.filter(id => d.quizzes[id] && d.quizzes[id].passed).length;
+    const dels = Object.keys(FILES).filter(id => d.deliverables[id]).length;
+    const ss = d.servsafe || {};
+    const rub = adminRubric(name);
     html += `<tr>
       <td><strong>${esc(name)}</strong></td>
-      <td>${unlockBtn}</td>
-      <td>${wScore('w1')}</td>
-      <td>${wScore('w2')}</td>
-      <td>${wScore('w3')}</td>
-      <td>${wScore('w4')}</td>
-      <td><span class="score-badge ${dels >= totalDels ? 'score-pass' : 'score-pending'}">${dels}/${totalDels}</span></td>
-      <td>${overall !== null ? `<span class="score-badge ${overall >= 70 ? 'score-pass' : 'score-fail'}">${overall}%</span>` : '<span class="score-badge score-pending">—</span>'}</td>
-    </tr>`;
+      <td><div class="lab-toggles">${labs}</div></td>
+      <td><span class="score-badge ${openQuizzes.length && qPassed === openQuizzes.length ? 'score-pass' : 'score-pending'}">${qPassed}/${openQuizzes.length}</span></td>
+      <td><span class="score-badge ${dels === Object.keys(FILES).length ? 'score-pass' : 'score-pending'}">${dels}/${Object.keys(FILES).length}</span></td>
+      <td><div class="ss-edit">
+        <input type="number" min="0" max="100" placeholder="practice %" value="${ss.practice_score ?? ''}" data-ss-practice="${esc(name)}" aria-label="Practice exam score for ${esc(name)}">
+        <select data-ss-result="${esc(name)}" aria-label="Exam result for ${esc(name)}">${['pending', 'passed', 'failed'].map(v => `<option value="${v}" ${(ss.exam_result || 'pending') === v ? 'selected' : ''}>${v}</option>`).join('')}</select>
+        <button class="btn-dl" data-name="${esc(name)}" onclick="adminSaveServsafe(this.dataset.name)">Save</button></div></td>
+      <td>${rub ? `<span class="score-badge ${rub.band === 'Pass' ? 'score-pass' : rub.band === 'Conditional' ? 'score-pending' : 'score-fail'}">${rub.total}/100</span>` : '<span class="score-badge score-pending">—</span>'}
+          <button class="link-btn" data-name="${esc(name)}" onclick="openRubricFor(this.dataset.name)">${rub ? 'Edit' : 'Score'}</button></td>
+      <td>${d.w2_unlocked ? '<span class="score-badge score-pass">✅ Unlocked</span>' : `<button class="btn-dl gold" data-name="${esc(name)}" onclick="adminUnlockWeek2(this.dataset.name)">🔓 Unlock</button>`}</td>
+      <td>${d.is_l2_eligible ? '<span class="score-badge score-pass">Ready</span>' : '<span class="score-badge score-pending">—</span>'}</td></tr>`;
   });
   tbody.innerHTML = html;
 
@@ -3266,45 +2333,148 @@ async function buildAdminTable() {
   document.getElementById('admin-count').textContent = adminData.roster.filter(n => n !== 'TEST STUDENT').length;
 }
 
-async function downloadFile(path) {
-  try {
-    const d = await api('admin-file-url', { path });
-    window.open(d.url, '_blank', 'noopener');
-  } catch (e) {
-    if (e.code !== 'session_expired') showToast('Could not open that file — try again', '⚠️');
-  }
+async function adminToggleLab(name, lab) {
+  const present = !(adminProg(name).lab_attendance || {})[lab];
+  try { await api('admin-set-attendance', { student_name: name, lab, present }); }
+  catch (e) { if (e.code !== 'session_expired') showToast('Could not save attendance — check the connection and try again', '⚠️'); return; }
+  showToast(`${name.split(' ')[0]}: ${lab.replace('lab', 'Lab ')} ${present ? 'attended ✓' : 'marked absent'}${lab === 'lab1' && present ? ' — Weeks 2–4 unlocked' : ''}`, present ? '✅' : '○');
+  buildAdminTable();
+}
+
+async function adminSaveServsafe(name) {
+  const practice = document.querySelector(`[data-ss-practice="${CSS.escape(name)}"]`).value;
+  const result = document.querySelector(`[data-ss-result="${CSS.escape(name)}"]`).value;
+  try { await api('admin-set-servsafe', { student_name: name, practice_score: practice === '' ? null : Number(practice), exam_result: result }); }
+  catch (e) { if (e.code !== 'session_expired') showToast(e.code === 'bad_score' ? 'Scores must be between 0 and 100' : 'Could not save — try again', '⚠️'); return; }
+  showToast(`ServSafe saved for ${name.split(' ')[0]}`, '🛡️');
+  buildAdminTable();
 }
 
 async function adminUnlockWeek2(name) {
   try { await api('admin-unlock', { student_name: name }); }
-  catch (e) {
-    if (e.code !== 'session_expired') showToast(`Could not unlock ${name.split(' ')[0]} — check the connection and try again`, '⚠️');
-    return;
-  }
-  showToast(`🔓 Week 2–4 unlocked for ${name.split(' ')[0]}!`, '🔓');
+  catch (e) { if (e.code !== 'session_expired') showToast(`Could not unlock ${name.split(' ')[0]} — check the connection and try again`, '⚠️'); return; }
+  showToast(`🔓 Weeks 2–4 unlocked for ${name.split(' ')[0]}!`, '🔓');
   buildAdminTable();
+}
+
+async function downloadFile(path) {
+  try { const d = await api('admin-file-url', { path }); window.open(d.url, '_blank', 'noopener'); }
+  catch (e) { if (e.code !== 'session_expired') showToast('Could not open that file — try again', '⚠️'); }
+}
+
+// ---- CST rubric entry (Lab 1, 100 points)
+let rubricScores = {};
+function rubricKeys() { return CST_RUBRIC.sections.flatMap(s => s.criteria.map((_, i) => `${s.id}_${i + 1}`)); }
+
+async function buildRubricPage() {
+  const page = document.getElementById('page-rubric');
+  page.innerHTML = '<div class="week-header"><div class="wh-eyebrow">Instructor</div><h2>CST Module 1 Rubric</h2><div class="wh-dates">Loading…</div></div>';
+  try { await loadAdminData(); } catch (e) { return; }
+  const opts = adminData.roster.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  page.innerHTML = `<div class="week-header"><div class="wh-eyebrow">Instructor · Lab 1</div><h2>CST Module 1 Rubric</h2>
+      <div class="wh-dates">100 points · 80+ Pass · 70–79 Conditional · below 70 Remediation required · score before the end of lab day</div></div>
+    <div class="rubric-pick"><label for="rb-student">Student</label><select id="rb-student" onchange="loadRubricFor(this.value)">${opts}</select>
+      <div class="rubric-total" id="rb-total" aria-live="polite"></div></div>
+    <div id="rb-grid"></div>
+    <div class="rubric-foot"><label for="rb-notes">Notes (instructor only)</label><textarea id="rb-notes" rows="3"></textarea>
+      <button class="btn-submit-work big" onclick="saveRubric()">Save rubric</button></div>`;
+  const first = adminData.roster.includes(rubricTarget) ? rubricTarget : adminData.roster[0];
+  rubricTarget = null;
+  document.getElementById('rb-student').value = first;
+  loadRubricFor(first);
+}
+
+let rubricTarget = null;
+function openRubricFor(name) { rubricTarget = name; showPage('rubric'); }
+
+function loadRubricFor(name) {
+  const existing = adminRubric(name);
+  rubricScores = existing ? { ...existing.scores } : {};
+  document.getElementById('rb-notes').value = existing && existing.notes ? existing.notes : '';
+  renderRubricGrid();
+}
+
+function renderRubricGrid() {
+  document.getElementById('rb-grid').innerHTML = CST_RUBRIC.sections.map(s => {
+    const rows = s.criteria.map((c, i) => {
+      const key = `${s.id}_${i + 1}`;
+      const btns = [4, 3, 2, 1].map(v => `<button class="rb-btn ${rubricScores[key] === v ? 'on' : ''}" onclick="setRubric('${key}', ${v})" aria-pressed="${rubricScores[key] === v}" aria-label="${esc(c)} ${v} points">${v}</button>`).join('');
+      return `<div class="rb-row"><div class="rb-name">${esc(c)}</div><div class="rb-btns">${btns}</div></div>`;
+    }).join('');
+    const sub = s.criteria.reduce((a, _, i) => a + (rubricScores[`${s.id}_${i + 1}`] || 0), 0);
+    return `<div class="rb-section"><div class="rb-head"><h4>${esc(s.title)}</h4><span>${sub} / ${s.criteria.length * 4}</span></div><div class="rb-note">${esc(s.note)}</div>${rows}</div>`;
+  }).join('');
+  updateRubricTotal();
+}
+
+function setRubric(key, v) { rubricScores[key] = v; renderRubricGrid(); }
+
+function updateRubricTotal() {
+  const keys = rubricKeys();
+  const total = keys.reduce((a, k) => a + (rubricScores[k] || 0), 0);
+  const scored = keys.filter(k => rubricScores[k]).length;
+  const band = scored === keys.length ? CST_RUBRIC.band(total) : `${scored}/${keys.length} scored`;
+  document.getElementById('rb-total').innerHTML = `<span class="cst-total">${total}</span><span class="cst-of">/ 100</span><span class="score-badge ${scored < keys.length ? 'score-pending' : total >= 80 ? 'score-pass' : total >= 70 ? 'score-pending' : 'score-fail'}">${esc(band)}</span>`;
+}
+
+async function saveRubric() {
+  const name = document.getElementById('rb-student').value;
+  try {
+    const d = await api('admin-save-rubric', { student_name: name, lab: 1, scores: rubricScores, notes: document.getElementById('rb-notes').value });
+    adminData.rubrics = (adminData.rubrics || []).filter(r => !(r.student_name === name && r.lab === 1)).concat([d.rubric]);
+    showToast(`Rubric saved for ${name.split(' ')[0]}: ${d.rubric.total}/100 · ${d.rubric.band}`, '📋');
+  } catch (e) { if (e.code !== 'session_expired') showToast('Could not save the rubric — try again', '⚠️'); }
+}
+
+// ---- Quiz review / publish
+let openQuizCards = [];
+async function buildQuizReview() {
+  const page = document.getElementById('page-quizreview');
+  openQuizCards = [...page.querySelectorAll('details.qr-card[open]')].map(x => x.dataset.quizCard); // keep cards open across a re-render
+  page.innerHTML = '<div class="week-header"><div class="wh-eyebrow">Instructor</div><h2>Quiz Review</h2><div class="wh-dates">Loading…</div></div>';
+  try { await loadAdminData(); } catch (e) { return; }
+  const pub = settings.published_quizzes || [];
+  const openIds = new Set(openQuizCards);
+  const cards = DAYS.filter(d => d.quiz).map(d => {
+    const q = QUIZ_BANK[d.quiz];
+    const isPub = pub.includes(d.quiz);
+    const qs = q.questions.map((x, i) => `<div class="qr-q"><div class="qr-text">${i + 1}. ${esc(x.q)}</div>
+      <ul>${x.opts.map((o, oi) => `<li class="${oi === x.ans ? 'right' : ''}">${oi === x.ans ? '✓ ' : ''}${esc(o)}</li>`).join('')}</ul><div class="qr-fb">${esc(x.feedback)}</div></div>`).join('');
+    const todo = (q.todo || []).map(t => `<li>${esc(t)}</li>`).join('');
+    return `<details class="qr-card" data-quiz-card="${d.quiz}" ${openIds.has(d.quiz) ? 'open' : ''}><summary><span class="qr-title">${esc(q.title)}</span><span class="qr-meta">Week ${d.week} · ${q.questions.length} questions</span>
+        <span class="score-badge ${isPub ? 'score-pass' : 'score-pending'}">${isPub ? 'PUBLISHED' : 'DRAFT'}</span></summary>
+      ${todo ? `<div class="qr-todo"><strong>Still needed from you:</strong><ul>${todo}</ul></div>` : ''}
+      <div class="qr-actions"><button class="btn-submit-work" data-quiz="${d.quiz}" onclick="adminTogglePublish(this.dataset.quiz)">${isPub ? 'Unpublish' : 'Publish to students'}</button></div>
+      ${qs}</details>`;
+  }).join('');
+  page.innerHTML = `<div class="week-header"><div class="wh-eyebrow">Instructor</div><h2>Quiz Review</h2>
+    <div class="wh-dates">${pub.length} of ${QUIZ_IDS.length} published · Drafts were written from standard food-safety and costing knowledge — check every answer before publishing</div></div>${cards}`;
+}
+
+async function adminTogglePublish(id) {
+  const to = !(settings.published_quizzes || []).includes(id);
+  try { const d = await api('admin-set-published', { quiz_id: id, published: to }); settings.published_quizzes = d.published_quizzes; }
+  catch (e) { if (e.code !== 'session_expired') showToast('Could not change the quiz — try again', '⚠️'); return; }
+  showToast(`${QUIZ_BANK[id].title}: ${to ? 'published ✓' : 'unpublished'}`, to ? '✅' : '○');
+  buildQuizReview();
+  QUIZ_IDS.forEach(q => buildQuiz(q));
+  updateProgress();
 }
 
 async function exportCSV() {
   showToast('📊 Pulling data from cloud…', '📊');
   try { await loadAdminData(); } catch (e) { return; }
-  const rows = adminData.roster.map(name => ({ name, d: adminData.progress[name] || EMPTY() }));
-
-  let csv = 'Student,W1 Avg,W2 Avg,W3 Avg,W4 Avg,Deliverables Submitted,Overall Avg,W2 Unlocked\n';
-  rows.forEach(({ name, d }) => {
-    const wAvg = w => {
-      const keys = Object.keys(QUIZZES).filter(k => k.startsWith(w));
-      const scores = keys.map(k => d.quizzes?.[k]?.score).filter(s => s !== undefined);
-      return scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) + '%' : 'N/A';
-    };
-    const dels = Object.keys(d.deliverables || {}).filter(k => DELIVERABLE_LABELS[k]).length;
-    const allScores = Object.values(d.quizzes || {}).map(q => q.score);
-    const overall = allScores.length ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) + '%' : 'N/A';
-    csv += `"${name}",${wAvg('w1')},${wAvg('w2')},${wAvg('w3')},${wAvg('w4')},${dels}/${Object.keys(DELIVERABLE_LABELS).length},${overall},${d.w2_unlocked ? 'Yes' : 'No'}\n`;
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const open = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
+  let csv = ['Student', 'Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Quizzes passed', 'Deliverables', 'ServSafe practice %', 'ServSafe exam', 'ServSafe exam %', 'CST Lab 1 total', 'CST band', 'Weeks 2-4 unlocked', 'Level II ready'].join(',') + '\n';
+  adminData.roster.forEach(name => {
+    const d = adminProg(name), la = d.lab_attendance || {}, ss = d.servsafe || {}, r = adminRubric(name);
+    csv += [name, ...LABS.map(l => la[l.lab] ? 'Yes' : 'No'), `${open.filter(id => d.quizzes[id]?.passed).length}/${open.length}`,
+      `${Object.keys(FILES).filter(id => d.deliverables[id]).length}/${Object.keys(FILES).length}`, ss.practice_score ?? '', ss.exam_result || 'pending', ss.exam_score ?? '',
+      r ? r.total : '', r ? r.band : '', d.w2_unlocked ? 'Yes' : 'No', d.is_l2_eligible ? 'Yes' : 'No'].map(q).join(',') + '\n';
   });
-  const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
   a.download = 'CE_Level1_Fall2026_student_tracker.csv';
   a.click();
   showToast('📊 CSV exported!', '📊');
@@ -3323,7 +2493,77 @@ async function exportFilesCSV() {
 }
 
 // ============================================================
-// TOAST
+// LOGIN / LOGOUT
+// ============================================================
+async function doLogin() {
+  const typedName = document.getElementById('login-user').value.trim();
+  const code = document.getElementById('login-pass').value.trim();
+  const err = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  const fail = msg => {
+    if (btn) { btn.textContent = 'Sign In →'; btn.disabled = false; }
+    err.textContent = msg;
+    err.style.display = 'block';
+  };
+
+  err.style.display = 'none';
+  if (!code) return fail('❌ Enter your access code.');
+  if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
+
+  try {
+    // The code is checked on the server; this page contains no codes to compare against.
+    const r = await fnPost('validate-login', { student_name: typedName, access_code: code });
+    if (r.status === 429) return fail('⏳ Too many wrong attempts. Wait a few minutes and try again.');
+    if (r.status === 401 || (r.ok && r.data && r.data.valid === false)) return fail('❌ Invalid access code. Check with Chef Duane.');
+    if (!r.ok || !r.data || !r.data.valid) return fail('⚠️ Could not sign in right now. Check your connection and try again.');
+
+    sessionToken = r.data.token;
+    isAdmin = !!r.data.is_admin;
+    currentUser = r.data.student_name;
+    if (isAdmin) memCache = { ...EMPTY(), w2_unlocked: true };
+    await sbLoad(currentUser);
+    await launchApp();
+  } catch (e) {
+    if (e.code === 'session_expired') return fail('⚠️ Your session ended. Please sign in again.');
+    fail('⚠️ Could not reach the server. Check your connection and try again.');
+  }
+}
+
+async function launchApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('nav-name').textContent = currentUser;
+  if (!rendered) renderShell();
+  document.getElementById('dash-greeting').textContent = 'Welcome back, ' + currentUser.split(' ')[0] + '!';
+  document.getElementById('admin-nav').style.display = isAdmin ? 'block' : 'none';
+  buildAllQuizzes();
+  showPage('dashboard');
+}
+
+function doLogout() {
+  if (sessionToken) fnPost(API_FN, { token: sessionToken, action: 'logout' }, 5000).catch(() => {});
+  sessionToken = null;
+  currentUser = null;
+  isAdmin = false;
+  memCache = EMPTY();
+  settings = { published_quizzes: [] };
+  cstResults = [];
+  adminData = null;
+  unsynced = false;
+  selectedAnswers = {}; pendingFiles = {}; resubmitting = {}; savingNow = {}; uploadError = {}; uploadPct = {};
+  document.querySelectorAll('.day-card-body.open, .day-toggle.open').forEach(e => e.classList.remove('open'));
+  document.querySelectorAll('.day-card-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
+  setSyncStatus('idle');
+  document.getElementById('login-btn').textContent = 'Sign In →';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+// ============================================================
+// TOAST + small things
 // ============================================================
 function showToast(msg, icon = '✓') {
   const t = document.getElementById('toast');
@@ -3344,22 +2584,20 @@ function showToast(msg, icon = '✓') {
 })();
 
 // Keyboard access for the clickable rows
-(function enhanceA11y() {
+function enhanceA11y() {
   document.querySelectorAll('.day-card-header, .sidebar-item, .week-card').forEach(el => {
+    if (el.getAttribute('role')) return;
     el.setAttribute('role', 'button');
     el.tabIndex = 0;
     if (el.classList.contains('day-card-header')) el.setAttribute('aria-expanded', 'false');
     el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
   });
-})();
+}
 
 // Enter key on login
-document.getElementById('login-pass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
-document.getElementById('login-user').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-user').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
 </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check every external link in index.html is live. Run from a machine with normal internet access:
+"""Check every external link in index.html and content/*.js is live. Run from a machine with normal internet access:
 
     python3 tools/check-links.py
 
@@ -9,8 +9,14 @@ WARN and need a manual click rather than being treated as dead.
 """
 import re, sys, json, socket, urllib.request, urllib.error, urllib.parse, pathlib, concurrent.futures as cf
 
-html = (pathlib.Path(__file__).resolve().parent.parent / "index.html").read_text()
-urls = sorted(set(re.findall(r'href="(https?://[^"]+)"', html)) - {"https://fonts.googleapis.com"})
+root = pathlib.Path(__file__).resolve().parent.parent
+html = (root / "index.html").read_text()
+urls = set(re.findall(r'href="(https?://[^"]+)"', html))
+for f in sorted((root / "content").glob("*.js")):  # curriculum resources live in content/level1.js
+    t = f.read_text()
+    urls |= set(re.findall(r"url:\s*'(https?://[^']+)'", t))
+    urls |= {"https://www.youtube.com/watch?v=" + i for i in re.findall(r"YT\('([\w-]{11})'\)", t)}
+urls = sorted(urls - {"https://fonts.googleapis.com"})
 urls = [u.replace("&amp;", "&") for u in urls if "fonts.googleapis" not in u]
 UA = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",

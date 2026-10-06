@@ -24,7 +24,7 @@ only a pull request from `staging` that passed CI and the checklist.
    - ✅ Require a pull request before merging (1 approval is fine; it can be you)
    - ✅ Require status checks to pass: **secret-scan**, **e2e**
    - ✅ Do not allow bypassing the above settings
-5. Backend is already live in Supabase (functions `validate-login`, `lms-api`; migrations `0001`–`0004`). Nothing to configure in Netlify — the page holds no secrets.
+5. Backend is already live in Supabase (functions `validate-login`, `lms-api-v2`; migrations `0001`–`0005`). Nothing to configure in Netlify — the page holds no secrets.
 
 ## Day to day
 1. Branch from `staging`, make the change, open a PR **into `staging`**. CI runs.
@@ -34,6 +34,6 @@ only a pull request from `staging` that passed CI and the checklist.
 5. Rollback: Netlify → Deploys → pick the last good deploy → *Publish deploy*. (Or `git revert` the merge on `main`.)
 
 ## Backend changes are separate from page deploys
-- Edge Functions: `supabase functions deploy validate-login lms-api --no-verify-jwt` (or the Supabase dashboard).
+- Edge Functions: `supabase functions deploy validate-login lms-api-v2 --no-verify-jwt` (or the Supabase dashboard).
 - Migrations: apply `supabase/migrations/*.sql` in order. Do the **page** deploy and the **backend** change in the order that never leaves them out of step
   (additive backend change first → page → destructive backend change last).

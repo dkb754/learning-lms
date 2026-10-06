@@ -6,7 +6,7 @@ One static page (`index.html`) + `netlify.toml`. Supabase is the backend. No bui
 Auto-deploy from GitHub — see `docs/DEPLOY.md`. (This folder is meant to be the root of its own repo; inside `learning-lms` it lives in `culinary-coach-lms/`.)
 
 ## Architecture (short)
-`index.html` (static) → `validate-login` / `lms-api` Edge Functions (service role) → Postgres tables (`student_progress`, `submissions`, `student_access_codes`, …) and the private `submissions` bucket.
+`index.html` (static) → `validate-login` / `lms-api-v2` Edge Functions (service role) → Postgres tables (`student_progress`, `submissions`, `student_access_codes`, …) and the private `submissions` bucket.
 **The page holds no keys, codes or database access.** Details and test evidence: `docs/SECURITY.md`. Deploy flow: `docs/DEPLOY.md`.
 
 ## Before go-live
@@ -17,8 +17,8 @@ Auto-deploy from GitHub — see `docs/DEPLOY.md`. (This folder is meant to be th
 5. Confirm host kitchen/address and the Nov 6 final-deliverable deadline in the page text.
 
 ## How submissions work
-* Assignments (type *Assignment* / *Final*): **Choose file → Submit**. The page asks `lms-api` for an upload slot (checks who you are, type, size), uploads the file straight to the private bucket at
-  `{student-name}/{assignment-slug}/{filename}` (`-v2`, `-v3` if the name repeats — nothing is ever overwritten), then `lms-api` confirms the object exists and records it in `submissions`
+* Assignments (type *Assignment* / *Final*): **Choose file → Submit**. The page asks `lms-api-v2` for an upload slot (checks who you are, type, size), uploads the file straight to the private bucket at
+  `L1/{student-name}/{assignment-slug}/{filename}` (`-v2`, `-v3` if the name repeats — nothing is ever overwritten), then `lms-api-v2` confirms the object exists and records it in `submissions`
   and in the student's progress. "Submitted" is shown only after that confirmation.
 * Check-ins, study days and lab attendance stay one-click confirmations.
 * Instructor: Student Tracker → **Submitted files** → Download (5-minute signed link) or Export Files CSV.
