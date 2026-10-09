@@ -320,6 +320,7 @@ const tracker = '#admin-body';
   ok(!/April|Spring 2026|Easter|ZZ_LMS/.test(body), 'no leftover Spring-cohort text');
   ok(/level i/i.test(await text(page, '.dash-header')), 'dashboard says Level I');
   ok(!/VCU/i.test(await page.content()) && !/VCU/i.test(body), 'no VCU references anywhere on the page');
+  ok(!/cognitive load|stressors|incivility|anticipated|facilitate the/i.test(await page.evaluate(() => document.body.textContent)), 'no hard-word jargon (cognitive load, stressors, incivility…) in the student UI');
   ok(!/Stress Recognition|Cognitive Reframing|Social Support|Self-Regulation|skill cluster/i.test(await page.evaluate(() => document.body.textContent)), 'no clinical KRP labels anywhere in the student UI');
   for (const n of ['Know Your Warning Signs', 'Change How You See Pressure', 'Build Your People', 'Recharge So You Can Keep Going']) ok(body.includes(n), `lesson cards use the plain label "${n}"`);
   await page.evaluate(() => showPage('krp'));

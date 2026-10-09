@@ -77,7 +77,7 @@ const QUIZ_BANK = {
     title: 'Quiz 4 · Storage, Safety & Kitchen Calls', passPct: 70,
     todo: ["Add questions on any additional CST calls or acknowledgment standards you teach beyond the seven in the lesson."],
     questions: [
-      Q("The temperature danger zone is:", "41°F to 135°F", ["0°F to 41°F", "135°F to 212°F", "70°F to 100°F"], "Bacteria multiply rapidly between 41°F and 135°F, and time spent in the zone is cumulative."),
+      Q("The temperature danger zone is:", "41°F to 135°F", ["0°F to 41°F", "135°F to 212°F", "70°F to 100°F"], "Bacteria multiply rapidly between 41°F and 135°F, and time spent in the zone adds up."),
       Q("Safe holding temperatures are:", "Cold foods at or below 41°F, hot foods at or above 135°F", ["Cold at 50°F, hot at 100°F", "Cold at or below 60°F, hot at or above 120°F", "Any temperature if the food is covered"], "Hold cold at 41°F or below and hot at 135°F or above."),
       Q("FIFO means:", "First in, first out: older product moves to the front and is used first", ["Fresh ingredients first on the menu", "Fish in, fish out", "Freeze it and forget it"], "Older product to the front, newer to the back, and label everything."),
       Q("In a walk-in cooler, which food is stored on the LOWEST shelf?", "Whole and ground poultry", ["Ready-to-eat foods", "Whole fish", "Whole beef and pork"], "From top to bottom: ready-to-eat, whole fish, whole beef and pork, ground meat and fish, whole and ground poultry."),

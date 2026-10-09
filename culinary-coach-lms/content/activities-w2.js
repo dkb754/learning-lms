@@ -5,15 +5,15 @@ ACTIVITIES.w2d1 = {
     {
       type: 'match', title: 'Match each FAT TOM letter to its detail',
       intro: 'Choose the detail from the lesson that goes with each condition.',
-      options: ['pH 4.6 to 7.5', '41 to 135°F', '4 hours cumulative', 'Most pathogens need it', 'Water activity above 0.85'],
+      options: ['pH 4.6 to 7.5', '41 to 135°F', '4 hours added together', 'Most pathogens need it', 'Water activity above 0.85'],
       rows: [{ label: 'A: Acidity', ans: 0 }, { label: 'T: Temperature', ans: 1 }, { label: 'T: Time', ans: 2 }, { label: 'O: Oxygen', ans: 3 }, { label: 'M: Moisture', ans: 4 }],
-      why: 'Acidity is pH 4.6 to 7.5, temperature is 41 to 135°F, time is 4 hours cumulative, most pathogens need oxygen, and moisture means water activity above 0.85.',
+      why: 'Acidity is pH 4.6 to 7.5, temperature is 41 to 135°F, time is 4 hours added together, most pathogens need oxygen, and moisture means water activity above 0.85.',
     },
     {
       type: 'fill', title: 'Know your numbers',
       intro: 'Type the number from the lesson.',
-      rows: [{ label: 'Lowest temperature of the danger zone', unit: '°F', ans: 41 }, { label: 'Highest temperature of the danger zone', unit: '°F', ans: 135 }, { label: 'Maximum cumulative hours in the danger zone', unit: 'hours', ans: 4 }, { label: 'Water activity must be above', unit: '', ans: 0.85, tol: 0.001 }],
-      why: 'The danger zone is 41 to 135°F. Four hours is the cumulative limit. Bacteria need water activity above 0.85 to grow.',
+      rows: [{ label: 'Lowest temperature of the danger zone', unit: '°F', ans: 41 }, { label: 'Highest temperature of the danger zone', unit: '°F', ans: 135 }, { label: 'Most hours the danger zone time can add up to', unit: 'hours', ans: 4 }, { label: 'Water activity must be above', unit: '', ans: 0.85, tol: 0.001 }],
+      why: 'The danger zone is 41 to 135°F. Four hours is the most it can add up to. Bacteria need water activity above 0.85 to grow.',
     },
     {
       type: 'choice', title: 'Apply the ideas',
@@ -85,7 +85,7 @@ ACTIVITIES.w2d2 = {
       items: [
         { q: 'A cook has vomiting and diarrhea. What should the cook do?', opts: ['Work the dish pit instead', 'Report it to the manager', 'Wear gloves and keep working', 'Take medicine and stay quiet'], ans: 1, why: 'Employees must report symptoms such as vomiting, diarrhea, jaundice, sore throat with fever and infected wounds.' },
         { q: 'You are wearing gloves and finish handling raw chicken. What now?', opts: ['Keep the same gloves for the salad', 'Change gloves, and wash your hands', 'Rinse the gloves under the tap', 'Put a second pair on top'], ans: 1, why: 'Gloves are single-use. Change them when switching tasks and after raw proteins. Gloves do not remove the need to wash hands.' },
-        { q: 'A cook wants to place sliced deli meat on a sandwich with bare hands. The kitchen has no policy on file. Is that allowed?', opts: ['Yes, if the hands look clean', 'No, bare-hand contact with ready-to-eat food is prohibited in most jurisdictions without an approved policy', 'Yes, on slow days', 'Yes, with sanitizer'], ans: 1, why: 'Use tongs, deli paper or single-use gloves instead unless an approved bare-hand contact policy is on file.' },
+        { q: 'A cook wants to place sliced deli meat on a sandwich with bare hands. The kitchen has no policy on file. Is that allowed?', opts: ['Yes, if the hands look clean', 'No, bare-hand contact with ready-to-eat food is not allowed in most places without an approved policy', 'Yes, on slow days', 'Yes, with sanitizer'], ans: 1, why: 'Use tongs, deli paper or single-use gloves instead unless an approved bare-hand contact policy is on file.' },
         { q: 'You touch your face while wearing gloves. What should you do?', opts: ['Nothing, the gloves protect the food', 'Change the gloves after washing your hands', 'Turn the gloves inside out', 'Spray them with sanitizer'], ans: 1, why: 'Touching your face is a contamination event. Change gloves, and wash your hands.' },
       ],
     },
@@ -134,7 +134,7 @@ ACTIVITIES.w2d3 = {
     {
       type: 'choice', title: 'Time and temperature scenarios',
       items: [
-        { q: 'A pot of soup has been in the danger zone for a total of 5 hours across the shift. What happens?', opts: ['Reheat it and serve', 'Discard it', 'Chill it and keep it for tomorrow', 'Serve it only to staff'], ans: 1, why: 'Four hours is the maximum cumulative time in the danger zone. After that, discard the food.' },
+        { q: 'A pot of soup has been in the danger zone for a total of 5 hours across the shift. What happens?', opts: ['Reheat it and serve', 'Discard it', 'Chill it and keep it for tomorrow', 'Serve it only to staff'], ans: 1, why: 'Four hours is the most time the danger zone can add up to. After that, discard the food.' },
         { q: 'A cook plans to reheat yesterday’s chili in the steam table. Is that right?', opts: ['Yes, steam tables heat quickly', 'No, a steam table only holds temperature; reheat on a stove or oven to 165°F within 2 hours', 'Yes, if the lid is on', 'Yes, to 135°F'], ans: 1, why: 'A steam table cannot raise temperature fast enough. Reheat properly, then hot hold.' },
         { q: 'You need to cool a big pot of stock fast. Which choice helps most?', opts: ['Put the lid on and leave it on the stove', 'Divide it into smaller portions and use an ice-water bath', 'Put the full hot pot in the walk-in', 'Leave it overnight'], ans: 1, why: 'Smaller portions, ice-water baths, ice paddles and blast chillers cool food within the time limits.' },
         { q: 'A chicken breast reads 158°F. What do you do?', opts: ['Serve it', 'Keep cooking to 165°F', 'Cook it to 145°F', 'Rest it and serve'], ans: 1, why: 'All poultry must reach 165°F for 1 second.' },
@@ -154,7 +154,7 @@ ACTIVITIES.w2d3 = {
         { q: 'A delivery of chicken arrives at 48°F. What do you do?', opts: ['Accept it and cook it today', 'Reject it', 'Accept it if it smells fine', 'Freeze it at once'], ans: 1, why: 'Refrigerated food must be 41°F or below. 48°F is wrong temperature, so reject it and document.' },
         { q: 'A case of canned tomatoes has swollen ends on several cans. What do you do?', opts: ['Accept; the contents are sealed', 'Reject those cans', 'Open one to see', 'Use them in sauces'], ans: 1, why: 'Swollen ends, severe dents on seams and leaks are reasons to reject canned goods.' },
         { q: 'Frozen shrimp are at 0°F but have large ice crystals and a faint odor. What does that suggest?', opts: ['They were thawed and refrozen; reject', 'They are fresh', 'This is normal', 'They are ready to cook'], ans: 0, why: 'Large ice crystals, discoloration and off odors are signs of thawing and refreezing.' },
-        { q: 'The driver says, “Just sign, I am in a hurry.” Why should you still inspect?', opts: ['You do not need to', 'A delivery accepted without inspection transfers liability to the operation', 'It saves money', 'It is rude not to'], ans: 1, why: 'Once you accept it, the problem is yours.' },
+        { q: 'The driver says, “Just sign, I am in a hurry.” Why should you still inspect?', opts: ['You do not need to', 'A delivery accepted without inspection makes your business responsible for what is wrong with it', 'It saves money', 'It is rude not to'], ans: 1, why: 'Once you accept it, the problem is yours.' },
       ],
     },
     {
@@ -220,9 +220,9 @@ ACTIVITIES.w2d4 = {
     {
       type: 'choice', title: 'IPM and inspections',
       items: [
-        { q: 'Which approach does Integrated Pest Management put first?', opts: ['Non-chemical methods', 'Spraying every week', 'Traps on the dining room floor', 'Ignoring small sightings'], ans: 0, why: 'IPM is a systematic approach that prioritizes non-chemical prevention, such as sealing gaps and good drainage.' },
+        { q: 'Which approach does Integrated Pest Management put first?', opts: ['Non-chemical methods', 'Spraying every week', 'Traps on the dining room floor', 'Ignoring small sightings'], ans: 0, why: 'IPM is a step-by-step approach that uses non-chemical prevention first, such as sealing gaps and good drainage.' },
         { q: 'A coworker wants to spray bug killer near the prep area. What is the best reply?', opts: ['Go ahead', 'Do not; report it and let management call a licensed pest control operator', 'Spray only at night', 'Spray under the sink only'], ans: 1, why: 'DIY pest control is not allowed in a licensed food facility. Chemicals near food also create a contamination risk.' },
-        { q: 'Which is something a health inspector checks?', opts: ['Temperatures, storage order, labeling and handwashing station compliance', 'The menu prices', 'The color of the walls', 'Staff hair color'], ans: 0, why: 'Inspectors also check equipment sanitation and pest evidence.' },
+        { q: 'Which is something a health inspector checks?', opts: ['Temperatures, storage order, labeling and handwashing sinks that meet the rules', 'The menu prices', 'The color of the walls', 'Staff hair color'], ans: 0, why: 'Inspectors also check equipment sanitation and pest evidence.' },
         { q: 'What can a failed inspection lead to?', opts: ['Nothing', 'A fine, closure or loss of license', 'A new menu', 'A bonus'], ans: 1, why: 'The stakes are real, so work to standard every shift, not just on inspection day.' },
       ],
     },

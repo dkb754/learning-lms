@@ -236,7 +236,7 @@ ACTIVITIES.w3d4 = {
       options: ['Virginia food handler permit', 'Business registration with the Virginia State Corporation Commission', 'Health department inspection', 'VDACS'],
       rows: [
         { label: 'Required for anyone who handles open food in a food service establishment', ans: 0 },
-        { label: 'Register your business name; an LLC provides liability protection', ans: 1 },
+        { label: 'Register your business name; an LLC protects your personal money and property', ans: 1 },
         { label: 'Required before opening a commercial kitchen or selling non-cottage food products', ans: 2 },
         { label: 'Regulates cottage food operations and farmers market vendors; check product-specific requirements', ans: 3 },
         { label: 'Obtained through the local health department or an approved training program', ans: 0 },
@@ -246,7 +246,7 @@ ACTIVITIES.w3d4 = {
     {
       type: 'choice', title: 'Permit scenarios',
       items: [
-        { q: 'You want an LLC for liability protection. Where do you register, and what does the lesson say it costs?', opts: ['With VDACS, free', 'With the Virginia State Corporation Commission, a $100 filing fee', 'With the health department, $25', 'No registration is needed for an LLC'], ans: 1, why: 'The lesson says to register your business name with the Virginia State Corporation Commission, and that the LLC filing fee is $100.' },
+        { q: 'You want an LLC to protect your personal money and property. Where do you register, and what does the lesson say it costs?', opts: ['With VDACS, free', 'With the Virginia State Corporation Commission, a $100 filing fee', 'With the health department, $25', 'No registration is needed for an LLC'], ans: 1, why: 'The lesson says to register your business name with the Virginia State Corporation Commission, and that the LLC filing fee is $100.' },
         { q: 'You will cook in a commercial kitchen and sell non-cottage food products. What must happen before you open?', opts: ['Nothing', 'You must pass a health department inspection', 'Only register with the SCC', 'Just get a tent'], ans: 1, why: 'Any food business operating from a commercial kitchen or selling non-cottage food products must pass a health department inspection before opening.' },
         { q: 'You are not sure what rules apply to your specific farmers market product. What does the lesson tell you to do?', opts: ['Assume none apply', 'Check product-specific requirements with VDACS', 'Ask a customer', 'Wait until someone complains'], ans: 1, why: 'VDACS regulates cottage food operations, farmers market vendors and certain food products, so the lesson tells you to check product-specific requirements.' },
       ],

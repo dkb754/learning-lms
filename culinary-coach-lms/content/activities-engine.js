@@ -122,7 +122,8 @@ function actHtml(x) {
         ${r === true ? '<span class="act-mark ok">✓</span>' : r === false ? '<span class="act-mark no">✗ try again</span>' : ''}</span></div>`;
     }).join('') + (done && def.why ? `<div class="act-why">${esc(def.why)}</div>` : '');
   } else if (def.type === 'reflect') {
-    body = def.prompts.map(p => {
+    const eg = def.exampleFirst && def.model && !done ? `<details class="act-model"><summary>Not sure where to start? See an example first</summary><div>${esc(def.model).replace(/\n/g, '<br>')}</div></details>` : '';
+    body = eg + def.prompts.map(p => {
       const fb = done ? done[p.key] : null;
       return `<div class="act-prompt"><label for="${id}-${p.key}"><strong>${esc(p.label)}</strong>${p.help ? `<span class="act-help"> ${esc(p.help)}</span>` : ''}</label>
         <textarea id="${id}-${p.key}" rows="${p.rows || 4}" maxlength="1500" placeholder="${esc(p.placeholder || (p.items > 1 ? 'One idea per line' : 'Write here'))}" ${st.busy ? 'disabled' : ''} oninput="actVal('${id}','${p.key}',this.value)">${esc(st.vals[p.key] || '')}</textarea>

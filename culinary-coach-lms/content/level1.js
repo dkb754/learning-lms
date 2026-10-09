@@ -50,7 +50,7 @@ const LEVEL1 = {
     },
     {
       id: 'w1d2', week: 1, dow: 'Tuesday', date: 'October 13', short: 'Oct 13', module: 'CST M1: Knife Skills & Ingredients',
-      layer: 'KRP — industry reality framing', hours: '~3 hours',
+      layer: 'KRP — see the job as it really is', hours: '~3 hours',
       topics: ['Knife safety and grip', 'Classic cuts: large, medium and small dice, julienne, chiffonade', 'The 25-ingredient library'],
       resources: [
         { t: 'video', title: 'Basic Knife Skills and Cuts', meta: 'YouTube', url: YT('VJNA4vrdWec') },
@@ -60,7 +60,7 @@ const LEVEL1 = {
     },
     {
       id: 'w1d3', week: 1, dow: 'Wednesday', date: 'October 14', short: 'Oct 14', module: 'CST M1: Recipe Execution & Storage',
-      layer: 'KRP — cognitive load reduction', hours: '~3 hours',
+      layer: 'KRP — keep your head clear', hours: '~3 hours',
       topics: ['Standardized recipe format', 'Unit conversion and yield', 'FIFO, labeling and temperature control', 'Cross-contamination'],
       resources: [
         { t: 'video', title: 'First-In First-Out Rotation and Labeling', meta: 'YouTube', url: YT('mMN5QKiqZf4') },
@@ -70,7 +70,7 @@ const LEVEL1 = {
     },
     {
       id: 'w1d4', week: 1, dow: 'Thursday', date: 'October 15', short: 'Oct 15', module: 'CST M1: Production & Team Communication',
-      layer: 'KRP — professional identity', hours: '~3 hours',
+      layer: 'KRP — who you are at work', hours: '~3 hours',
       topics: ['Prep lists', 'Production timelines', 'Kitchen calls and acknowledgments', 'Line communication standards'],
       resources: [
         { t: 'video', title: '10 Phrases Used in Every Kitchen', meta: 'YouTube', url: YT('8lrZdejfe58') },
@@ -84,7 +84,7 @@ const LEVEL1 = {
     },
     {
       id: 'w1lab', lab: 'lab1', week: 1, dow: 'Saturday', date: 'October 17', short: 'Oct 17', module: 'LAB 1 — CST Assessment',
-      layer: 'KRP — real conditions exposure',
+      layer: 'KRP — feel the real kitchen',
       activities: ['Mise en place setup', 'Knife cuts assessed against the rubric', 'Storage and labeling check', 'Prep list execution', 'Team debrief'],
       assessment: 'CST Rubric (100 points): Arrival/Setup, Knife Skills, Storage, Production',
       unlocks: 'Your instructor confirms your attendance at the lab. That unlocks Weeks 2–4.',

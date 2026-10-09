@@ -43,7 +43,7 @@ const DIAGRAMS = (() => {
     'A thermometer scale. Cold holding is 41 degrees Fahrenheit or lower. Between 41 and 135 degrees is the danger zone where bacteria multiply quickly. Hot holding is 135 or higher. Poultry and reheating must reach 165.',
     r(250, 20, 56, 340, '#ffffff', { stroke: G, sw: 2.5, rx: 28 }) + r(252, 20, 52, 90, '#f4b6a8', { rx: 26 }) + r(252, 110, 52, 130, OR, { rx: 0 }) + r(252, 240, 52, 118, '#a9d2e8', { rx: 26 }) +
     [[165, 'Poultry · reheat for hot holding', 40, OR], [155, 'Ground meat and ground seafood', 70, TX], [145, 'Whole beef/pork, seafood, eggs', 90, TX], [135, 'HOT HOLDING at or above', 112, G], [41, 'COLD HOLDING at or below', 240, G], [0, 'Frozen foods at or below', 340, SUB]].map(([deg, label, y, c]) => `<line x1="306" y1="${y}" x2="330" y2="${y}" stroke="${c}" stroke-width="2"/>` + t(336, y + 4, `${deg}°F  ${label}`, { a: 'start', s: 12.5, w: deg === 135 || deg === 41 ? 700 : 500, c })).join('') +
-    t(200, 175, 'DANGER ZONE', { w: 800, c: OR, s: 15, a: 'end' }) + t(200, 193, '41°F to 135°F', { s: 12.5, c: OR, a: 'end' }) + t(200, 211, 'bacteria multiply fast', { s: 11, c: SUB, a: 'end' }) + t(200, 227, '4 hours cumulative, then discard', { s: 11, c: SUB, a: 'end' }) +
+    t(200, 175, 'DANGER ZONE', { w: 800, c: OR, s: 15, a: 'end' }) + t(200, 193, '41°F to 135°F', { s: 12.5, c: OR, a: 'end' }) + t(200, 211, 'bacteria multiply fast', { s: 11, c: SUB, a: 'end' }) + t(200, 227, '4 hours added together, then discard', { s: 11, c: SUB, a: 'end' }) +
     t(336, 282, 'Cooling: 135°F → 70°F within 2 hours,', { a: 'start', s: 11.5, c: M }) + t(336, 299, 'then 70°F → 41°F within 4 more hours', { a: 'start', s: 11.5, c: M }));
 
   const flow = (steps, y, w, gap, fill) => steps.map((s, i) => r(10 + i * (w + gap), y, w, 78, fill[i % fill.length], { stroke: M }) + t(10 + i * (w + gap) + w / 2, y + 28, `${i + 1}`, { w: 800, c: G, s: 17 }) + t(10 + i * (w + gap) + w / 2, y + 50, s[0], { w: 700, s: 12.5 }) + t(10 + i * (w + gap) + w / 2, y + 67, s[1], { s: 10, c: SUB }) +
@@ -59,9 +59,9 @@ const DIAGRAMS = (() => {
     defs + flow([['Wet', 'warm water'], ['Soap', 'hands + arms'], ['Scrub', '10–15 sec'], ['Rinse', 'thoroughly'], ['Dry', 'paper towel'], ['Turn off', 'with the towel']], 20, 92, 16, ['#e5eef6', '#eef4ea']) +
     t(320, 135, 'The whole procedure takes at least 20 seconds.', { w: 700, s: 13 }) + t(320, 156, 'Sanitizer is a supplement, never a substitute for handwashing.', { s: 11.5, c: SUB }));
 
-  const fat = [['F', 'Food', 'protein-rich|moist food'], ['A', 'Acidity', 'pH 4.6 – 7.5'], ['T', 'Temperature', '41°F – 135°F'], ['T', 'Time', '4 hours|cumulative'], ['O', 'Oxygen', 'most pathogens|need it'], ['M', 'Moisture', 'water activity|above 0.85']];
+  const fat = [['F', 'Food', 'protein-rich|moist food'], ['A', 'Acidity', 'pH 4.6 – 7.5'], ['T', 'Temperature', '41°F – 135°F'], ['T', 'Time', '4 hours|added together'], ['O', 'Oxygen', 'most pathogens|need it'], ['M', 'Moisture', 'water activity|above 0.85']];
   const fattom = svg('0 0 640 230', 'FAT TOM: six conditions bacteria need to grow',
-    'Food, Acidity (pH 4.6 to 7.5), Temperature (41 to 135 degrees), Time (4 hours cumulative), Oxygen, and Moisture (water activity above 0.85).',
+    'Food, Acidity (pH 4.6 to 7.5), Temperature (41 to 135 degrees), Time (4 hours added together), Oxygen, and Moisture (water activity above 0.85).',
     fat.map(([l, n, d], i) => r(10 + i * 104, 20, 98, 130, i % 2 ? '#eef4ea' : '#f6efd9', { stroke: M }) + t(59 + i * 104, 66, l, { s: 38, w: 800, c: G }) + t(59 + i * 104, 96, n, { w: 700, s: 12.5 }) + d.split('|').map((ln, k) => t(59 + i * 104, 116 + k * 13, ln, { s: 9.5, c: SUB })).join('')).join('') +
     t(320, 182, 'Take away any one condition and bacteria cannot grow.', { s: 12, c: SUB }) + t(320, 202, 'Control time and temperature first: you control them every shift.', { s: 12, c: SUB }));
 
