@@ -1302,6 +1302,9 @@ body {
 .krp-phase{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px 16px;font-size:13px}
 .krp-phase h4{font-family:var(--font-display);margin:2px 0}.krp-n{font:500 11px var(--font-mono);color:var(--orange);text-transform:uppercase;letter-spacing:.08em}
 .krp-weeks{color:var(--gray-600);margin-bottom:6px}.krp-out{margin-top:8px;font-weight:600;color:var(--green-mid)}
+.krp-skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:8px 0 24px}
+.krp-skill{background:var(--white);border:1px solid var(--gray-200);border-left:4px solid var(--gold);border-radius:var(--radius);padding:14px 16px;font-size:14px}
+.krp-skill h4{font-family:var(--font-display);margin:0 0 2px}.krp-skill p{margin:6px 0 8px;line-height:1.6}
 .krp-items{display:flex;flex-direction:column;gap:8px}
 .krp-item{display:flex;gap:12px;align-items:center;background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:12px 14px}
 .krp-item>div:nth-child(2){flex:1}.krp-item.done{border-color:var(--green-bright)}
@@ -1815,6 +1818,8 @@ function renderKrp() {
     <div class="week-header"><div class="wh-eyebrow">Kitchen Readiness Protocol</div><h2>My KRP Portfolio</h2>
       <div class="wh-dates">Built across all four weeks · finished with a 90-day check-in after Lab 4</div></div>
     <div class="krp-phases">${phases}</div>
+    <div class="section-title">Your four KRP skills</div>
+    <div class="krp-skills">${(LEVEL1.krp.skills || []).map(k => `<div class="krp-skill"><h4>${esc(k.name)}</h4><div class="krp-weeks">${esc(k.when)}</div><p>${esc(k.desc)}</p><button class="link-btn" onclick="goToDay('${k.day}')">Go to this lesson</button></div>`).join('')}</div>
     <div class="section-title">Portfolio deliverables</div><div id="krp-items" class="krp-items"></div>
     <div class="deliverable-card" id="checkin-card"><h4>📬 90-day check-in <span class="layer-chip">optional</span></h4>
       <p>Opt in and we will email you once, 90 days after Lab 4 (early February 2027), with a short survey about how things are going. We use your email for nothing else, and you can opt out here any time.</p>
