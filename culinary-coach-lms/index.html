@@ -1328,6 +1328,28 @@ body {
 .qr-actions{margin:8px 0 12px}.qr-q{padding:10px 0;border-top:1px solid var(--gray-100);font-size:14px}
 .qr-q ul{list-style:none;margin:6px 0 4px 8px}.qr-q li.right{color:var(--green-bright);font-weight:600}
 .qr-fb{font-size:12px;color:var(--gray-600);font-style:italic}
+.act{margin:12px 0}
+.act-card{background:var(--white);border:1px solid var(--gray-200);border-left:4px solid var(--gold);border-radius:var(--radius);padding:14px 16px}
+.act-card.done{border-left-color:var(--green-bright)}
+.act-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.act-intro{font-size:14px;margin:0 0 10px}
+.act-q{margin:10px 0}.act-qt{font-weight:600;font-size:14px;margin-bottom:4px}
+.act-opt{display:block;padding:6px 10px;margin:3px 0;border:1px solid var(--gray-200);border-radius:8px;font-size:14px;cursor:pointer}
+.act-opt.right{border-color:var(--green-bright);background:rgba(61,122,82,.08)}.act-opt.wrong{border-color:var(--orange);background:rgba(196,82,42,.08)}
+.act-why{font-size:13px;color:var(--gray-600);background:var(--gray-100);border-radius:8px;padding:6px 10px;margin:4px 0 8px}
+.act-mark{font-weight:700;font-size:13px;margin-left:6px}.act-mark.ok{color:var(--green-bright)}.act-mark.no{color:var(--orange)}
+.act-order{list-style:none;margin:6px 0;padding:0}.act-order li{display:flex;align-items:center;gap:10px;padding:8px 10px;margin:4px 0;border:1px solid var(--gray-200);border-radius:8px;font-size:14px}
+.act-order li.right{border-color:var(--green-bright);background:rgba(61,122,82,.08)}.act-order li.wrong{border-color:var(--orange);background:rgba(196,82,42,.08)}
+.act-step{flex:1}.act-move button{border:1px solid var(--gray-200);background:var(--white);border-radius:6px;width:32px;height:32px;cursor:pointer;margin-left:4px}
+.act-move button:disabled{opacity:.35;cursor:default}.act-move button:focus-visible,.act-opt:focus-within{outline:2px solid var(--gold);outline-offset:2px}
+.act-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--gray-100);font-size:14px;flex-wrap:wrap}
+.act-row select{padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font:14px var(--font-body);max-width:100%}
+.act-prompt{margin:10px 0}.act-prompt textarea{width:100%;margin-top:4px;padding:8px 10px;border:1px solid var(--gray-200);border-radius:8px;font:14px/1.5 var(--font-body)}
+.act-help{font-weight:400;font-size:12px;color:var(--gray-600)}
+.act-fb{font-size:13px;margin-top:4px}.act-fb.ok{color:var(--green-bright)}.act-fb.no{color:var(--orange)}.act-tip{color:var(--gray-600);margin-top:2px}
+.act-model{margin:8px 0;font-size:13px}.act-model summary{cursor:pointer;font-weight:600}.act-model div{margin-top:6px;padding:8px 10px;background:var(--gray-100);border-radius:8px}
+.act-msg{font-size:13px;margin-top:6px;min-height:18px}
+.act-figure{margin:14px 0;padding:12px;border:1px solid var(--gray-200);border-radius:var(--radius);background:var(--white)}.act-figure svg{width:100%;height:auto;max-width:640px;display:block;margin:6px auto}.act-figure figcaption{font-size:13px;color:var(--gray-600)}
 .ex-card.done{border-color:var(--green-bright)}
 .ex-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--gray-100);font-size:14px;flex-wrap:wrap}
 .ex-field{display:flex;align-items:center;gap:6px}.ex-field input{width:96px;padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font:14px var(--font-mono);text-align:right}
@@ -1396,11 +1418,11 @@ body {
         <div class="admin-header">
           <div><h2>Student Tracker — Level I · Fall 2026</h2>
             <p><span id="admin-count">0</span> enrolled students · Culinary Entrepreneurship I</p></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-export" onclick="exportCSV()">Export CSV</button><button class="btn-export" onclick="exportFilesCSV()">Export Files CSV</button><button class="btn-export" onclick="sendTestCheckin()">Send test check-in email</button></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-export" onclick="exportCSV()">Export CSV</button><button class="btn-export" onclick="exportFilesCSV()">Export Files CSV</button><button class="btn-export" onclick="exportReflections()">Export Reflections CSV</button><button class="btn-export" onclick="sendTestCheckin()">Send test check-in email</button></div>
         </div>
         <div style="overflow-x:auto;background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);">
           <table class="tracker-table" id="admin-table">
-            <thead><tr><th>Student</th><th>Lab attendance</th><th>Quizzes passed</th><th>Scaling exercises</th><th>Deliverables</th><th>ServSafe</th><th>CST rubric</th><th>Weeks 2–4</th><th>Level II</th></tr></thead>
+            <thead><tr><th>Student</th><th>Lab attendance</th><th>Quizzes passed</th><th>Scaling exercises</th><th>Lesson activities</th><th>Deliverables</th><th>ServSafe</th><th>CST rubric</th><th>Weeks 2–4</th><th>Level II</th></tr></thead>
             <tbody id="admin-body"></tbody>
           </table>
         </div>
@@ -1427,6 +1449,13 @@ body {
 <script src="content/level1.js"></script>
 <script src="content/level1-lessons.js"></script>
 <script src="content/level1-exercises.js"></script>
+<script src="content/activities-engine.js"></script>
+<script src="content/level1-diagrams.js"></script>
+<script src="content/activities-w1d1.js"></script>
+<script src="content/activities-w1.js"></script>
+<script src="content/activities-w2.js"></script>
+<script src="content/activities-w3.js"></script>
+<script src="content/activities-w4.js"></script>
 <script src="content/level1-quizzes.js"></script>
 <script>
 // ============================================================
@@ -1630,6 +1659,7 @@ function dayItems(d) {
   const items = [];
   if (d.quiz && quizOpen(d.quiz)) items.push({ kind: 'quiz', id: d.quiz });
   (d.exercises || []).forEach(e => items.push({ kind: 'ex', id: e.id }));
+  actGraded(d.id).forEach(a => items.push({ kind: 'ex', id: a.id }));
   if (d.file) items.push({ kind: 'del', id: d.id });
   if (d.lab) items.push({ kind: 'lab', id: d.id, lab: d.lab });
   return items;
@@ -1712,7 +1742,7 @@ function renderDayCard(d) {
   if (d.lab) return renderLabCard(d);
   const topics = (d.topics || []).map(t => `<li>${esc(t)}</li>`).join('');
   const res = (d.resources || []).map(resourceHtml).join('');
-  const lesson = d.lesson ? `<div class="lesson-body">${d.lesson}</div>` : '';
+  const lesson = lessonHtml(d);
   return `<div class="day-card">
     <div class="day-card-header" onclick="toggleDay('${d.id}')">
       <div class="day-dot" id="dot-${d.id}"></div>
@@ -1747,7 +1777,7 @@ function renderLabCard(d) {
         ${d.layer ? layerChips(d).replace('layer-row', 'layer-row on-dark') : ''}
         <ul class="lab-list">${acts}</ul>
         <div class="lab-assess"><strong>Assessment:</strong> ${esc(d.assessment)}</div></div>
-      ${d.lesson ? `<div class="lesson-body">${d.lesson}</div>` : ''}
+      ${lessonHtml(d)}
       <div class="deliverable-card lab-status"><h4>✅ Lab attendance</h4>
         ${d.unlocks ? `<p>${esc(d.unlocks)}</p>` : ''}
         <div id="att-${d.id}"></div></div>
@@ -2083,7 +2113,7 @@ function renderPanel(id) {
   }
   el.innerHTML = html;
 }
-function renderAllPanels() { Object.keys(FILES).forEach(renderPanel); renderExercises(); }
+function renderAllPanels() { Object.keys(FILES).forEach(renderPanel); renderExercises(); renderActivities(); }
 
 // ---- Scaling exercises (answers are graded on the server; the page never holds them)
 const exState = {};   // id -> { vals: {key: text}, results: {key: bool}|null, busy, msg }
@@ -2365,6 +2395,11 @@ function buildMyGrades() {
         : q ? `<span class="score-badge ${q.passed ? 'score-pass' : 'score-fail'}">${q.passed ? '✓ Passed' : '✗ Retry'} · ${q.score}%</span>` : '<span class="score-badge score-pending">Not taken</span>';
       html += `<tr><td>Week ${d.week}</td><td>${esc(quiz ? quiz.title : d.module)}</td><td>Quiz</td><td>${badge}</td></tr>`;
     }
+    const acts = actGraded(d.id);
+    if (acts.length) {
+      const n = acts.filter(a => (memCache.exercises[a.id] || {}).passed).length;
+      html += `<tr><td>Week ${d.week}</td><td>${esc(d.short)} lesson activities</td><td>Activities</td><td><span class="score-badge ${n === acts.length ? 'score-pass' : 'score-pending'}">${n}/${acts.length} done</span></td></tr>`;
+    }
     (d.exercises || []).forEach(e => {
       const r = memCache.exercises[e.id];
       html += `<tr><td>Week ${d.week}</td><td>${esc(e.title)}</td><td>Exercise</td><td>${r ? `<span class="score-badge ${r.passed ? 'score-pass' : 'score-pending'}">${r.passed ? '✓ Passed' : 'Best ' + r.best + '/' + r.total}</span>` : '<span class="score-badge score-pending">Not started</span>'}</td></tr>`;
@@ -2401,10 +2436,10 @@ const adminRubric = (name, lab = 1) => (adminData.rubrics || []).find(r => r.stu
 
 async function buildAdminTable() {
   const tbody = document.getElementById('admin-body');
-  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--gray-600);">⏳ Loading student data…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--gray-600);">⏳ Loading student data…</td></tr>';
   try { await loadAdminData(); } catch (e) {
     if (e.code === 'session_expired') return;
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--orange);">⚠️ Could not load student data. Check your connection and reopen this page.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--orange);">⚠️ Could not load student data. Check your connection and reopen this page.</td></tr>';
     return;
   }
   const openQuizzes = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
@@ -2416,6 +2451,8 @@ async function buildAdminTable() {
     const qPassed = openQuizzes.filter(id => d.quizzes[id] && d.quizzes[id].passed).length;
     const exIds = DAYS.flatMap(x => (x.exercises || []).map(e => e.id));
     const exDone = exIds.filter(id => (d.exercises || {})[id] && d.exercises[id].passed).length;
+    const actIds = ALL_ACTS().filter(a => a.graded).map(a => a.id);
+    const actDone = actIds.filter(id => ((d.exercises || {})[id] || {}).passed).length;
     const dels = Object.keys(FILES).filter(id => d.deliverables[id]).length;
     const ss = d.servsafe || {};
     const rub = adminRubric(name);
@@ -2424,6 +2461,7 @@ async function buildAdminTable() {
       <td><div class="lab-toggles">${labs}</div></td>
       <td><span class="score-badge ${openQuizzes.length && qPassed === openQuizzes.length ? 'score-pass' : 'score-pending'}">${qPassed}/${openQuizzes.length}</span></td>
       <td><span class="score-badge ${exDone === exIds.length ? 'score-pass' : 'score-pending'}">${exDone}/${exIds.length}</span></td>
+      <td><span class="score-badge ${actDone === actIds.length ? 'score-pass' : 'score-pending'}">${actDone}/${actIds.length}</span></td>
       <td><span class="score-badge ${dels === Object.keys(FILES).length ? 'score-pass' : 'score-pending'}">${dels}/${Object.keys(FILES).length}</span></td>
       <td><div class="ss-edit">
         <input type="number" min="0" max="100" placeholder="practice %" value="${ss.practice_score ?? ''}" data-ss-practice="${esc(name)}" aria-label="Practice exam score for ${esc(name)}">
@@ -2575,6 +2613,25 @@ async function adminTogglePublish(id) {
   updateProgress();
 }
 
+async function exportReflections() {
+  showToast('📝 Pulling written answers…', '📝');
+  try { await loadAdminData(); } catch (e) { return; }
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const defs = Object.fromEntries(ALL_ACTS().filter(a => a.def.type === 'reflect').map(a => [a.id, a]));
+  let csv = 'Student,Lesson,Activity,Prompt,Answer,Best score %\n';
+  adminData.roster.forEach(name => {
+    const ex = adminProg(name).exercises || {};
+    Object.entries(defs).forEach(([id, a]) => {
+      const rec = ex[id]; if (!rec || !rec.text) return;
+      a.def.prompts.forEach(p => { if (rec.text[p.key]) csv += [name, a.day.short, a.def.title, p.label, rec.text[p.key], rec.best].map(q).join(',') + '\n'; });
+    });
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'CE_Level1_Fall2026_reflections.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
 async function sendTestCheckin() {
   const to = (prompt('Send a sample 90-day check-in email to which address?') || '').trim();
   if (!to) return;
@@ -2592,11 +2649,11 @@ async function exportCSV() {
   try { await loadAdminData(); } catch (e) { return; }
   const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
   const open = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
-  let csv = ['Student', 'Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Quizzes passed', 'Scaling exercises', 'Deliverables', 'ServSafe practice %', 'ServSafe exam', 'ServSafe exam %', 'CST Lab 1 total', 'CST band', 'Weeks 2-4 unlocked', 'Level II ready', '90-day check-in opt-in', 'Check-in email'].join(',') + '\n';
+  let csv = ['Student', 'Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Quizzes passed', 'Scaling exercises', 'Lesson activities', 'Deliverables', 'ServSafe practice %', 'ServSafe exam', 'ServSafe exam %', 'CST Lab 1 total', 'CST band', 'Weeks 2-4 unlocked', 'Level II ready', '90-day check-in opt-in', 'Check-in email'].join(',') + '\n';
   adminData.roster.forEach(name => {
     const d = adminProg(name), la = d.lab_attendance || {}, ss = d.servsafe || {}, r = adminRubric(name);
     csv += [name, ...LABS.map(l => la[l.lab] ? 'Yes' : 'No'), `${open.filter(id => d.quizzes[id]?.passed).length}/${open.length}`,
-      `${['ex1', 'ex2', 'ex3'].filter(id => (d.exercises || {})[id]?.passed).length}/3`, `${Object.keys(FILES).filter(id => d.deliverables[id]).length}/${Object.keys(FILES).length}`, ss.practice_score ?? '', ss.exam_result || 'pending', ss.exam_score ?? '',
+      `${['ex1', 'ex2', 'ex3'].filter(id => (d.exercises || {})[id]?.passed).length}/3`, `${ALL_ACTS().filter(a => a.graded && ((d.exercises || {})[a.id] || {}).passed).length}/${ALL_ACTS().filter(a => a.graded).length}`, `${Object.keys(FILES).filter(id => d.deliverables[id]).length}/${Object.keys(FILES).length}`, ss.practice_score ?? '', ss.exam_result || 'pending', ss.exam_score ?? '',
       r ? r.total : '', r ? r.band : '', d.w2_unlocked ? 'Yes' : 'No', d.is_l2_eligible ? 'Yes' : 'No', (d.checkin || {}).opt_in ? 'Yes' : 'No', (d.checkin || {}).email || ''].map(q).join(',') + '\n';
   });
   const a = document.createElement('a');

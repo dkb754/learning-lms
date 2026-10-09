@@ -2,7 +2,7 @@
 // Level I curriculum API (Culinary Entrepreneurship I, Fall 2026). Supersedes lms-api, which stays deployed only
 // until the new page is live. The browser never touches tables or the bucket directly; identity always comes
 // from the server-side session (token -> student_name), never from the request body.
-//   student: load, save, create-upload, record-submission, set-checkin, submit-exercise, logout
+//   student: load, save, create-upload, record-submission, set-checkin, submit-exercise, save-activity, logout
 //   admin:   admin-overview, admin-unlock, admin-file-url, admin-set-attendance, admin-set-servsafe,
 //            admin-save-rubric, admin-set-published
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -304,6 +304,32 @@ Deno.serve(async (req) => {
         };
         const saved = await writeRow(user, { exercises: { ...(row.exercises || {}), [id]: rec } });
         return json(200, { results, correct, total, passed, record: rec, progress: toProgress(saved) });
+      }
+
+      case "save-activity": { // lesson activities are graded in the browser (practice); the server keeps best score, attempts and written answers
+        const id = String(body.id || "");
+        if (!/^a_w[1-4](d[1-4]|lab)_(intro|p[1-4]|end)(_[0-9]{1,2})?$/.test(id)) throw new HttpError(400, "unknown_activity");
+        const score = Math.round(Number(body.score));
+        if (!Number.isFinite(score) || score < 0 || score > 100) throw new HttpError(400, "bad_score");
+        let text: Record<string, string> | undefined;
+        if (body.texts && typeof body.texts === "object") {
+          text = {};
+          for (const [k, v] of Object.entries(body.texts as Record<string, unknown>).slice(0, 8)) {
+            if (/^[a-z0-9_]{1,24}$/.test(k)) text[k] = String(v).slice(0, 1500);
+          }
+        }
+        if (isAdmin) return json(200, { ok: true }); // instructor preview: nothing recorded
+        const row = await ensureRow(user);
+        const cur = row.exercises || {};
+        if (!cur[id] && Object.keys(cur).filter((k) => k.startsWith("a_")).length >= 150) throw new HttpError(400, "too_many_activities");
+        const prev = cur[id];
+        const rec: Record<string, unknown> = {
+          passed: !!(prev?.passed || score >= 70), best: Math.max(prev?.best || 0, score), attempts: (prev?.attempts || 0) + 1,
+          date: new Date().toISOString(),
+        };
+        if (text) rec.text = text; else if (prev?.text) rec.text = prev.text;
+        const saved = await writeRow(user, { exercises: { ...cur, [id]: rec } });
+        return json(200, { progress: toProgress(saved) });
       }
 
       case "set-checkin": { // student opts in/out of the 90-day follow-up email

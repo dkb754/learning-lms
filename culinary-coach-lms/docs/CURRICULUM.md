@@ -10,6 +10,14 @@ Source: `CE_LevelMap_PlatformBrief.docx`. All course text is **data**, not page 
 | `content/level1-quizzes.js` | 14 quizzes (160 questions) written to match the lesson text | fix or replace questions; fill the `todo` items |
 | `supabase/functions/lms-api-v2` | server rules (ids, uploads, rubric keys, eligibility) | only if you add/rename a deliverable or quiz id — keep it in sync with `level1.js` |
 
+## Lesson activities (practice inside every lesson)
+Every PART of every lesson ends with auto-graded practice, plus diagrams where a picture helps (111 graded activities, 15 diagrams):
+* **Types:** multiple-choice scenarios (each answer explains why), put-in-order, match, calculate (numbers), and written reflections. Written reflections give feedback on completeness (enough specific entries, enough words, ideas worth adding), then show a model answer to compare with. They do not judge whether the content is "right".
+* **Honest Map:** Monday Part 3 is a working tool (Physical / Emotional / Relational / Economic, three entries each). Students download it as a text file and upload it Thursday as the KRP Honest Map. The Concept Brief (Nov 4) and 90-day plan work the same way.
+* **Pass mark** 70%, unlimited retries. Best score, attempts and written answers are saved on the student's record; activities count toward week progress and appear in My Grades. The tracker has a **Lesson activities** column; **Export Reflections CSV** gives you every student's written answers.
+* **Where it lives:** `content/activities-w1d1.js`, `activities-w1.js` … `activities-w4.js` (data), `activities-engine.js` (behaviour), `level1-diagrams.js` (diagrams). Check your edits with `node tools/check-activities.mjs`.
+* The Week 4 and some Week 2 activities draw on standard ServSafe / FDA Food Code knowledge where the lesson text is short. Review them before you rely on them.
+
 ## Instructor controls (sign in with the admin code)
 * **Quiz Review** — every quiz starts as **DRAFT** and is invisible to students. Check the answers, then **Publish**. Students cannot score an unpublished quiz even by calling the API.
 * **Student Tracker** — Lab 1–4 attendance toggles (Lab 1 present ⇒ Weeks 2–4 unlock), ServSafe practice score + exam result, CST rubric score, manual unlock, Level II-ready flag, CSV exports, file downloads.

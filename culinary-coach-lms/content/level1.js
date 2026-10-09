@@ -79,7 +79,7 @@ const LEVEL1 = {
       quiz: 'w1d4',
       file: {
         label: 'Honest Map', due: 'Thursday, Oct 15', krp: 'KRP Deliverable 1',
-        blurb: 'Your Honest Map: an accurate picture of what working in food really involves and where you stand today. Follow the template your instructor gives you.',
+        blurb: 'Your Honest Map: an accurate picture of what working in food really involves and where you stand today. Build it in Monday’s lesson (Part 3: The Honest Map), download your file there, improve it, and upload it here.',
       },
     },
     {

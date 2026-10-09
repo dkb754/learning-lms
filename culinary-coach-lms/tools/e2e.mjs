@@ -139,6 +139,13 @@ function makeBackend() {
         r.exercises[b.exercise_id] = { passed: !!(prev?.passed || passed), best: Math.max(prev?.best || 0, correct), total, attempts: (prev?.attempts || 0) + 1, date: new Date().toISOString() };
         return reply(route, 200, { results, correct, total, passed, record: r.exercises[b.exercise_id], progress: prog(r) });
       }
+      case 'save-activity': {
+        if (s.admin) return reply(route, 200, { ok: true });
+        if (!/^a_w[1-4](d[1-4]|lab)_(intro|p[1-4]|end)(_[0-9]{1,2})?$/.test(b.id)) return reply(route, 400, { error: 'unknown_activity' });
+        const r = row(s.name), prev = r.exercises[b.id];
+        r.exercises[b.id] = { passed: !!(prev?.passed || b.score >= 70), best: Math.max(prev?.best || 0, b.score), attempts: (prev?.attempts || 0) + 1, date: new Date().toISOString(), ...(b.texts ? { text: b.texts } : prev?.text ? { text: prev.text } : {}) };
+        return reply(route, 200, { progress: prog(r) });
+      }
       case 'set-checkin': {
         if (noAdmin()) return;
         if (b.opt_in && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(b.email || '')) return reply(route, 400, { error: 'bad_email' });
@@ -579,6 +586,51 @@ const tracker = '#admin-body';
   await page.waitForTimeout(400);
   ok(['ex1', 'ex2', 'ex3'].every(id => be.rows.get('Tameka Green').exercises[id]?.passed), 'fractions and decimals are accepted; all three exercises pass');
   ok(/6 of 8|\d+ of \d+ items done/.test(await text(page, '#wc1-count')), 'exercises count toward week progress');
+  // lesson activities (Monday, Mise en Place)
+  await page.evaluate(() => { if (!document.getElementById('w1d1').classList.contains('open')) toggleDay('w1d1'); });
+  ok(await page.locator('#w1d1 .act-card').count() >= 6 && await page.locator('#w1d1 .act-figure').count() === 2, 'Monday lesson shows graded activities and two diagrams');
+  ok(await page.locator('#w1d1 svg title').count() === 2, 'diagrams carry accessible titles');
+  // choice: pick wrong answers first -> marked, then right -> passes and saves
+  const act = id => `#act-${id}`;
+  await page.evaluate(() => { const d = ACTIVITIES.w1d1.p1[0]; d.items.forEach((it, i) => actPick('a_w1d1_p1', i, (it.ans + 1) % it.opts.length)); });
+  await page.click(`${act('a_w1d1_p1')} .btn-submit-work`);
+  await page.waitForFunction(() => /you need 70%/.test(document.querySelector('#act-a_w1d1_p1 .act-msg').innerText));
+  ok(!be.rows.get('Tameka Green').exercises.a_w1d1_p1.passed && be.rows.get('Tameka Green').exercises.a_w1d1_p1.attempts === 1, 'failed activity attempt is saved without a pass');
+  ok(await page.locator(`${act('a_w1d1_p1')} .act-opt.wrong`).count() === 4 && await page.locator(`${act('a_w1d1_p1')} .act-why`).count() === 4, 'wrong answers are marked and each explains why');
+  await page.evaluate(() => ACTIVITIES.w1d1.p1[0].items.forEach((it, i) => actPick('a_w1d1_p1', i, it.ans)));
+  await page.click(`${act('a_w1d1_p1')} .btn-submit-work`);
+  await page.waitForFunction(() => /Everything is right/.test(document.querySelector('#act-a_w1d1_p1 .act-msg').innerText));
+  ok(be.rows.get('Tameka Green').exercises.a_w1d1_p1.passed === true && be.rows.get('Tameka Green').exercises.a_w1d1_p1.best === 100, 'right answers pass and the best score is saved');
+  // order: shuffled start, then arrange correctly
+  const orderId = 'a_w1d1_p2_4';
+  ok(await page.evaluate(id => actState[id] === undefined || actState[id].order.some((v, i) => v !== i), orderId), 'order activity starts shuffled');
+  await page.evaluate(id => { const st = aSt(id, actDef(id).def); st.order = st.order.map((_, i) => i); actRerender(id); }, orderId);
+  await page.click(`${act(orderId)} .btn-submit-work`);
+  await page.waitForFunction(id => /Everything is right/.test(document.querySelector('#act-' + id + ' .act-msg').innerText), orderId);
+  ok(be.rows.get('Tameka Green').exercises[orderId].passed, 'ordering task grades the sequence');
+  await page.click(`${act(orderId)} .act-order li:nth-child(2) .act-move button:last-child`).catch(() => {});
+  // match
+  await page.evaluate(() => ACTIVITIES.w1d1.p2[2].rows.forEach((r, i) => actPick('a_w1d1_p2_3', i, String(r.ans))));
+  await page.click(`${act('a_w1d1_p2_3')} .btn-submit-work`);
+  await page.waitForFunction(() => /Everything is right/.test(document.querySelector('#act-a_w1d1_p2_3 .act-msg').innerText));
+  ok(be.rows.get('Tameka Green').exercises.a_w1d1_p2_3.passed, 'matching task grades each row');
+  // Honest Map: thin entries are coached, full entries pass, text is saved and downloadable
+  const hm = '#act-a_w1d1_p3';
+  await page.fill(`${hm} textarea >> nth=0`, 'Standing\nHeat');
+  for (const [i, v] of [['1', 'x y'], ['2', 'a'], ['3', 'b']]) await page.fill(`${hm} textarea >> nth=${i}`, v);
+  await page.click(`${hm} .btn-submit-work`);
+  await page.waitForFunction(() => /Add \d more entr/.test(document.querySelector('#act-a_w1d1_p3').innerText));
+  ok(await page.locator(`${hm} .act-fb.no`).count() === 4, 'Honest Map: thin entries are flagged per category');
+  ok(await page.locator(`${hm} .act-tip`).count() >= 1, 'coaching tips suggest what to think about');
+  const full = { 0: 'Standing on a hard floor all day\nBurns and cuts during a rush\nLifting heavy stockpots and cases', 1: 'A customer sends a dish back rudely\nCriticism of food I made\nStaying calm when tickets pile up', 2: 'Being corrected by the chef publicly\nA coworker who will not communicate\nLearning the kitchen hierarchy fast', 3: 'Entry-level pay that barely covers rent\nSchedules that change every week\nBuying my own knives and shoes' };
+  for (const [i, v] of Object.entries(full)) await page.fill(`${hm} textarea >> nth=${i}`, v);
+  await page.click(`${hm} .btn-submit-work`);
+  await page.waitForFunction(() => /Everything is right/.test(document.querySelector('#act-a_w1d1_p3 .act-msg').innerText));
+  ok(be.rows.get('Tameka Green').exercises.a_w1d1_p3.passed && /Standing on a hard floor/.test(be.rows.get('Tameka Green').exercises.a_w1d1_p3.text.physical), 'Honest Map passes and the written answers are saved to the record');
+  ok(await page.locator(`${hm} details.act-model`).count() === 1, 'a model answer is offered after checking');
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.click(`${hm} button:has-text("Download my Honest Map")`)]);
+  ok(dl.suggestedFilename() === 'honest-map.txt', 'Honest Map downloads as honest-map.txt');
+  ok(/week progress|\d+ of \d+ items done/.test(await text(page, '#wc1-count')), 'activities count toward week progress');
   ok(errors.length === 0, 'no JS errors in quiz flow', errors.join(' | '));
   await page.context().close();
 }
