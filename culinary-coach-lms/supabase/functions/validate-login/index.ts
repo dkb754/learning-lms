@@ -1,6 +1,6 @@
 // POST /functions/v1/validate-login
 // Body:    { access_code: string, student_name?: string }   (the typed name is cosmetic; the code identifies the person)
-// Returns: { valid, is_admin, student_name, token, expires_at }  |  { valid:false }  |  429 { valid:false, locked:true }
+// Returns: { valid, is_admin, student_name, level, token, expires_at }  |  { valid:false }  |  429 { valid:false, locked:true }
 //
 // The service-role key comes from the function environment that Supabase injects. It is never in the page or the repo.
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
 
   if (data.status === "ok") {
     return json(200, {
-      valid: true, is_admin: !!data.is_admin, student_name: data.student_name,
+      valid: true, is_admin: !!data.is_admin, student_name: data.student_name, level: data.level || "L1",
       token: data.token, expires_at: data.expires_at,
     });
   }

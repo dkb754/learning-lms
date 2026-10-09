@@ -17,8 +17,9 @@ const SHOTS = process.env.SHOTS;
 if (SHOTS) mkdirSync(SHOTS, { recursive: true });
 const launchOpts = process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {};
 
-let pass = 0, fail = 0;
-const ok = (cond, name, extra = '') => { cond ? pass++ : fail++; console.log(`${cond ? 'PASS' : 'FAIL'}  ${name}${cond ? '' : '  ' + extra}`); };
+import { Reporter } from './lib/report.mjs';
+const R = new Reporter('Browser tests (Chromium, mock backend)', 'e2e');
+const ok = (cond, name, extra = '') => R.check(cond, name, extra);
 
 // Course data comes straight from the real content files so the mock can never drift from the page.
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
@@ -35,8 +36,8 @@ const QUIZ_IDS = LEVEL1.days.filter(d => d.quiz).map(d => d.quiz);
 const RUBRIC_KEYS = CST_RUBRIC.sections.flatMap(s => s.criteria.map((_, i) => `${s.id}_${i + 1}`));
 
 // Mock credentials — deliberately NOT the real ones.
-const CODES = { 'MOCK-TEST': { name: 'TEST STUDENT' }, 'MOCK-TAMEKA': { name: 'Tameka Green' }, 'MOCK-ADMIN': { name: 'Instructor', admin: true } };
-const ROSTER = ['Tameka Green', 'TEST STUDENT', 'Zed Newstudent'];
+const CODES = { ...Object.fromEntries([...'ABCDEFGH'].map(L => [`MOCK-STU-${L}`, { name: `Student ${L}` }])), 'MOCK-TEST': { name: 'TEST STUDENT' }, 'MOCK-TAMEKA': { name: 'Tameka Green' }, 'MOCK-ADMIN': { name: 'Instructor', admin: true } };
+const ROSTER = ['Tameka Green', 'TEST STUDENT', 'Zed Newstudent', ...[...'ABCDEFGH'].map(L => `Student ${L}`)];
 const slug = s => s.normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'x';
 const band = t => (t >= 80 ? 'Pass' : t >= 70 ? 'Conditional' : 'Remediation required');
 
@@ -46,7 +47,7 @@ function makeBackend() {
   const files = [], subs = [], calls = [], urls = [], rubrics = [];
   const settings = { published_quizzes: [] };
   const mails = [];
-  const mode = { loginDown: false, apiDown: false, locked: false, storageFails: 0, recordFails: false, expireAll: false, noResend: false };
+  const mode = { loginDown: false, apiDown: false, locked: false, storageFails: 0, recordFails: false, expireAll: false, noResend: false, offline: false, delay: 0 };
   const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*', 'content-type': 'application/json' };
   const reply = (route, status, body) => route.fulfill({ status, headers: CORS, body: JSON.stringify(body) });
   const row = n => { if (!rows.has(n)) rows.set(n, { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, exercises: {}, is_l2_eligible: false, checkin: { opt_in: false, email: '', sent: false } }); return rows.get(n); };
@@ -70,9 +71,11 @@ function makeBackend() {
   async function api(route) {
     const req = route.request();
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+    if (mode.offline) return route.abort('internetdisconnected');
     const b = JSON.parse(req.postData() || '{}');
     calls.push({ fn: 'lms-api-v2', action: b.action });
     if (mode.apiDown) return reply(route, 503, { error: 'down' });
+    if (mode.delay) await new Promise(r => setTimeout(r, mode.delay));
     if (mode.expireAll) sessions.clear();
     const s = sessions.get(b.token);
     if (!s) return reply(route, 401, { error: 'session_expired' });
@@ -262,6 +265,7 @@ const be = makeBackend();
 const tracker = '#admin-body';
 
 // ===== 0. content integrity (no browser) =====
+R.section('Course content integrity');
 {
   const MONTH = { October: 9, November: 10 };
   const badDow = LEVEL1.days.filter(d => {
@@ -287,6 +291,7 @@ const tracker = '#admin-body';
 }
 
 // ===== 1. login + source hygiene + student view (nothing published yet) =====
+R.section('Login, page hygiene and student view');
 {
   const { page, errors } = await newPage(browser, be);
   const src = await page.content();
@@ -367,6 +372,7 @@ const tracker = '#admin-body';
 }
 
 // ===== 2. instructor: review + publish quizzes, record Lab 1, ServSafe, CST rubric =====
+R.section('Instructor: quiz publish, Lab 1 attendance, ServSafe, CST rubric');
 {
   const { page, errors } = await newPage(browser, be);
   await login(page, 'MOCK-ADMIN');
@@ -425,6 +431,7 @@ const tracker = '#admin-body';
 }
 
 // ===== 3. student: quizzes, results, uploads =====
+R.section('Student: quizzes, activities, file uploads, KRP');
 {
   const { page, errors } = await newPage(browser, be);
   await login(page, 'MOCK-TEST');
@@ -542,6 +549,7 @@ const tracker = '#admin-body';
 }
 
 // ===== 4. quiz fail/retry + offline save (Tameka; Week 1 is open without unlock) =====
+R.section('Quiz retry and offline save');
 {
   const { page, errors } = await newPage(browser, be);
   await login(page, 'MOCK-TAMEKA');
@@ -642,6 +650,7 @@ const tracker = '#admin-body';
 }
 
 // ===== 5. persistence across a fresh browser =====
+R.section('Persistence across browsers');
 {
   const { page } = await newPage(browser, be);
   await login(page, 'MOCK-TEST');
@@ -655,6 +664,7 @@ const tracker = '#admin-body';
 }
 
 // ===== 6. session expiry: back to login, work kept =====
+R.section('Session expiry');
 {
   const { page } = await newPage(browser, be);
   await login(page, 'MOCK-TAMEKA');
@@ -677,6 +687,7 @@ const tracker = '#admin-body';
 }
 
 // ===== 7. server unreachable must not wipe progress =====
+R.section('Server outage safety');
 {
   const { page } = await newPage(browser, be);
   await login(page, 'MOCK-TEST');
@@ -691,6 +702,7 @@ const tracker = '#admin-body';
 }
 
 // ===== 8. instructor: files, downloads, preview writes nothing, role separation =====
+R.section('Instructor: files, downloads, role separation');
 {
   const { page, errors } = await newPage(browser, be);
   await login(page, 'MOCK-ADMIN');
@@ -749,7 +761,139 @@ const tracker = '#admin-body';
   await page.context().close();
 }
 
+
+// ===== 8b. requested coverage: login matrix, publish flow, gate, KRP, sync states =====
+R.section('Login: admin code and every student code');
+for (const L of 'ABCDEFGH') {
+  const { page, ctx } = await newPage(browser, be);
+  await login(page, `MOCK-STU-${L}`); await appUp(page);
+  ok(new RegExp(`Student ${L}\\b`).test(await text(page, '#nav-name')), `student code ${L} signs in and shows that student's own name`);
+  ok(!(await page.locator('#admin-nav').isVisible()), `student ${L} does not see the instructor menu`);
+  await ctx.close();
+}
+{
+  const { page, ctx } = await newPage(browser, be);
+  await login(page, 'MOCK-ADMIN'); await appUp(page);
+  ok(await page.locator('#admin-nav').isVisible(), 'admin code signs in and shows the instructor menu');
+  await ctx.close();
+  const b = await newPage(browser, be);
+  await login(b.page, 'MOCK-STU-Z'); await b.page.waitForSelector('#login-error', { state: 'visible' });
+  ok(/Invalid access code/.test(await text(b.page, '#login-error')) && !(await b.page.locator('#app').isVisible()), 'an unknown code is refused and the app stays closed');
+  await b.ctx.close();
+}
+
+R.section('Quiz publish / unpublish through the admin panel');
+{
+  be.settings.published_quizzes = be.settings.published_quizzes.filter(q => q !== 'w1d3');
+  const a = await newPage(browser, be);
+  await login(a.page, 'MOCK-ADMIN'); await appUp(a.page);
+  await a.page.evaluate(() => showPage('quizreview'));
+  await a.page.waitForSelector('details[data-quiz-card="w1d3"]');
+  await a.page.locator('details[data-quiz-card="w1d3"] summary').click();
+  ok(/DRAFT/.test(await text(a.page, 'details[data-quiz-card="w1d3"] summary')), 'Quiz 3 starts as DRAFT');
+  const s1 = await newPage(browser, be);
+  await login(s1.page, 'MOCK-STU-B'); await appUp(s1.page);
+  await s1.page.evaluate(() => { showPage('w1'); toggleDay('w1d3'); });
+  ok(/opens when your instructor publishes it/.test(await text(s1.page, '#quiz-w1d3-container')), 'a student sees an unpublished quiz as closed');
+  await a.page.click('details[data-quiz-card="w1d3"] button[data-quiz="w1d3"]');
+  await a.page.waitForFunction(() => document.querySelector('button[data-quiz="w1d3"]')?.innerText === 'Unpublish');
+  ok(be.settings.published_quizzes.includes('w1d3') && /PUBLISHED/.test(await text(a.page, 'details[data-quiz-card="w1d3"] summary')), 'Publish switches the quiz on (server setting and tag)');
+  const s2 = await newPage(browser, be);
+  await login(s2.page, 'MOCK-STU-B'); await appUp(s2.page);
+  await s2.page.evaluate(() => { showPage('w1'); toggleDay('w1d3'); });
+  ok(await s2.page.locator('#quiz-w1d3-container .quiz-option').count() > 0, 'after publishing, a student gets the quiz questions');
+  await a.page.click('details[data-quiz-card="w1d3"] button[data-quiz="w1d3"]');
+  await a.page.waitForFunction(() => document.querySelector('button[data-quiz="w1d3"]')?.innerText === 'Publish to students');
+  ok(!be.settings.published_quizzes.includes('w1d3'), 'Unpublish switches the quiz off again');
+  await a.page.click('details[data-quiz-card="w1d3"] button[data-quiz="w1d3"]'); // leave it published for later checks
+  await a.page.waitForFunction(() => document.querySelector('button[data-quiz="w1d3"]')?.innerText === 'Unpublish');
+  for (const x of [a, s1, s2]) await x.ctx.close();
+}
+
+R.section('Week gate: lock before Lab 1, unlock after');
+{
+  const s = await newPage(browser, be);
+  await login(s.page, 'MOCK-STU-A'); await appUp(s.page);
+  for (const w of [2, 3, 4]) {
+    await s.page.evaluate(n => showPage('w' + n), w);
+    ok(await s.page.locator('#page-gate').isVisible() && !(await s.page.locator(`#page-w${w}`).evaluate(e => e.classList.contains('active'))), `Week ${w} is locked before Lab 1 attendance`);
+  }
+  ok(/🔒/.test(await text(s.page, '#sb-w2-badge')), 'the sidebar shows a lock on Weeks 2–4');
+  await s.page.evaluate(() => showPage('w1'));
+  ok(await s.page.locator('#page-w1').evaluate(e => e.classList.contains('active')), 'Week 1 is open while Weeks 2–4 are locked');
+  const a = await newPage(browser, be);
+  await login(a.page, 'MOCK-ADMIN'); await appUp(a.page);
+  await a.page.evaluate(() => showPage('admin'));
+  await a.page.waitForSelector('#admin-body button.lab-toggle[data-name="Student A"][data-lab="lab1"]');
+  await a.page.click('#admin-body button.lab-toggle[data-name="Student A"][data-lab="lab1"]');
+  await a.page.waitForFunction(() => document.querySelector('#admin-body button.lab-toggle[data-name="Student A"][data-lab="lab1"]')?.classList.contains('on'));
+  ok(be.rows.get('Student A').lab_attendance.lab1 === true && be.rows.get('Student A').w2_unlocked === true, 'toggling Lab 1 attendance sets the flag and unlocks Weeks 2–4 on the server');
+  await s.page.evaluate(() => checkUnlock());   // the "Check again" button on the lock screen
+  await s.page.waitForFunction(() => document.getElementById('page-w2')?.classList.contains('active'));
+  for (const w of [2, 3, 4]) {
+    await s.page.evaluate(n => showPage('w' + n), w);
+    ok(await s.page.locator(`#page-w${w}`).evaluate(e => e.classList.contains('active')) && !(await s.page.locator('#page-gate').isVisible()), `Week ${w} opens after Lab 1 is recorded`);
+  }
+  await a.page.click('#admin-body button.lab-toggle[data-name="Student A"][data-lab="lab1"]'); // mark absent again
+  await a.page.waitForFunction(() => !document.querySelector('#admin-body button.lab-toggle[data-name="Student A"][data-lab="lab1"]')?.classList.contains('on'));
+  ok(be.rows.get('Student A').lab_attendance.lab1 === false && be.rows.get('Student A').w2_unlocked === true, 'un-marking Lab 1 does not re-lock Weeks 2–4 once they were opened');
+  await s.ctx.close(); await a.ctx.close();
+}
+
+R.section('KRP deliverable submission and confirmation');
+{
+  const s = await newPage(browser, be);
+  await login(s.page, 'MOCK-STU-C'); await appUp(s.page);
+  await s.page.evaluate(() => { showPage('krp'); });
+  ok(await s.page.locator('.krp-item.done').count() === 0, 'KRP portfolio starts with nothing submitted');
+  await s.page.evaluate(() => { showPage('w1'); toggleDay('w1d4'); });
+  await s.page.setInputFiles('#sp-w1d4 input[type=file]', { name: 'honest-map.txt', mimeType: 'text/plain', buffer: Buffer.from('my honest map') });
+  ok(/FILE SELECTED/.test(await text(s.page, '#sp-w1d4')), 'a chosen file shows "selected, not yet submitted"');
+  await s.page.click('#sp-w1d4 .btn-submit-work.big');
+  await s.page.waitForFunction(() => /SUBMITTED/.test(document.getElementById('sp-w1d4').innerText) && !/NOT|SELECTED|FAILED/.test(document.getElementById('sp-w1d4').innerText));
+  ok(/honest-map\.txt/.test(await text(s.page, '#sp-w1d4')), 'the confirmation shows the file name and time');
+  ok(be.files.some(f => f.path === 'L1/student-c/honest-map/honest-map.txt') && be.subs.some(x => x.student_name === 'Student C' && x.assignment_id === 'w1d4'), 'the file reached the submissions bucket path L1/student-c/honest-map/ and a submissions row was written');
+  ok(be.rows.get('Student C').krp_portfolio.honest_map?.fileName === 'honest-map.txt', 'the KRP portfolio records the Honest Map');
+  await s.page.evaluate(() => showPage('krp'));
+  ok(await s.page.locator('.krp-item.done').count() === 1 && /submitted/.test(await text(s.page, '.krp-item.done')), 'the KRP page shows the Honest Map as submitted');
+  const s2 = await newPage(browser, be);
+  await login(s2.page, 'MOCK-STU-C'); await appUp(s2.page);
+  await s2.page.evaluate(() => showPage('krp'));
+  ok(await s2.page.locator('.krp-item.done').count() === 1, 'the confirmation is still there after signing in from a fresh browser');
+  await s.ctx.close(); await s2.ctx.close();
+}
+
+R.section('Sync indicator: Saving, Saved, Offline');
+{
+  if (!be.settings.published_quizzes.includes('w1d1')) be.settings.published_quizzes.push('w1d1');
+  if (!be.settings.published_quizzes.includes('w1d2')) be.settings.published_quizzes.push('w1d2');
+  const s = await newPage(browser, be);
+  await login(s.page, 'MOCK-STU-D'); await appUp(s.page);
+  await s.page.evaluate(() => { showPage('w1'); toggleDay('w1d1'); toggleDay('w1d2'); });
+  await s.page.evaluate(() => QUIZ_BANK.w1d1.questions.forEach((q, i) => selectOption('w1d1', i, q.ans)));
+  be.mode.delay = 1200;
+  await s.page.click('#qsub-w1d1');
+  await s.page.waitForFunction(() => /Saving/.test(document.getElementById('sync-indicator').innerText), null, { timeout: 5000 });
+  ok(true, 'the nav shows "Saving…" while a result is being sent');
+  await s.page.waitForFunction(() => /Saved/.test(document.getElementById('sync-indicator').innerText), null, { timeout: 8000 });
+  ok(be.rows.get('Student D').quizzes.w1d1?.passed === true, 'the nav shows "Saved" once the server has the result');
+  be.mode.delay = 0;
+  await s.page.evaluate(() => QUIZ_BANK.w1d2.questions.forEach((q, i) => selectOption('w1d2', i, q.ans)));
+  await s.ctx.setOffline(true); be.mode.offline = true;
+  await s.page.click('#qsub-w1d2');
+  await s.page.waitForFunction(() => /Not synced/.test(document.getElementById('sync-indicator').innerText), null, { timeout: 8000 });
+  ok(!be.rows.get('Student D').quizzes.w1d2, 'offline: the nav shows "Not synced" and the server has nothing new');
+  ok(await s.page.evaluate(() => !!localStorage.getItem('ce_l1f26_cache_Student D')), 'offline: the result is kept on the device');
+  await s.ctx.setOffline(false); be.mode.offline = false;
+  await s.page.click('#sync-indicator');
+  await s.page.waitForFunction(() => /Saved|^$/.test(document.getElementById('sync-indicator').innerText) && !/Not synced/.test(document.getElementById('sync-indicator').innerText), null, { timeout: 8000 });
+  await s.page.waitForTimeout(300);
+  ok(be.rows.get('Student D').quizzes.w1d2?.passed === true, 'back online: tapping the indicator sends the saved result');
+  await s.ctx.close();
+}
+
 // ===== 9. responsive =====
+R.section('Mobile and responsive layout');
 for (const vp of [{ width: 375, height: 760 }, { width: 360, height: 740 }, { width: 768, height: 900 }]) {
   const { page, errors } = await newPage(browser, be, { viewport: vp });
   const overflowLogin = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -761,6 +905,8 @@ for (const vp of [{ width: 375, height: 760 }, { width: 360, height: 740 }, { wi
     await page.evaluate(() => document.querySelectorAll('.day-card-body').forEach(b => b.classList.add('open')));
     const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     ok(over <= 1, `${vp.width}px: ${pg} fits the screen`, `overflow ${over}px`);
+    const broken = await page.evaluate(() => { const W = window.innerWidth; const out = []; document.querySelectorAll('.page-view.active *').forEach(e => { if (e.closest('.table-scroll, svg, [style*="overflow-x"], details:not([open]) > :not(summary)')) return; const r = e.getBoundingClientRect(); if (r.width && r.right > W + 2 && getComputedStyle(e).position !== 'fixed') out.push(e.tagName + '.' + (e.className && e.className.baseVal === undefined ? e.className : '')); }); return out.slice(0, 5); });
+    ok(broken.length === 0, `${vp.width}px: ${pg} has no element spilling past the screen edge`, broken.join(', '));
     if (SHOTS && vp.width === 375) await page.screenshot({ path: `${SHOTS}/mobile-${pg}.png`, fullPage: true });
   }
   ok(errors.length === 0, `${vp.width}px: no JS errors`, errors.join(' | '));
@@ -780,5 +926,4 @@ for (const vp of [{ width: 375, height: 760 }, { width: 360, height: 740 }, { wi
 }
 
 await browser.close();
-console.log(`\n${pass} passed, ${fail} failed (${process.env.BROWSER || 'chromium'})`);
-process.exit(fail ? 1 : 0);
+process.exit(R.finish());

@@ -13,10 +13,17 @@ insert into public.lms_settings (key, value)
 insert into public.lms_settings (key, value) values ('checkin_survey_url', '""'::jsonb) on conflict (key) do nothing;
 
 -- Daily at 15:00 UTC (11:00 AM Eastern). The function does nothing until 90 days after Lab 4.
-select cron.schedule('lms-send-checkins', '0 15 * * *', $$
-  select net.http_post(
-    url := 'https://mddvqxesxfifqxhuzhsi.supabase.co/functions/v1/send-checkins',
-    headers := jsonb_build_object('Content-Type', 'application/json',
-      'x-cron-secret', (select value->>'secret' from public.lms_settings where key = 'checkin_cron_secret')),
-    body := '{}'::jsonb);
-$$);
+-- Guarded so a database without pg_cron (local development, CI) still migrates cleanly.
+do $cron$
+begin
+  begin create extension if not exists pg_cron; exception when others then raise notice 'pg_cron not available: %', sqlerrm; end;
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('lms-send-checkins', '0 15 * * *', $job$
+      select net.http_post(
+        url := 'https://mddvqxesxfifqxhuzhsi.supabase.co/functions/v1/send-checkins',
+        headers := jsonb_build_object('Content-Type', 'application/json',
+          'x-cron-secret', (select value->>'secret' from public.lms_settings where key = 'checkin_cron_secret')),
+        body := '{}'::jsonb);
+    $job$);
+  end if;
+end $cron$;

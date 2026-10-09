@@ -1,11 +1,14 @@
-# Pre-deploy gate. Netlify deploys whatever lands on `main`, so `main` must only ever receive PRs that pass these checks
-# (enforce it with branch protection — see docs/DEPLOY.md).
+# Automated pre-deploy gate. Netlify deploys whatever lands on `main`, so `main` only ever gets a PR from `staging` whose
+# every automated test passed. There are NO manual steps: read the pass/fail table at the top of each run's Summary page.
 name: CI
 on:
   push:
     branches: [main, staging]
   pull_request:
     branches: [main, staging]
+
+permissions:
+  contents: read
 
 jobs:
   secret-scan:
@@ -21,10 +24,26 @@ jobs:
           if git grep -nI 'c2VydmljZV9yb2xl' -- . ':!.github'; then echo "::error::service_role key found"; fail=1; fi
           if git grep -nIE 'ADMIN2026|CE2026[A-H]' -- . ':!.github' ':!docs/*.docx' ':!tools/e2e.mjs'; then echo "::error::access code found"; fail=1; fi
           if git grep -nIE 'SUPABASE_SERVICE_ROLE_KEY\s*=\s*["'\'']eyJ' -- .; then echo "::error::service key assigned"; fail=1; fi
+          { echo "## $([ $fail = 0 ] && echo '✅' || echo '❌') Secret scan"; echo; echo "No service-role keys, access codes or admin code found in the repository: $([ $fail = 0 ] && echo PASS || echo FAIL)"; } >> "$GITHUB_STEP_SUMMARY"
           exit $fail
 
+  content:
+    name: Course content checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Lesson activities match the lessons (schema, answers, diagrams, coverage)
+        run: |
+          set +e
+          node tools/check-activities.mjs | tee activities.log
+          code=${PIPESTATUS[0]}
+          { echo "## $([ $code = 0 ] && echo '✅' || echo '❌') Course content checks"; echo; echo '```'; cat activities.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit $code
+
   e2e:
-    name: End-to-end tests (mock backend)
+    name: Browser tests (Chromium, mock backend)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,11 +52,86 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npx playwright install --with-deps chromium
       - run: node tools/e2e.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: e2e-results, path: test-results/ }
+
+  backend:
+    name: Backend tests (real Edge Functions on a local Supabase)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: supabase/setup-cli@v1
+        with: { version: latest }
+      - name: Start a throwaway Supabase stack (Postgres, Storage, API) and apply every migration
+        run: supabase start -x studio,imgproxy,mailpit,logflare,vector,postgres-meta,supavisor,realtime
+      - name: Serve the Edge Functions
+        run: |
+          nohup supabase functions serve --no-verify-jwt > functions.log 2>&1 &
+          for i in $(seq 1 90); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -X OPTIONS http://127.0.0.1:54321/functions/v1/validate-login || true)
+            [ "$code" = "204" ] && echo "functions up after $((i*2))s" && exit 0
+            sleep 2
+          done
+          echo "::error::Edge Functions did not start"; tail -50 functions.log; exit 1
+      - name: Load fixture logins and run the tests
+        run: |
+          eval "$(supabase status -o env)"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -q -f tests/backend/seed.sql > /dev/null
+          API_URL="$API_URL" DB_URL="$DB_URL" ANON_KEY="$ANON_KEY" node tools/backend-tests.mjs
+      - name: Function log (on failure)
+        if: failure()
+        run: tail -80 functions.log || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: backend-results, path: test-results/ }
 
   links:
     name: External links are live (informational)
     runs-on: ubuntu-latest
-    continue-on-error: true   # third-party sites sometimes block bots; review the log, don't block the merge
+    continue-on-error: true   # third-party sites sometimes block bots; this never blocks a release
     steps:
       - uses: actions/checkout@v4
       - run: python3 tools/check-links.py
+
+  tests-passed:
+    name: All automated tests passed
+    needs: [secret-scan, content, e2e, backend]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Combine results
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: python3 tools/combine-results.py
+
+  release-gate:
+    name: Release gate (only staging, only when every test passed)
+    if: always() && github.event_name == 'pull_request' && github.base_ref == 'main'
+    needs: [tests-passed]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Close the PR unless it comes from staging with all tests green
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TESTS: ${{ needs.tests-passed.result }}
+          HEAD_REF: ${{ github.head_ref }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          reason=""
+          [ "$HEAD_REF" != "staging" ] && reason="Only the \`staging\` branch may be merged into \`main\` (this PR is from \`$HEAD_REF\`)."
+          [ -z "$reason" ] && [ "$TESTS" != "success" ] && reason="The automated tests did not all pass on this commit. See the run Summary for the failing area."
+          if [ -n "$reason" ]; then
+            gh pr close "$PR" --repo "$REPO" --comment "🚫 **Release gate:** $reason The PR has been closed automatically. Fix the failure on \`staging\`; when every test is green, open the PR again."
+            echo "## ❌ Release gate: PR closed" >> "$GITHUB_STEP_SUMMARY"; echo "$reason" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "## ✅ Release gate: staging → main is allowed (all automated tests passed)" >> "$GITHUB_STEP_SUMMARY"
