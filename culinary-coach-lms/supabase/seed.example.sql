@@ -1,0 +1,11 @@
+-- Add or change logins WITHOUT putting plaintext codes in any file: run this in the Supabase SQL editor.
+-- Codes are stored as bcrypt hashes; the SQL editor history is the only place the plaintext appears, so clear it afterwards.
+-- Use long random codes (e.g. 5 words or 12+ characters). Short patterned codes can be guessed.
+--
+-- select public.lms_set_code('First Last',  'REPLACE-WITH-RANDOM-CODE', false);   -- student
+-- select public.lms_set_code('Instructor',  'REPLACE-WITH-RANDOM-CODE', true);    -- instructor / admin
+--
+-- Archive last cohort's progress before a new cohort starts (their names may match):
+-- create table if not exists public.student_progress_archive as table public.student_progress with no data;
+-- insert into public.student_progress_archive select * from public.student_progress;
+-- then reset: update public.student_progress set quizzes = '{}', deliverables = '{}', w2_unlocked = false;

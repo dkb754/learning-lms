@@ -1,0 +1,2793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Disable Cloudflare transformations -->
+<meta name="cf-2fa-verify" content="off">
+<title>Culinary Entrepreneurship I | Culinary Coach</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-dark: #1a3a2a;
+  --green-mid: #2d5a3d;
+  --green-bright: #3d7a52;
+  --gold: #d4a843;
+  --gold-light: #e8c06a;
+  --cream: #f5f0e8;
+  --orange: #c4522a;
+  --orange-light: #e06840;
+  --white: #ffffff;
+  --gray-100: #f7f7f5;
+  --gray-200: #e8e5de;
+  --gray-600: #6b6558;
+  --gray-800: #2c2820;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius: 12px;
+  --shadow: 0 4px 24px rgba(26,58,42,0.12);
+  --shadow-lg: 0 12px 48px rgba(26,58,42,0.2);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
+#login-screen {
+  min-height: 100vh;
+  background: var(--green-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+#login-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(212,168,67,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 80%, rgba(61,122,82,0.2) 0%, transparent 60%);
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212,168,67,0.3);
+  border-radius: 20px;
+  padding: 56px 48px;
+  width: 100%;
+  max-width: 420px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-lg);
+  animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-logo .badge {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--green-dark);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.login-logo h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.login-logo h1 span { color: var(--gold); }
+
+.login-logo p {
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+}
+
+.login-form label {
+  display: block;
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.login-form input {
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 15px;
+  margin-bottom: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.login-form input:focus { border-color: var(--gold); }
+.login-form input::placeholder { color: rgba(255,255,255,0.3); }
+
+.btn-primary {
+  width: 100%;
+  background: var(--gold);
+  color: var(--green-dark);
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 4px;
+}
+
+.btn-primary:hover { background: var(--gold-light); }
+.btn-primary:active { transform: scale(0.98); }
+
+.login-notice {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: rgba(212,168,67,0.1);
+  border: 1px solid rgba(212,168,67,0.2);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  text-align: center;
+}
+
+.error-msg {
+  color: #ff8080;
+  font-size: 13px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(255,80,80,0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(255,80,80,0.3);
+  display: none;
+}
+
+/* ============================================================
+   MAIN APP
+   ============================================================ */
+#app { display: none; }
+
+/* TOP NAV */
+.topnav {
+  background: var(--green-dark);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+
+.nav-brand {
+  font-family: var(--font-display);
+  color: var(--white);
+  font-size: 18px;
+}
+
+.nav-brand span { color: var(--gold); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-student {
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+}
+
+.nav-student strong {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+}
+
+.btn-logout:hover { border-color: var(--gold); color: var(--gold); }
+
+/* PROGRESS BAR */
+.progress-banner {
+  background: var(--green-mid);
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.progress-label {
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.progress-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.progress-pct {
+  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* LAYOUT */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 104px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: var(--white);
+  border-right: 1px solid var(--gray-200);
+  padding: 24px 0;
+  overflow-y: auto;
+  position: sticky;
+  top: 104px;
+  height: calc(100vh - 104px);
+}
+
+.sidebar-section {
+  margin-bottom: 8px;
+}
+
+.sidebar-heading {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gray-600);
+  padding: 8px 20px 4px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+
+.sidebar-item:hover {
+  background: var(--gray-100);
+}
+
+.sidebar-item.active {
+  background: rgba(61,122,82,0.08);
+  border-left-color: var(--green-bright);
+}
+
+.sidebar-item.active .sidebar-item-label {
+  color: var(--green-dark);
+  font-weight: 600;
+}
+
+.week-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--green-mid);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.week-badge.gold { background: var(--gold); color: var(--green-dark); }
+.week-badge.orange { background: var(--orange); }
+.week-badge.locked { background: var(--gray-200); color: var(--gray-600); }
+.week-badge.complete { background: var(--green-bright); }
+.week-badge.complete::after { content: '✓'; }
+
+.sidebar-item-label {
+  font-size: 13px;
+  color: var(--gray-600);
+  line-height: 1.3;
+}
+
+.sidebar-check {
+  margin-left: auto;
+  font-size: 14px;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  padding: 32px;
+  max-width: 860px;
+}
+
+/* PAGE VIEWS */
+.page-view { display: none; }
+.page-view.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* DASHBOARD */
+.dash-header {
+  margin-bottom: 32px;
+}
+
+.dash-header .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--green-bright);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.dash-header h2 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--green-dark);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.dash-header p {
+  color: var(--gray-600);
+  font-size: 15px;
+}
+
+.week-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.week-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.week-card:hover {
+  border-color: var(--green-bright);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.week-card.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.week-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.week-card.w1::before { background: var(--gold); }
+.week-card.w2::before { background: var(--green-bright); }
+.week-card.w3::before { background: var(--orange); }
+.week-card.w4::before { background: var(--green-dark); }
+
+.wc-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.wc-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-600);
+  letter-spacing: 1px;
+}
+
+.wc-status {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.status-locked { background: var(--gray-200); color: var(--gray-600); }
+.status-active { background: rgba(61,122,82,0.12); color: var(--green-mid); }
+.status-complete { background: rgba(212,168,67,0.15); color: #8a6a1a; }
+
+.wc-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--green-dark);
+  margin-bottom: 6px;
+}
+
+.wc-dates {
+  font-size: 12px;
+  color: var(--gray-600);
+  margin-bottom: 12px;
+}
+
+.wc-progress {
+  height: 4px;
+  background: var(--gray-200);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.wc-progress-fill {
+  height: 100%;
+  background: var(--green-bright);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* STATS ROW */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--green-dark);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* UPCOMING */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--green-dark);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.upcoming-date {
+  text-align: center;
+  min-width: 48px;
+}
+
+.upcoming-date .month {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--orange);
+  letter-spacing: 1px;
+}
+
+.upcoming-date .day {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--green-dark);
+  line-height: 1;
+}
+
+.upcoming-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--gray-200);
+}
+
+.upcoming-info .title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--green-dark);
+}
+
+.upcoming-info .detail {
+  font-size: 12px;
+  color: var(--gray-600);
+}
+
+.upcoming-tag {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.tag-lab { background: rgba(196,82,42,0.12); color: var(--orange); }
+.tag-online { background: rgba(61,122,82,0.12); color: var(--green-mid); }
+.tag-servsafe { background: rgba(212,168,67,0.15); color: #8a6a1a; }
+
+/* ============================================================
+   WEEK VIEW
+   ============================================================ */
+.week-header {
+  background: var(--green-dark);
+  border-radius: var(--radius);
+  padding: 32px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.week-header::after {
+  content: '';
+  position: absolute;
+  right: -20px; top: -20px;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  border: 24px solid rgba(212,168,67,0.15);
+}
+
+.week-header .wh-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.week-header h2 {
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.week-header .wh-dates {
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+}
+
+/* MODULE DAYS */
+.day-list { display: flex; flex-direction: column; gap: 12px; }
+
+.day-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.day-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.day-card-header:hover { background: var(--gray-100); }
+
+.day-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--gray-200);
+  flex-shrink: 0;
+}
+
+.day-dot.done { background: var(--green-bright); }
+.day-dot.lab { background: var(--orange); }
+
+.day-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--green-dark);
+  flex: 1;
+}
+
+.day-sublabel {
+  font-size: 12px;
+  color: var(--gray-600);
+  margin-left: auto;
+}
+
+.day-toggle {
+  font-size: 18px;
+  color: var(--gray-600);
+  transition: transform 0.2s;
+}
+
+.day-toggle.open { transform: rotate(180deg); }
+
+.day-card-body {
+  display: none;
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.day-card-body.open { display: block; }
+
+/* RESOURCES */
+.resource-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+
+.resource-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--gray-100);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.resource-item:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.resource-item::after { content: "↗"; margin-left: auto; color: var(--gray-600); font-size: 14px; }
+.resource-item:hover {
+  background: rgba(61,122,82,0.08);
+  border-color: var(--green-bright);
+}
+
+.resource-icon {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.ri-video { background: rgba(196,82,42,0.12); }
+.ri-read { background: rgba(61,122,82,0.12); }
+.ri-link { background: rgba(212,168,67,0.15); }
+.ri-lab { background: rgba(196,82,42,0.15); }
+
+.resource-meta {
+  font-size: 11px;
+  color: var(--gray-600);
+  margin-top: 1px;
+}
+
+/* QUIZ */
+.quiz-section {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.quiz-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--green-dark);
+  margin-bottom: 4px;
+}
+
+.quiz-subtitle {
+  font-size: 12px;
+  color: var(--gray-600);
+  margin-bottom: 16px;
+}
+
+.quiz-q {
+  margin-bottom: 20px;
+}
+
+.quiz-q-text {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--green-dark);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--gray-800);
+  transition: all 0.15s;
+  text-align: left;
+  width: 100%;
+  font-family: var(--font-body);
+}
+
+.quiz-option:hover:not(:disabled) { border-color: var(--green-bright); background: rgba(61,122,82,0.04); }
+.quiz-option.correct { border-color: var(--green-bright); background: rgba(61,122,82,0.08); color: var(--green-dark); font-weight: 600; }
+.quiz-option.wrong { border-color: #e05555; background: rgba(224,85,85,0.06); }
+.quiz-option:disabled { cursor: default; }
+
+.quiz-feedback {
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+  display: none;
+}
+
+.quiz-feedback.correct-fb { background: rgba(61,122,82,0.1); color: var(--green-mid); display: block; }
+.quiz-feedback.wrong-fb { background: rgba(224,85,85,0.08); color: #c04444; display: block; }
+
+.btn-submit-quiz {
+  background: var(--green-dark);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.btn-submit-quiz:hover { background: var(--green-mid); }
+.btn-submit-quiz:disabled { background: var(--gray-200); color: var(--gray-600); cursor: not-allowed; }
+
+.quiz-score-banner {
+  background: var(--green-dark);
+  color: var(--white);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.quiz-score-banner .score-val {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--gold);
+}
+
+.quiz-score-banner .score-label { font-size: 12px; color: rgba(255,255,255,0.7); }
+.quiz-score-banner .score-pass { font-size: 13px; font-weight: 600; }
+.pass-text { color: var(--gold); }
+.fail-text { color: #ff8080; }
+
+.btn-retry {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: var(--white);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* SERVSAFE SPECIAL */
+.servsafe-card {
+  background: linear-gradient(135deg, var(--gold) 0%, #b88a22 100%);
+  border-radius: var(--radius);
+  padding: 32px;
+  color: var(--green-dark);
+  margin-bottom: 16px;
+}
+
+.servsafe-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.servsafe-card p {
+  font-size: 14px;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.btn-servsafe {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-dark);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-servsafe:hover { background: var(--green-mid); }
+
+.servsafe-steps {
+  background: var(--white);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 12px;
+}
+
+.servsafe-steps h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-dark);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ss-step {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--gray-800);
+}
+
+.ss-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--green-dark);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* LAB CARD */
+.lab-card {
+  background: var(--orange);
+  border-radius: var(--radius);
+  padding: 28px;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.lab-card h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.lab-meta {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+.lab-schedule { display: flex; flex-direction: column; gap: 8px; }
+
+.lab-time-slot {
+  display: flex;
+  gap: 16px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.lab-time { font-family: var(--font-mono); font-size: 12px; min-width: 100px; opacity: 0.8; }
+
+/* MENU MODULE */
+.menu-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.menu-card-header {
+  background: var(--green-dark);
+  padding: 16px 20px;
+  color: var(--white);
+}
+
+.menu-card-header h4 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  margin-bottom: 2px;
+}
+
+.menu-card-header p { font-size: 12px; opacity: 0.7; }
+
+.menu-card-body { padding: 16px 20px; }
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.menu-item:last-child { border-bottom: none; }
+
+.menu-item-name { font-weight: 600; font-size: 14px; color: var(--green-dark); }
+.menu-item-desc { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
+.menu-item-price {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--orange);
+  white-space: nowrap;
+  margin-left: 16px;
+}
+
+/* DELIVERABLE */
+.deliverable-card {
+  background: rgba(61,122,82,0.06);
+  border: 1px dashed var(--green-bright);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.deliverable-card h4 {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--green-dark);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deliverable-card p { font-size: 13px; color: var(--gray-600); margin-bottom: 12px; }
+
+.btn-submit-work {
+  background: var(--green-mid);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit-work:hover { background: var(--green-dark); }
+.btn-submit-work.submitted { background: var(--gray-200); color: var(--gray-600); cursor: default; }
+
+/* STUDENT TRACKER */
+.tracker-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tracker-table th {
+  background: var(--green-dark);
+  color: var(--white);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+.tracker-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--gray-200);
+  vertical-align: middle;
+}
+
+.tracker-table tr:nth-child(even) td { background: var(--gray-100); }
+
+.score-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.score-pass { background: rgba(61,122,82,0.12); color: var(--green-mid); }
+.score-fail { background: rgba(224,85,85,0.1); color: #c04444; }
+.score-pending { background: var(--gray-200); color: var(--gray-600); }
+
+/* ADMIN VIEW */
+.admin-header {
+  background: var(--green-dark);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-header h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--white);
+}
+
+.admin-header p { color: rgba(255,255,255,0.6); font-size: 13px; margin-top: 4px; }
+
+.btn-export {
+  background: var(--gold);
+  color: var(--green-dark);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: var(--green-dark);
+  color: var(--white);
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  max-width: 320px;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast .toast-icon { font-size: 18px; }
+
+.sync-indicator {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  padding: 3px 10px;
+  border-radius: 20px;
+  transition: all 0.3s;
+  min-width: 80px;
+  text-align: center;
+}
+.sync-saving { background: rgba(212,168,67,0.2); color: var(--gold); }
+.sync-saved  { background: rgba(61,122,82,0.2);  color: #7dd4a0; }
+.sync-error  { background: rgba(196,82,42,0.2);  color: #f4a580; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .app-layout { flex-direction: column; }
+  .sidebar { width: 100%; min-width: 100%; height: auto; position: static; }
+  .week-cards { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .main-content { padding: 16px; }
+  .topnav { padding: 0 16px; }
+}
+
+.gated-overlay {
+  text-align: center;
+  padding: 48px 32px;
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+}
+
+.gated-overlay .lock-icon { font-size: 48px; margin-bottom: 16px; }
+.gated-overlay h3 { font-family: var(--font-display); font-size: 22px; color: var(--green-dark); margin-bottom: 8px; }
+.gated-overlay p { color: var(--gray-600); font-size: 14px; }
+
+
+/* ============================================================
+   ENHANCEMENTS — submissions, progress states, a11y, mobile
+   ============================================================ */
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.table-scroll { overflow-x:auto; background:var(--white); border-radius:var(--radius); border:1px solid var(--gray-200); }
+.grade-sub { font-size:11px; color:var(--gray-600); margin-top:4px; word-break:break-word; }
+
+/* progress states */
+.status-todo { background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); }
+.wc-count { font-size:12px; color:var(--gray-600); margin-top:8px; font-family:var(--font-mono); }
+.day-dot { width:14px; height:14px; border:2px solid var(--gray-600); background:var(--white); }
+.day-dot.lab { border-color: var(--orange); }
+.day-dot.partial { border-color:#b8860b; background: linear-gradient(90deg,#d4a843 50%,var(--white) 50%); }
+.day-dot.done, .day-dot.lab.done { background: var(--green-bright); border-color: var(--green-bright); }
+.day-status { font-size:11px; font-weight:700; letter-spacing:.3px; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+.day-status.todo { background:var(--gray-100); color:var(--gray-600); border:1px solid var(--gray-200); }
+.day-status.partial { background:rgba(212,168,67,.2); color:#7a5a0d; }
+.day-status.done { background:rgba(61,122,82,.16); color:var(--green-dark); }
+.sidebar-check { font-size:11px; font-family:var(--font-mono); color:var(--gray-600); }
+.sidebar-check.is-complete { color:var(--green-bright); font-size:14px; font-weight:700; }
+.sync-indicator.sync-error { cursor:pointer; text-decoration:underline; }
+
+.admin-sub { font-family:var(--font-display); color:var(--green-dark); margin:28px 0 6px; }
+.btn-dl { background:var(--green-mid); color:var(--white); border:none; border-radius:6px; padding:5px 12px; font-size:12px; font-weight:700; cursor:pointer; }
+.path { font-family:var(--font-mono); font-size:11px; word-break:break-all; }
+
+/* submit panel */
+.submit-panel { margin-top:4px; }
+.sub-status { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:10px; border:2px solid; margin-bottom:12px; font-size:13px; }
+.sub-status strong { letter-spacing:.4px; font-size:12px; }
+.sub-icon { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; font-size:14px; }
+.sub-detail { margin-top:4px; color:var(--gray-800); word-break:break-word; }
+.sub-status.todo { background:var(--white); border-color:var(--gray-200); color:var(--gray-600); }
+.sub-status.todo .sub-icon { background:var(--gray-200); }
+.sub-status.selected { background:rgba(212,168,67,.14); border-color:#b8860b; color:#6b4e0a; }
+.sub-status.selected .sub-icon { background:#d4a843; }
+.sub-status.saving { background:rgba(61,122,82,.06); border-color:var(--green-bright); color:var(--green-dark); }
+.sub-status.error { background:rgba(196,82,42,.1); border-color:var(--orange); color:#8a3517; }
+.sub-status.error .sub-icon { background:var(--orange); color:var(--white); }
+.up-track { height:10px; background:var(--gray-200); border-radius:6px; overflow:hidden; margin-top:8px; }
+.up-fill { height:100%; background:var(--green-bright); width:0; transition:width .2s; }
+.sub-status.ok { background:rgba(61,122,82,.12); border-color:var(--green-bright); color:var(--green-dark); }
+.sub-status.ok .sub-icon { background:var(--green-bright); color:var(--white); }
+.sub-warn { background:rgba(196,82,42,.1); border:1px solid var(--orange); color:#8a3517; border-radius:8px; padding:8px 12px; font-size:12px; margin-bottom:12px; }
+.sub-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+.sub-picked { font-size:13px; margin-bottom:10px; word-break:break-word; }
+.sub-picked span { color:var(--gray-600); }
+.sub-note { font-size:12px !important; color:var(--gray-600); margin:0 0 12px !important; }
+.btn-choose { display:inline-block; background:var(--white); color:var(--green-dark); border:2px solid var(--green-mid); border-radius:8px; padding:10px 18px; font-weight:700; font-size:13px; cursor:pointer; }
+.btn-choose:hover { background:rgba(61,122,82,.08); }
+.btn-submit-work.big { padding:14px 24px; font-size:14px; background:var(--green-dark); }
+.btn-submit-work:disabled { opacity:.6; cursor:not-allowed; }
+.link-btn { background:none; border:none; color:var(--green-mid); text-decoration:underline; font:inherit; font-size:12px; cursor:pointer; padding:4px 2px; }
+
+@media (max-width: 768px) {
+  .sidebar { display:flex; flex-direction:row; overflow-x:auto; padding:8px; gap:4px; border-right:0; border-bottom:1px solid var(--gray-200); }
+  .sidebar-section { display:flex; margin:0; gap:4px; flex-shrink:0; }
+  .sidebar-heading { display:none; }
+  .sidebar-item { padding:8px 12px; border-left:0; border-bottom:3px solid transparent; border-radius:8px; white-space:nowrap; }
+  .sidebar-item.active { border-bottom-color: var(--green-bright); }
+  .day-card-header { flex-wrap:wrap; gap:8px 12px; padding:14px 16px; }
+  .day-label { flex-basis:calc(100% - 40px); }
+  .day-sublabel { margin-left:26px; }
+  .progress-banner { padding:10px 16px; gap:10px; flex-wrap:wrap; }
+  .progress-label { white-space:normal; font-size:11px; flex-basis:100%; }
+  .nav-student { display:none; }
+  .nav-brand { font-size:15px; }
+  .nav-right { gap:10px; }
+  .login-card { padding:36px 24px; margin:16px; width:auto; }
+  .upcoming-item { flex-wrap:wrap; }
+  .sub-actions .btn-submit-work.big { width:100%; }
+}
+
+/* ===== Level I curriculum additions ===== */
+.layer-row{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:13px;color:var(--gray-600)}
+.layer-chip{display:inline-block;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.06em;padding:2px 8px;border-radius:99px;background:var(--gray-200);color:var(--gray-800)}
+.layer-chip.krp{background:var(--green-dark);color:var(--gold-light)}
+.layer-chip.cst{background:var(--gold);color:var(--green-dark)}
+.layer-row.on-dark{color:rgba(255,255,255,.85)}
+.topics h5{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-600);margin:0 0 6px}
+.topics ul,.lab-list{margin:0 0 14px 20px;font-size:14px;line-height:1.6}
+.lesson-body{margin:0 0 16px;font-size:14px;line-height:1.7}
+.lesson-body h4{font:700 15px var(--font-display);color:var(--green-dark);margin:18px 0 6px;padding-top:12px;border-top:1px solid var(--gray-200)}
+.lesson-body h4:first-child{border-top:none;margin-top:0;padding-top:0}
+.lesson-body p{margin:0 0 10px}.lesson-body ul{margin:0 0 12px 20px}.lesson-body li{margin-bottom:6px}
+.lesson-krp{background:rgba(212,168,67,.12);border-left:3px solid var(--gold);border-radius:6px;padding:8px 12px;font-size:13px}
+.lesson-table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px}
+.lesson-table th{background:var(--green-dark);color:#fff;text-align:left;padding:7px 10px;font-weight:600}
+.lesson-table td{padding:7px 10px;border-bottom:1px solid var(--gray-200);vertical-align:top}
+.assess-line{font-size:13px;color:var(--gray-600);margin:10px 0;padding:8px 12px;background:var(--gray-100);border-radius:8px}
+.due-line{font-size:13px;color:var(--gray-600);margin:6px 0 10px}
+.lab-status .sub-note{margin-top:6px}
+.lab-toggles{display:flex;gap:4px}
+.lab-toggle{border:1px solid var(--gray-200);background:var(--white);border-radius:6px;padding:4px 8px;font:500 12px var(--font-mono);cursor:pointer;color:var(--gray-600)}
+.lab-toggle.on{background:var(--green-bright);border-color:var(--green-bright);color:#fff}
+.lab-toggle:focus-visible,.rb-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.ss-edit{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ss-edit input{width:92px}.ss-edit input,.ss-edit select{padding:4px 6px;border:1px solid var(--gray-200);border-radius:6px;font:13px var(--font-body)}
+.quiz-closed{padding:14px 16px;background:var(--gray-100);border:1px dashed var(--gray-200);border-radius:8px;color:var(--gray-600);font-size:14px}
+.draft-tag{display:inline-block;margin:0 0 8px;font:500 11px var(--font-mono);letter-spacing:.06em;color:var(--orange);border:1px solid var(--orange);border-radius:99px;padding:2px 8px}
+.l2-banner{display:flex;gap:12px;align-items:flex-start;background:rgba(212,168,67,.12);border:1px solid var(--gold);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:14px}
+.krp-phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0 24px}
+.krp-phase{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px 16px;font-size:13px}
+.krp-phase h4{font-family:var(--font-display);margin:2px 0}.krp-n{font:500 11px var(--font-mono);color:var(--orange);text-transform:uppercase;letter-spacing:.08em}
+.krp-weeks{color:var(--gray-600);margin-bottom:6px}.krp-out{margin-top:8px;font-weight:600;color:var(--green-mid)}
+.krp-skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:8px 0 24px}
+.krp-skill{background:var(--white);border:1px solid var(--gray-200);border-left:4px solid var(--gold);border-radius:var(--radius);padding:14px 16px;font-size:14px}
+.krp-skill h4{font-family:var(--font-display);margin:0 0 2px}.krp-skill p{margin:6px 0 8px;line-height:1.6}
+.krp-items{display:flex;flex-direction:column;gap:8px}
+.krp-item{display:flex;gap:12px;align-items:center;background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:12px 14px}
+.krp-item>div:nth-child(2){flex:1}.krp-item.done{border-color:var(--green-bright)}
+.krp-check{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--gray-200);font-size:13px}
+.krp-item.done .krp-check{background:var(--green-bright);color:#fff}
+.krp-note{margin-top:16px;font-size:13px;color:var(--gray-600)}
+.link-btn{background:none;border:none;color:var(--green-bright);text-decoration:underline;cursor:pointer;font:600 13px var(--font-body)}
+.rubric-pick{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px}
+.rubric-pick select,.rubric-foot textarea{padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font:14px var(--font-body)}
+.rubric-total{margin-left:auto;display:flex;align-items:baseline;gap:6px}
+.cst-total,.cst-score{font:900 28px var(--font-display);color:var(--green-dark)}.cst-of{color:var(--gray-600);font-size:13px}
+.rb-section{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px}
+.rb-head{display:flex;justify-content:space-between;align-items:baseline}.rb-head h4{font-family:var(--font-display)}
+.rb-note{font-size:12px;color:var(--gray-600);margin:2px 0 8px}
+.rb-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--gray-100);font-size:14px}
+.rb-btns{display:flex;gap:4px;flex-shrink:0}
+.rb-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--gray-200);background:var(--white);font:600 14px var(--font-mono);cursor:pointer}
+.rb-btn.on{background:var(--green-bright);border-color:var(--green-bright);color:#fff}
+.rubric-foot{display:flex;flex-direction:column;gap:8px;align-items:flex-start}.rubric-foot textarea{width:100%}
+.qr-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);margin-bottom:10px;padding:0 16px}
+.qr-card summary{display:flex;gap:12px;align-items:center;padding:12px 0;cursor:pointer;flex-wrap:wrap}
+.qr-title{font-weight:600;flex:1}.qr-meta{font-size:12px;color:var(--gray-600)}
+.qr-todo{background:rgba(196,82,42,.08);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:10px}.qr-todo ul{margin:4px 0 0 18px}
+.qr-actions{margin:8px 0 12px}.qr-q{padding:10px 0;border-top:1px solid var(--gray-100);font-size:14px}
+.qr-q ul{list-style:none;margin:6px 0 4px 8px}.qr-q li.right{color:var(--green-bright);font-weight:600}
+.qr-fb{font-size:12px;color:var(--gray-600);font-style:italic}
+.act{margin:12px 0}
+.act-card{background:var(--white);border:1px solid var(--gray-200);border-left:4px solid var(--gold);border-radius:var(--radius);padding:14px 16px}
+.act-card.done{border-left-color:var(--green-bright)}
+.act-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.act-intro{font-size:14px;margin:0 0 10px}
+.act-q{margin:10px 0}.act-qt{font-weight:600;font-size:14px;margin-bottom:4px}
+.act-opt{display:block;padding:6px 10px;margin:3px 0;border:1px solid var(--gray-200);border-radius:8px;font-size:14px;cursor:pointer}
+.act-opt.right{border-color:var(--green-bright);background:rgba(61,122,82,.08)}.act-opt.wrong{border-color:var(--orange);background:rgba(196,82,42,.08)}
+.act-why{font-size:13px;color:var(--gray-600);background:var(--gray-100);border-radius:8px;padding:6px 10px;margin:4px 0 8px}
+.act-mark{font-weight:700;font-size:13px;margin-left:6px}.act-mark.ok{color:var(--green-bright)}.act-mark.no{color:var(--orange)}
+.act-order{list-style:none;margin:6px 0;padding:0}.act-order li{display:flex;align-items:center;gap:10px;padding:8px 10px;margin:4px 0;border:1px solid var(--gray-200);border-radius:8px;font-size:14px}
+.act-order li.right{border-color:var(--green-bright);background:rgba(61,122,82,.08)}.act-order li.wrong{border-color:var(--orange);background:rgba(196,82,42,.08)}
+.act-step{flex:1}.act-move button{border:1px solid var(--gray-200);background:var(--white);border-radius:6px;width:32px;height:32px;cursor:pointer;margin-left:4px}
+.act-move button:disabled{opacity:.35;cursor:default}.act-move button:focus-visible,.act-opt:focus-within{outline:2px solid var(--gold);outline-offset:2px}
+.act-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--gray-100);font-size:14px;flex-wrap:wrap}
+.act-row select{padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font:14px var(--font-body);max-width:100%}
+.act-row>span{min-width:0;max-width:100%}.act-row label{min-width:0;overflow-wrap:anywhere}
+@media (max-width:640px){.act-row{flex-direction:column;align-items:stretch;gap:6px}.act-row>span{display:block}.act-row select{width:100%}.ex-row{flex-direction:column;align-items:stretch}}
+.act-prompt{margin:10px 0}.act-prompt textarea{width:100%;margin-top:4px;padding:8px 10px;border:1px solid var(--gray-200);border-radius:8px;font:14px/1.5 var(--font-body)}
+.act-help{font-weight:400;font-size:12px;color:var(--gray-600)}
+.act-fb{font-size:13px;margin-top:4px}.act-fb.ok{color:var(--green-bright)}.act-fb.no{color:var(--orange)}.act-tip{color:var(--gray-600);margin-top:2px}
+.act-model{margin:8px 0;font-size:13px}.act-model summary{cursor:pointer;font-weight:600}.act-model div{margin-top:6px;padding:8px 10px;background:var(--gray-100);border-radius:8px}
+.act-msg{font-size:13px;margin-top:6px;min-height:18px}
+.act-figure{margin:14px 0;padding:12px;border:1px solid var(--gray-200);border-radius:var(--radius);background:var(--white)}.act-figure svg{width:100%;height:auto;max-width:640px;display:block;margin:6px auto}.act-figure figcaption{font-size:13px;color:var(--gray-600)}
+.ex-card.done{border-color:var(--green-bright)}
+.ex-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--gray-100);font-size:14px;flex-wrap:wrap}
+.ex-field{display:flex;align-items:center;gap:6px}.ex-field input{width:96px;padding:6px 8px;border:1px solid var(--gray-200);border-radius:6px;font:14px var(--font-mono);text-align:right}
+.ex-unit{color:var(--gray-600);font-size:13px;min-width:34px}.ex-mark{font-size:12px;min-width:76px}.ex-mark.ok{color:var(--green-bright);font-weight:600}.ex-mark.no{color:var(--orange);font-weight:600}
+.checkin-input{width:100%;max-width:340px;padding:8px 10px;border:1px solid var(--gray-200);border-radius:8px;font:14px var(--font-body);margin:6px 0}
+.checkin-opt{display:flex;gap:8px;align-items:center;font-size:14px;margin:4px 0 8px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:640px){.rb-row{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="badge">Culinary Coach × OCWB</div>
+      <h1>Culinary <span>Entrepreneurship</span> I</h1>
+      <p>Oct 12 – Nov 7, 2026 · Level I Cohort · ServSafe Food Handler</p>
+    </div>
+    <div class="login-form">
+      <label for="login-user">Name <span style="opacity:.6">(optional)</span></label>
+      <input type="text" id="login-user" placeholder="Your name (optional)" />
+      <label for="login-pass">Access Code</label>
+      <input type="password" id="login-pass" placeholder="Provided by your instructor" />
+      <p class="error-msg" id="login-error">❌ Invalid credentials. Please check with your instructor.</p>
+      <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In →</button>
+    </div>
+    <div class="login-notice">Need help signing in? Contact your instructor.</div>
+  </div>
+</div>
+
+<div id="app">
+  <nav class="topnav">
+    <div class="nav-brand">Culinary <span>Entrepreneurship I</span></div>
+    <div class="nav-right">
+      <span class="sync-indicator" id="sync-indicator"></span>
+      <div class="nav-student">Signed in as <strong id="nav-name"></strong></div>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+  <div class="progress-banner">
+    <span class="progress-label" id="global-label">Course Progress</span>
+    <div class="progress-track"><div class="progress-fill" id="global-progress" style="width:0%"></div></div>
+    <span class="progress-pct" id="global-pct">0%</span>
+  </div>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+    <main class="main-content">
+      <div class="page-view active" id="page-dashboard"></div>
+      <div class="page-view" id="page-w1"></div>
+      <div class="page-view" id="page-w2"></div>
+      <div class="page-view" id="page-w3"></div>
+      <div class="page-view" id="page-w4"></div>
+      <div class="page-view" id="page-krp"></div>
+      <div class="page-view" id="page-my-grades">
+        <div class="week-header"><div class="wh-eyebrow">My Progress</div><h2>My Grades &amp; Submissions</h2></div>
+        <div class="table-scroll">
+        <table class="tracker-table" id="my-grades-table">
+          <thead><tr><th>Week</th><th>Item</th><th>Type</th><th>Status / Score</th></tr></thead>
+          <tbody id="my-grades-body"></tbody>
+        </table>
+        </div>
+      </div>
+      <div class="page-view" id="page-admin">
+        <div class="admin-header">
+          <div><h2>Student Tracker — Level I · Fall 2026</h2>
+            <p><span id="admin-count">0</span> enrolled students · Culinary Entrepreneurship I</p></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-export" onclick="exportCSV()">Export CSV</button><button class="btn-export" onclick="exportFilesCSV()">Export Files CSV</button><button class="btn-export" onclick="exportReflections()">Export Reflections CSV</button><button class="btn-export" onclick="sendTestCheckin()">Send test check-in email</button></div>
+        </div>
+        <div style="overflow-x:auto;background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);">
+          <table class="tracker-table" id="admin-table">
+            <thead><tr><th>Student</th><th>Lab attendance</th><th>Quizzes passed</th><th>Scaling exercises</th><th>Lesson activities</th><th>Deliverables</th><th>ServSafe</th><th>CST rubric</th><th>Weeks 2–4</th><th>Level II</th></tr></thead>
+            <tbody id="admin-body"></tbody>
+          </table>
+        </div>
+        <h3 class="admin-sub">Submitted files</h3>
+        <p class="grade-sub" style="margin-bottom:10px">Student files are private. Use <strong>Download</strong> to open one (the link works for 5 minutes). The storage path is also shown for the Supabase dashboard.</p>
+        <div class="table-scroll">
+          <table class="tracker-table">
+            <thead><tr><th>Student</th><th>Assignment</th><th>File</th><th>Size</th><th>Submitted</th><th>Download / path</th></tr></thead>
+            <tbody id="admin-files"><tr><td colspan="6" style="color:var(--gray-600)">No files yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="page-view" id="page-rubric"></div>
+      <div class="page-view" id="page-quizreview"></div>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✓</span>
+  <span id="toast-msg">Saved!</span>
+</div>
+
+<script src="content/level1.js"></script>
+<script src="content/level1-lessons.js"></script>
+<script src="content/level1-exercises.js"></script>
+<script src="content/activities-engine.js"></script>
+<script src="content/level1-diagrams.js"></script>
+<script src="content/activities-w1d1.js"></script>
+<script src="content/activities-w1.js"></script>
+<script src="content/activities-w2.js"></script>
+<script src="content/activities-w3.js"></script>
+<script src="content/activities-w4.js"></script>
+<script src="content/level1-quizzes.js"></script>
+<script>
+// ============================================================
+// Culinary Entrepreneurship I · Level I · Fall 2026
+// The page holds NO database key, NO access codes and NO admin code:
+//   validate-login  checks the access code on the server and returns a short-lived session token
+//   lms-api-v2      every read/write (progress, uploads, admin views) using that token
+// Course content lives in content/level1.js (curriculum + rubric) and content/level1-quizzes.js (quiz bank).
+// ============================================================
+const SUPABASE_URL = 'https://mddvqxesxfifqxhuzhsi.supabase.co';
+const FN_URL = SUPABASE_URL + '/functions/v1/';
+const API_FN = 'lms-api-v2';
+const CACHE_PREFIX = 'ce_l1f26_cache_';
+const PASS_PCT = 70;
+const MAX_FILE_MB = 25;
+// Host kitchen — confirm with OCWB before go-live (the proposal says the location is confirmed jointly)
+const LAB_PLACE = "Parsley's Kitchen, 2600 Nine Mile Rd, Richmond, VA";
+const LAB_TIME = '10:00 AM – 2:00 PM';
+const CONTACT = 'Chef Duane Brown at (804) 219-8211 or duane&#64;culinarycoach.org';
+
+const DAYS = LEVEL1.days;
+const dayById = Object.fromEntries(DAYS.map(d => [d.id, d]));
+const FILES = Object.fromEntries(DAYS.filter(d => d.file).map(d => [d.id, { ...d.file, week: d.week, day: d }]));
+const QUIZ_IDS = DAYS.filter(d => d.quiz).map(d => d.quiz);
+const LABS = DAYS.filter(d => d.lab);
+
+let sessionToken = null;
+let currentUser = null;
+let isAdmin = false;
+let settings = { published_quizzes: [] };
+let cstResults = [];          // this student's CST rubric results [{lab,total,band}]
+let rendered = false;
+
+// In-memory cache — loaded on login, written on every action
+let memCache = EMPTY();
+let syncStatus = 'idle'; // idle | saving | saved | error
+let unsynced = false;     // true while the latest change exists only on this device
+
+function EMPTY() {
+  return { quizzes: {}, deliverables: {}, w2_unlocked: false, krp_portfolio: {}, lab_attendance: {}, servsafe: {}, exercises: {}, is_l2_eligible: false, checkin: { opt_in: false, email: '', sent: false } };
+}
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function fmtWhen(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+function fmtSize(n) {
+  if (!n && n !== 0) return '';
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return Math.round(n / 1024) + ' KB';
+  return (n / 1048576).toFixed(1) + ' MB';
+}
+
+// ============================================================
+// BACKEND
+// ============================================================
+function setSyncStatus(s) {
+  syncStatus = s;
+  const el = document.getElementById('sync-indicator');
+  if (!el) return;
+  const map = {
+    idle:   { text: '', cls: '' },
+    saving: { text: '⏳ Saving…', cls: 'sync-saving' },
+    saved:  { text: '☁️ Saved', cls: 'sync-saved' },
+    error:  { text: '⚠️ Not synced — tap to retry', cls: 'sync-error' }
+  };
+  const m = map[s];
+  el.textContent = m.text;
+  el.className = 'sync-indicator ' + m.cls;
+  el.onclick = s === 'error' ? retrySync : null;
+}
+
+async function fnPost(name, payload, timeoutMs = 15000) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), timeoutMs);
+  try {
+    const res = await fetch(FN_URL + name, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: ctl.signal
+    });
+    let data = null;
+    try { data = await res.json(); } catch (e) { /* non-JSON error page */ }
+    return { ok: res.ok, status: res.status, data };
+  } finally { clearTimeout(timer); }
+}
+
+class ApiError extends Error { constructor(code, status) { super(code); this.code = code; this.status = status; } }
+
+async function api(action, payload = {}, timeoutMs) {
+  const r = await fnPost(API_FN, { token: sessionToken, action, ...payload }, timeoutMs);
+  if (r.status === 401 && r.data && r.data.error === 'session_expired') { sessionExpired(); throw new ApiError('session_expired', 401); }
+  if (!r.ok) throw new ApiError((r.data && r.data.error) || 'network', r.status);
+  return r.data;
+}
+
+function sessionExpired() {
+  if (!currentUser) return;
+  doLogout();
+  const err = document.getElementById('login-error');
+  err.textContent = '⏱️ Your session ended. Sign in again — your work is saved.';
+  err.style.display = 'block';
+}
+
+function readLocal(name) {
+  try { const v = localStorage.getItem(CACHE_PREFIX + name); return v ? JSON.parse(v) : null; } catch (e) { return null; }
+}
+function writeLocal(name, d) {
+  try { localStorage.setItem(CACHE_PREFIX + name, JSON.stringify(d)); } catch (e) { /* storage blocked — the server is still the record */ }
+}
+const fromServer = p => ({ ...EMPTY(), ...(p || {}) });
+
+// Quizzes and uploads are the only things a student produces. Everything else (attendance, ServSafe, unlock,
+// KRP records, eligibility) is written by the server and always wins.
+function mergeProgress(server, local) {
+  const out = fromServer(server);
+  out.quizzes = { ...out.quizzes }; out.deliverables = { ...out.deliverables }; // never mutate the server copy we compare against
+  Object.entries((local && local.quizzes) || {}).forEach(([k, v]) => {
+    const cur = out.quizzes[k];
+    if (!cur || (v.passed && !cur.passed) || (!!v.passed === !!cur.passed && v.score > cur.score)) out.quizzes[k] = v;
+  });
+  Object.entries((local && local.deliverables) || {}).forEach(([k, v]) => {
+    const cur = out.deliverables[k];
+    if (!cur || new Date(v.date) > new Date(cur.date)) out.deliverables[k] = v;
+  });
+  out.w2_unlocked = !!(out.w2_unlocked || (local && local.w2_unlocked));
+  return out;
+}
+const quizzesAhead = (a, b) => Object.keys(a.quizzes).some(k => !b.quizzes[k] || b.quizzes[k].score < a.quizzes[k].score);
+
+// Pull this student's progress. A failed load NEVER resets anything.
+async function sbLoad(name) {
+  const local = isAdmin ? null : readLocal(name);
+  try {
+    const d = await api('load');
+    settings = d.settings || { published_quizzes: [] };
+    cstResults = d.cst || [];
+    if (isAdmin) return true;
+    const remote = fromServer(d.progress);
+    memCache = mergeProgress(remote, local);
+    writeLocal(name, memCache);
+    if (local && quizzesAhead(memCache, remote)) sbUpsert(name); // push quiz results that were saved offline
+    return true;
+  } catch (e) {
+    if (e.code === 'session_expired') throw e;
+    console.error('Load failed:', e);
+    if (!isAdmin) memCache = mergeProgress(EMPTY(), local);
+    setSyncStatus('error');
+    return false;
+  }
+}
+
+// Saves are serialised so two quick clicks can never land out of order
+let saveChain = Promise.resolve(true);
+function sbUpsert(name) {
+  saveChain = saveChain.then(() => sbUpsertNow(name), () => sbUpsertNow(name));
+  return saveChain;
+}
+
+async function sbUpsertNow(name) {
+  setSyncStatus('saving');
+  writeLocal(name, memCache);
+  try {
+    const d = await api('save', { quizzes: memCache.quizzes });
+    memCache = mergeProgress(fromServer(d.progress), memCache);
+    writeLocal(name, memCache);
+    unsynced = false;
+    setSyncStatus('saved');
+    setTimeout(() => { if (syncStatus === 'saved') setSyncStatus('idle'); }, 2500);
+    return true;
+  } catch (e) {
+    if (e.code !== 'session_expired') { console.error('Save failed:', e); unsynced = true; setSyncStatus('error'); }
+    return false;
+  } finally {
+    if (sessionToken) refreshAll();
+  }
+}
+
+async function retrySync() {
+  if (!currentUser || isAdmin) return;
+  showToast('Syncing…', '⏳');
+  const ok = await sbUpsert(currentUser);
+  showToast(ok ? 'Synced — your progress is saved' : 'Still offline — your work is safe on this device', ok ? '☁️' : '⚠️');
+}
+
+function getData() { return memCache; }
+function saveData(d) {
+  memCache = d;
+  // The instructor preview is never written to the student table
+  if (currentUser && !isAdmin) return sbUpsert(currentUser);
+  return Promise.resolve(true);
+}
+
+// ============================================================
+// CURRICULUM HELPERS
+// ============================================================
+const quizOpen = id => isAdmin || (settings.published_quizzes || []).includes(id);
+const labDone = lab => !!memCache.lab_attendance[lab];
+
+function dayItems(d) {
+  const items = [];
+  if (d.quiz && quizOpen(d.quiz)) items.push({ kind: 'quiz', id: d.quiz });
+  (d.exercises || []).forEach(e => items.push({ kind: 'ex', id: e.id }));
+  actGraded(d.id).forEach(a => items.push({ kind: 'ex', id: a.id }));
+  if (d.file) items.push({ kind: 'del', id: d.id });
+  if (d.lab) items.push({ kind: 'lab', id: d.id, lab: d.lab });
+  return items;
+}
+const weekItems = w => DAYS.filter(d => d.week === w).flatMap(dayItems);
+function itemDone(it) {
+  if (it.kind === 'quiz') return !!(memCache.quizzes[it.id] && memCache.quizzes[it.id].passed);
+  if (it.kind === 'del') return !!memCache.deliverables[it.id];
+  if (it.kind === 'ex') return !!(memCache.exercises[it.id] && memCache.exercises[it.id].passed);
+  return labDone(it.lab);
+}
+
+// ============================================================
+// RENDER: shell, dashboard, weeks
+// ============================================================
+function renderSidebar() {
+  let h = `<div class="sidebar-section"><div class="sidebar-heading">Navigation</div>
+    <div class="sidebar-item active" data-page="dashboard" onclick="showPage('dashboard')"><div class="week-badge gold">⌂</div><span class="sidebar-item-label">Dashboard</span></div></div>`;
+  LEVEL1.weeks.forEach(w => {
+    h += `<div class="sidebar-section"><div class="sidebar-heading">Week ${w.n} · ${esc(w.dates)}</div>
+      <div class="sidebar-item" data-page="w${w.n}" onclick="showPage('w${w.n}')" id="sb-w${w.n}">
+        <div class="week-badge${w.n === 1 ? ' gold' : ''}" id="sb-w${w.n}-badge">${w.n}</div>
+        <span class="sidebar-item-label">${esc(w.side)}</span><span class="sidebar-check" id="sb-w${w.n}-check"></span></div></div>`;
+  });
+  h += `<div class="sidebar-section"><div class="sidebar-heading">My Progress</div>
+    <div class="sidebar-item" data-page="krp" onclick="showPage('krp')"><div class="week-badge" style="background:var(--green-mid)">K</div><span class="sidebar-item-label">KRP Portfolio</span></div>
+    <div class="sidebar-item" data-page="my-grades" onclick="showPage('my-grades')"><div class="week-badge" style="background:#6b6558">📊</div><span class="sidebar-item-label">My Grades &amp; Submissions</span></div></div>
+    <div class="sidebar-section" id="admin-nav" style="display:none"><div class="sidebar-heading">Instructor</div>
+    <div class="sidebar-item" data-page="admin" onclick="showPage('admin')"><div class="week-badge" style="background:#c4522a">👑</div><span class="sidebar-item-label">Student Tracker</span></div>
+    <div class="sidebar-item" data-page="rubric" onclick="showPage('rubric')"><div class="week-badge" style="background:#c4522a">📋</div><span class="sidebar-item-label">CST Rubric</span></div>
+    <div class="sidebar-item" data-page="quizreview" onclick="showPage('quizreview')"><div class="week-badge" style="background:#c4522a">✔</div><span class="sidebar-item-label">Quiz Review</span></div></div>`;
+  document.getElementById('sidebar').innerHTML = h;
+}
+
+function renderDashboard() {
+  const upcoming = LABS.map(l => `<div class="upcoming-item">
+      <div class="upcoming-date"><div class="month">${esc(l.short.split(' ')[0])}</div><div class="day">${esc(l.short.split(' ')[1])}</div></div>
+      <div class="upcoming-divider"></div>
+      <div class="upcoming-info"><div class="title">${esc(l.module)}</div><div class="detail">${LAB_TIME} · ${esc(LAB_PLACE)}</div></div>
+      <span class="upcoming-tag tag-lab">${l.lab === 'lab4' ? 'Graduation Day' : 'In-Person Lab'}</span></div>`).join('');
+  const cards = LEVEL1.weeks.map(w => `<div class="week-card w${w.n}" onclick="showPage('w${w.n}')">
+      <div class="wc-meta"><span class="wc-num">WEEK 0${w.n}</span><span class="wc-status status-todo" id="wc${w.n}-status">Not started</span></div>
+      <div class="wc-title">${esc(w.title)}</div><div class="wc-dates">${esc(w.long)}</div>
+      <div class="wc-progress"><div class="wc-progress-fill" id="wc${w.n}-bar" style="width:0%"></div></div>
+      <div class="wc-count" id="wc${w.n}-count"></div></div>`).join('');
+  document.getElementById('page-dashboard').innerHTML = `
+    <div class="dash-header"><div class="eyebrow">${esc(LEVEL1.cohort)}</div><h2 id="dash-greeting">Welcome back!</h2>
+      <p>4 weeks · Mon–Thu online · Saturday labs in person · ${esc(LAB_PLACE)}</p></div>
+    <div class="l2-banner" id="l2-banner" style="display:none">🎓 <div><strong>You're ready for Level II.</strong> You've passed ServSafe Food Handler, submitted your Concept Brief and passed every quiz. Your instructor will contact you about Culinary Entrepreneurship II.</div></div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value" id="stat-quizzes">0</div><div class="stat-label">Quizzes Passed</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-deliverables">0</div><div class="stat-label">Deliverables Submitted</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-weeks">0/4</div><div class="stat-label">Weeks Complete</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat-score">—</div><div class="stat-label">Avg Quiz Score</div></div>
+    </div>
+    <div class="week-cards">${cards}</div>
+    <div class="section-title">Upcoming Labs</div><div class="upcoming-list">${upcoming}</div>`;
+}
+
+function resourceHtml(r) {
+  const icon = r.t === 'video' ? ['ri-video', '▶'] : r.t === 'read' ? ['ri-read', '📄'] : ['ri-link', '🔗'];
+  return `<a class="resource-item" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" data-rtype="${r.t}">
+    <div class="resource-icon ${icon[0]}">${icon[1]}</div><div><div>${esc(r.title)}</div><div class="resource-meta">${esc(r.meta)}</div></div></a>`;
+}
+
+function layerChips(d) {
+  if (!d.layer) return '';
+  const krp = d.layer.startsWith('KRP');
+  return `<div class="layer-row"><span class="layer-chip ${krp ? 'krp' : 'cst'}">${krp ? 'KRP' : 'CST'}</span><span class="layer-text">${esc(d.layer.replace(/^KRP\s*/, '').replace(/^[·—-]\s*/, '') || d.layer)}</span></div>`;
+}
+
+function fileCardHtml(d) {
+  const f = d.file;
+  return `<div class="deliverable-card"><h4>📝 ${esc(f.label)}${f.krp ? ` <span class="layer-chip krp">${esc(f.krp)}</span>` : ''}</h4>
+    <p>${esc(f.blurb)}</p><div class="due-line">Due: <strong>${esc(f.due)}</strong></div>
+    <div class="submit-panel" id="sp-${d.id}"></div></div>`;
+}
+
+function renderDayCard(d) {
+  if (d.lab) return renderLabCard(d);
+  const topics = (d.topics || []).map(t => `<li>${esc(t)}</li>`).join('');
+  const res = (d.resources || []).map(resourceHtml).join('');
+  const lesson = lessonHtml(d);
+  return `<div class="day-card">
+    <div class="day-card-header" onclick="toggleDay('${d.id}')">
+      <div class="day-dot" id="dot-${d.id}"></div>
+      <div class="day-label">${esc(d.dow)}, ${esc(d.date)} — ${esc(d.module)}</div>
+      <div class="day-sublabel">${esc(d.hours || '')}</div>
+      <span class="day-status todo" id="ds-${d.id}">To do</span>
+      <div class="day-toggle" id="tog-${d.id}">▾</div></div>
+    <div class="day-card-body" id="${d.id}">
+      ${layerChips(d)}
+      <div class="topics"><h5>Today's topics</h5><ul>${topics}</ul></div>${lesson}
+      ${res ? `<div class="resource-list">${res}</div>` : ''}
+      ${d.id === 'w3d1' ? menuExampleHtml() : ''}
+      ${d.exercises ? `<div class="ex-wrap" id="ex-${d.id}"></div>` : ''}
+      ${d.quiz ? `<div id="quiz-${d.quiz}-container"></div>` : ''}
+      ${d.assessment && !d.quiz ? `<div class="assess-line">Assessment: ${esc(d.assessment)}</div>` : ''}
+      ${d.file ? fileCardHtml(d) : ''}
+    </div></div>`;
+}
+
+function renderLabCard(d) {
+  const acts = d.activities.map(a => `<li>${esc(a)}</li>`).join('');
+  return `<div class="day-card">
+    <div class="day-card-header" onclick="toggleDay('${d.id}')">
+      <div class="day-dot lab" id="dot-${d.id}"></div>
+      <div class="day-label">${esc(d.dow)}, ${esc(d.date)} — ${esc(d.module)}</div>
+      <div class="day-sublabel">${LAB_TIME} · In-Person</div>
+      <span class="day-status todo" id="ds-${d.id}">To do</span>
+      <div class="day-toggle" id="tog-${d.id}">▾</div></div>
+    <div class="day-card-body" id="${d.id}">
+      <div class="lab-card"><h3>🧪 ${esc(d.module)}</h3>
+        <div class="lab-meta">${esc(d.dow)}, ${esc(d.date)} · ${LAB_TIME} · ${esc(LAB_PLACE)}</div>
+        ${d.layer ? layerChips(d).replace('layer-row', 'layer-row on-dark') : ''}
+        <ul class="lab-list">${acts}</ul>
+        <div class="lab-assess"><strong>Assessment:</strong> ${esc(d.assessment)}</div></div>
+      ${lessonHtml(d)}
+      <div class="deliverable-card lab-status"><h4>✅ Lab attendance</h4>
+        ${d.unlocks ? `<p>${esc(d.unlocks)}</p>` : ''}
+        <div id="att-${d.id}"></div></div>
+      ${d.lab === 'lab1' ? '<div class="deliverable-card" id="cst-result"></div>' : ''}
+      ${d.lab === 'lab2' || d.lab === 'lab4' ? `<div class="deliverable-card" id="ss-${d.id}"></div>` : ''}
+      ${d.file ? fileCardHtml(d) : ''}
+    </div></div>`;
+}
+
+function menuExampleHtml() {
+  return `<div class="menu-card"><div class="menu-card-header"><h4>🍳 Example menu for costing practice</h4><p>Parsley's Kitchen — live brunch menu (Saturdays 9AM–12PM). Prices are for practice only.</p></div>
+    <div class="menu-card-body">
+      <div class="menu-item"><div><div class="menu-item-name">The Omelette Station — Made to Order</div><div class="menu-item-desc">Farm-fresh 3-egg omelette · Choose up to 3 fillings</div></div><div class="menu-item-price">$14–16</div></div>
+      <div class="menu-item"><div><div class="menu-item-name">The BRUNCHwich</div><div class="menu-item-desc">Scrambled egg patty · White cheddar · Bacon or sausage · Brioche bun · Garlic aioli · Arugula</div></div><div class="menu-item-price">$10–12</div></div>
+      <div class="menu-item"><div><div class="menu-item-name">Creamy Cajun Chicken Pasta</div><div class="menu-item-desc">Grilled chicken · Turkey andouille · Peppers · Onions · Spinach · Parmesan · Penne</div></div><div class="menu-item-price">$13–15</div></div>
+      <div class="menu-item"><div><div class="menu-item-name">Blueberry or Cinnamon Coffee Cake</div><div class="menu-item-desc">Freshly baked</div></div><div class="menu-item-price">$3.00</div></div>
+    </div></div>`;
+}
+
+function renderWeeks() {
+  LEVEL1.weeks.forEach(w => {
+    const ss = w.n === 2 ? `<div class="servsafe-card"><h3>🛡️ ServSafe Food Handler Certification</h3>
+      <p>This is your Level I credential. You prepare online this week, sit a proctored practice exam at Lab 2 (Oct 24), and take the ServSafe Food Handler exam at Lab 4 (Nov 7). The exam is 40 questions and you need 75% or higher. Your instructor provides your ServSafe access.</p>
+      <a class="btn-servsafe" href="https://www.servsafe.com/ServSafe-Food-Handler/Get-Certified" target="_blank" rel="noopener noreferrer">→ ServSafe Food Handler</a></div><br>` : '';
+    document.getElementById('page-w' + w.n).innerHTML = `
+      <div class="week-header"><div class="wh-eyebrow">Week ${w.n} · ${esc(w.long)}</div><h2>${esc(w.title)}</h2><div class="wh-dates">${esc(w.note)}</div></div>
+      ${ss}<div class="day-list">${DAYS.filter(d => d.week === w.n).map(renderDayCard).join('')}</div>`;
+  });
+}
+
+function renderKrp() {
+  const phases = LEVEL1.krp.phases.map(p => `<div class="krp-phase"><div class="krp-n">Phase ${p.n}</div><h4>${esc(p.name)}</h4>
+    <div class="krp-weeks">${esc(p.weeks)}</div><p>${esc(p.focus)}</p><div class="krp-out">${esc(p.out)}</div></div>`).join('');
+  document.getElementById('page-krp').innerHTML = `
+    <div class="week-header"><div class="wh-eyebrow">Kitchen Readiness Protocol</div><h2>My KRP Portfolio</h2>
+      <div class="wh-dates">Built across all four weeks · finished with a 90-day check-in after Lab 4</div></div>
+    <div class="krp-phases">${phases}</div>
+    <div class="section-title">Your four KRP skills</div>
+    <div class="krp-skills">${(LEVEL1.krp.skills || []).map(k => `<div class="krp-skill"><h4>${esc(k.name)}</h4><div class="krp-weeks">${esc(k.when)}</div><p>${esc(k.desc)}</p><button class="link-btn" onclick="goToDay('${k.day}')">Go to this lesson</button></div>`).join('')}</div>
+    <div class="section-title">Portfolio deliverables</div><div id="krp-items" class="krp-items"></div>
+    <div class="deliverable-card" id="checkin-card"><h4>📬 90-day check-in <span class="layer-chip">optional</span></h4>
+      <p>Opt in and we will email you once, 90 days after Lab 4 (early February 2027), with a short survey about how things are going. We use your email for nothing else, and you can opt out here any time.</p>
+      <label for="checkin-email" class="sr-only">Your email address</label>
+      <input type="email" id="checkin-email" class="checkin-input" placeholder="you@example.com" autocomplete="email" maxlength="254">
+      <label class="checkin-opt"><input type="checkbox" id="checkin-opt"> Yes, email me the 90-day check-in</label>
+      <div class="sub-actions"><button class="btn-submit-work" onclick="saveCheckin()">Save</button></div>
+      <div class="grade-sub" id="checkin-status" role="status" aria-live="polite"></div></div>`;
+}
+
+function renderCheckin() {
+  const em = document.getElementById('checkin-email'), op = document.getElementById('checkin-opt'), st = document.getElementById('checkin-status');
+  if (!em || !op) return;
+  const c = memCache.checkin || { opt_in: false, email: '', sent: false };
+  if (document.activeElement !== em) em.value = c.email || '';
+  if (document.activeElement !== op) op.checked = !!c.opt_in;
+  st.textContent = isAdmin ? 'Instructor preview: students set this themselves.' : c.sent ? 'Your check-in email has been sent.' : c.opt_in ? `✓ You are opted in (${c.email}).` : 'You are not opted in.';
+}
+
+async function saveCheckin() {
+  if (isAdmin) { showToast('Instructor preview: nothing saved', 'ℹ️'); return; }
+  const email = document.getElementById('checkin-email').value.trim();
+  const optIn = document.getElementById('checkin-opt').checked;
+  if (optIn && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email)) { showToast('Enter a valid email address to opt in', '⚠️'); return; }
+  try {
+    const d = await api('set-checkin', { opt_in: optIn, email });
+    memCache = mergeProgress(fromServer(d.progress), memCache);
+    if (currentUser) writeLocal(currentUser, memCache);
+    renderCheckin();
+    showToast(optIn ? 'Opted in to the 90-day check-in' : 'Opted out of the 90-day check-in', '📬');
+  } catch (e) { if (e.code !== 'session_expired') showToast(e.code === 'bad_email' ? 'That email address does not look right' : 'Could not save — try again', '⚠️'); }
+}
+
+function renderKrpItems() {
+  renderCheckin();
+  const el = document.getElementById('krp-items');
+  if (!el) return;
+  el.innerHTML = LEVEL1.krp.items.map(it => {
+    const rec = memCache.krp_portfolio[it.key];
+    return `<div class="krp-item ${rec ? 'done' : ''}"><div class="krp-check">${rec ? '✓' : '○'}</div>
+      <div><strong>${esc(it.label)}</strong><div class="grade-sub">Due ${esc(it.due)}${rec ? ` · submitted ${esc(fmtWhen(rec.date))} · 📎 ${esc(rec.fileName)}` : ''}</div></div>
+      <button class="link-btn" onclick="goToDay('${it.day}')">${rec ? 'View' : 'Open'}</button></div>`;
+  }).join('');
+}
+
+function goToDay(id) {
+  const d = dayById[id];
+  showPage('w' + d.week);
+  const body = document.getElementById(id);
+  if (body && !body.classList.contains('open')) toggleDay(id);
+  setTimeout(() => body && body.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+function renderShell() {
+  renderSidebar();
+  renderDashboard();
+  renderWeeks();
+  renderKrp();
+  document.getElementById('page-rubric').innerHTML = '';
+  rendered = true;
+  enhanceA11y();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function isWeek2Unlocked() {
+  if (isAdmin) return true;
+  return memCache.w2_unlocked === true;
+}
+
+function showGate() {
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  let page = document.getElementById('page-gate');
+  if (!page) {
+    page = document.createElement('div');
+    page.className = 'page-view';
+    page.id = 'page-gate';
+    document.querySelector('.main-content').appendChild(page);
+  }
+  page.innerHTML = `<div class="gated-overlay"><div class="lock-icon">🔒</div><h3>Weeks 2–4 are locked</h3>
+    <p style="max-width:440px;margin:0 auto 16px;">Weeks 2–4 unlock once your instructor confirms you attended <strong>Lab 1</strong> on Saturday, October 17. If you were there and this is still locked, tell your instructor.</p>
+    <button class="btn-submit-work" onclick="checkUnlock()">Check again</button>
+    <div style="background:rgba(212,168,67,0.1);border:1px solid var(--gold);border-radius:8px;padding:16px;max-width:380px;margin:20px auto 0;font-size:13px;color:var(--gray-600);">
+      <strong style="color:var(--green-dark);">Questions?</strong> Contact ${CONTACT}</div></div>`;
+  page.classList.add('active');
+}
+
+async function checkUnlock() {
+  await sbLoad(currentUser);
+  refreshAll();
+  if (isWeek2Unlocked()) { showToast('Unlocked — welcome to Week 2!', '🔓'); showPage('w2'); }
+  else showToast('Not unlocked yet — your instructor confirms Lab 1 attendance', '🔒');
+}
+
+function showPage(id) {
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.toggle('active', s.dataset.page === id));
+  if (['w2', 'w3', 'w4'].includes(id) && !isWeek2Unlocked()) { showGate(); return; }
+
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  window.scrollTo(0, 0);
+
+  if (id === 'admin') buildAdminTable();
+  if (id === 'rubric') buildRubricPage();
+  if (id === 'quizreview') buildQuizReview();
+  if (id === 'my-grades') buildMyGrades();
+  if (id === 'krp') renderKrpItems();
+  updateProgress();
+}
+
+function toggleDay(id) {
+  const body = document.getElementById(id);
+  const tog = document.getElementById('tog-' + id);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  tog.classList.toggle('open', !isOpen);
+  const head = tog.closest('.day-card-header');
+  if (head) head.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ============================================================
+// QUIZZES (bank in content/level1-quizzes.js; only published quizzes are open to students)
+// ============================================================
+let selectedAnswers = {};
+
+function buildAllQuizzes() {
+  QUIZ_IDS.forEach(id => buildQuiz(id));
+  refreshAll();
+}
+
+function buildQuiz(id, fresh = false) {
+  const container = document.getElementById('quiz-' + id + '-container');
+  if (!container) return;
+  const quiz = QUIZ_BANK[id];
+  if (!quiz) { container.innerHTML = ''; return; }
+  if (!quizOpen(id)) {
+    container.innerHTML = `<div class="quiz-closed">📝 <strong>${esc(quiz.title)}</strong> opens when your instructor publishes it.</div>`;
+    return;
+  }
+  const saved = fresh ? null : memCache.quizzes[id];
+  const draft = isAdmin && !(settings.published_quizzes || []).includes(id);
+
+  let html = `<div class="quiz-section">
+    <div class="quiz-title">📝 ${esc(quiz.title)} ${draft ? '<span class="draft-tag">UNPUBLISHED — instructors only</span>' : ''}</div>
+    <div class="quiz-subtitle">${quiz.questions.length} questions · Must score ${PASS_PCT}%+ to pass</div>`;
+  quiz.questions.forEach((q, qi) => {
+    html += `<div class="quiz-q" id="quizq-${id}-${qi}"><div class="quiz-q-text">${qi + 1}. ${esc(q.q)}</div><div class="quiz-options">`;
+    q.opts.forEach((opt, oi) => {
+      html += `<button class="quiz-option" id="qopt-${id}-${qi}-${oi}" onclick="selectOption('${id}',${qi},${oi})">${esc(opt)}</button>`;
+    });
+    html += `</div><div class="quiz-feedback" id="qfb-${id}-${qi}"></div></div>`;
+  });
+  html += `<button class="btn-submit-quiz" id="qsub-${id}" onclick="submitQuiz('${id}')" disabled>Submit Quiz</button>`;
+  if (saved) {
+    html += `<div class="quiz-score-banner"><div><div class="score-val">${saved.score}%</div><div class="score-label">Score</div></div>
+      <div class="score-pass ${saved.passed ? 'pass-text' : 'fail-text'}">${saved.passed ? '✅ PASSED' : '❌ Retry recommended'}</div>
+      ${!saved.passed ? `<button class="btn-retry" onclick="retryQuiz('${id}')">Retry</button>` : ''}</div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+  if (saved) applyQuizResults(id);
+}
+
+function selectOption(quizId, qi, oi) {
+  if (!selectedAnswers[quizId]) selectedAnswers[quizId] = {};
+  selectedAnswers[quizId][qi] = oi;
+  const quiz = QUIZ_BANK[quizId];
+  quiz.questions[qi].opts.forEach((_, idx) => {
+    const btn = document.getElementById(`qopt-${quizId}-${qi}-${idx}`);
+    if (btn) { btn.style.borderColor = idx === oi ? 'var(--green-bright)' : 'var(--gray-200)'; btn.style.background = idx === oi ? 'rgba(61,122,82,0.06)' : ''; }
+  });
+  const all = quiz.questions.every((_, i) => selectedAnswers[quizId]?.[i] !== undefined);
+  const sub = document.getElementById('qsub-' + quizId);
+  if (sub) sub.disabled = !all;
+}
+
+function submitQuiz(quizId) {
+  const quiz = QUIZ_BANK[quizId];
+  let correct = 0;
+  quiz.questions.forEach((q, qi) => {
+    const chosen = selectedAnswers[quizId]?.[qi];
+    const isCorrect = chosen === q.ans;
+    if (isCorrect) correct++;
+    q.opts.forEach((_, oi) => {
+      const btn = document.getElementById(`qopt-${quizId}-${qi}-${oi}`);
+      if (!btn) return;
+      btn.disabled = true;
+      if (oi === q.ans) btn.classList.add('correct');
+      else if (oi === chosen && !isCorrect) btn.classList.add('wrong');
+    });
+    const fb = document.getElementById(`qfb-${quizId}-${qi}`);
+    if (fb) { fb.textContent = q.feedback; fb.className = 'quiz-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb'); }
+  });
+  const score = Math.round((correct / quiz.questions.length) * 100);
+  const passed = score >= PASS_PCT;
+  const data = getData();
+  data.quizzes[quizId] = { score, passed, correct, total: quiz.questions.length };
+  saveData(data);
+
+  const sub = document.getElementById('qsub-' + quizId);
+  if (sub) sub.disabled = true;
+  const banner = document.createElement('div');
+  banner.className = 'quiz-score-banner';
+  banner.innerHTML = `<div><div class="score-val">${score}%</div><div class="score-label">${correct}/${quiz.questions.length} correct</div></div>
+    <div class="score-pass ${passed ? 'pass-text' : 'fail-text'}">${passed ? '✅ PASSED' : '❌ Below ' + PASS_PCT + '% — review &amp; retry'}</div>
+    ${!passed ? `<button class="btn-retry" onclick="retryQuiz('${quizId}')">Retry</button>` : ''}`;
+  const qs = document.getElementById('quiz-' + quizId + '-container').querySelector('.quiz-section');
+  if (qs) qs.appendChild(banner);
+  updateProgress();
+  showToast(passed ? `✅ Passed! Score: ${score}%` : `Score: ${score}%. Study and try again!`, passed ? '✅' : '📚');
+}
+
+function retryQuiz(quizId) {
+  selectedAnswers[quizId] = {};
+  buildQuiz(quizId, true); // keep the recorded score until the new attempt is submitted
+}
+
+function applyQuizResults(id) {
+  QUIZ_BANK[id].questions.forEach((q, qi) => {
+    q.opts.forEach((_, oi) => {
+      const btn = document.getElementById(`qopt-${id}-${qi}-${oi}`);
+      if (btn) { btn.disabled = true; if (oi === q.ans) btn.classList.add('correct'); }
+    });
+    const fb = document.getElementById(`qfb-${id}-${qi}`);
+    if (fb) { fb.textContent = q.feedback; fb.className = 'quiz-feedback correct-fb'; }
+  });
+  const sub = document.getElementById('qsub-' + id);
+  if (sub) sub.disabled = true;
+}
+
+// ============================================================
+// SUBMISSIONS — files go to the private Supabase bucket through a one-time signed URL issued for THIS student
+// ============================================================
+const FILE_TYPES = {
+  pdf: 'application/pdf', doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ppt: 'application/vnd.ms-powerpoint',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  csv: 'text/csv', txt: 'text/plain', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', zip: 'application/zip'
+};
+const FILE_ACCEPT = Object.keys(FILE_TYPES).map(e => '.' + e).join(',');
+const extOf = name => (/\.([A-Za-z0-9]+)$/.exec(name) || [])[1]?.toLowerCase() || '';
+
+let pendingFiles = {};  // id -> { file, name, size, mime, slot, uploaded }
+let resubmitting = {};
+let savingNow = {};
+let uploadPct = {};
+let uploadError = {};
+
+function renderPanel(id) {
+  const el = document.getElementById('sp-' + id);
+  const meta = FILES[id];
+  if (!el || !meta) return;
+  const d = getData().deliverables[id];
+  const pend = pendingFiles[id];
+  const choosing = !d || resubmitting[id];
+  const busy = !!savingNow[id];
+  let status, extra = '';
+
+  if (busy) {
+    const pct = Math.round((uploadPct[id] || 0) * 100);
+    status = ['saving', '⏳', pct < 100 ? 'UPLOADING — DO NOT CLOSE THIS PAGE' : 'SAVING…', ''];
+    extra = `<div class="up-track" aria-hidden="true"><div class="up-fill" id="up-${id}" style="width:${pct}%"></div></div>`;
+  } else if (uploadError[id]) {
+    status = ['error', '!', 'UPLOAD FAILED — NOT SUBMITTED', esc(uploadError[id])];
+  } else if (pend && choosing) {
+    status = ['selected', '📎', 'FILE SELECTED — NOT YET SUBMITTED', 'Click the Submit button below to send it'];
+  } else if (d) {
+    const detail = [fmtWhen(d.date), d.fileName ? '📎 ' + esc(d.fileName) + (d.fileSize != null ? ' (' + fmtSize(d.fileSize) + ')' : '') : ''].filter(Boolean).join('<br>');
+    status = ['ok', '✓', 'SUBMITTED', detail];
+  } else {
+    status = ['todo', '○', 'NOT SUBMITTED', ''];
+  }
+
+  let html = `<div class="sub-status ${status[0]}" role="status" aria-live="polite"><span class="sub-icon" aria-hidden="true">${status[1]}</span>
+    <div><strong>${status[2]}</strong>${status[3] ? `<div class="sub-detail">${status[3]}</div>` : ''}${extra}</div></div>`;
+
+  if (choosing && !busy) {
+    if (!pend) {
+      html += `<div class="sub-actions"><label class="btn-choose" for="file-${id}">📎 ${d ? 'Choose a different file' : 'Choose file'}</label>
+        <input type="file" id="file-${id}" class="sr-only" accept="${FILE_ACCEPT}" onchange="onFilePicked('${id}', this)">
+        ${d ? `<button class="link-btn" onclick="cancelResubmit('${id}')">Cancel</button>` : ''}</div>`;
+    } else {
+      html += `<div class="sub-picked">📎 <strong>${esc(pend.name)}</strong> <span>(${fmtSize(pend.size)})</span>
+          <button class="link-btn" onclick="clearFile('${id}')">Remove</button></div>
+        <div class="sub-actions"><button class="btn-submit-work big" onclick="submitDeliverable('${id}')">⬆ ${uploadError[id] ? (pend.uploaded ? 'Finish — ' : 'Try again — ') : ''}Submit ${esc(meta.label)}</button></div>`;
+    }
+    html += `<p class="sub-note">PDF, Word, Excel, PowerPoint, CSV, text, image or ZIP · up to ${MAX_FILE_MB} MB.</p>`;
+  } else if (d && !resubmitting[id] && !busy) {
+    html += `<div class="sub-actions"><button class="link-btn" onclick="startResubmit('${id}')">Submit a different file</button></div>`;
+  }
+  el.innerHTML = html;
+}
+function renderAllPanels() { Object.keys(FILES).forEach(renderPanel); renderExercises(); renderActivities(); }
+
+// ---- Scaling exercises (answers are graded on the server; the page never holds them)
+const exState = {};   // id -> { vals: {key: text}, results: {key: bool}|null, busy, msg }
+function exParse(t) {
+  t = String(t || '').trim().replace(/,/g, '');
+  const f = /^(-?\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/.exec(t);
+  if (f) return Number(f[2]) ? Number(f[1]) / Number(f[2]) : NaN;
+  return /^-?\d*\.?\d+$/.test(t) ? Number(t) : NaN;
+}
+function renderExercises() {
+  DAYS.filter(d => d.exercises).forEach(d => {
+    const el = document.getElementById('ex-' + d.id);
+    if (!el) return;
+    el.innerHTML = '<div class="section-title" style="margin-top:8px">Scaling exercises</div>' + d.exercises.map(e => {
+      const st = exState[e.id] || (exState[e.id] = { vals: {}, results: null, busy: false, msg: '' });
+      const rec = memCache.exercises[e.id];
+      const rows = e.inputs.map(i => {
+        const r = st.results ? st.results[i.key] : undefined;
+        return `<div class="ex-row"><label for="exi-${e.id}-${i.key}">${esc(i.label)}</label>
+          <span class="ex-field"><input id="exi-${e.id}-${i.key}" inputmode="decimal" autocomplete="off" value="${esc(st.vals[i.key] || '')}" oninput="exInput('${e.id}','${i.key}',this.value)" ${st.busy ? 'disabled' : ''}> <span class="ex-unit">${esc(i.unit)}</span>
+          <span class="ex-mark ${r === true ? 'ok' : r === false ? 'no' : ''}" aria-live="polite">${r === true ? '✓ correct' : r === false ? '✗ try again' : ''}</span></span></div>`;
+      }).join('');
+      const status = rec && rec.passed ? `<span class="score-badge score-pass">✓ Passed · ${rec.attempts} attempt${rec.attempts === 1 ? '' : 's'}</span>`
+        : rec ? `<span class="score-badge score-pending">Best ${rec.best}/${rec.total} · ${rec.attempts} attempt${rec.attempts === 1 ? '' : 's'}</span>` : '';
+      return `<div class="deliverable-card ex-card ${rec && rec.passed ? 'done' : ''}"><h4>🧮 ${esc(e.title)} <span class="layer-chip">${esc(e.level)}</span> ${status}</h4>
+        <p>${esc(e.intro)}</p>
+        <table class="lesson-table"><tbody>${e.recipe.map(r => `<tr><td>${esc(r[0])}</td><td><strong>${esc(r[1])}</strong></td></tr>`).join('')}</tbody></table>
+        ${rows}
+        <div class="sub-actions"><button class="btn-submit-work" onclick="checkExercise('${e.id}')" ${st.busy ? 'disabled' : ''}>${st.busy ? 'Checking…' : rec && rec.passed ? 'Check again' : 'Check my answers'}</button></div>
+        <div class="grade-sub" role="status" aria-live="polite">${esc(st.msg)}</div></div>`;
+    }).join('');
+  });
+}
+function exInput(id, key, v) { const st = exState[id]; st.vals[key] = v; if (st.results && key in st.results) { delete st.results[key]; } }
+async function checkExercise(id) {
+  const ex = DAYS.flatMap(d => d.exercises || []).find(e => e.id === id);
+  const st = exState[id];
+  const answers = {};
+  for (const i of ex.inputs) {
+    const n = exParse(st.vals[i.key]);
+    if (!Number.isFinite(n)) { st.msg = 'Fill in every box with a number (decimals like 2.5 or fractions like 5/2 are fine).'; renderExercises(); return; }
+    answers[i.key] = n;
+  }
+  st.busy = true; st.msg = ''; renderExercises();
+  try {
+    const d = await api('submit-exercise', { exercise_id: id, answers });
+    st.results = d.results;
+    st.msg = d.passed ? 'All correct. Nice work!' : `${d.correct} of ${d.total} correct. Fix the ones marked ✗ and check again.`;
+    if (!isAdmin) { memCache = mergeProgress(fromServer(d.progress), memCache); if (currentUser) writeLocal(currentUser, memCache); }
+    if (d.passed) showToast('✅ ' + ex.title + ' complete', '🧮');
+  } catch (e) {
+    if (e.code === 'session_expired') return;
+    st.msg = 'Could not check right now. Check your connection and try again.';
+  }
+  st.busy = false;
+  renderExercises();
+  updateProgress();
+}
+
+function onFilePicked(id, input) {
+  const f = input.files && input.files[0];
+  input.value = '';
+  if (!f) return;
+  const ext = extOf(f.name);
+  let problem = '';
+  if (f.size === 0) problem = 'That file is empty — choose a different one.';
+  else if (!FILE_TYPES[ext]) problem = 'That file type is not accepted. Use PDF, Word, Excel, PowerPoint, CSV, text, an image (PNG/JPG) or ZIP.';
+  else if (f.size > MAX_FILE_MB * 1048576) problem = `That file is ${fmtSize(f.size)}. The limit is ${MAX_FILE_MB} MB — compress it or export a smaller version.`;
+  if (problem) { uploadError[id] = problem; delete pendingFiles[id]; renderPanel(id); showToast(problem, '⚠️'); return; }
+  delete uploadError[id];
+  pendingFiles[id] = { file: f, name: f.name, size: f.size, mime: f.type || FILE_TYPES[ext] };
+  renderPanel(id);
+}
+function clearFile(id) { delete pendingFiles[id]; delete uploadError[id]; renderPanel(id); }
+function startResubmit(id) { resubmitting[id] = true; delete uploadError[id]; renderPanel(id); }
+function cancelResubmit(id) { delete resubmitting[id]; delete pendingFiles[id]; delete uploadError[id]; renderPanel(id); }
+
+// XHR (not fetch) so we can show real upload progress
+function uploadSigned(signedUrl, file, mime, name, onProgress) {
+  return new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open('PUT', signedUrl);
+    x.timeout = 180000;
+    x.upload.onprogress = e => { if (e.lengthComputable) onProgress(e.loaded / e.total); };
+    x.onload = () => {
+      if (x.status >= 200 && x.status < 300) return resolve();
+      let msg = '';
+      try { msg = JSON.parse(x.responseText).message || ''; } catch (e) { /* not json */ }
+      if (x.status === 413) reject(new UploadError(`The file is larger than the ${MAX_FILE_MB} MB limit.`));
+      else if (/mime|type/i.test(msg)) reject(new UploadError('That file type was refused by the server. Try exporting it as a PDF.'));
+      else if (/exist|duplicate/i.test(msg) || x.status === 409) reject(new UploadError('A file with that name was already uploaded. Rename it and try again.'));
+      else reject(new UploadError(`Upload failed (${x.status}). Please try again.`));
+    };
+    x.onerror = () => reject(new UploadError('Network problem — check your connection and try again. Your file was not sent.'));
+    x.ontimeout = () => reject(new UploadError('The upload took too long. Check your connection and try again.'));
+    const fd = new FormData();
+    fd.append('cacheControl', '3600');
+    fd.append('', new Blob([file], { type: mime }), name);
+    x.send(fd);
+  });
+}
+class UploadError extends Error {}
+
+const API_MESSAGES = {
+  file_type_not_allowed: 'That file type is not accepted. Use PDF, Word, Excel, PowerPoint, CSV, text, an image (PNG/JPG) or ZIP.',
+  file_too_large: `That file is over the ${MAX_FILE_MB} MB limit — compress it or export a smaller version.`,
+  empty_file: 'That file is empty — choose a different one.',
+  file_missing: 'The server did not receive the file. Please try again.',
+  unknown_assignment: 'This assignment cannot accept files. Tell your instructor.',
+  bad_path: 'Something went wrong with the upload. Please try again.',
+};
+
+async function submitDeliverable(id) {
+  const meta = FILES[id];
+  if (!meta || savingNow[id]) return;
+  const pend = pendingFiles[id];
+  if (!pend) { showToast('Choose your file first.', '📎'); return; }
+
+  const data = getData();
+  const prev = data.deliverables[id];
+  savingNow[id] = true; uploadPct[id] = 0; delete uploadError[id];
+  renderPanel(id);
+
+  if (isAdmin) { // instructor preview: exercise the UI without writing anything
+    data.deliverables[id] = { submitted: true, kind: 'file', date: new Date().toISOString(), fileName: pend.name, fileSize: pend.size, fileType: pend.mime, filePath: null, attempts: ((prev && prev.attempts) || 0) + 1 };
+  } else {
+    try {
+      // 1) ask the server for an upload slot (it checks who you are, the file type and size)
+      if (!pend.slot) pend.slot = await api('create-upload', { assignment: id, filename: pend.name, size: pend.size });
+      // 2) send the file itself to storage
+      if (!pend.uploaded) {
+        await uploadSigned(pend.slot.signedUrl, pend.file, pend.slot.mime, pend.name, f => {
+          uploadPct[id] = f;
+          const bar = document.getElementById('up-' + id);
+          if (bar) bar.style.width = Math.round(f * 100) + '%';
+        });
+        pend.uploaded = true;
+      }
+      uploadPct[id] = 1;
+      // 3) the server confirms the file is really there, then records the submission
+      const d = await api('record-submission', { assignment: id, path: pend.slot.path, filename: pend.name });
+      memCache = mergeProgress(fromServer(d.progress), memCache);
+      memCache.deliverables[id] = d.record;
+      if (currentUser) writeLocal(currentUser, memCache);
+    } catch (e) {
+      delete savingNow[id];
+      if (e.code === 'session_expired') return;
+      let msg;
+      if (e instanceof UploadError) msg = e.message;
+      else if (pend.uploaded) msg = 'Your file was uploaded, but we could not record it yet. Click the button to finish — you do not need to upload again.';
+      else msg = API_MESSAGES[e.code] || 'Could not reach the server. Check your connection and try again. Your file was not sent.';
+      uploadError[id] = msg;
+      renderPanel(id);
+      showToast(pend.uploaded ? 'Uploaded — not recorded yet' : 'Upload failed — not submitted', '⚠️');
+      return;
+    }
+  }
+  delete savingNow[id]; delete pendingFiles[id]; delete resubmitting[id]; delete uploadPct[id];
+  refreshAll();
+  showToast('✅ Submitted: ' + meta.label, '✅');
+}
+
+// ---- lab attendance / ServSafe / CST result panels (instructor-recorded; read-only for students)
+function renderAttendance() {
+  LABS.forEach(d => {
+    const el = document.getElementById('att-' + d.id);
+    if (!el) return;
+    if (isAdmin) { el.innerHTML = '<div class="sub-status todo"><span class="sub-icon">👁</span><div><strong>INSTRUCTOR PREVIEW</strong><div class="sub-detail">Record attendance in Student Tracker.</div></div></div>'; return; }
+    el.innerHTML = labDone(d.lab)
+      ? '<div class="sub-status ok" role="status"><span class="sub-icon">✓</span><div><strong>ATTENDANCE CONFIRMED</strong><div class="sub-detail">Your instructor recorded you at this lab.</div></div></div>'
+      : '<div class="sub-status todo" role="status"><span class="sub-icon">○</span><div><strong>ATTENDANCE NOT YET RECORDED</strong><div class="sub-detail">Your instructor confirms attendance at the lab.</div></div></div>';
+  });
+  const cst = document.getElementById('cst-result');
+  if (cst) {
+    const r = cstResults.find(x => x.lab === 1);
+    cst.innerHTML = r
+      ? `<h4>📋 CST Assessment result</h4><div class="cst-score"><span class="cst-total">${r.total}</span><span class="cst-of">/ 100</span><span class="score-badge ${r.band === 'Pass' ? 'score-pass' : r.band === 'Conditional' ? 'score-pending' : 'score-fail'}">${esc(r.band)}</span></div>
+         <p class="grade-sub">80+ Pass · 70–79 Conditional · below 70 Remediation required</p>`
+      : '<h4>📋 CST Assessment result</h4><p class="grade-sub">Your instructor enters your score after Lab 1.</p>';
+  }
+  const ss = memCache.servsafe || {};
+  ['w2lab', 'w4lab'].forEach(id => {
+    const el = document.getElementById('ss-' + id);
+    if (!el) return;
+    const bits = [];
+    if (ss.practice_score != null) bits.push(`Practice exam: <strong>${ss.practice_score}%</strong>`);
+    if (ss.exam_result && ss.exam_result !== 'pending') bits.push(`ServSafe Food Handler exam: <strong>${ss.exam_result === 'passed' ? 'PASSED ✓' : 'Not passed'}</strong>${ss.exam_score != null ? ` (${ss.exam_score}%)` : ''}`);
+    el.innerHTML = `<h4>🛡️ ServSafe Food Handler</h4>${bits.length ? bits.map(b => `<p>${b}</p>`).join('') : '<p class="grade-sub">Your instructor records your ServSafe results here.</p>'}`;
+  });
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+const WEEKS = LEVEL1.weeks.map(w => w.n);
+
+function updateProgress() {
+  if (!rendered || !document.getElementById('global-progress')) return;
+  const unlocked = isWeek2Unlocked();
+  let done = 0, total = 0, weeksDone = 0;
+
+  WEEKS.forEach(w => {
+    const items = weekItems(w);
+    const d = items.filter(itemDone).length;
+    const complete = items.length > 0 && d === items.length;
+    const locked = w !== 1 && !unlocked;
+    done += d; total += items.length;
+    if (complete) weeksDone++;
+
+    document.getElementById('wc' + w + '-bar').style.width = (items.length ? Math.round(d / items.length * 100) : 0) + '%';
+    document.getElementById('wc' + w + '-count').textContent = d + ' of ' + items.length + ' items done';
+    const chip = document.getElementById('wc' + w + '-status');
+    const state = locked ? ['status-locked', '🔒 Locked'] : complete ? ['status-complete', '✓ Complete'] : d > 0 ? ['status-active', 'In progress'] : ['status-todo', 'Not started'];
+    chip.className = 'wc-status ' + state[0];
+    chip.textContent = state[1];
+
+    const badge = document.getElementById('sb-w' + w + '-badge');
+    const check = document.getElementById('sb-w' + w + '-check');
+    if (badge) {
+      if (locked) { badge.className = 'week-badge locked'; badge.textContent = '🔒'; }
+      else if (complete) { badge.className = 'week-badge complete'; badge.textContent = ''; }
+      else { badge.className = 'week-badge' + (w === 1 ? ' gold' : ''); badge.textContent = w; }
+    }
+    if (check) {
+      check.className = 'sidebar-check' + (complete ? ' is-complete' : '');
+      check.textContent = locked ? '' : complete ? '✓' : d + '/' + items.length;
+    }
+  });
+
+  // per-day dot + text chip (never colour alone)
+  DAYS.forEach(day => {
+    const items = dayItems(day);
+    const d = items.filter(itemDone).length;
+    const state = items.length === 0 ? 'todo' : d === 0 ? 'todo' : d === items.length ? 'done' : 'partial';
+    const dot = document.getElementById('dot-' + day.id);
+    if (dot) { dot.classList.remove('done', 'partial'); if (state !== 'todo') dot.classList.add(state); }
+    const chip = document.getElementById('ds-' + day.id);
+    if (chip) { chip.className = 'day-status ' + state; chip.textContent = state === 'done' ? '✓ Done' : state === 'partial' ? 'In progress' : 'To do'; }
+  });
+
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('global-progress').style.width = pct + '%';
+  document.getElementById('global-pct').textContent = pct + '%';
+  document.getElementById('global-label').textContent = 'Course Progress · ' + done + ' of ' + total + ' items';
+
+  const open = QUIZ_IDS.filter(quizOpen);
+  const passed = open.filter(id => memCache.quizzes[id] && memCache.quizzes[id].passed).length;
+  document.getElementById('stat-quizzes').textContent = passed + '/' + open.length;
+  document.getElementById('stat-deliverables').textContent = Object.keys(FILES).filter(id => memCache.deliverables[id]).length + '/' + Object.keys(FILES).length;
+  document.getElementById('stat-weeks').textContent = weeksDone + '/' + WEEKS.length;
+  const scores = Object.entries(memCache.quizzes).filter(([k]) => QUIZ_IDS.includes(k)).map(([, q]) => q.score);
+  document.getElementById('stat-score').textContent = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) + '%' : '—';
+  const l2 = document.getElementById('l2-banner');
+  if (l2) l2.style.display = memCache.is_l2_eligible && !isAdmin ? 'flex' : 'none';
+}
+
+function refreshAll() {
+  if (!rendered) return;
+  renderAllPanels();
+  renderAttendance();
+  updateProgress();
+  const active = ['my-grades', 'krp'].find(p => document.getElementById('page-' + p)?.classList.contains('active'));
+  if (active === 'my-grades') buildMyGrades();
+  if (active === 'krp') renderKrpItems();
+}
+
+// ============================================================
+// MY GRADES
+// ============================================================
+function buildMyGrades() {
+  const tbody = document.getElementById('my-grades-body');
+  let html = '';
+  const ss = memCache.servsafe || {};
+  DAYS.forEach(d => {
+    if (d.quiz) {
+      const q = memCache.quizzes[d.quiz];
+      const quiz = QUIZ_BANK[d.quiz];
+      const badge = !quizOpen(d.quiz) ? '<span class="score-badge score-pending">Not open yet</span>'
+        : q ? `<span class="score-badge ${q.passed ? 'score-pass' : 'score-fail'}">${q.passed ? '✓ Passed' : '✗ Retry'} · ${q.score}%</span>` : '<span class="score-badge score-pending">Not taken</span>';
+      html += `<tr><td>Week ${d.week}</td><td>${esc(quiz ? quiz.title : d.module)}</td><td>Quiz</td><td>${badge}</td></tr>`;
+    }
+    const acts = actGraded(d.id);
+    if (acts.length) {
+      const n = acts.filter(a => (memCache.exercises[a.id] || {}).passed).length;
+      html += `<tr><td>Week ${d.week}</td><td>${esc(d.short)} lesson activities</td><td>Activities</td><td><span class="score-badge ${n === acts.length ? 'score-pass' : 'score-pending'}">${n}/${acts.length} done</span></td></tr>`;
+    }
+    (d.exercises || []).forEach(e => {
+      const r = memCache.exercises[e.id];
+      html += `<tr><td>Week ${d.week}</td><td>${esc(e.title)}</td><td>Exercise</td><td>${r ? `<span class="score-badge ${r.passed ? 'score-pass' : 'score-pending'}">${r.passed ? '✓ Passed' : 'Best ' + r.best + '/' + r.total}</span>` : '<span class="score-badge score-pending">Not started</span>'}</td></tr>`;
+    });
+    if (d.file) {
+      const rec = memCache.deliverables[d.id];
+      const badge = rec ? `<span class="score-badge score-pass">✓ Submitted</span><div class="grade-sub">${esc(fmtWhen(rec.date))}${rec.fileName ? '<br>📎 ' + esc(rec.fileName) : ''}</div>` : '<span class="score-badge score-pending">Not submitted</span>';
+      html += `<tr><td>Week ${d.week}</td><td>${esc(d.file.label)}</td><td>Deliverable</td><td>${badge}</td></tr>`;
+    }
+    if (d.lab) {
+      html += `<tr><td>Week ${d.week}</td><td>${esc(d.module)}</td><td>Lab attendance</td><td>${labDone(d.lab) ? '<span class="score-badge score-pass">✓ Confirmed</span>' : '<span class="score-badge score-pending">Not recorded</span>'}</td></tr>`;
+    }
+  });
+  const r = cstResults.find(x => x.lab === 1);
+  html += `<tr><td>Week 1</td><td>CST Lab Assessment (100 pts)</td><td>Rubric</td><td>${r ? `<span class="score-badge ${r.band === 'Pass' ? 'score-pass' : r.band === 'Conditional' ? 'score-pending' : 'score-fail'}">${r.total}/100 · ${esc(r.band)}</span>` : '<span class="score-badge score-pending">Not scored yet</span>'}</td></tr>`;
+  html += `<tr><td>Week 2</td><td>ServSafe practice exam</td><td>Practice</td><td>${ss.practice_score != null ? `<span class="score-badge score-pending">${ss.practice_score}%</span>` : '<span class="score-badge score-pending">Not recorded</span>'}</td></tr>`;
+  html += `<tr><td>Week 4</td><td>ServSafe Food Handler exam</td><td>Credential</td><td>${ss.exam_result === 'passed' ? '<span class="score-badge score-pass">✓ Passed</span>' : ss.exam_result === 'failed' ? '<span class="score-badge score-fail">Not passed</span>' : '<span class="score-badge score-pending">Pending</span>'}</td></tr>`;
+  tbody.innerHTML = html;
+}
+
+// ============================================================
+// INSTRUCTOR: tracker, files, CST rubric, quiz review
+// ============================================================
+let adminData = null;
+let adminFileRows = [];
+
+async function loadAdminData() {
+  adminData = await api('admin-overview');
+  settings = adminData.settings || settings;
+  return adminData;
+}
+const adminProg = name => (adminData.progress[name] || EMPTY());
+const adminRubric = (name, lab = 1) => (adminData.rubrics || []).find(r => r.student_name === name && r.lab === lab);
+
+async function buildAdminTable() {
+  const tbody = document.getElementById('admin-body');
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--gray-600);">⏳ Loading student data…</td></tr>';
+  try { await loadAdminData(); } catch (e) {
+    if (e.code === 'session_expired') return;
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--orange);">⚠️ Could not load student data. Check your connection and reopen this page.</td></tr>';
+    return;
+  }
+  const openQuizzes = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
+  let html = '';
+  adminData.roster.forEach(name => {
+    const d = adminProg(name);
+    const la = d.lab_attendance || {};
+    const labs = LABS.map((l, i) => `<button class="lab-toggle ${la[l.lab] ? 'on' : ''}" data-name="${esc(name)}" data-lab="${l.lab}" onclick="adminToggleLab(this.dataset.name, this.dataset.lab)" title="${esc(l.module)}" aria-pressed="${!!la[l.lab]}">L${i + 1}</button>`).join('');
+    const qPassed = openQuizzes.filter(id => d.quizzes[id] && d.quizzes[id].passed).length;
+    const exIds = DAYS.flatMap(x => (x.exercises || []).map(e => e.id));
+    const exDone = exIds.filter(id => (d.exercises || {})[id] && d.exercises[id].passed).length;
+    const actIds = ALL_ACTS().filter(a => a.graded).map(a => a.id);
+    const actDone = actIds.filter(id => ((d.exercises || {})[id] || {}).passed).length;
+    const dels = Object.keys(FILES).filter(id => d.deliverables[id]).length;
+    const ss = d.servsafe || {};
+    const rub = adminRubric(name);
+    html += `<tr>
+      <td><strong>${esc(name)}</strong></td>
+      <td><div class="lab-toggles">${labs}</div></td>
+      <td><span class="score-badge ${openQuizzes.length && qPassed === openQuizzes.length ? 'score-pass' : 'score-pending'}">${qPassed}/${openQuizzes.length}</span></td>
+      <td><span class="score-badge ${exDone === exIds.length ? 'score-pass' : 'score-pending'}">${exDone}/${exIds.length}</span></td>
+      <td><span class="score-badge ${actDone === actIds.length ? 'score-pass' : 'score-pending'}">${actDone}/${actIds.length}</span></td>
+      <td><span class="score-badge ${dels === Object.keys(FILES).length ? 'score-pass' : 'score-pending'}">${dels}/${Object.keys(FILES).length}</span></td>
+      <td><div class="ss-edit">
+        <input type="number" min="0" max="100" placeholder="practice %" value="${ss.practice_score ?? ''}" data-ss-practice="${esc(name)}" aria-label="Practice exam score for ${esc(name)}">
+        <select data-ss-result="${esc(name)}" aria-label="Exam result for ${esc(name)}">${['pending', 'passed', 'failed'].map(v => `<option value="${v}" ${(ss.exam_result || 'pending') === v ? 'selected' : ''}>${v}</option>`).join('')}</select>
+        <button class="btn-dl" data-name="${esc(name)}" onclick="adminSaveServsafe(this.dataset.name)">Save</button></div></td>
+      <td>${rub ? `<span class="score-badge ${rub.band === 'Pass' ? 'score-pass' : rub.band === 'Conditional' ? 'score-pending' : 'score-fail'}">${rub.total}/100</span>` : '<span class="score-badge score-pending">—</span>'}
+          <button class="link-btn" data-name="${esc(name)}" onclick="openRubricFor(this.dataset.name)">${rub ? 'Edit' : 'Score'}</button></td>
+      <td>${d.w2_unlocked ? '<span class="score-badge score-pass">✅ Unlocked</span>' : `<button class="btn-dl gold" data-name="${esc(name)}" onclick="adminUnlockWeek2(this.dataset.name)">🔓 Unlock</button>`}</td>
+      <td>${d.is_l2_eligible ? '<span class="score-badge score-pass">Ready</span>' : '<span class="score-badge score-pending">—</span>'}</td></tr>`;
+  });
+  tbody.innerHTML = html;
+
+  adminFileRows = adminData.submissions;
+  document.getElementById('admin-files').innerHTML = adminFileRows.length ? adminFileRows.map(f => `<tr>
+      <td><strong>${esc(f.student_name)}</strong></td><td>${esc(f.assignment)}</td>
+      <td>${esc(f.file_name)}${f.attempt > 1 ? ` <span class="grade-sub">(attempt ${f.attempt})</span>` : ''}</td>
+      <td>${fmtSize(f.file_size)}</td><td>${esc(fmtWhen(f.submitted_at))}</td>
+      <td><button class="btn-dl" data-path="${esc(f.file_path)}" onclick="downloadFile(this.dataset.path)">⬇ Download</button>
+          <div class="path">${esc(f.file_path)}</div></td></tr>`).join('')
+    : '<tr><td colspan="6" style="color:var(--gray-600)">No files yet.</td></tr>';
+  document.getElementById('admin-count').textContent = adminData.roster.filter(n => n !== 'TEST STUDENT').length;
+}
+
+async function adminToggleLab(name, lab) {
+  const present = !(adminProg(name).lab_attendance || {})[lab];
+  try { await api('admin-set-attendance', { student_name: name, lab, present }); }
+  catch (e) { if (e.code !== 'session_expired') showToast('Could not save attendance — check the connection and try again', '⚠️'); return; }
+  showToast(`${name.split(' ')[0]}: ${lab.replace('lab', 'Lab ')} ${present ? 'attended ✓' : 'marked absent'}${lab === 'lab1' && present ? ' — Weeks 2–4 unlocked' : ''}`, present ? '✅' : '○');
+  buildAdminTable();
+}
+
+async function adminSaveServsafe(name) {
+  const practice = document.querySelector(`[data-ss-practice="${CSS.escape(name)}"]`).value;
+  const result = document.querySelector(`[data-ss-result="${CSS.escape(name)}"]`).value;
+  try { await api('admin-set-servsafe', { student_name: name, practice_score: practice === '' ? null : Number(practice), exam_result: result }); }
+  catch (e) { if (e.code !== 'session_expired') showToast(e.code === 'bad_score' ? 'Scores must be between 0 and 100' : 'Could not save — try again', '⚠️'); return; }
+  showToast(`ServSafe saved for ${name.split(' ')[0]}`, '🛡️');
+  buildAdminTable();
+}
+
+async function adminUnlockWeek2(name) {
+  try { await api('admin-unlock', { student_name: name }); }
+  catch (e) { if (e.code !== 'session_expired') showToast(`Could not unlock ${name.split(' ')[0]} — check the connection and try again`, '⚠️'); return; }
+  showToast(`🔓 Weeks 2–4 unlocked for ${name.split(' ')[0]}!`, '🔓');
+  buildAdminTable();
+}
+
+async function downloadFile(path) {
+  try { const d = await api('admin-file-url', { path }); window.open(d.url, '_blank', 'noopener'); }
+  catch (e) { if (e.code !== 'session_expired') showToast('Could not open that file — try again', '⚠️'); }
+}
+
+// ---- CST rubric entry (Lab 1, 100 points)
+let rubricScores = {};
+function rubricKeys() { return CST_RUBRIC.sections.flatMap(s => s.criteria.map((_, i) => `${s.id}_${i + 1}`)); }
+
+async function buildRubricPage() {
+  const page = document.getElementById('page-rubric');
+  page.innerHTML = '<div class="week-header"><div class="wh-eyebrow">Instructor</div><h2>CST Module 1 Rubric</h2><div class="wh-dates">Loading…</div></div>';
+  try { await loadAdminData(); } catch (e) { return; }
+  const opts = adminData.roster.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  page.innerHTML = `<div class="week-header"><div class="wh-eyebrow">Instructor · Lab 1</div><h2>CST Module 1 Rubric</h2>
+      <div class="wh-dates">100 points · 80+ Pass · 70–79 Conditional · below 70 Remediation required · score before the end of lab day</div></div>
+    <div class="rubric-pick"><label for="rb-student">Student</label><select id="rb-student" onchange="loadRubricFor(this.value)">${opts}</select>
+      <div class="rubric-total" id="rb-total" aria-live="polite"></div></div>
+    <div id="rb-grid"></div>
+    <div class="rubric-foot"><label for="rb-notes">Notes (instructor only)</label><textarea id="rb-notes" rows="3"></textarea>
+      <button class="btn-submit-work big" onclick="saveRubric()">Save rubric</button></div>`;
+  const first = adminData.roster.includes(rubricTarget) ? rubricTarget : adminData.roster[0];
+  rubricTarget = null;
+  document.getElementById('rb-student').value = first;
+  loadRubricFor(first);
+}
+
+let rubricTarget = null;
+function openRubricFor(name) { rubricTarget = name; showPage('rubric'); }
+
+function loadRubricFor(name) {
+  const existing = adminRubric(name);
+  rubricScores = existing ? { ...existing.scores } : {};
+  document.getElementById('rb-notes').value = existing && existing.notes ? existing.notes : '';
+  renderRubricGrid();
+}
+
+function renderRubricGrid() {
+  document.getElementById('rb-grid').innerHTML = CST_RUBRIC.sections.map(s => {
+    const rows = s.criteria.map((c, i) => {
+      const key = `${s.id}_${i + 1}`;
+      const btns = [4, 3, 2, 1].map(v => `<button class="rb-btn ${rubricScores[key] === v ? 'on' : ''}" onclick="setRubric('${key}', ${v})" aria-pressed="${rubricScores[key] === v}" aria-label="${esc(c)} ${v} points">${v}</button>`).join('');
+      return `<div class="rb-row"><div class="rb-name">${esc(c)}</div><div class="rb-btns">${btns}</div></div>`;
+    }).join('');
+    const sub = s.criteria.reduce((a, _, i) => a + (rubricScores[`${s.id}_${i + 1}`] || 0), 0);
+    return `<div class="rb-section"><div class="rb-head"><h4>${esc(s.title)}</h4><span>${sub} / ${s.criteria.length * 4}</span></div><div class="rb-note">${esc(s.note)}</div>${rows}</div>`;
+  }).join('');
+  updateRubricTotal();
+}
+
+function setRubric(key, v) { rubricScores[key] = v; renderRubricGrid(); }
+
+function updateRubricTotal() {
+  const keys = rubricKeys();
+  const total = keys.reduce((a, k) => a + (rubricScores[k] || 0), 0);
+  const scored = keys.filter(k => rubricScores[k]).length;
+  const band = scored === keys.length ? CST_RUBRIC.band(total) : `${scored}/${keys.length} scored`;
+  document.getElementById('rb-total').innerHTML = `<span class="cst-total">${total}</span><span class="cst-of">/ 100</span><span class="score-badge ${scored < keys.length ? 'score-pending' : total >= 80 ? 'score-pass' : total >= 70 ? 'score-pending' : 'score-fail'}">${esc(band)}</span>`;
+}
+
+async function saveRubric() {
+  const name = document.getElementById('rb-student').value;
+  try {
+    const d = await api('admin-save-rubric', { student_name: name, lab: 1, scores: rubricScores, notes: document.getElementById('rb-notes').value });
+    adminData.rubrics = (adminData.rubrics || []).filter(r => !(r.student_name === name && r.lab === 1)).concat([d.rubric]);
+    showToast(`Rubric saved for ${name.split(' ')[0]}: ${d.rubric.total}/100 · ${d.rubric.band}`, '📋');
+  } catch (e) { if (e.code !== 'session_expired') showToast('Could not save the rubric — try again', '⚠️'); }
+}
+
+// ---- Quiz review / publish
+let openQuizCards = [];
+async function buildQuizReview() {
+  const page = document.getElementById('page-quizreview');
+  openQuizCards = [...page.querySelectorAll('details.qr-card[open]')].map(x => x.dataset.quizCard); // keep cards open across a re-render
+  page.innerHTML = '<div class="week-header"><div class="wh-eyebrow">Instructor</div><h2>Quiz Review</h2><div class="wh-dates">Loading…</div></div>';
+  try { await loadAdminData(); } catch (e) { return; }
+  const pub = settings.published_quizzes || [];
+  const openIds = new Set(openQuizCards);
+  const cards = DAYS.filter(d => d.quiz).map(d => {
+    const q = QUIZ_BANK[d.quiz];
+    const isPub = pub.includes(d.quiz);
+    const qs = q.questions.map((x, i) => `<div class="qr-q"><div class="qr-text">${i + 1}. ${esc(x.q)}</div>
+      <ul>${x.opts.map((o, oi) => `<li class="${oi === x.ans ? 'right' : ''}">${oi === x.ans ? '✓ ' : ''}${esc(o)}</li>`).join('')}</ul><div class="qr-fb">${esc(x.feedback)}</div></div>`).join('');
+    const todo = (q.todo || []).map(t => `<li>${esc(t)}</li>`).join('');
+    return `<details class="qr-card" data-quiz-card="${d.quiz}" ${openIds.has(d.quiz) ? 'open' : ''}><summary><span class="qr-title">${esc(q.title)}</span><span class="qr-meta">Week ${d.week} · ${q.questions.length} questions</span>
+        <span class="score-badge ${isPub ? 'score-pass' : 'score-pending'}">${isPub ? 'PUBLISHED' : 'DRAFT'}</span></summary>
+      ${todo ? `<div class="qr-todo"><strong>Still needed from you:</strong><ul>${todo}</ul></div>` : ''}
+      <div class="qr-actions"><button class="btn-submit-work" data-quiz="${d.quiz}" onclick="adminTogglePublish(this.dataset.quiz)">${isPub ? 'Unpublish' : 'Publish to students'}</button></div>
+      ${qs}</details>`;
+  }).join('');
+  page.innerHTML = `<div class="week-header"><div class="wh-eyebrow">Instructor</div><h2>Quiz Review</h2>
+    <div class="wh-dates">${pub.length} of ${QUIZ_IDS.length} published · Drafts were written from standard food-safety and costing knowledge — check every answer before publishing</div></div>${cards}`;
+}
+
+async function adminTogglePublish(id) {
+  const to = !(settings.published_quizzes || []).includes(id);
+  try { const d = await api('admin-set-published', { quiz_id: id, published: to }); settings.published_quizzes = d.published_quizzes; }
+  catch (e) { if (e.code !== 'session_expired') showToast('Could not change the quiz — try again', '⚠️'); return; }
+  showToast(`${QUIZ_BANK[id].title}: ${to ? 'published ✓' : 'unpublished'}`, to ? '✅' : '○');
+  buildQuizReview();
+  QUIZ_IDS.forEach(q => buildQuiz(q));
+  updateProgress();
+}
+
+async function exportReflections() {
+  showToast('📝 Pulling written answers…', '📝');
+  try { await loadAdminData(); } catch (e) { return; }
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const defs = Object.fromEntries(ALL_ACTS().filter(a => a.def.type === 'reflect').map(a => [a.id, a]));
+  let csv = 'Student,Lesson,Activity,Prompt,Answer,Best score %\n';
+  adminData.roster.forEach(name => {
+    const ex = adminProg(name).exercises || {};
+    Object.entries(defs).forEach(([id, a]) => {
+      const rec = ex[id]; if (!rec || !rec.text) return;
+      a.def.prompts.forEach(p => { if (rec.text[p.key]) csv += [name, a.day.short, a.def.title, p.label, rec.text[p.key], rec.best].map(q).join(',') + '\n'; });
+    });
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'CE_Level1_Fall2026_reflections.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+async function sendTestCheckin() {
+  const to = (prompt('Send a sample 90-day check-in email to which address?') || '').trim();
+  if (!to) return;
+  try {
+    const r = await fnPost('send-checkins', { token: sessionToken, test_to: to }, 20000);
+    if (r.status === 401) { sessionExpired(); return; }
+    if (r.ok) showToast('Test email sent to ' + to, '📬');
+    else if (r.data && r.data.error === 'resend_not_configured') showToast('Resend is not set up yet: add the RESEND_API_KEY secret in Supabase', '⚠️');
+    else showToast('Test email failed: ' + ((r.data && r.data.error) || r.status), '⚠️');
+  } catch (e) { showToast('Could not reach the server', '⚠️'); }
+}
+
+async function exportCSV() {
+  showToast('📊 Pulling data from cloud…', '📊');
+  try { await loadAdminData(); } catch (e) { return; }
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const open = QUIZ_IDS.filter(id => (settings.published_quizzes || []).includes(id));
+  let csv = ['Student', 'Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Quizzes passed', 'Scaling exercises', 'Lesson activities', 'Deliverables', 'ServSafe practice %', 'ServSafe exam', 'ServSafe exam %', 'CST Lab 1 total', 'CST band', 'Weeks 2-4 unlocked', 'Level II ready', '90-day check-in opt-in', 'Check-in email'].join(',') + '\n';
+  adminData.roster.forEach(name => {
+    const d = adminProg(name), la = d.lab_attendance || {}, ss = d.servsafe || {}, r = adminRubric(name);
+    csv += [name, ...LABS.map(l => la[l.lab] ? 'Yes' : 'No'), `${open.filter(id => d.quizzes[id]?.passed).length}/${open.length}`,
+      `${['ex1', 'ex2', 'ex3'].filter(id => (d.exercises || {})[id]?.passed).length}/3`, `${ALL_ACTS().filter(a => a.graded && ((d.exercises || {})[a.id] || {}).passed).length}/${ALL_ACTS().filter(a => a.graded).length}`, `${Object.keys(FILES).filter(id => d.deliverables[id]).length}/${Object.keys(FILES).length}`, ss.practice_score ?? '', ss.exam_result || 'pending', ss.exam_score ?? '',
+      r ? r.total : '', r ? r.band : '', d.w2_unlocked ? 'Yes' : 'No', d.is_l2_eligible ? 'Yes' : 'No', (d.checkin || {}).opt_in ? 'Yes' : 'No', (d.checkin || {}).email || ''].map(q).join(',') + '\n';
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'CE_Level1_Fall2026_student_tracker.csv';
+  a.click();
+  showToast('📊 CSV exported!', '📊');
+}
+
+async function exportFilesCSV() {
+  try { await loadAdminData(); } catch (e) { return; }
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  let csv = 'Student,Assignment,File,Size (bytes),Submitted,Attempt,Storage path\n';
+  adminData.submissions.forEach(f => { csv += [f.student_name, f.assignment, f.file_name, f.file_size, f.submitted_at, f.attempt, f.file_path].map(q).join(',') + '\n'; });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'CE_Level1_Fall2026_submissions.csv';
+  a.click();
+  showToast('📊 Files CSV exported!', '📊');
+}
+
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
+async function doLogin() {
+  const typedName = document.getElementById('login-user').value.trim();
+  const code = document.getElementById('login-pass').value.trim();
+  const err = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  const fail = msg => {
+    if (btn) { btn.textContent = 'Sign In →'; btn.disabled = false; }
+    err.textContent = msg;
+    err.style.display = 'block';
+  };
+
+  err.style.display = 'none';
+  if (!code) return fail('❌ Enter your access code.');
+  if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
+
+  try {
+    // The code is checked on the server; this page contains no codes to compare against.
+    const r = await fnPost('validate-login', { student_name: typedName, access_code: code });
+    if (r.status === 429) return fail('⏳ Too many wrong attempts. Wait a few minutes and try again.');
+    if (r.status === 401 || (r.ok && r.data && r.data.valid === false)) return fail('❌ Invalid access code. Check with Chef Duane.');
+    if (!r.ok || !r.data || !r.data.valid) return fail('⚠️ Could not sign in right now. Check your connection and try again.');
+
+    sessionToken = r.data.token;
+    isAdmin = !!r.data.is_admin;
+    currentUser = r.data.student_name;
+    if (isAdmin) memCache = { ...EMPTY(), w2_unlocked: true };
+    await sbLoad(currentUser);
+    await launchApp();
+  } catch (e) {
+    if (e.code === 'session_expired') return fail('⚠️ Your session ended. Please sign in again.');
+    fail('⚠️ Could not reach the server. Check your connection and try again.');
+  }
+}
+
+async function launchApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('nav-name').textContent = currentUser;
+  if (!rendered) renderShell();
+  document.getElementById('dash-greeting').textContent = 'Welcome back, ' + currentUser.split(' ')[0] + '!';
+  document.getElementById('admin-nav').style.display = isAdmin ? 'block' : 'none';
+  buildAllQuizzes();
+  showPage('dashboard');
+}
+
+function doLogout() {
+  if (sessionToken) fnPost(API_FN, { token: sessionToken, action: 'logout' }, 5000).catch(() => {});
+  sessionToken = null;
+  currentUser = null;
+  isAdmin = false;
+  memCache = EMPTY();
+  settings = { published_quizzes: [] };
+  cstResults = [];
+  adminData = null;
+  unsynced = false;
+  selectedAnswers = {}; pendingFiles = {}; resubmitting = {}; savingNow = {}; uploadError = {}; uploadPct = {};
+  document.querySelectorAll('.day-card-body.open, .day-toggle.open').forEach(e => e.classList.remove('open'));
+  document.querySelectorAll('.day-card-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
+  setSyncStatus('idle');
+  document.getElementById('login-btn').textContent = 'Sign In →';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+// ============================================================
+// TOAST + small things
+// ============================================================
+function showToast(msg, icon = '✓') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = icon;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Staging / preview deploys use the LIVE database — make that impossible to miss
+(function stagingRibbon() {
+  if (!/^(staging--|deploy-preview-|[a-z0-9-]+--)/.test(location.hostname)) return;
+  const r = document.createElement('div');
+  r.textContent = 'STAGING — uses the live database. Test with TEST STUDENT only.';
+  r.setAttribute('role', 'note');
+  r.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#c4522a;color:#fff;text-align:center;font:600 12px system-ui,sans-serif;padding:6px 10px';
+  document.body.appendChild(r);
+})();
+
+// Keyboard access for the clickable rows
+function enhanceA11y() {
+  document.querySelectorAll('.day-card-header, .sidebar-item, .week-card').forEach(el => {
+    if (el.getAttribute('role')) return;
+    el.setAttribute('role', 'button');
+    el.tabIndex = 0;
+    if (el.classList.contains('day-card-header')) el.setAttribute('aria-expanded', 'false');
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
+  });
+}
+
+// Enter key on login
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-user').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+</script>
+</body>
+</html>

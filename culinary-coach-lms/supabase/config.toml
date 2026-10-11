@@ -1,0 +1,22 @@
+# Local Supabase stack used by CI and for development (`supabase start`). Production is a hosted project; nothing here
+# points at it. Functions are served without JWT checks because they authenticate with their own session tokens.
+project_id = "culinary-coach-lms"
+
+[api]
+port = 54321
+
+[db]
+port = 54322
+major_version = 15
+
+[storage]
+enabled = true
+
+[functions.validate-login]
+verify_jwt = false
+[functions.lms-api]
+verify_jwt = false
+[functions.lms-api-v2]
+verify_jwt = false
+[functions.send-checkins]
+verify_jwt = false
