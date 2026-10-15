@@ -53,27 +53,46 @@ of the pieces"*, *"Miscounted the factors — 1 has only one factor, so it is ne
 
 ## How the adaptation actually works
 
+Built around four interventions for a learner with maths fatigue, rather than
+around "do more".
+
+**Concrete → Representational → Abstract.** Every math skill carries a stage.
+At **Building it** he places the blocks himself; at **Seeing it** the picture is
+drawn for him — an array, equal groups, a fraction bar, shaded hundredths, dots
+pairing up, a number line; at **Symbols** it is numbers alone. Two right in a
+row moves him up a stage, two wrong moves him back down. Two misses in a row
+step the *representation* back, not just the difficulty — going back to the
+picture is the intervention. A skill with no honest picture starts where it can
+rather than being given a decoration that teaches nothing.
+
+**Cognitive offloading.** A 📐 **Tools** button sits on every question: a 12×12
+times table that lights up a row and column when tapped, his own prime grid, a
+place-value chart and a fraction wall. **Using it costs nothing** — no mastery
+reduction, no XP reduction. Support is recorded as its own dimension and
+reported separately, so the parent view still tells the truth without the app
+punishing the exact behaviour that frees working memory.
+
+**The Sieve of Eratosthenes.** Primes are not a list to memorise. He crosses out
+the multiples of 2, 3, 5 and 7 on a 1–100 grid and the 25 primes emerge in gold.
+The finished grid is saved and openable from any question — a permanent anchor
+he made himself. A "cross the rest for me" button means he is never stuck.
+
+**Interleaving, never massed drills.** Sets are 3–5 questions, not 15. Choosing a
+topic gives it every other slot, so it never appears twice running and the gaps
+are filled with a genuinely different kind of question. The engine also avoids
+repeating a question format back to back. Repetition still happens — spaced
+across sets rather than blocked within one.
+
+**Nothing rewards speed.** No speed praise, no timed scoring, and the old
+answer-lock is now a quiet "no rush" note rather than a frozen button. Any set
+can be stopped early with the run kept.
+
 | Mechanism | What it does |
 |---|---|
-| Mastery model | Per-skill 0–1 score. Correct answers gain more at higher difficulty; hinted answers earn ~45% credit. Wrong answers decay it. |
-| Difficulty controller | Tracks rolling accuracy per skill and steps difficulty up above ~85% and down below ~34%, holding success near 75% — hard enough to matter, not hard enough to hurt. |
-| Item selection | Weighted toward the productive-struggle zone (mastery 0.22–0.55), with a spaced-review queue that brings missed items back several questions later. |
-| Prerequisites | Remainders stay locked until division facts hold; 2-digit × 1-digit until ×6–×9 holds. |
-| Frustration guard | Two misses in a row drops the next item a level and opens the visual scaffold automatically, without him having to ask. |
-| Learner profile | Four measured dials — visual vs. symbolic accuracy, pace, words vs. bare numbers, and hint use. |
-
-The profile changes the app, not just the report:
-- **Visual builder** → arrays and group diagrams stay switched on.
-- **Fast-and-wrong** → "slow-down mode" briefly locks the answer buttons with the reason shown.
-- **Story thinker** → more facts arrive wrapped in word problems.
-
-Note on the profile: the app measures the visual channel on purpose early on
-(showing brick-built items ~40% of the time on eligible skills) — otherwise there
-would be no data to decide from.
-
-**No live AI model is called.** The page is fully offline-capable and the coaching
-is a deterministic engine — a mastery model, a difficulty controller, and a
-misconception library — not a language model call.
+| Mastery model | Per-skill 0–1 score. Identical gain whether or not he used the tools. |
+| Difficulty controller | Rolling accuracy per skill, holding success near 75%. |
+| Item selection | Weighted to the productive-struggle zone, with spaced review of misses. |
+| Learner profile | Visual vs symbolic, pace, words vs numbers, and independent vs supported. |
 
 ## Grown-up view
 

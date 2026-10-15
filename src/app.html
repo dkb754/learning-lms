@@ -460,6 +460,89 @@ p{line-height:1.6}
 /* ============================================================
    FEEDBACK / HINTS / RESULTS
    ============================================================ */
+.tag.cra{letter-spacing:.05em}
+.tag.cra-0{background:var(--good-soft);color:var(--good)}
+.tag.cra-1{background:var(--story-soft);color:var(--story)}
+.tag.cra-2{background:var(--surface-3);color:var(--ink-3)}
+
+/* ── tools drawer ───────────────────────────────────────────────────────── */
+.sheet{position:fixed;inset:0;z-index:80;background:rgba(10,16,28,.5);
+  display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.sheet-in{
+  width:100%;max-width:var(--wrap);max-height:88vh;overflow-y:auto;
+  background:var(--surface);border:1.5px solid var(--line);
+  border-radius:var(--r-l) var(--r-l) 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));
+  animation:sheetUp .22s ease;
+}
+@keyframes sheetUp{from{transform:translateY(16px);opacity:.6}to{transform:none;opacity:1}}
+.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.icon-btn.tools{background:var(--build-soft);border-color:var(--build);color:var(--build)}
+
+.xtab{display:grid;grid-template-columns:repeat(13,1fr);gap:2px}
+.xtab span{
+  aspect-ratio:1;display:grid;place-items:center;border-radius:4px;
+  font-size:.58rem;font-weight:700;font-variant-numeric:tabular-nums;
+  background:var(--surface-2);border:1px solid var(--line);color:var(--ink);
+}
+.xtab .xh{background:var(--surface-3);font-weight:800;color:var(--ink-2)}
+.xtab .corner{background:var(--build);color:#fff}
+.xtab .xc{cursor:pointer}
+.xtab .xc.lit{background:var(--build-soft);border-color:var(--build);color:var(--build)}
+.xtab .xc.hit{background:var(--build);border-color:transparent;color:#fff;font-weight:800}
+.pvt td,.pvt th{padding:6px 8px;font-size:.78rem}
+
+.fwall{display:flex;flex-direction:column;gap:6px}
+.fw-row{display:flex;align-items:center;gap:9px}
+.fw-name{width:62px;flex-shrink:0;font-size:.7rem;font-weight:800;color:var(--ink-2)}
+.fw-bar{flex:1;display:flex;gap:2px;height:26px}
+.fw-bar span{flex:1;border-radius:3px;background:var(--story-soft);border:1.5px solid var(--story)}
+
+/* ── sieve of eratosthenes ──────────────────────────────────────────────── */
+.sieve{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
+.sieve .sv,.sieve span{
+  aspect-ratio:1;display:grid;place-items:center;border-radius:5px;
+  font-family:var(--f-ui);font-size:.68rem;font-weight:800;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--line);color:var(--ink);
+  padding:0;line-height:1;
+}
+.sieve .target{border-color:var(--build);background:var(--build-soft);color:var(--build)}
+.sieve .out{background:var(--surface-3);color:var(--ink-3);border-color:var(--line);
+  text-decoration:line-through;opacity:.55}
+.sieve .prime{background:var(--gold);border-color:transparent;color:#231704}
+.sieve .one{background:var(--surface-3);color:var(--ink-3);border-style:dashed;text-decoration:none;opacity:.8}
+.sieve.mini{gap:2px}
+.sieve.mini span{font-size:.58rem;cursor:default;border-width:1px}
+.sieve-say{font-size:.9rem;line-height:1.6}
+
+/* ── representational visuals ───────────────────────────────────────────── */
+.viz{background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);
+  padding:13px 14px;margin:0 0 13px}
+.viz-title{font-size:.64rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:11px}
+.viz-note{font-size:.74rem;color:var(--ink-2);margin-top:10px;line-height:1.5}
+
+.fbar-row{margin-bottom:10px}
+.fbar-row:last-child{margin-bottom:0}
+.fbar{display:flex;gap:3px;height:36px}
+.fbar span{flex:1;border-radius:4px;background:var(--surface);border:1.5px solid var(--line)}
+.fbar span.on{background:var(--story);border-color:var(--story-edge)}
+.fbar-lab{font-family:var(--f-display);font-weight:800;font-size:.85rem;color:var(--ink-2);margin-top:5px}
+
+.hgrid-pair{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.hgrid-cell{text-align:center}
+.hgrid{display:grid;grid-template-columns:repeat(10,10px);gap:2px}
+.hgrid i{width:10px;height:10px;border-radius:2px;background:var(--surface);border:1px solid var(--line)}
+.hgrid i.on{background:var(--build);border-color:var(--build-edge)}
+.hgrid-cap{font-family:var(--f-display);font-weight:800;font-size:1rem;margin-top:8px}
+.hgrid-sub{font-size:.68rem;font-weight:700;color:var(--ink-3);margin-top:1px}
+
+.pairs{display:flex;flex-wrap:wrap;gap:7px}
+.pair{display:flex;flex-direction:column;gap:3px;padding:5px;border-radius:7px;background:var(--surface)}
+.pair u{display:block;width:15px;height:15px;border-radius:50%;background:var(--build)}
+.pair.odd{background:var(--miss-soft);outline:2px dashed var(--miss);outline-offset:-2px}
+.pair.odd u{background:var(--miss)}
+
 /* ── fractions, mini charts, rule cards ─────────────────────────────────── */
 .frac{
   display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;
@@ -796,9 +879,10 @@ p{line-height:1.6}
   <!-- ══════════════════ SESSION ══════════════════ -->
   <section class="screen" id="scr-session">
     <div class="sesh-top">
-      <button class="icon-btn" id="quitBtn" aria-label="Back to base">✕</button>
+      <button class="icon-btn" id="quitBtn" aria-label="Stop and keep this run">✕</button>
       <div class="bar"><i id="seshBar" style="width:0%"></i></div>
       <div class="dots" id="seshDots"></div>
+      <button class="icon-btn tools" id="toolsBtn" aria-label="Open tools" title="Times table, prime grid, place value, fractions">📐</button>
     </div>
     <div id="seshBody"></div>
     <div id="seshCoach" style="margin-top:12px"></div>
@@ -857,6 +941,15 @@ p{line-height:1.6}
       <div style="flex:1"></div>
     </div>
     <div id="skillBody"></div>
+  </section>
+
+  <!-- ══════════════════ SIEVE ══════════════════ -->
+  <section class="screen" id="scr-sieve">
+    <div class="sesh-top">
+      <button class="icon-btn" id="sieveBack" aria-label="Back">←</button>
+      <div style="flex:1"><h2 style="font-size:1.1rem">The Prime Grid</h2></div>
+    </div>
+    <div id="sieveBody"></div>
   </section>
 
   <!-- ══════════════════ PROGRESS ══════════════════ -->
@@ -936,6 +1029,21 @@ p{line-height:1.6}
     </div>
   </section>
 
+  <!-- ══════════════════ TOOLS DRAWER ══════════════════ -->
+  <div class="sheet" id="toolsSheet" hidden>
+    <div class="sheet-in">
+      <div class="sheet-head">
+        <div>
+          <div class="eyebrow">Tools</div>
+          <div class="tiny">Look anything up. It never counts against you.</div>
+        </div>
+        <button class="icon-btn" id="toolsClose" aria-label="Close tools">✕</button>
+      </div>
+      <div class="pill-row" id="toolTabs" style="margin-bottom:12px"></div>
+      <div id="toolBody"></div>
+    </div>
+  </div>
+
   <!-- ══════════════════ NAV ══════════════════ -->
   <nav class="nav" id="navBar" hidden>
     <div class="nav-in">
@@ -952,7 +1060,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v7 · 6 Oct 2026 · comparing decimals';
+const BUILD = 'v8 · 15 Oct 2026 · CRA + tools + sieve';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -2725,6 +2833,95 @@ function buildItem(skill){
 }
 
 
+
+/* ============================================================================
+   REPRESENTATIONAL VISUALS
+   The middle rung of Concrete → Representational → Abstract. At this stage the
+   picture is already drawn for him: he reads the answer off it rather than
+   holding the quantity in his head. These are deliberately literal — a tenth is
+   a tenth of a visible square, not a symbol standing for one.
+   ========================================================================== */
+const vizBox = (title, inner, note) =>
+  `<div class="viz"><div class="viz-title">${title}</div>${inner}` +
+  (note ? `<div class="viz-note">${note}</div>` : '') + `</div>`;
+
+/* A fraction as a bar cut into equal pieces, with some of them filled. */
+function vizFractionBar(n, d, label){
+  const cells = Array.from({length:d}, (_,i)=>`<span class="${i<n?'on':''}"></span>`).join('');
+  return `<div class="fbar-row">
+      <div class="fbar">${cells}</div>
+      <div class="fbar-lab">${label || `${n}/${d}`}</div>
+    </div>`;
+}
+
+/* A decimal as shaded squares out of a hundred. 0.4 and 0.40 shade the same
+   squares, which is the clearest way to show why they are equal. */
+function vizHundredGrid(value, caption){
+  const filled = Math.round(value * 100);
+  let cells = '';
+  for (let i=0;i<100;i++) cells += `<i class="${i<filled?'on':''}"></i>`;
+  return `<div class="hgrid-cell">
+      <div class="hgrid">${cells}</div>
+      <div class="hgrid-cap">${caption}</div>
+      <div class="hgrid-sub">${filled} of 100</div>
+    </div>`;
+}
+
+/* Even and odd as literal pairing: everything pairs up, or one is left over. */
+function vizPairs(n){
+  const pairs = Math.floor(n/2), odd = n % 2;
+  let out = '';
+  for (let i=0;i<pairs;i++) out += `<div class="pair"><u></u><u></u></div>`;
+  if (odd) out += `<div class="pair odd"><u></u></div>`;
+  return `<div class="pairs">${out}</div>`;
+}
+
+/* A static array — the same picture he builds himself at the concrete stage. */
+function vizArray(rows, cols){
+  let out = '';
+  for (let r=0;r<rows;r++){
+    out += `<div class="grow full"><div class="rl">R${r+1}</div>`
+         + `<div class="brick"></div>`.repeat(cols)
+         + `<div class="rowcount tnum">${cols}</div></div>`;
+  }
+  return `<div class="grid-rows">${out}</div>`;
+}
+
+function vizGroups(groups, per){
+  let out = '';
+  for (let g=0; g<groups; g++){
+    out += `<div class="group"><div class="gl">G${g+1}</div>`
+         + `<div class="brick"></div>`.repeat(per) + `</div>`;
+  }
+  return `<div class="groups">${out}</div>`;
+}
+
+/* Pick the right picture for an item. Returns '' when this skill has no
+   honest visual yet — better nothing than a decoration that teaches nothing. */
+function representationFor(item){
+  const sk = item.skill, b = item.build;
+
+  if (sk === 'm-evenodd' && typeof item.vizN === 'number' && item.vizN <= 30)
+    return vizBox('Try to pair them all up', vizPairs(item.vizN),
+      'Every dot has a partner → even. One left on its own → odd.');
+
+  if ((sk === 'm-frac-concept' || sk === 'm-frac-addsub') && item.vizFracs)
+    return vizBox('The same whole, cut up', item.vizFracs.map(f=>vizFractionBar(f.n, f.d, f.label)).join(''),
+      'More pieces in the whole means each piece is smaller.');
+
+  if ((sk === 'm-dec-compare' || sk === 'm-dec-place' || sk === 'm-frac-dec') && item.vizDecs)
+    return vizBox('Out of one hundred squares',
+      `<div class="hgrid-pair">${item.vizDecs.map(d=>vizHundredGrid(d.v, d.label)).join('')}</div>`,
+      'Count the shaded squares. More shaded = bigger.');
+
+  if (b && b.mode === 'div') return vizBox('Split into equal groups', vizGroups(b.rows, b.cols),
+    `${b.rows} groups with ${b.cols} in each.`);
+  if (b && b.mode === 'mult') return vizBox('The array, already built', vizArray(b.rows, b.cols),
+    `${b.rows} rows of ${b.cols}.`);
+
+  return '';
+}
+
 /* ── helpers for the grade 4-5 generators ───────────────────────────────── */
 const frac = (n,d)=>`<span class="frac"><i>${n}</i><b>${d}</b></span>`;
 const gcd = (a,b)=>b?gcd(b,a%b):a;
@@ -2869,13 +3066,14 @@ function estimateItem(skill, diff){
 }
 
 /* ── grade 5 · even and odd ─────────────────────────────────────────────── */
-function evenOddItem(skill, diff){
-  const n = diff>=2 ? 100+rnd(9000) : 10+rnd(90);
+function evenOddItem(skill, diff, stage){
+  // At the picture stage the number has to be small enough to actually pair up.
+  const n = stage < 2 ? 7+rnd(18) : (diff>=2 ? 100+rnd(9000) : 10+rnd(90));
   const isEven = n%2===0;
   if (Math.random()<0.55){
     return { realm:'math', skill, diff, kind:'choice',
       q:`Is <span class="num">${n.toLocaleString()}</span> even or odd?`,
-      prompt:`evenodd ${n}`, answer:isEven?'Even':'Odd',
+      prompt:`evenodd ${n}`, answer:isEven?'Even':'Odd', vizN:n,
       opts: mcText(isEven?'Even':'Odd', [{t:isEven?'Odd':'Even', why:'count-slip'},
         {t:'It depends on the other digits', why:'place-mix'},{t:'Neither', why:'count-slip'}]),
       hints:[`Only the <b>ones digit</b> matters. Nothing else in the number counts.`,
@@ -3054,6 +3252,7 @@ function fracConceptItem(skill, diff){
     return { realm:'math', skill, diff, kind:'choice',
       q:`Which is <b>bigger</b>: ${frac(1,d1)} or ${frac(1,d2)}?`,
       prompt:`compare 1/${d1} 1/${d2}`, answer:`1/${bigger}`,
+      vizFracs:[{n:1,d:d1,label:`1/${d1}`},{n:1,d:d2,label:`1/${d2}`}],
       opts: mcText(`1/${bigger}`, [{t:`1/${smaller}`, why:'bigger-denom'},
         {t:'They are equal', why:'bigger-denom'},{t:'You cannot tell', why:'bigger-denom'}]),
       hints:[`Both have 1 piece. So the question is really: which piece is bigger?`,
@@ -3121,6 +3320,7 @@ function fracAddSubItem(skill, diff){
   return { realm:'math', skill, diff, kind:'choice',
     q:`${frac(n1,d)} ${isAdd?'+':'−'} ${frac(n2,d)} = ?`,
     prompt:`${n1}/${d}${isAdd?'+':'-'}${n2}/${d}`, answer:ans,
+    vizFracs:[{n:n1,d,label:`${n1}/${d}`},{n:n2,d,label:`${n2}/${d}`}],
     opts: mcText(ans, [{t:`${top}/${isAdd?d+d:d}`, why:'add-denoms'},
       {t:`${isAdd?n1+n2:n1-n2}/${d*2}`, why:'add-denoms'},
       {t:`${isAdd?n1*n2:Math.max(1,n1-n2)}/${d}`, why:'wrong-op'},
@@ -3283,11 +3483,14 @@ function decCompareItem(skill, diff){
   if (Math.min(a,b) - lo < 0.02) lo = Number((lo - 0.1).toFixed(1));
   if (hi - Math.max(a,b) < 0.02) hi = Number((hi + 0.1).toFixed(1));
   const line = numberLine(a, b, lo, hi, aS, bS);
+  const gridable = a < 1 && b < 1;
   const padded = `${dec(a, places)} and ${dec(b, places)}`;
 
   const why = equal
     ? `A zero on the end adds nothing — ${aS} and ${bS} are the same amount.`
     : `Write them with the same number of places: ${padded}. Now compare left to right.`;
+
+  const vizDecs = gridable ? [{v:a, label:aS}, {v:b, label:bS}] : null;
 
   // ── pick the symbol: the literal greater-than / less-than question ──
   if (type === 0){
@@ -3296,6 +3499,7 @@ function decCompareItem(skill, diff){
       q:`${diff === 1 ? line : ''}Which symbol belongs in the box?<br>
          <span class="num">${aS} <span class="cmp-box">?</span> ${bS}</span>`,
       prompt:`sym ${aS}?${bS}`, answer:label[sym],
+      vizDecs,
       opts: mcText(label[sym], [
         {t:label[sym === '<' ? '>' : '<'], why: equal ? 'trailing-zero' : 'symbol-flip'},
         {t:label['='], why:'more-digits'},
@@ -3317,6 +3521,7 @@ function decCompareItem(skill, diff){
       q:`${diff === 1 ? line : ''}Which is <b>${wantBigger ? 'greater' : 'less'}</b>:
          <span class="num">${aS}</span> or <span class="num">${bS}</span>?`,
       prompt:`which ${wantBigger?'gt':'lt'} ${aS} ${bS}`, answer:ans,
+      vizDecs,
       opts: mcText(ans, [
         {t:other, why: String(bS).length !== String(aS).length ? 'more-digits' : 'place-mix'},
         {t: equal ? aS : 'They are equal', why:'trailing-zero'},
@@ -3334,6 +3539,7 @@ function decCompareItem(skill, diff){
   return { realm:'math', skill, diff, kind:'choice',
     q:`True or false?<br><span class="num">${aS} ${claimSym === '>' ? '&gt;' : claimSym === '<' ? '&lt;' : '='} ${bS}</span>`,
     prompt:`tf ${aS}${claimSym}${bS}`, answer: isTrue ? 'True' : 'False',
+    vizDecs,
     opts: mcText(isTrue ? 'True' : 'False', [
       {t: isTrue ? 'False' : 'True', why: equal ? 'trailing-zero' : 'more-digits'},
       {t:'Only if you round them first', why:'place-mix'},
@@ -3503,10 +3709,23 @@ const MATH_GEN = {
   'm-data':dataItem, 'm-probability':probabilityItem,
 };
 
-function makeMathItem(skill, diff, forceVisual){
-  if (forceVisual && VISUAL_SKILLS.includes(skill)) return buildItem(skill);
+/* stage: 0 concrete (he builds it) · 1 representational (drawn for him) · 2 abstract */
+function makeMathItem(skill, diff, stage){
+  stage = stage == null ? 2 : stage;
+  if (stage === 0 && VISUAL_SKILLS.includes(skill)){
+    const it = buildItem(skill);
+    it.stage = 0;
+    return it;
+  }
   const gen = MATH_GEN[skill] || factItem;
-  return gen(skill, Math.max(1, Math.min(3, diff)));
+  const it = gen(skill, Math.max(1, Math.min(3, diff)), stage);
+  it.stage = stage;
+  if (stage <= 1){
+    it.viz = representationFor(it);
+    // No honest picture for this skill yet — do not pretend otherwise.
+    if (!it.viz) it.stage = 2;
+  }
+  return it;
 }
 
 /* ---------------------------------------------------------------------------
@@ -3516,7 +3735,7 @@ function makeMathItem(skill, diff, forceVisual){
 const SAVE_KEY = 'adamBuildMode.v1';
 const blankMastery = () => {
   const m = {};
-  Object.keys(SKILLS).forEach(k => m[k] = {m:0, seen:0, right:0, wrong:0, recent:[]});
+  Object.keys(SKILLS).forEach(k => m[k] = {m:0, seen:0, right:0, wrong:0, recent:[], solo:0, supported:0});
   return m;
 };
 let S = {
@@ -3529,7 +3748,7 @@ let S = {
             fastWrong:0, slowRight:0, wordSeen:0, wordRight:0, bareSeen:0, bareRight:0,
             readSeen:0, readRight:0, readRoll:[] },
   review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0, rulesSeen:{},
-  syncCode:null, syncAt:null
+  syncCode:null, syncAt:null, cra:{}
 };
 
 let STORAGE_OK = null;
@@ -3813,8 +4032,14 @@ function record(item, correct, msTaken, hintsUsed){
   // mastery: gains scale with difficulty, shrink when hints carried the answer
   const d = item.diff || 1;
   if (correct){
-    const gain = (0.16 + 0.05*d) * (hintsUsed ? 0.45 : 1);
+    // Using a reference or a hint costs nothing. Offloading the fact-recall is
+    // the point of the intervention, not cheating, so mastery is not docked for
+    // it — support is recorded separately instead, and reported as its own
+    // dimension rather than hidden inside a lower score.
+    const gain = 0.16 + 0.05*d;
     rec.m = Math.min(1, rec.m + (1-rec.m)*gain);
+    if (hintsUsed) rec.supported = (rec.supported||0) + 1;
+    else           rec.solo = (rec.solo||0) + 1;
   } else {
     rec.m = Math.max(0, rec.m - rec.m*0.26 - 0.02);
   }
@@ -3826,6 +4051,8 @@ function record(item, correct, msTaken, hintsUsed){
     if (acc >= 0.85 && diffOf(item.skill) < 3) S.diff[item.skill] = diffOf(item.skill)+1;
     else if (acc <= 0.34 && diffOf(item.skill) > 1) S.diff[item.skill] = diffOf(item.skill)-1;
   }
+
+  craRecord(item, correct);
 
   // profile dials
   const P = S.profile;
@@ -3884,14 +4111,42 @@ function chooseSkill(realm, avoid){
   return pool[0];
 }
 
-/* Should this one be built out of bricks instead of written as symbols?
-   Early on the answer is "sometimes, on purpose" — otherwise the visual channel
-   never gets measured and the profile can never learn whether it helps him. */
-function wantsVisual(skill, prof){
-  if (!VISUAL_SKILLS.includes(skill)) return false;
-  if (S.profile.visTries < 6)      return Math.random() < 0.4;   // measuring
-  if (prof.needsVisual)            return masteryOf(skill) < 0.65 && Math.random() < 0.5;
-  return masteryOf(skill) < 0.3 && Math.random() < 0.25;         // still worth it when shaky
+/* ---------------------------------------------------------------------------
+   CRA — Concrete → Representational → Abstract
+   0 he builds it himself · 1 the picture is drawn for him · 2 symbols only.
+   Two right in a row at a stage moves him up; two wrong moves him back down.
+   The floor is per skill: some have no manipulative, a few have no honest
+   picture at all, and those start where they can.
+   --------------------------------------------------------------------------- */
+const CRA_NAMES = ['Building it', 'Seeing it', 'Symbols'];
+
+function craFor(skill){
+  S.cra = S.cra || {};
+  if (!S.cra[skill]){
+    const floor = VISUAL_SKILLS.indexOf(skill) > -1 ? 0 : 1;
+    S.cra[skill] = {at:floor, floor, run:0};
+  }
+  return S.cra[skill];
+}
+
+function craRecord(item, correct){
+  const c = craFor(item.skill);
+  if ((item.stage == null ? 2 : item.stage) !== c.at) return;
+  if (correct){
+    c.run = c.run > 0 ? c.run + 1 : 1;
+    if (c.run >= 2 && c.at < 2){ c.at++; c.run = 0; }
+  } else {
+    c.run = c.run < 0 ? c.run - 1 : -1;
+    if (c.run <= -2 && c.at > c.floor){ c.at--; c.run = 0; }
+  }
+}
+
+/* Two misses in a row: step the representation back rather than just lowering
+   the difficulty. Going back to the picture is the intervention. */
+function craStepBack(skill){
+  const c = craFor(skill);
+  if (c.at > c.floor){ c.at--; c.run = 0; return true; }
+  return false;
 }
 
 /* Profile read-outs the coach and the parent view both use. */
@@ -3967,15 +4222,17 @@ const RIGHT_LINES = [
   'Clean build.', 'That is the one.', 'Locked in.', 'Exactly right.',
   'Solid.', 'Nailed it.', 'Yes — that is the move.'
 ];
-const RIGHT_FAST = ['Fast AND right. That fact is yours now.', 'No hesitation. That one is automatic for you.'];
+const RIGHT_STRATEGY = ['You picked the right move for that one.', 'That is the method working.',
+                        'Right call on how to attack it.'];
 const RIGHT_HARD = ['That was a hard one. You earned it.', 'That is the level above where you started. Look at that.'];
 
 function coachRight(item, runStreak, secs, hinted){
   let msg;
-  if (hinted) msg = 'Got there with the ladder — that still counts. Next time try it before the hint.';
-  else if (secs < 5 && item.diff>=2) msg = pick(RIGHT_FAST);
+  // Nothing here rewards speed. Using the tools is praised, not excused.
+  if (hinted) msg = 'Used the tools and got it — that is exactly what they are for.';
   else if ((item.diff||1) >= 3) msg = pick(RIGHT_HARD);
-  else msg = pick(RIGHT_LINES);
+  else if (item.stage === 0) msg = 'Built it and read it off. That is the real thing.';
+  else msg = pick(Math.random()<0.4 ? RIGHT_STRATEGY : RIGHT_LINES);
   if (runStreak >= 5) msg += ` <b>${runStreak} in a row.</b>`;
   return msg;
 }
@@ -4036,10 +4293,11 @@ const SCAN_MATH = SCAN_LADDER.length;
 
 function startSession(opts){
   SESH = Object.assign({
-    realm:'math', len:8, items:[], idx:0, right:0, xp:0,
+    realm:'math', len:5, items:[], idx:0, right:0, xp:0,
     marks:[], runStreak:0, missRun:0, hintsUsed:0, scaffoldNext:false,
     scan:false, ladder:1, touched:{}, startedAt:Date.now(), quest:null, passage:null,
-    passageStart:0, recent:[], lastSkill:null, lastTrap:null, focusSkill:null
+    passageStart:0, recent:[], lastSkill:null, lastTrap:null, focusSkill:null,
+    seedSkill:null, lastKind:null
   }, opts);
   touchStreak();
   nextItem();
@@ -4113,22 +4371,32 @@ function nextItem(){
     s.current = readingItem(s.passage, s.qi++);
   } else {
     const prof = profileRead();
-    const skill = s.focusSkill || chooseSkill('math', s.lastSkill);
-    const df = s.scaffoldNext ? 1 : diffOf(skill);
-    const visual = s.scaffoldNext || wantsVisual(skill, prof);
+    // Interleaving, not massed practice. A chosen topic takes every other slot
+    // so it never appears twice running, and the gaps are filled with something
+    // genuinely different — which forces him to work out what the question is
+    // asking instead of running on autopilot.
+    const seeded = s.seedSkill && (s.idx % 2 === 0);
+    const skill = seeded ? s.seedSkill
+                         : chooseSkill('math', s.lastSkill || s.seedSkill);
+    const c = craFor(skill);
+    const df = diffOf(skill);
     // reroll an exact repeat of a question he has just had
     s.recent = s.recent || [];
     let made, tries = 0;
-    do { made = makeMathItem(skill, df, visual); tries++; }
-    while (tries < 8 && s.recent.indexOf(made.prompt) > -1);
+    do { made = makeMathItem(skill, df, c.at); tries++; }
+    while (tries < 8 && (s.recent.indexOf(made.prompt) > -1
+                         || (tries < 4 && made.kind === s.lastKind)));
+    // no honest picture for this skill at that stage — remember, stop trying
+    if (made.stage > c.at){ c.floor = made.stage; c.at = made.stage; }
     s.recent.push(made.prompt);
     if (s.recent.length > 10) s.recent.shift();
     s.lastSkill = skill;
+    s.lastKind = made.kind;
     s.current = made;
     if (s.scaffoldNext){ s.current.scaffolded = true; s.current.autoScaffold = true; }
     s.scaffoldNext = false;
   }
-  s.attempt = 0; s.hintLevel = 0; s.answered = false; s.shownAt = Date.now();
+  s.attempt = 0; s.hintLevel = 0; s.answered = false; s.usedTools = false; s.shownAt = Date.now();
   renderItem();
 }
 
@@ -4191,25 +4459,30 @@ function submitAnswer(chosen, btn){
   item.trap = trap;
   if (s.scan && s.idx < SCAN_MATH)
     s.ladder = Math.max(0, Math.min(SCAN_MATH-1, s.ladder + (correct ? 1 : -1)));
-  record(item, correct, Date.now()-s.shownAt, s.hintLevel>0);
+  const supported = s.hintLevel > 0 || !!s.usedTools;
+  record(item, correct, Date.now()-s.shownAt, supported);
   s.marks.push(correct);
   if (correct){
     s.right++; s.runStreak++;
     S.bestRun = Math.max(S.bestRun||0, s.runStreak);
     s.missRun = 0;
-    const base = 10 + 6*((item.diff||1)-1) + (s.attempt? -4 : 0) + (s.hintLevel? -3 : 0);
-    s.xp += Math.max(4, base);
+    // XP is not docked for using the tools either.
+    s.xp += Math.max(4, 10 + 6*((item.diff||1)-1) + (s.attempt ? -4 : 0));
   } else {
     s.runStreak = 0; s.missRun++;
   }
   s.touched[item.skill] = true;
 
-  // frustration guard — two misses in a row means the level was wrong, not him
-  if (s.missRun >= 2 && !s.scan) s.scaffoldNext = true;
+  // Two misses in a row means the representation was too abstract, not that he
+  // needs to try harder. Step back down the CRA ladder for that skill.
+  if (s.missRun >= 2 && !s.scan){
+    s.scaffoldNext = true;
+    if (item.realm === 'math' && item.skill) craStepBack(item.skill);
+  }
 
   revealAnswer(correct);
   setCoach(correct
-    ? coachRight(item, s.runStreak, secs, s.hintLevel>0)
+    ? coachRight(item, s.runStreak, secs, supported)
     : coachWrong(item, trap, 2, prof), correct ? 'good' : 'miss');
   s.lastTrap = correct ? null : trap;
   renderNav();
@@ -4363,12 +4636,21 @@ function renderItem(){
     save();
   }
 
+  // The picture sits above the question, always visible — not tucked behind a
+  // hint he has to know to ask for.
+  if (item.viz){
+    const v = el('div','');
+    v.innerHTML = item.viz;
+    body.appendChild(v);
+  }
+
   const prompt = el('div','prompt');
   const sk = SKILLS[item.skill] || {name:'Practice', icon:'🎯'};
   prompt.innerHTML =
     `<div class="qskill">
        <span class="tag ${bandOf(masteryOf(item.skill)).key}">${sk.icon} ${sk.name}</span>
-       ${item.diff>=3?'<span class="tag learning">Stretch</span>':''}
+       ${item.realm==='math' && item.stage!=null
+          ? `<span class="tag cra cra-${item.stage}">${CRA_NAMES[item.stage]}</span>` : ''}
      </div>
      <div class="qtext">${item.q}</div>`;
   body.appendChild(prompt);
@@ -4402,15 +4684,14 @@ function renderItem(){
 
 /* Slow-down mode: for a learner whose fast answers are the ones that miss,
    the options stay locked for a beat with a reason attached. */
+/* A reminder, not a barrier. Freezing the buttons on a child who is already
+   tired of maths adds pressure exactly where we are trying to remove it. */
 function maybeLock(wrap){
   const prof = profileRead();
   if (!prof.impulsive || !prof.enough) return;
-  const btns = wrap.querySelectorAll('.opt');
-  btns.forEach(b=>b.disabled=true);
-  const note = el('div','tiny','⏳ Slow-down mode — read all four before they unlock.');
+  const note = el('div','tiny','🐢 No rush — read all of them before you pick.');
   note.style.marginTop = '8px';
   wrap.appendChild(note);
-  setTimeout(()=>{ btns.forEach(b=>b.disabled=false); note.remove(); }, 1400);
 }
 
 function buildKeypad(item){
@@ -4581,6 +4862,12 @@ function renderNav(){
     const go = el('button','btn' + (s.realm==='read'?' story':''), s.idx+1 >= s.len ? 'Finish ✓' : 'Next →');
     go.onclick = () => { s.idx++; nextItem(); };
     row.appendChild(go);
+
+    if (s.idx + 1 < s.len){
+      const stop = el('button','btn ghost sm','Stop here — keep what I did');
+      stop.onclick = () => finishSession();
+      row.appendChild(stop);
+    }
   }
   nav.appendChild(row);
 }
@@ -4653,6 +4940,202 @@ function ruleCardHTML(skill, compact){
   return html + `</div>`;
 }
 
+
+/* ============================================================================
+   THE SIEVE OF ERATOSTHENES
+   Primes stop being a list to memorise and become a shape he made himself.
+   He crosses out the multiples of 2, then 3, then 5, then 7; whatever survives
+   is prime. The finished grid stays on the device and can be opened from any
+   question, which is the whole point — a permanent anchor, not a memory test.
+   ========================================================================== */
+const SIEVE_STEPS = [2, 3, 5, 7];
+
+function sieveState(){
+  if (!S.sieve) S.sieve = {crossed:{}, step:0};
+  if (!S.sieve.crossed) S.sieve.crossed = {};
+  return S.sieve;
+}
+const multiplesOf = p => { const out=[]; for(let n=p*2;n<=100;n+=p) out.push(n); return out; };
+const sieveDone = () => sieveState().step >= SIEVE_STEPS.length;
+
+function sievePrimes(){
+  const sv = sieveState();
+  const out = [];
+  for (let n=2;n<=100;n++) if (!sv.crossed[n]) out.push(n);
+  return out;
+}
+
+function renderSieve(){
+  const sv = sieveState();
+  const host = $('sieveBody');
+  const done = sieveDone();
+  const p = done ? null : SIEVE_STEPS[sv.step];
+  const left = done ? [] : multiplesOf(p).filter(n => !sv.crossed[n]);
+
+  host.innerHTML = `
+    <div class="card" style="margin-bottom:12px">
+      <div class="eyebrow" style="margin-bottom:7px">${done ? 'Your prime grid' : `Step ${sv.step+1} of 4`}</div>
+      <div class="sieve-say">${ done
+        ? `Everything still coloured is <b>prime</b> — nothing divides it but 1 and itself.
+           You made this. Open it from <b>📐 Tools</b> on any question.`
+        : `Cross out every multiple of <b>${p}</b>. Leave <b>${p}</b> itself alone —
+           ${p} is prime. <b>${left.length}</b> to go.` }</div>
+    </div>`;
+
+  const grid = el('div','sieve');
+  for (let n=1;n<=100;n++){
+    const cell = el('button','sv' + (sv.crossed[n] ? ' out' : '') + (n===1 ? ' one' : ''), String(n));
+    if (done && !sv.crossed[n] && n>1) cell.classList.add('prime');
+    if (!done && n>1 && n % p === 0 && n !== p && !sv.crossed[n]) cell.classList.add('target');
+    cell.onclick = ()=> sieveTap(n);
+    grid.appendChild(cell);
+  }
+  host.appendChild(grid);
+
+  const row = el('div','row');
+  row.style.cssText = 'flex-wrap:wrap;margin-top:14px';
+  if (!done){
+    const rest = el('button','btn ghost sm', `Cross the rest of the ${p}s for me`);
+    rest.onclick = ()=>{
+      multiplesOf(p).forEach(n => sv.crossed[n] = true);
+      sv.step++; save(); renderSieve();
+    };
+    row.appendChild(rest);
+  } else {
+    const again = el('button','btn ghost sm','Start the grid again');
+    again.onclick = ()=>{ S.sieve = {crossed:{}, step:0}; save(); renderSieve(); };
+    row.appendChild(again);
+    const count = el('div','tiny');
+    count.style.cssText = 'flex-basis:100%;margin-top:4px';
+    count.innerHTML = `<b>${sievePrimes().length} primes</b> under 100. The 1 is greyed out on its
+      own: it has only one factor, so it is neither prime nor composite.`;
+    row.appendChild(count);
+  }
+  host.appendChild(row);
+  const fb = el('div','tiny'); fb.id = 'sieveNote'; fb.style.marginTop = '10px';
+  host.appendChild(fb);
+}
+
+function sieveTap(n){
+  const sv = sieveState();
+  if (sieveDone()) return;
+  const p = SIEVE_STEPS[sv.step];
+  const note = $('sieveNote');
+  if (n === 1){
+    if (note) note.textContent = '1 is neither prime nor composite — leave it be.';
+    return;
+  }
+  if (n === p){
+    if (note) note.innerHTML = `${p} stays! You are crossing out the <b>multiples</b> of ${p}, not ${p} itself.`;
+    return;
+  }
+  if (n % p !== 0){
+    if (note) note.innerHTML = `${n} is not in the ${p} times table, so it survives this round.`;
+    return;
+  }
+  sv.crossed[n] = true;
+  if (multiplesOf(p).every(m => sv.crossed[m])) sv.step++;
+  save();
+  renderSieve();
+}
+
+/* A compact, read-only copy for the reference drawer. */
+function sieveMini(){
+  const sv = sieveState();
+  if (!sieveDone()) return `<div class="tiny">Your prime grid is not finished yet —
+    open <b>Lessons → Prime &amp; composite</b> to build it.</div>`;
+  let cells = '';
+  for (let n=1;n<=100;n++){
+    const cls = n===1 ? 'one' : (sv.crossed[n] ? 'out' : 'prime');
+    cells += `<span class="${cls}">${n}</span>`;
+  }
+  return `<div class="sieve mini">${cells}</div>`;
+}
+
+
+/* ============================================================================
+   THE TOOLS DRAWER — cognitive offloading
+   A times table, his own prime grid, a place-value chart and a fraction wall,
+   one tap from every question. Looking a fact up is not cheating: it frees the
+   working memory he needs for the concept actually being taught. Using it
+   costs nothing — it is recorded as "with support", never as a lower score.
+   ========================================================================== */
+let toolTab = 'times';
+
+function toolTimesTable(){
+  let out = '<div class="xtab"><span class="xh corner">×</span>';
+  for (let c=1;c<=12;c++) out += `<span class="xh">${c}</span>`;
+  for (let r=1;r<=12;r++){
+    out += `<span class="xh">${r}</span>`;
+    for (let c=1;c<=12;c++)
+      out += `<span class="xc" data-r="${r}" data-c="${c}">${r*c}</span>`;
+  }
+  return out + '</div><div class="tiny" style="margin-top:9px">'
+    + 'Tap any answer to light up its row and column.</div>';
+}
+
+function toolPlaceValue(){
+  const rows = [['Hundreds','100','3 0 0'],['Tens','10','4 0'],['Ones','1','7'],
+                ['·','decimal point','·'],['Tenths','1/10 = 0.1','0.5'],
+                ['Hundredths','1/100 = 0.01','0.06'],['Thousandths','1/1000 = 0.001','0.002']];
+  return `<table class="table pvt"><thead><tr><th>Place</th><th>Each one is worth</th><th>Example</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="tnum">${r[2]}</td></tr>`).join('')}</tbody>
+    </table><div class="tiny" style="margin-top:9px">
+    Going right, every place is <b>ten times smaller</b> than the one before it.</div>`;
+}
+
+function toolFractionWall(){
+  const rows = [[1,'1 whole'],[2,'halves'],[3,'thirds'],[4,'quarters'],
+                [5,'fifths'],[6,'sixths'],[8,'eighths'],[10,'tenths']];
+  return `<div class="fwall">${rows.map(([d,name])=>
+    `<div class="fw-row"><div class="fw-name">${name}</div>
+       <div class="fw-bar">${Array.from({length:d},()=>`<span></span>`).join('')}</div></div>`).join('')}
+    </div><div class="tiny" style="margin-top:9px">
+    More pieces in the whole = each piece is smaller. That is why 1/8 is less than 1/2.</div>`;
+}
+
+const TOOL_TABS = [
+  ['times', '✖️ Times table', toolTimesTable],
+  ['sieve', '🔢 Prime grid',  ()=> sieveMini()],
+  ['place', '🔟 Place value', toolPlaceValue],
+  ['frac',  '🍕 Fractions',   toolFractionWall],
+];
+
+function openTools(){
+  if (SESH) SESH.usedTools = true;
+  renderTools();
+  $('toolsSheet').hidden = false;
+}
+function closeTools(){ $('toolsSheet').hidden = true; }
+
+function renderTools(){
+  const tabs = $('toolTabs'); tabs.innerHTML = '';
+  TOOL_TABS.forEach(([id,label])=>{
+    const b = el('button','pill' + (toolTab===id?' on':''), label);
+    b.onclick = ()=>{ toolTab = id; renderTools(); };
+    tabs.appendChild(b);
+  });
+  const def = TOOL_TABS.find(t=>t[0]===toolTab) || TOOL_TABS[0];
+  const body = $('toolBody');
+  body.innerHTML = def[2]();
+  if (toolTab === 'times'){
+    body.querySelectorAll('.xc').forEach(cell=>{
+      cell.onclick = ()=>{
+        const r = cell.dataset.r, c = cell.dataset.c;
+        body.querySelectorAll('.xc,.xh').forEach(x=>x.classList.remove('lit','hit'));
+        body.querySelectorAll(`.xc[data-r="${r}"],.xc[data-c="${c}"]`).forEach(x=>x.classList.add('lit'));
+        cell.classList.add('hit');
+      };
+    });
+  }
+  if (toolTab === 'sieve'){
+    const go = el('button','btn ghost sm','Open the full grid');
+    go.style.marginTop = '10px';
+    go.onclick = ()=>{ closeTools(); renderSieve(); show('scr-sieve'); };
+    body.appendChild(go);
+  }
+}
+
 /* ---------------------------------------------------------------------------
    LESSONS — every topic, nothing locked
    --------------------------------------------------------------------------- */
@@ -4706,22 +5189,37 @@ function openSkill(skill){
         <span class="eyebrow">Where Adam is</span>
         <span class="tag ${rec.seen?b.key:'new'}">${rec.seen ? b.label : 'Not started'}</span>
       </div>
+      ${isRead ? '' : `<div class="tiny" style="margin-top:9px">
+        Working at: <b>${CRA_NAMES[craFor(skill).at]}</b>${
+          craFor(skill).at === 0 ? ' — he places the blocks himself.'
+          : craFor(skill).at === 1 ? ' — the picture is drawn for him.'
+          : ' — numbers and symbols only.'}</div>`}
       <div class="bar" style="margin-top:10px"><i style="width:${Math.round(m*100)}%"></i></div>
       <div class="tiny" style="margin-top:7px">${
         rec.seen ? `${rec.right} right of ${rec.seen} tried.` : 'No questions answered on this yet.'}</div>
     </div>`;
 
-  const go = el('button','btn wide'+(isRead?' story':''), isRead ? 'Read a story →' : 'Practise this — 8 questions →');
+  if (skill === 'm-primes' || skill === 'm-factors'){
+    const sg = el('button','btn wide', sieveDone() ? '🔢 Open your Prime Grid' : '🔢 Build your Prime Grid');
+    sg.style.marginBottom = '8px';
+    sg.onclick = ()=>{ renderSieve(); show('scr-sieve'); };
+    body.appendChild(sg);
+  }
+
+  const go = el('button','btn wide'+(isRead?' story':''),
+    isRead ? 'Read a story →' : 'Practise this — 5 mixed questions →');
   go.onclick = ()=> isRead
     ? startSession({realm:'read', len:8})
-    : startSession({realm:'math', len:8, focusSkill:skill});
+    : startSession({realm:'math', len:5, seedSkill:skill});
   body.appendChild(go);
 
   if (!isRead){
-    const long = el('button','btn ghost wide','Drill it — 15 questions');
-    long.style.marginTop = '8px';
-    long.onclick = ()=> startSession({realm:'math', len:15, focusSkill:skill});
-    body.appendChild(long);
+    const note = el('div','tiny');
+    note.style.marginTop = '10px';
+    note.innerHTML = `Three of the five will be <b>${SKILLS[skill].name}</b>, with different kinds of
+      question in between. Mixing them stops the autopilot long drills create — and it is
+      why the set is deliberately short.`;
+    body.appendChild(note);
   }
   S.rulesSeen = S.rulesSeen || {};
   S.rulesSeen[skill] = true; save();
@@ -4832,9 +5330,9 @@ function buildQuests(){
     date: today(),
     done: [],
     list: [
-      {type:'math', len:6, name:'Warm-up', meta:`6 questions · aimed at ${SKILLS[weakMath].name}`, ico:'🔩', focus:weakMath},
+      {type:'math', len:4, name:'Warm-up', meta:`4 mixed questions · includes ${SKILLS[weakMath].name}`, ico:'🔩', focus:weakMath},
       {type:'read', name:'Story server', meta:`${p.title} · ${p.qs.length} questions`, ico:'📖', passageId:p.id},
-      {type:'math', len:8, name:'Boss round', meta:'8 questions · mixed, one level up', ico:'⚔️', boss:true}
+      {type:'math', len:5, name:'Mixed set', meta:'5 questions · all different kinds', ico:'🎲', boss:true}
     ]
   };
   save();
@@ -4868,7 +5366,7 @@ function renderHome(){
       <span class="qgo">→</span>`;
     b.onclick = ()=>{
       S.bonusCount = (S.bonusCount||0)+1; save();
-      startSession(bonusRealm==='read' ? {realm:'read', len:8} : {realm:'math', len:8});
+      startSession(bonusRealm==='read' ? {realm:'read', len:8} : {realm:'math', len:5});
     };
     list.appendChild(b);
   }
@@ -4892,7 +5390,7 @@ function launchQuest(i){
     const p = PASSAGES.find(x=>x.id===q.passageId) || pickPassage();
     startSession({realm:'read', forcePassage:p, len:p.qs.length, quest:i});
   } else {
-    startSession({realm:'math', len:q.len || 6, quest:i});
+    startSession({realm:'math', len:q.len || 5, quest:i, seedSkill:q.focus || null});
   }
 }
 
@@ -4912,17 +5410,24 @@ function renderProgress(){
       : `Bricks ${Math.round((prof.visAcc||0)*100)}% vs symbols ${Math.round((prof.symAcc||0)*100)}%. ${prof.needsVisual?'Arrays stay switched on.':'No scaffold needed by default.'}`));
 
   dials.push(dial('Pace',
-    prof.median===null ? 'Still measuring' : prof.impulsive ? 'Fast — slow-down mode ON' : (prof.median>18?'Deliberate':'Steady'),
-    prof.median===null ? '—' : `Typical answer takes ${Math.max(1, prof.median)}s. ${prof.impulsive?`${Math.round(prof.fastWrongRate*100)}% of answers are wrong AND under 4 seconds — options now lock briefly.`:'Speed and accuracy are in balance.'}`));
+    prof.median===null ? 'Still measuring' : prof.impulsive ? 'Answers fast' : (prof.median>18?'Takes his time':'Steady'),
+    prof.median===null ? '—' : `Typical answer takes ${Math.max(1, prof.median)}s. ${prof.impulsive?`${Math.round(prof.fastWrongRate*100)}% of answers come in under four seconds and miss — he gets a gentle "no rush" reminder, never a locked button.`:'Speed and accuracy are in balance.'}`));
 
   dials.push(dial('Words vs numbers',
     prof.verbal===null ? 'Still measuring' : prof.storyThinker ? 'Story thinker' : (prof.verbal < -0.12 ? 'Numbers first' : 'Even'),
     prof.verbal===null ? 'Needs more word problems.'
       : `Word problems ${Math.round((prof.wordAcc||0)*100)}% vs bare facts ${Math.round((prof.bareAcc||0)*100)}%.`));
 
-  dials.push(dial('Use of hints',
-    S.profile.answered<6 ? 'Still measuring' : prof.hintRate>0.4 ? 'Leans on the ladder' : prof.hintRate>0.15 ? 'Uses it when stuck' : 'Independent',
-    `Asks for help on ${Math.round(prof.hintRate*100)}% of questions. Hinted answers count for less mastery, on purpose.`));
+  const solo = MATH_SKILLS.reduce((a,k)=>a+(S.mastery[k].solo||0), 0);
+  const sup  = MATH_SKILLS.reduce((a,k)=>a+(S.mastery[k].supported||0), 0);
+  const supRate = (solo+sup) ? sup/(solo+sup) : 0;
+  dials.push(dial('Use of the tools',
+    (solo+sup) < 6 ? 'Still measuring'
+      : supRate > 0.5 ? 'Leans on them' : supRate > 0.15 ? 'Reaches when stuck' : 'Mostly unaided',
+    (solo+sup) < 6 ? 'Needs a few more answered questions to tell.'
+      : `<b>${sup}</b> right with the times table or a hint open, <b>${solo}</b> right without.
+         Neither is worth more — looking a fact up frees the memory he needs for the
+         actual concept, so it is never scored down.`));
 
   $('profileDials').innerHTML = dials.join('');
 
@@ -5139,7 +5644,7 @@ const AVATARS = ['🧱','🤖','🐉','🦈','⚡','🎮','🛸','🐺','🔥','
 function go(where){
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on', b.dataset.go===where));
   if (where==='home'){ renderHome(); show('scr-home'); }
-  else if (where==='math'){ startSession({realm:'math', len:8}); }
+  else if (where==='math'){ startSession({realm:'math', len:5}); }
   else if (where==='read'){ startSession({realm:'read', len:8}); }
   else if (where==='lessons'){ renderLessons(); show('scr-lessons'); }
   else if (where==='progress'){ renderProgress(); show('scr-progress'); }
@@ -5193,9 +5698,14 @@ function boot(){
   $('resHomeBtn').onclick = ()=> go('home');
   $('resAgainBtn').onclick = ()=>{
     const s = SESH;
-    startSession(s.realm==='read' ? {realm:'read', len:8} : {realm:'math', len:s.len||8});
+    startSession(s.realm==='read' ? {realm:'read', len:8} : {realm:'math', len:s.len||5});
   };
   $('skillBack').onclick = ()=> go('lessons');
+  $('sieveBack').onclick = ()=> go('lessons');
+  $('toolsBtn').onclick = openTools;
+  $('toolsClose').onclick = closeTools;
+  $('toolsSheet').onclick = e=>{ if (e.target.id === 'toolsSheet') closeTools(); };
+  document.addEventListener('keydown', e=>{ if (e.key === 'Escape') closeTools(); });
   $('realmMath').onclick = ()=> go('math');
   $('realmRead').onclick = ()=> go('read');
   document.querySelectorAll('.nav button').forEach(b=> b.onclick = ()=> go(b.dataset.go));
