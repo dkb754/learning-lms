@@ -83,6 +83,24 @@ are filled with a genuinely different kind of question. The engine also avoids
 repeating a question format back to back. Repetition still happens — spaced
 across sets rather than blocked within one.
 
+**Knowing that he knows.** After he picks an answer, and *before* the verdict,
+the app asks how sure he is: **I know this / I think so / Just guessing**.
+Certainty then scales what gets banked — a right answer he called a guess is not
+yet knowing, and banks about half. Guessing is never punished; it simply does not
+count as mastered, and the coach treats it warmly. Sure-and-wrong is recorded
+separately, because a misconception he believes is the single most useful thing
+a grown-up can see.
+
+**Things I Know.** A topic earns a card on the Base screen only when he can do it
+*and* has twice said "I know this" before seeing the answer. Progress reads as a
+shelf of things he owns rather than a row of percentages.
+
+**Two ways to practise a topic.** The short set mixes it with other kinds of
+question — that is the default, and it is what stops autopilot. The **deep dive**
+stays on one topic for ten and climbs the ladder: build it, see it drawn, do it in
+symbols, then name which rule it was. Long and focused, without being ten of the
+same sum.
+
 **Nothing rewards speed.** No speed praise, no timed scoring, and the old
 answer-lock is now a quiet "no rush" note rather than a frozen button. Any set
 can be stopped early with the run kept.

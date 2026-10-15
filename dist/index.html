@@ -333,7 +333,7 @@ p{line-height:1.6}
 .dots{display:flex;gap:5px;flex-shrink:0}
 .dot{width:8px;height:8px;border-radius:3px;background:var(--surface-3);border:1px solid var(--line)}
 .dot.hit{background:var(--good);border-color:var(--good)}
-.dot.miss{background:var(--miss);border-color:var(--miss)}
+.dot.miss{background:var(--warn);border-color:var(--warn)}
 .dot.now{background:var(--build);border-color:var(--build);transform:scale(1.25)}
 
 .prompt{
@@ -478,6 +478,42 @@ p{line-height:1.6}
 .tag.cra-0{background:var(--good-soft);color:var(--good)}
 .tag.cra-1{background:var(--story-soft);color:var(--story)}
 .tag.cra-2{background:var(--surface-3);color:var(--ink-3)}
+
+.knowstrip{display:flex;gap:9px;overflow-x:auto;padding:2px 2px 6px;-webkit-overflow-scrolling:touch}
+.knowcard{
+  flex:0 0 auto;width:124px;padding:13px 11px;border-radius:var(--r-m);text-align:center;
+  background:linear-gradient(170deg,var(--good-soft),var(--surface) 70%);
+  border:1.5px solid color-mix(in srgb,var(--good) 40%,var(--line));box-shadow:var(--shadow);
+}
+.knowcard .ki{font-size:1.5rem;display:block;line-height:1}
+.knowcard .kn{display:block;font-family:var(--f-display);font-weight:800;font-size:.82rem;
+  margin-top:7px;line-height:1.2}
+.knowcard .kk{display:block;font-size:.6rem;font-weight:800;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--good);margin-top:6px}
+
+/* ── how sure are you? ──────────────────────────────────────────────────── */
+.opt.picked{border-color:var(--build);background:var(--build-soft);box-shadow:0 3px 0 var(--build-edge)}
+.opt.picked .ol{background:var(--build);color:#fff}
+.opt.dimmed{opacity:.38}
+.ansfield.picked{border-color:var(--build);color:var(--build)}
+.conf-wrap{
+  background:var(--surface);border:1.5px solid var(--build);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:14px;
+}
+.conf-ask{font-size:.95rem;line-height:1.5;margin-bottom:11px}
+.conf-row{display:flex;gap:8px;flex-wrap:wrap}
+.conf{
+  flex:1;min-width:104px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;padding:11px 8px;border-radius:var(--r-s);
+  font-family:var(--f-ui);font-size:.78rem;font-weight:800;line-height:1.2;text-align:center;
+  background:var(--surface-2);border:1.5px solid var(--line);color:var(--ink);
+  box-shadow:0 3px 0 var(--line-strong);
+}
+.conf span{font-size:1.3rem;line-height:1}
+.conf:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line-strong)}
+.conf.know:hover{border-color:var(--good);color:var(--good)}
+.conf.think:hover{border-color:var(--build);color:var(--build)}
+.conf.guess:hover{border-color:var(--warn);color:var(--warn)}
 
 /* ── tools drawer ───────────────────────────────────────────────────────── */
 .sheet{position:fixed;inset:0;z-index:80;background:rgba(10,16,28,.5);
@@ -859,6 +895,8 @@ p{line-height:1.6}
         <div class="quests" id="questList"></div>
       </div>
 
+      <div id="knowWrap"></div>
+
       <div>
         <div class="eyebrow" style="margin-bottom:9px">Free build</div>
         <div class="realms">
@@ -1074,7 +1112,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v8 · 15 Oct 2026 · CRA + tools + sieve';
+const BUILD = 'v9 · 15 Oct 2026 · knowing it, not just getting it';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -3749,7 +3787,8 @@ function makeMathItem(skill, diff, stage){
 const SAVE_KEY = 'adamBuildMode.v1';
 const blankMastery = () => {
   const m = {};
-  Object.keys(SKILLS).forEach(k => m[k] = {m:0, seen:0, right:0, wrong:0, recent:[], solo:0, supported:0});
+  Object.keys(SKILLS).forEach(k => m[k] =
+    {m:0, seen:0, right:0, wrong:0, recent:[], solo:0, supported:0, knew:0, lucky:0, sure_wrong:0});
   return m;
 };
 let S = {
@@ -3762,7 +3801,7 @@ let S = {
             fastWrong:0, slowRight:0, wordSeen:0, wordRight:0, bareSeen:0, bareRight:0,
             readSeen:0, readRight:0, readRoll:[] },
   review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0, rulesSeen:{},
-  syncCode:null, syncAt:null, cra:{}
+  syncCode:null, syncAt:null, cra:{}, askConfidence:true
 };
 
 let STORAGE_OK = null;
@@ -4050,12 +4089,22 @@ function record(item, correct, msTaken, hintsUsed){
     // the point of the intervention, not cheating, so mastery is not docked for
     // it — support is recorded separately instead, and reported as its own
     // dimension rather than hidden inside a lower score.
-    const gain = 0.16 + 0.05*d;
+    // Certainty, not support, scales what gets banked: a right answer he called
+    // a guess is not yet knowing. Guessing is never punished — it simply banks
+    // less, and the coach treats it warmly.
+    const sure = item.conf == null ? 1 : item.conf;
+    const certainty = [0.5, 0.8, 1][sure];
+    const gain = (0.16 + 0.05*d) * certainty;
     rec.m = Math.min(1, rec.m + (1-rec.m)*gain);
     if (hintsUsed) rec.supported = (rec.supported||0) + 1;
     else           rec.solo = (rec.solo||0) + 1;
+    if (item.conf === 2) rec.knew  = (rec.knew||0) + 1;
+    if (item.conf === 0) rec.lucky = (rec.lucky||0) + 1;
   } else {
     rec.m = Math.max(0, rec.m - rec.m*0.26 - 0.02);
+    // Sure and wrong is the most useful signal there is: a misconception he
+    // believes. Worth surfacing to a grown-up, not worth extra punishment.
+    if (item.conf === 2) rec.sure_wrong = (rec.sure_wrong||0) + 1;
   }
 
   // difficulty controller: aim for roughly 3-out-of-4 success
@@ -4125,6 +4174,29 @@ function chooseSkill(realm, avoid){
   return pool[0];
 }
 
+/* The last question of a deep dive is not a sum. Saying which rule governs the
+   topic is the difference between getting answers right and knowing why. */
+function comprehensionItem(skill){
+  const R = ruleFor(skill);
+  if (!R) return null;
+  const strip = h => String(h).replace(/<[^>]+>/g, '').replace(/\s+/g,' ').trim();
+  const strand = (SKILLS[skill]||{}).strand;
+  let pool = Object.keys(RULES).filter(k => k !== skill && SKILLS[k] && SKILLS[k].strand === strand);
+  if (pool.length < 3) pool = Object.keys(RULES).filter(k => k !== skill);
+  const others = shuffle(pool).slice(0,3).map(k => ({t: strip(ruleFor(k).rule), why:'true-not-asked'}));
+  return {
+    realm:'math', skill, diff:1, kind:'choice', stage:2, comprehension:true,
+    q:`Last one, and it is not a sum.<br><b>Which of these is the rule for ${SKILLS[skill].name}?</b>`,
+    prompt:`rule ${skill}`, answer: strip(R.rule),
+    opts: mcText(strip(R.rule), others),
+    hints:['You read this at the top of the lesson — and 📐 Tools still has it.',
+           `Three of these are real rules, just for other topics. Which one is about ${SKILLS[skill].name}?`,
+           strip(R.rule)],
+    worked:[`The rule for ${SKILLS[skill].name}:`, strip(R.rule),
+            'Knowing which rule applies is most of the work in a multi-step problem.']
+  };
+}
+
 /* ---------------------------------------------------------------------------
    CRA — Concrete → Representational → Abstract
    0 he builds it himself · 1 the picture is drawn for him · 2 symbols only.
@@ -4187,6 +4259,15 @@ function profileRead(){
   };
 }
 
+/* A skill counts as KNOWN when he can do it and felt sure doing it. Mastery
+   alone is not enough: being right while guessing is not the same as knowing,
+   and the whole point is that he can feel the difference. */
+function isKnown(k){
+  const rec = S.mastery[k];
+  return !!rec && masteryOf(k) >= 0.65 && (rec.knew || 0) >= 2;
+}
+const knownSkills = () => Object.keys(SKILLS).filter(isKnown);
+
 /* ---------------------------------------------------------------------------
    7. XP, LEVELS, BADGES
    --------------------------------------------------------------------------- */
@@ -4242,11 +4323,20 @@ const RIGHT_HARD = ['That was a hard one. You earned it.', 'That is the level ab
 
 function coachRight(item, runStreak, secs, hinted){
   let msg;
-  // Nothing here rewards speed. Using the tools is praised, not excused.
-  if (hinted) msg = 'Used the tools and got it — that is exactly what they are for.';
+  // Nothing here rewards speed. What gets named is whether he KNEW it.
+  if (item.conf === 2)
+    msg = pick(['<b>You said you knew it — and you did.</b> That feeling is the thing to remember.',
+                '<b>Called it and nailed it.</b> That is what knowing feels like.',
+                '<b>Sure, and right.</b> You can trust yourself on this one now.']);
+  else if (item.conf === 0)
+    msg = 'Right — and you called it a guess, which was honest. Let us do one more like it so it stops being a guess.';
+  else if (item.conf === 1)
+    msg = 'Right. You half-knew that one — a couple more and it turns into knowing.';
+  else if (hinted) msg = 'Used the tools and got it — that is exactly what they are for.';
   else if ((item.diff||1) >= 3) msg = pick(RIGHT_HARD);
   else if (item.stage === 0) msg = 'Built it and read it off. That is the real thing.';
   else msg = pick(Math.random()<0.4 ? RIGHT_STRATEGY : RIGHT_LINES);
+  if (hinted && item.conf === 2) msg += ' Using the table does not make it less yours.';
   if (runStreak >= 5) msg += ` <b>${runStreak} in a row.</b>`;
   return msg;
 }
@@ -4255,6 +4345,14 @@ function coachWrong(item, trap, attempt, prof){
   const t = TRAPS[trap];
   const repeat = trap && SESH && SESH.lastTrap === trap;
   let msg;
+  // Sure and wrong is the one worth handling gently and precisely: he has a
+  // rule in his head that nearly works. Name the rule, not the mistake.
+  if (item.conf === 2 && attempt >= 2){
+    const lead = 'You were sure — so something small is off in the method, not in you. ';
+    return lead + (t ? `<b>${t.label}.</b> ${t.say}` : 'Look at the worked steps below and see where it forks.');
+  }
+  if (item.conf === 0 && attempt >= 2)
+    return (t ? `<b>${t.label}.</b> ${t.say} ` : '') + 'You said you were guessing, so that is a fair place to be — now you have seen it.';
   if (t && repeat) msg = `<b>${t.label} again.</b> This one keeps coming back, so let us kill it: ${t.say}`;
   else if (t) msg = `<b>${t.label}.</b> ${t.say}`;
   else if (item.realm === 'math') msg = `Not that number. Say the problem out loud first — <b>${item.prompt}</b> — then decide what it is asking you to do.`;
@@ -4311,7 +4409,7 @@ function startSession(opts){
     marks:[], runStreak:0, missRun:0, hintsUsed:0, scaffoldNext:false,
     scan:false, ladder:1, touched:{}, startedAt:Date.now(), quest:null, passage:null,
     passageStart:0, recent:[], lastSkill:null, lastTrap:null, focusSkill:null,
-    seedSkill:null, lastKind:null
+    seedSkill:null, lastKind:null, deepSkill:null, pending:null
   }, opts);
   touchStreak();
   nextItem();
@@ -4385,6 +4483,32 @@ function nextItem(){
     s.current = readingItem(s.passage, s.qi++);
   } else {
     const prof = profileRead();
+    // A deep dive stays on one topic by design, but climbs the CRA ladder
+    // across the set instead of asking the same question ten times: build it,
+    // then see it, then do it in symbols, then say which rule it was.
+    if (s.deepSkill){
+      if (s.idx === s.len - 1){
+        const comp = comprehensionItem(s.deepSkill);
+        if (comp){ s.current = comp; s.attempt = 0; s.hintLevel = 0; s.answered = false;
+                   s.usedTools = false; s.pending = null; s.shownAt = Date.now();
+                   renderItem(); return; }
+      }
+      const cd = craFor(s.deepSkill);
+      const third = Math.floor(s.idx / Math.max(1, Math.ceil((s.len-1)/3)));
+      const stage = Math.min(2, cd.floor + third);
+      s.recent = s.recent || [];
+      let dmade, dtries = 0;
+      do { dmade = makeMathItem(s.deepSkill, diffOf(s.deepSkill), stage); dtries++; }
+      while (dtries < 8 && s.recent.indexOf(dmade.prompt) > -1);
+      s.recent.push(dmade.prompt);
+      if (s.recent.length > 10) s.recent.shift();
+      s.current = dmade;
+      s.attempt = 0; s.hintLevel = 0; s.answered = false; s.usedTools = false;
+      s.pending = null; s.shownAt = Date.now();
+      renderItem();
+      return;
+    }
+
     // Interleaving, not massed practice. A chosen topic takes every other slot
     // so it never appears twice running, and the gaps are filled with something
     // genuinely different — which forces him to work out what the question is
@@ -4410,7 +4534,8 @@ function nextItem(){
     if (s.scaffoldNext){ s.current.scaffolded = true; s.current.autoScaffold = true; }
     s.scaffoldNext = false;
   }
-  s.attempt = 0; s.hintLevel = 0; s.answered = false; s.usedTools = false; s.shownAt = Date.now();
+  s.attempt = 0; s.hintLevel = 0; s.answered = false; s.usedTools = false;
+  s.pending = null; s.shownAt = Date.now();
   renderItem();
 }
 
@@ -4440,10 +4565,57 @@ function diagnoseNumeric(item, val){
   return null;
 }
 
+/* ---------------------------------------------------------------------------
+   HOW SURE ARE YOU?
+   Answering is split in two: he picks, then says how certain he is, and only
+   then sees the verdict. Knowing you know is a separate skill from being right,
+   and it is the one that builds confidence — a lucky guess and a solid answer
+   look identical on a score sheet but feel nothing alike.
+   --------------------------------------------------------------------------- */
+const CONFIDENCE = [
+  {v:2, label:'I know this',  ico:'💪', cls:'know'},
+  {v:1, label:'I think so',   ico:'🤔', cls:'think'},
+  {v:0, label:'Just guessing',ico:'🎲', cls:'guess'},
+];
+
+function proposeAnswer(chosen, btn){
+  const s = SESH;
+  if (!s || s.answered || s.pending) return;
+  // Retries and the keypad-free paths grade straight away; asking twice is noise.
+  if (S.askConfidence === false || s.attempt > 0){ submitAnswer(chosen, btn); return; }
+  s.pending = {chosen, btn};
+  if (btn) btn.classList.add('picked');
+  document.querySelectorAll('.opt').forEach(b=>{ if (b !== btn) b.classList.add('dimmed'); });
+  if (s.current && s.current._field) s.current._field.classList.add('picked');
+  renderConfidence();
+}
+
+function renderConfidence(){
+  const nav = $('seshNav');
+  nav.innerHTML = '';
+  const wrap = el('div','conf-wrap');
+  wrap.innerHTML = `<div class="conf-ask">Locked in. <b>How sure are you?</b></div>`;
+  const row = el('div','conf-row');
+  CONFIDENCE.forEach(c=>{
+    const b = el('button','conf '+c.cls, `<span>${c.ico}</span>${c.label}`);
+    b.onclick = ()=>{
+      const pend = SESH.pending; SESH.pending = null;
+      if (pend) submitAnswer(pend.chosen, pend.btn, c.v);
+    };
+    row.appendChild(b);
+  });
+  wrap.appendChild(row);
+  const note = el('div','tiny','No wrong answer here — saying "guessing" is useful, not bad.');
+  note.style.marginTop = '8px';
+  wrap.appendChild(note);
+  nav.appendChild(wrap);
+}
+
 /* --- answer handling ------------------------------------------------------ */
-function submitAnswer(chosen, btn){
+function submitAnswer(chosen, btn, conf){
   const s = SESH, item = s.current;
   s.lastBtn = btn || null;
+  item.conf = (conf == null) ? null : conf;
   if (s.answered) return;
   const secs = (Date.now() - s.shownAt)/1000;
   item.secs = secs;
@@ -4486,6 +4658,7 @@ function submitAnswer(chosen, btn){
     s.runStreak = 0; s.missRun++;
   }
   s.touched[item.skill] = true;
+  (s.confLog = s.confLog || []).push({conf:item.conf, ok:correct});
 
   // Two misses in a row means the representation was too abstract, not that he
   // needs to try harder. Step back down the CRA ladder for that skill.
@@ -4508,6 +4681,11 @@ function finishSession(){
   S.xp += s.xp;
   closePassage(s);
   if (s.scan){ S.scanned = true; seedFromScan(s); }
+  // Carrying a topic all the way up the ladder in one sitting is real evidence.
+  if (s.deepSkill && s.marks.length >= 6 && s.right / s.marks.length >= 0.75){
+    const cd = craFor(s.deepSkill);
+    if (cd.at < 2){ cd.at++; cd.run = 0; }
+  }
   if (s.quest != null && S.quests) {
     S.quests.done = S.quests.done || [];
     if (!S.quests.done.includes(s.quest)) S.quests.done.push(s.quest);
@@ -4676,7 +4854,7 @@ function renderItem(){
     item.opts.forEach((o,i)=>{
       const b = el('button','opt' + (item.realm==='math' && String(o.t).length<=6 ? ' mathy' : ''));
       b.innerHTML = `<span class="ol">${'ABCD'[i]}</span><span>${o.t}</span>`;
-      b.onclick = () => submitAnswer(o, b);
+      b.onclick = () => proposeAnswer(o, b);
       wrap.appendChild(b);
     });
     prompt.appendChild(wrap);
@@ -4724,13 +4902,13 @@ function buildKeypad(item){
     b.onclick = ()=>{
       if (SESH.answered) return;
       if (k==='⌫') field.value = field.value.slice(0,-1);
-      else if (k==='✓'){ if (field.value !== '') submitAnswer(field.value); }
+      else if (k==='✓'){ if (field.value !== '') proposeAnswer(field.value, null); }
       else if (field.value.length < 5) field.value += k;
     };
     pad.appendChild(b);
   });
   wrap.appendChild(pad);
-  field.addEventListener('keydown', e=>{ if(e.key==='Enter' && field.value!=='' && !SESH.answered) submitAnswer(field.value); });
+  field.addEventListener('keydown', e=>{ if(e.key==='Enter' && field.value!=='' && !SESH.answered) proposeAnswer(field.value, null); });
   setTimeout(()=>field.focus(), 60);
   item._field = field;
   return wrap;
@@ -5228,11 +5406,17 @@ function openSkill(skill){
   body.appendChild(go);
 
   if (!isRead){
+    const deep = el('button','btn ghost wide','🔬 Deep dive — 10 on this one topic');
+    deep.style.marginTop = '8px';
+    deep.onclick = ()=> startSession({realm:'math', len:10, deepSkill:skill});
+    body.appendChild(deep);
+
     const note = el('div','tiny');
     note.style.marginTop = '10px';
-    note.innerHTML = `Three of the five will be <b>${SKILLS[skill].name}</b>, with different kinds of
-      question in between. Mixing them stops the autopilot long drills create — and it is
-      why the set is deliberately short.`;
+    note.innerHTML = `The short set mixes <b>${SKILLS[skill].name}</b> with other kinds of question,
+      which is what stops autopilot. The <b>deep dive</b> stays on this one topic and climbs:
+      build it, then see it drawn, then symbols, and it finishes by asking which rule it was —
+      not ten of the same sum.`;
     body.appendChild(note);
   }
   S.rulesSeen = S.rulesSeen || {};
@@ -5254,10 +5438,10 @@ function renderResult(freshBadges){
 
   let ico, title, sub;
   if (s.scan){ ico='🛰️'; title='Scan complete'; sub='I have a starting picture of how you think. It will sharpen every session.'; }
-  else if (pct === 1){ ico='🏆'; title='Flawless run'; sub='Every single one.'; }
-  else if (pct >= 0.75){ ico='🏗️'; title='Strong build'; sub='That is the zone — hard enough to matter, not hard enough to hurt.'; }
-  else if (pct >= 0.5){ ico='🔧'; title='Good reps'; sub='The misses are the useful part. I logged all of them.'; }
-  else { ico='🧱'; title='Reps banked'; sub='That set was pitched too high. I am dropping the level for next time.'; }
+  else if (pct === 1){ ico='🏆'; title='Every one'; sub='Clean all the way through.'; }
+  else if (pct >= 0.75){ ico='🏗️'; title='Strong run'; sub='That is the zone — hard enough to matter, not hard enough to hurt.'; }
+  else if (pct >= 0.5){ ico='🔧'; title='Working it out'; sub='The ones you missed are the ones worth having seen. Nothing lost.'; }
+  else { ico='🧭'; title='Found the edge'; sub='That set was pitched too high — my mistake, not yours. Next one comes back down.'; }
   $('resIcon').textContent = ico; $('resTitle').textContent = title; $('resSub').textContent = sub;
 
   // what Bolt noticed
@@ -5271,6 +5455,10 @@ function renderResult(freshBadges){
     const topTrap = Object.entries(S.traps).sort((a,b)=>b[1]-a[1])[0];
     if (pct >= 0.85) notes.push(`I am moving you up a level on the skills you cleared.`);
     if (pct < 0.5) notes.push(`Nothing here says you cannot do this — it says I picked wrong. Fixed.`);
+    const knewRight = (s.confLog||[]).filter(x=>x.conf===2 && x.ok).length;
+    if (knewRight >= 2) notes.push(`<b>${knewRight}</b> of those you said you knew before you saw the answer — and you did.`);
+    const luckyRight = (s.confLog||[]).filter(x=>x.conf===0 && x.ok).length;
+    if (luckyRight >= 2) notes.push(`${luckyRight} came out right from a guess, so those will come round again.`);
     if (topTrap && TRAPS[topTrap[0]] && topTrap[1]>=2) notes.push(`Pattern to watch: <b>${TRAPS[topTrap[0]].label}</b>.`);
     const prof = profileRead();
     if (prof.enough && prof.needsVisual) notes.push(`You are <b>${Math.round((prof.visAcc-prof.symAcc)*100)}%</b> more accurate when you can see the bricks — so you will keep seeing them.`);
@@ -5353,9 +5541,35 @@ function buildQuests(){
   return S.quests;
 }
 
+function renderKnowBoard(){
+  const host = $('knowWrap');
+  if (!host) return;
+  const known = knownSkills();
+  host.innerHTML = `<div class="spread" style="margin-bottom:9px">
+      <div class="eyebrow">Things I know</div>
+      <div class="eyebrow tnum">${known.length}</div>
+    </div>`;
+  if (!known.length){
+    host.innerHTML += `<div class="card"><div class="tiny">
+      Nothing on the board yet. A topic lands here when you get it right <b>and</b> tap
+      <b>“I know this”</b> — being sure is half of it.</div></div>`;
+    return;
+  }
+  const strip = el('div','knowstrip');
+  known.forEach(k=>{
+    const card = el('div','knowcard');
+    card.innerHTML = `<span class="ki">${SKILLS[k].icon}</span>
+      <span class="kn">${SKILLS[k].name}</span>
+      <span class="kk">I know this</span>`;
+    strip.appendChild(card);
+  });
+  host.appendChild(strip);
+}
+
 function renderHome(){
   renderHUD();
   renderStorageBanner();
+  renderKnowBoard();
   const q = buildQuests();
   $('homeCoachText').innerHTML = coachHome();
 
