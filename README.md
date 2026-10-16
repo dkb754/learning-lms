@@ -51,6 +51,29 @@ it, so feedback names the trap: *"Added the bottom numbers — the denominator i
 of the pieces"*, *"Miscounted the factors — 1 has only one factor, so it is neither"*,
 *"Went straight left to right — × happens before + wherever it sits"*. 35 named traps.
 
+**💬 Ask Bolt — a question box on every screen.** Adam asked for a chatbot, so there is
+one, with one firm rule: it never invents an answer. It runs entirely in the browser —
+no account, no API key, no network, nothing typed ever leaves the Chromebook — and what
+it knows, it knows properly:
+
+- **It works sums out, rather than printing answers.** `7 × 8` comes back as *"7 groups
+  of 8. You know 5 × 8 = 40. 7 is two groups more, so add two more 8s: 40 + 16 = 56."*
+  Division turns into *"what times 8 gives 56?"*. Subtraction names the regrouping.
+  Several operations in one line gets the order of operations narrated a step at a time.
+  Nothing is `eval`'d — the expression goes through a parser written for this.
+- **It answers the number questions he actually types**: is 51 prime, factors of 24,
+  is 34 even, 7/3 as a mixed number, 0.25 as a fraction, which is bigger 0.5 or 0.45,
+  round 3.47 to the nearest tenth.
+- **It explains any topic in the app** from that skill's rule card, then offers the
+  steps, the worked example, the trap, or five questions to try.
+- **It answers questions about him**: what to do next, how he is doing, what is on his
+  Things I Know board, whether using the times table is cheating (it is not).
+- **When it does not know, it says so** and offers to save the question for a grown-up.
+
+Every question he asks is logged to **Progress → What Adam asked Bolt**, marked answered
+or not. For a parent or a teacher that list is the most honest signal in the app: not a
+score, but the sentences he typed when he was stuck.
+
 ## How the adaptation actually works
 
 Built around four interventions for a learner with maths fatigue, rather than
@@ -126,7 +149,8 @@ can be stopped early with the run kept.
 
 The Progress tab shows measured mastery per skill (estimates from the scan are
 labelled as estimates), the repeating error patterns, the learner profile with
-the numbers behind it, a session log, and a copy-out export.
+the numbers behind it, a session log, everything he has asked Ask Bolt, and a
+copy-out export.
 
 ## Files
 
@@ -224,3 +248,6 @@ No account, no email, no password. Save files and save links are generated in th
 and go wherever you put them. If sync is switched on, one row holds the progress blob
 under a random code — a chosen first name, an avatar emoji, and practice statistics.
 Turning sync on is an explicit choice; with it off, nothing leaves the device.
+
+Ask Bolt is local. There is no model call, no API key and no request — the questions
+Adam types are answered by code in the page and stored only in his own browser.

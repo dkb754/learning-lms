@@ -122,7 +122,9 @@ body{
   color:var(--ink);
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
-  padding-bottom:86px;
+  /* Clears the nav bar AND the Ask Bolt button above it, so the last button on
+     a screen can never end up underneath either of them. */
+  padding-bottom:120px;
 }
 /* faint stud grid — the workshop floor */
 body::before{
@@ -515,6 +517,54 @@ p{line-height:1.6}
 .conf.think:hover{border-color:var(--build);color:var(--build)}
 .conf.guess:hover{border-color:var(--warn);color:var(--warn)}
 
+
+/* ── ask bolt ───────────────────────────────────────────────────────────── */
+.ask-fab{
+  position:fixed;right:12px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:60;
+  display:flex;align-items:center;gap:7px;
+  padding:10px 15px;border-radius:999px;border:1.5px solid var(--build-edge);
+  background:var(--build);color:#fff;font:800 .82rem/1 var(--f-ui);cursor:pointer;
+  box-shadow:0 3px 0 var(--build-edge);
+}
+.ask-fab[hidden]{display:none}
+.ask-fab:active{transform:translateY(2px);box-shadow:0 1px 0 var(--build-edge)}
+.ask-log{max-height:46vh;overflow-y:auto;padding-right:2px}
+.ask-row{display:flex;gap:7px;margin-bottom:11px;align-items:flex-start}
+.ask-row.me{justify-content:flex-end}
+.ask-face{
+  flex:0 0 28px;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
+  background:var(--build-soft);border:1.5px solid var(--build);font-size:.9rem;
+}
+.bub{
+  max-width:84%;padding:10px 12px;border-radius:var(--r-m);font-size:.86rem;line-height:1.5;
+  background:var(--surface-2);border:1.5px solid var(--line);color:var(--ink);
+}
+.bub.me{background:var(--build);border-color:var(--build-edge);color:#fff;font-weight:600}
+.bub .rule-steps{margin:7px 0 0 17px;padding:0}
+.bub .rule-steps li{margin-bottom:5px}
+.ask-big{font:800 1.02rem/1.3 var(--f-display);color:var(--build);margin-bottom:5px}
+.ask-sub{margin-top:6px}
+.ask-rule{
+  margin-top:7px;padding:8px 10px;border-radius:var(--r-s);
+  background:var(--build-soft);border:1.5px solid var(--build);font-weight:600;
+}
+#askChips[hidden]{display:none}   /* .pill-row sets display:flex, which beats the browser's own [hidden] rule */
+.ask-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.ask-acts .pill{font-size:.72rem;padding:6px 10px}
+.ask-form{display:flex;gap:7px}
+.ask-form input{
+  flex:1;min-width:0;padding:11px 12px;border-radius:var(--r-m);
+  border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink);
+  font:600 .88rem var(--f-ui);
+}
+.ask-form input:focus{outline:none;border-color:var(--build)}
+.asked-row{display:flex;gap:8px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--line)}
+.asked-row:last-of-type{border-bottom:none}
+.asked-row.unmet .asked-q{color:var(--ink)}
+.asked-mark{flex:0 0 18px;text-align:center}
+.asked-q{flex:1;font-size:.84rem;color:var(--ink-2)}
+.asked-at{flex:0 0 auto;color:var(--ink-3)}
+
 /* ── tools drawer ───────────────────────────────────────────────────────── */
 .sheet{position:fixed;inset:0;z-index:80;background:rgba(10,16,28,.5);
   display:flex;align-items:flex-end;justify-content:center}
@@ -528,6 +578,7 @@ p{line-height:1.6}
 @keyframes sheetUp{from{transform:translateY(16px);opacity:.6}to{transform:none;opacity:1}}
 .sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
 .icon-btn.tools{background:var(--build-soft);border-color:var(--build);color:var(--build)}
+.icon-btn.ask{background:var(--build-soft);border-color:var(--build)}
 
 .xtab{display:grid;grid-template-columns:repeat(13,1fr);gap:2px}
 .xtab span{
@@ -968,6 +1019,7 @@ p{line-height:1.6}
       <button class="icon-btn" id="quitBtn" aria-label="Stop and keep this run">✕</button>
       <div class="bar"><i id="seshBar" style="width:0%"></i></div>
       <div class="dots" id="seshDots"></div>
+      <button class="icon-btn ask" id="askBtnSesh" aria-label="Ask Bolt a question" title="Ask Bolt about this question">💬</button>
       <button class="icon-btn tools" id="toolsBtn" aria-label="Open tools" title="Times table, prime grid, place value, fractions">📐</button>
     </div>
     <div id="seshBody"></div>
@@ -1100,6 +1152,11 @@ p{line-height:1.6}
       </div>
 
       <div class="card">
+        <div class="eyebrow" style="margin-bottom:10px">What Adam asked Bolt</div>
+        <div id="askedList"></div>
+      </div>
+
+      <div class="card">
         <div class="eyebrow" style="margin-bottom:9px">Grown-up controls</div>
         <div class="row" style="flex-wrap:wrap">
           <button class="btn ghost sm" id="redoScanBtn">Re-run Skill Scan</button>
@@ -1130,6 +1187,31 @@ p{line-height:1.6}
     </div>
   </div>
 
+
+  <!-- ══════════════════ ASK BOLT ══════════════════ -->
+  <button class="ask-fab" id="askFab" hidden aria-label="Ask Bolt a question">💬 Ask Bolt</button>
+  <div class="sheet" id="askSheet" hidden>
+    <div class="sheet-in">
+      <div class="sheet-head">
+        <div>
+          <div class="eyebrow">Ask Bolt</div>
+          <div class="tiny">Type a question. Bolt works it out with you — it never just hands you the answer.</div>
+        </div>
+        <button class="icon-btn" id="askClose" aria-label="Close">✕</button>
+      </div>
+      <div class="ask-log" id="askLog"></div>
+      <div class="pill-row" id="askChips" style="margin:10px 0"></div>
+      <form class="ask-form" id="askForm" autocomplete="off">
+        <input id="askInput" type="text" placeholder="Ask me anything in here…" aria-label="Your question">
+        <button class="btn sm" type="submit">Ask</button>
+      </form>
+      <p class="tiny" style="margin-top:9px">
+        Bolt runs on this computer, so nothing you type leaves it. It knows the topics in this app
+        and can work out sums step by step. It is not the internet — if it does not know, it says so.
+      </p>
+    </div>
+  </div>
+
   <!-- ══════════════════ NAV ══════════════════ -->
   <nav class="nav" id="navBar" hidden>
     <div class="nav-in">
@@ -1146,7 +1228,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v10 · 15 Oct 2026 · improper fractions';
+const BUILD = 'v11 · 16 Oct 2026 · Ask Bolt';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -4008,7 +4090,7 @@ let S = {
             fastWrong:0, slowRight:0, wordSeen:0, wordRight:0, bareSeen:0, bareRight:0,
             readSeen:0, readRight:0, readRoll:[] },
   review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0, rulesSeen:{},
-  syncCode:null, syncAt:null, cra:{}, askConfidence:true
+  syncCode:null, syncAt:null, cra:{}, askConfidence:true, asked:[]
 };
 
 let STORAGE_OK = null;
@@ -4964,6 +5046,11 @@ function show(id){
   const chrome = id!=='scr-welcome';
   $('topbar').hidden = !chrome;
   $('navBar').hidden = !chrome || id==='scr-session';
+  // The question box follows him everywhere except the welcome screen, and
+  // drops down to the corner on the session screen where the nav is hidden.
+  // On the session screen it moves into the chrome: a floating button over a
+  // screen of answer options is a mis-tap waiting to happen.
+  $('askFab').hidden = !chrome || id==='scr-session';
   window.scrollTo(0,0);
 }
 
@@ -5978,6 +6065,8 @@ function renderProgress(){
         <td class="tnum">${r.right}/${r.total}</td><td class="tnum">${r.mins}</td><td class="tnum">+${r.xp}</td></tr>`).join('') +
       `</tbody>`
     : `<tbody><tr><td class="tiny">No sessions logged yet.</td></tr></tbody>`;
+
+  renderAsked();
 }
 
 function backupNote(html, tone, hostId){
@@ -6152,6 +6241,814 @@ function showExport(txt){
   }
 }
 
+/* ============================================================================
+   15. ASK BOLT — a question box, because he asked for one.
+
+   This is deliberately NOT a general chatbot. It runs entirely in the browser,
+   so it works on the school Chromebook with no account, no network and no cost,
+   and nothing Adam types ever leaves the device. What it does know, it knows
+   properly: every rule card in this app, every definition, and how to work a
+   sum out step by step rather than just printing the answer.
+
+   The one rule it never breaks: if it does not know, it says so. A tutor that
+   invents an answer is worse than no tutor, and a kid who has been told
+   something confidently wrong loses twice. Unanswered questions get saved for a
+   grown-up instead, which also hands his dad and his teacher a list of exactly
+   what he is stuck on.
+   ========================================================================== */
+
+const askEsc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* Strip punctuation and pad with spaces so a keyword test can look for whole
+   words without a regex per keyword. */
+function askNorm(t){
+  return ' ' + String(t).toLowerCase()
+    .replace(/[‘’“”]/g, "'")
+    .replace(/[^a-z0-9+\-*/.?()×÷' ]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim() + ' ';
+}
+const askHas = (t, w) => t.indexOf(' ' + w) > -1;
+const askAny = (t, list) => list.some(w => askHas(t, w));
+
+function fmtNum(n){
+  if (n == null || !isFinite(n)) return '?';
+  const r = Math.round(n * 10000) / 10000;
+  return String(r);
+}
+
+/* ---------- which topic is he asking about? ------------------------------- */
+/* Hand-written because the skill names alone are not what a ten-year-old types.
+   He types "top heavy fraction", not "Improper → mixed numbers". */
+const ASK_WORDS = {
+  'm-add-sub'     :['add','adding','addition','plus','sum','total','altogether','subtract','subtracting','subtraction','minus','take away','difference','borrow','borrowing','carry','carrying','regroup','regrouping'],
+  'm-mult-concept':['multiplication','multiply','multiplying','what does times mean','array','groups of','repeated addition','product','factor of a multiplication','what is times'],
+  'm-mult-low'    :['times table','times tables','doubling','double','2 times','3 times','4 times','5 times'],
+  'm-mult-high'   :['6 times','7 times','8 times','9 times','nines','hard times tables','hard facts'],
+  'm-mult-big'    :['10 times','11 times','12 times','twelves','elevens'],
+  'm-div-low'     :['divide','dividing','division','divided','share','sharing','quotient','dividend','divisor','goes into'],
+  'm-div-high'    :['harder division','big division'],
+  'm-missing'     :['missing number','missing factor','find the missing','blank in'],
+  'm-multidigit'  :['long multiplication','partial product','two digit','2 digit','big multiplication'],
+  'm-remainder'   :['remainder','remainders','left over','leftover','doesnt go in evenly'],
+  'm-estimate'    :['estimate','estimating','estimation','round','rounding','roughly','about how many','nearest ten','nearest hundred'],
+  'm-evenodd'     :['even','odd','even or odd'],
+  'm-factors'     :['factor','factors','multiple','multiples','factor pair'],
+  'm-primes'      :['prime','primes','composite','sieve','prime grid'],
+  'm-order-ops'   :['order of operations','pemdas','bodmas','brackets','parentheses','which comes first','what do i do first','which do i do first'],
+  'm-frac-concept':['fraction','fractions','numerator','denominator','half','halves','thirds','quarter','quarters','eighths','fifths'],
+  'm-frac-addsub' :['add fractions','adding fractions','subtract fractions','subtracting fractions','common denominator','like denominators'],
+  'm-dec-place'   :['decimal','decimals','decimal point','tenths','hundredths','place value'],
+  'm-dec-compare' :['bigger','smaller','greater than','less than','compare','which is more','greatest','least','order them','more than'],
+  'm-dec-addsub'  :['add decimals','adding decimals','subtract decimals','line up the decimal'],
+  'm-frac-dec'    :['as a decimal','as a fraction','convert','turn into a decimal','change it into a decimal'],
+  'm-improper'    :['improper','mixed number','mixed numbers','top heavy','whole and a bit'],
+  'm-data'        :['graph','graphs','chart','charts','bar graph','pictograph','line plot','data','read a graph','read a table'],
+  'm-probability' :['probability','chance','likely','unlikely','certain','impossible','tree diagram','sample space','odds'],
+  'm-word'        :['word problem','word problems','story problem','which operation','do i add or multiply','do i multiply or divide'],
+  'r-detail'      :['find the facts','where does it say','detail question'],
+  'r-vocab'       :['what does the word mean','vocabulary','context clue','word detective'],
+  'r-infer'       :['infer','inference','reading between the lines','what is it hinting'],
+  'r-main'        :['main idea','big idea','mostly about','summary','summarise','summarize'],
+  'r-struct'      :['structure','organised','organized','compare and contrast','sequence of a text'],
+  'r-purpose'     :['author','purpose','persuade','why did the writer'],
+  'r-theme'       :['theme','deeper meaning','message of the story','lesson of the story'],
+};
+
+function askSkillMatch(t){
+  let best = null, top = 0;
+  Object.keys(ASK_WORDS).forEach(k => {
+    let s = 0;
+    ASK_WORDS[k].forEach(w => {
+      if (!askHas(t, w)) return;
+      s += w.indexOf(' ') > -1 ? 4 : 2;      // a phrase is far better evidence than a word
+    });
+    // the skill's own name counts too, in case he types it off the Lessons list
+    const nm = SKILLS[k].name.toLowerCase().replace(/[^a-z ]/g, ' ');
+    nm.split(' ').filter(w => w.length > 4).forEach(w => { if (askHas(t, w)) s += 2; });
+    if (s > top){ top = s; best = k; }
+  });
+  return top >= 2 ? best : null;
+}
+
+/* ---------- answers built out of a rule card ------------------------------ */
+function askTopicAnswer(skill){
+  const R = ruleFor(skill), sk = SKILLS[skill];
+  if (!R) return null;
+  const html = `<b>${sk.icon} ${sk.name}</b><br>${R.what}
+    <div class="ask-rule">${R.rule}</div>
+    <div class="ask-sub"><b>When you use it:</b> ${R.when}</div>`;
+  return { html, actions: askTopicActions(skill) };
+}
+
+function askTopicActions(skill){
+  const R = ruleFor(skill);
+  const acts = [];
+  if (R.steps && R.steps.length) acts.push(['Show me the steps', () => askSay(
+    `<b>How to do it</b><ol class="rule-steps">${R.steps.map(x => `<li>${x}</li>`).join('')}</ol>`,
+    askTopicActions(skill).filter(a => a[0] !== 'Show me the steps'))]);
+  if (R.example) acts.push(['Show me an example', () => askSay(
+    `<b>Worked example</b><div class="rule-eg"><div class="eg-q">${R.example.q}</div>
+     <ol>${R.example.work.map(x => `<li>${x}</li>`).join('')}</ol>
+     <div class="eg-a">Answer: ${R.example.answer}</div></div>`,
+    askTopicActions(skill).filter(a => a[0] !== 'Show me an example'))]);
+  if (R.trap) acts.push(['What trips people up?', () => askSay(
+    `<b>Watch out</b><div class="rule-trap">${R.trap}</div>`,
+    askTopicActions(skill).filter(a => a[0] !== 'What trips people up?'))]);
+  // Both of these leave the screen, so they are only offered when he is not
+  // halfway through a run — a help button must never cost him the set.
+  if (!SESH){
+    acts.push([SKILLS[skill].realm === 'read' ? 'Read a story' : 'Let me try some',
+      () => { closeAsk(); SKILLS[skill].realm === 'read'
+        ? startSession({realm:'read', len:8})
+        : startSession({realm:'math', len:5, seedSkill:skill}); }]);
+    acts.push(['Open the whole lesson', () => { closeAsk(); openSkill(skill); }]);
+  } else {
+    acts.push(['Back to the question', closeAsk]);
+  }
+  return acts;
+}
+
+/* ---------- working a sum out, rather than printing an answer ------------- */
+/* A recursive-descent parser, not eval(): nothing he types is ever executed. */
+function parseExpr(src){
+  const s = String(src).replace(/\s+/g, '');
+  let i = 0;
+  function expr(){
+    let v = term();
+    while (v != null && (s[i] === '+' || s[i] === '-')){
+      const o = s[i++], r = term();
+      if (r == null) return null;
+      v = o === '+' ? v + r : v - r;
+    }
+    return v;
+  }
+  function term(){
+    let v = fact();
+    while (v != null && (s[i] === '*' || s[i] === '/')){
+      const o = s[i++], r = fact();
+      if (r == null || (o === '/' && r === 0)) return null;
+      v = o === '*' ? v * r : v / r;
+    }
+    return v;
+  }
+  function fact(){
+    if (s[i] === '('){ i++; const v = expr(); if (s[i] !== ')') return null; i++; return v; }
+    const m = /^\d+(\.\d+)?/.exec(s.slice(i));
+    if (!m) return null;
+    i += m[0].length;
+    return +m[0];
+  }
+  const v = expr();
+  return (i === s.length && v != null && isFinite(v)) ? v : null;
+}
+
+/* Turn plain English into an expression, or null if it is not one. */
+function exprFrom(t){
+  let s = ' ' + t + ' ';
+  s = s.replace(/ whats | what is | what are | how much is | how many is | can you do | work out | calculate | solve | tell me | please | the answer to | equals | equal to /g, ' ')
+       .replace(/ multiplied by | times by | times | timesed by | lots of | groups of /g, '*')
+       .replace(/ divided by | divide by | divided into | shared between | shared by /g, '/')
+       .replace(/ plus | add | added to /g, '+')
+       .replace(/ minus | take away | subtract | subtracted from /g, '-')
+       .replace(/×/g, '*').replace(/÷/g, '/')
+       .replace(/([\d)]) *x *([\d(])/g, '$1*$2')
+       .replace(/[?]/g, ' ')
+       .trim();
+  if (!s || !/^[\d\s().+\-*/]+$/.test(s)) return null;
+  if (!/[+\-*/]/.test(s)) return null;
+  if (parseExpr(s) == null) return null;
+  return s.replace(/\s+/g, '');
+}
+
+const opWord = o => o === '*' ? '×' : o === '/' ? '÷' : o === '-' ? '−' : '+';
+
+/* Narrate the order of operations by solving one piece at a time, the way the
+   rule card says to: brackets, then × and ÷, then + and −. */
+function pemdasSteps(src){
+  let s = src, out = [], guard = 0;
+  while (guard++ < 30){
+    const p = s.match(/\(([^()]+)\)/);
+    const target = p ? p[1] : s;
+    const m = target.match(/(\d+(?:\.\d+)?)([*/])(\d+(?:\.\d+)?)/)
+           || target.match(/(\d+(?:\.\d+)?)([+\-])(\d+(?:\.\d+)?)/);
+    if (!m){
+      if (p){ s = s.slice(0, p.index) + target + s.slice(p.index + p[0].length); continue; }
+      break;
+    }
+    const val = m[2] === '*' ? +m[1] * +m[3] : m[2] === '/' ? +m[1] / +m[3]
+              : m[2] === '+' ? +m[1] + +m[3] : +m[1] - +m[3];
+    if (val < 0 || !isFinite(val)) return null;   // past what this explainer should narrate
+    const rep = target.slice(0, m.index) + fmtNum(val) + target.slice(m.index + m[0].length);
+    s = p ? s.slice(0, p.index) + '(' + rep + ')' + s.slice(p.index + p[0].length) : rep;
+    out.push(`${m[1]} ${opWord(m[2])} ${m[3]} = <b>${fmtNum(val)}</b>${
+      /[+\-*/]/.test(s) ? ` &nbsp;→ &nbsp;${s.replace(/\*/g, ' × ').replace(/\//g, ' ÷ ')}` : ''}`);
+  }
+  return out.length ? out : null;
+}
+
+function explainTimes(a, b){
+  const lines = [];
+  if (!Number.isInteger(a) || !Number.isInteger(b)){
+    const places = (String(a).split('.')[1] || '').length + (String(b).split('.')[1] || '').length;
+    lines.push(`Ignore the decimal points for a second: ${String(a).replace('.','')} × ${String(b).replace('.','')}.`);
+    lines.push(`Now count the decimal places in the question — there are ${places} — and put that many back into the answer.`);
+    return lines;
+  }
+  const big = Math.max(a, b), small = Math.min(a, b);
+  lines.push(`${a} × ${b} means <b>${a} group${a === 1 ? '' : 's'} of ${b}</b>.`);
+  if (big <= 12){
+    const anchor = small >= 9 ? 10 : small >= 6 ? 5 : 0;
+    if (anchor){
+      const d = small - anchor;
+      lines.push(`Build it from a fact you already know: ${anchor} × ${big} = ${anchor * big}.`);
+      lines.push(d > 0
+        ? `${small} is ${d} group${d === 1 ? '' : 's'} more than ${anchor}, so add ${d} more ${big}${d === 1 ? '' : 's'}: ${anchor * big} + ${d * big} = <b>${a * b}</b>.`
+        : `${small} is ${-d} group${d === -1 ? '' : 's'} fewer than ${anchor}, so take ${-d} ${big}${d === -1 ? '' : 's'} back off: ${anchor * big} − ${-d * big} = <b>${a * b}</b>.`);
+    } else {
+      lines.push(`Count it up: ${Array.from({length: small}, () => big).join(' + ')} = <b>${a * b}</b>.`);
+    }
+    return lines;
+  }
+  const digits = String(big), parts = [];
+  for (let i = 0; i < digits.length; i++){
+    const d = +digits[i];
+    if (d) parts.push(d * Math.pow(10, digits.length - 1 - i));
+  }
+  lines.push(`Split ${big} by place value: ${parts.join(' + ')}.`);
+  lines.push(parts.map(p => `${p} × ${small} = ${p * small}`).join('<br>'));
+  lines.push(`Add the pieces back up: ${parts.map(p => p * small).join(' + ')} = <b>${a * b}</b>.`);
+  return lines;
+}
+
+function explainDivide(a, b){
+  if (!Number.isInteger(a) || !Number.isInteger(b) || b <= 0)
+    return [`${a} ÷ ${b} asks how many ${b}s fit inside ${a}.`];
+  const q = Math.floor(a / b), r = a - q * b;
+  const lines = [`${a} ÷ ${b} asks: <b>${b} × ? = ${a}</b>.`];
+  if (r === 0){
+    lines.push(`${b} × ${q} = ${a}, so the answer is <b>${q}</b>.`);
+    lines.push(`Check it backwards: ${q} × ${b} = ${a}. ✓`);
+  } else {
+    lines.push(`${b} × ${q} = ${q * b} — as close as you can get without going over ${a}.`);
+    lines.push(`${a} − ${q * b} = ${r} left over.`);
+    lines.push(`So ${a} ÷ ${b} = <b>${q} remainder ${r}</b>.`);
+  }
+  return lines;
+}
+
+function explainAddSub(a, b, sub){
+  if (sub && b > a) return [
+    `${b} is bigger than ${a}, so the answer drops below zero \u2014 past where most of this year's work goes, but the method is simple.`,
+    `Work out the subtraction the other way round: ${b} \u2212 ${a} = ${fmtNum(b - a)}.`,
+    `Then put a minus sign in front of it: <b>\u2212${fmtNum(b - a)}</b>.`,
+  ];
+  const lines = [sub
+    ? `Line them up by place value — ones under ones, tens under tens — and work right to left.`
+    : `Line them up by place value and work right to left, starting in the ones column.`];
+  if (Number.isInteger(a) && Number.isInteger(b)){
+    const A = String(a).split('').reverse().map(Number), B = String(b).split('').reverse().map(Number);
+    if (sub){
+      let need = false, borrow = 0;
+      for (let i = 0; i < A.length; i++){
+        const top = A[i] - borrow, bot = B[i] || 0;
+        if (top < bot){ need = true; borrow = 1; } else borrow = 0;
+      }
+      lines.push(need
+        ? `A top digit is smaller than the one underneath it, so you regroup from the next column first. Never just take the small digit from the big one — that is the mistake that catches everybody.`
+        : `Every top digit is big enough, so nothing needs regrouping here.`);
+    } else {
+      let carry = 0, need = false;
+      for (let i = 0; i < Math.max(A.length, B.length); i++){
+        const s = (A[i] || 0) + (B[i] || 0) + carry;
+        if (s > 9){ need = true; carry = 1; } else carry = 0;
+      }
+      lines.push(need
+        ? `At least one column goes over 9, so regroup: write the ones digit and carry the ten into the next column.`
+        : `No column goes over 9, so nothing needs carrying.`);
+    }
+  } else {
+    lines.push(`With decimals, line up the <b>decimal points</b>, not the ends of the numbers. Fill the gaps with zeros so every number has the same number of places.`);
+  }
+  lines.push(`${a} ${sub ? '−' : '+'} ${b} = <b>${fmtNum(sub ? a - b : a + b)}</b>`);
+  return lines;
+}
+
+function askSolveExpr(t){
+  const s = exprFrom(t);
+  if (!s) return null;
+  const val = parseExpr(s);
+  if (val == null) return null;
+  // Past about a million the arithmetic stops being exact in a browser, and a
+  // confidently wrong answer is the one thing this is not allowed to produce.
+  if ((s.match(/\d+(?:\.\d+)?/g) || []).some(n => +n > 999999) || Math.abs(val) > 1e9)
+    return { html: `Those numbers are bigger than I can work out exactly, and I will not give you
+      an answer I am not sure of. Anything up to about a million and I am solid.` };
+  const pretty = s.replace(/\*/g, ' × ').replace(/\//g, ' ÷ ').replace(/-/g, ' − ').replace(/\+/g, ' + ');
+  const one = s.match(/^(\d+(?:\.\d+)?)([*/+\-])(\d+(?:\.\d+)?)$/);
+  let lines, skill;
+  if (one){
+    const a = +one[1], b = +one[3], op = one[2];
+    if (op === '*'){ lines = explainTimes(a, b); skill = a <= 12 && b <= 12 ? (Math.min(a,b) >= 6 ? 'm-mult-high' : 'm-mult-low') : 'm-multidigit'; }
+    else if (op === '/'){ lines = explainDivide(a, b); skill = (Number.isInteger(a/b)) ? 'm-div-low' : 'm-remainder'; }
+    else { lines = explainAddSub(a, b, op === '-'); skill = 'm-add-sub'; }
+  } else {
+    const steps = pemdasSteps(s);
+    skill = 'm-order-ops';
+    lines = [`More than one operation, so the order matters: <b>brackets first, then × and ÷ left to right, then + and −</b>.`]
+      .concat(steps || [`Work it through in that order.`]);
+  }
+  return {
+    html: `<div class="ask-big">${pretty} = ${fmtNum(val)}</div>
+           <div class="ask-sub"><b>Here is how:</b></div>
+           <ol class="rule-steps">${lines.map(l => `<li>${l}</li>`).join('')}</ol>`,
+    actions: askTopicActions(skill),
+  };
+}
+
+/* ---------- the number questions he actually asks ------------------------- */
+function askSolvePrime(t){
+  const m = t.match(/is (\d{1,5}) (?:an? )?(?:prime|composite)/)
+         || t.match(/(\d{1,5}) prime or composite/)
+         || t.match(/is (\d{1,5}) prime/);
+  if (!m) return null;
+  const n = +m[1];
+  if (n > 10000) return null;
+  if (n === 0) return { html:`<b>0 is neither prime nor composite.</b> Every number divides into 0 exactly, so it has endless factors \u2014 nowhere near the two that make a number prime, and the composite rules do not fit it either. 0 and 1 are the two numbers that sit outside both groups.`, actions: askTopicActions('m-primes') };
+  if (n === 1) return { html:`<b>1 is neither prime nor composite.</b> A prime has exactly two factors — 1 and itself. 1 only has one factor, so it does not qualify. It is the one number that sits outside both groups.`, actions: askTopicActions('m-primes') };
+  const f = factorsOf(n), p = isPrime(n);
+  let html = `<div class="ask-big">${n} is ${p ? 'prime' : 'composite'}.</div>`;
+  html += `<div class="ask-sub">Its factors are <b>${f.join(', ')}</b>.</div>`;
+  if (p) html += `<div class="ask-sub">Only 1 and ${n} divide into it exactly, and two factors is precisely what prime means.</div>`;
+  else {
+    const pair = f.find(x => x > 1 && x < n);
+    html += `<div class="ask-sub">${f.length} factors, so it is composite — ${pair} × ${n / pair} = ${n} proves it. One pair that is not 1 and itself is all it takes.</div>`;
+  }
+  const acts = [['🔢 Open your prime grid', () => { closeAsk(); renderSieve(); show('scr-sieve'); }]].concat(askTopicActions('m-primes'));
+  return { html, actions: acts };
+}
+
+function askSolveEvenOdd(t){
+  const m = t.match(/is (\d{1,15}) (?:an? )?(?:even|odd)/) || t.match(/(\d{1,15}) even or odd/);
+  if (!m) return null;
+  const n = m[1], last = +n.slice(-1), even = last % 2 === 0;
+  return {
+    html: `<div class="ask-big">${n} is ${even ? 'even' : 'odd'}.</div>
+      <div class="ask-sub">You only ever look at the <b>last digit</b> — the rest of the number cannot change the answer.
+      This one ends in ${last}, and ${last} is ${even ? 'even' : 'odd'}, so ${n} is ${even ? 'even' : 'odd'}.</div>
+      <div class="ask-sub">Even endings: 0, 2, 4, 6, 8. Odd endings: 1, 3, 5, 7, 9.</div>`,
+    actions: askTopicActions('m-evenodd'),
+  };
+}
+
+function askSolveFactors(t){
+  let m = t.match(/factors of (\d{1,5})/);
+  if (m){
+    const n = +m[1];
+    if (n < 1 || n > 10000) return null;
+    const f = factorsOf(n), pairs = [];
+    for (let i = 0; i * i <= n; i++) if (f.indexOf(i) > -1) pairs.push(`${i} × ${n / i}`);
+    return {
+      html: `<div class="ask-big">${n} has ${f.length} factor${f.length === 1 ? '' : 's'}: ${f.join(', ')}</div>
+        <div class="ask-sub">A factor is a number that divides in with nothing left over. The quickest way to find them all is in pairs:</div>
+        <div class="ask-rule">${pairs.join('<br>')}</div>
+        <div class="ask-sub">Start at 1 and walk up. The moment the pair crosses over itself, you have them all.</div>`,
+      actions: askTopicActions('m-factors'),
+    };
+  }
+  m = t.match(/multiples of (\d{1,4})/);
+  if (m){
+    const n = +m[1];
+    if (n < 1 || n > 1000) return null;
+    const list = []; for (let i = 1; i <= 10; i++) list.push(n * i);
+    return {
+      html: `<div class="ask-big">Multiples of ${n}: ${list.join(', ')}…</div>
+        <div class="ask-sub">Multiples are what you land on counting <b>up</b> in ${n}s — there is no end to them.
+        Factors are what divides <b>into</b> a number, and there are only ever a few. People mix those two up constantly.</div>`,
+      actions: askTopicActions('m-factors'),
+    };
+  }
+  return null;
+}
+
+/* "3ths" is not a word, and a kid who reads it loses trust in everything else
+   on the card. */
+const DENOM_NAMES = {2:'halves', 3:'thirds', 4:'quarters', 5:'fifths', 6:'sixths',
+  7:'sevenths', 8:'eighths', 9:'ninths', 10:'tenths', 11:'elevenths', 12:'twelfths'};
+const denomName = d => DENOM_NAMES[d] || `${d}ths`;
+
+/* Values he might compare: 0.45, 3/4, or 2 1/2 */
+function askValue(str){
+  const s = String(str).trim();
+  let m = s.match(/^(\d+) (\d+)\/(\d+)$/);
+  if (m) return { v: +m[1] + (+m[2]) / (+m[3]), txt: s, kind: 'mixed' };
+  m = s.match(/^(\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return { v: (+m[1]) / (+m[2]), txt: s, kind: 'frac', n: +m[1], d: +m[2] };
+  m = s.match(/^\d+(\.\d+)?$/);
+  if (m) return { v: +s, txt: s, kind: s.indexOf('.') > -1 ? 'dec' : 'int' };
+  return null;
+}
+
+function askSolveCompare(t){
+  const pat = /(\d+ \d+\/\d+|\d+\/\d+|\d+(?:\.\d+)?)/g;
+  let want = null;
+  if (/which (?:one )?is (?:bigger|larger|greater|more|higher)|bigger|greater than|more than/.test(t)) want = 'big';
+  if (/which (?:one )?is (?:smaller|less|lower)|smaller|less than/.test(t)) want = want || 'small';
+  if (!want || !/which|compare|than|or /.test(t)) return null;
+  const found = (t.match(pat) || []).map(askValue).filter(Boolean);
+  if (found.length < 2) return null;
+  const a = found[0], b = found[1];
+  if (a.v === b.v) return {
+    html: `<div class="ask-big">${a.txt} = ${b.txt}</div>
+      <div class="ask-sub">They are the same size, even though they are written differently. That happens a lot with decimals — 0.5 and 0.50 are the same number.</div>`,
+    actions: askTopicActions('m-dec-compare'),
+  };
+  const hi = a.v > b.v ? a : b, lo = a.v > b.v ? b : a;
+  const lines = [];
+  if (a.kind === 'dec' || b.kind === 'dec' || a.kind === 'int' || b.kind === 'int'){
+    const places = Math.max((String(a.txt).split('.')[1] || '').length, (String(b.txt).split('.')[1] || '').length);
+    lines.push(`Give them the same number of decimal places first — add zeros on the end, which never changes the value: <b>${(+a.v).toFixed(places)}</b> and <b>${(+b.v).toFixed(places)}</b>.`);
+    lines.push(`Now compare left to right, one place at a time. The first place where they differ decides it.`);
+    lines.push(`The trap: a longer decimal is not automatically bigger. 0.45 has more digits than 0.5, and it is still smaller.`);
+  } else {
+    const d = a.d * b.d;
+    lines.push(`Different denominators, so you cannot compare them as they stand. Give both the same bottom number: ${d}.`);
+    lines.push(`${a.txt} = ${a.n * b.d}/${d} and ${b.txt} = ${b.n * a.d}/${d}.`);
+    lines.push(`Same size pieces now, so just count them.`);
+  }
+  return {
+    html: `<div class="ask-big">${hi.txt} &gt; ${lo.txt}</div>
+      <div class="ask-sub">${hi.txt} is the ${want === 'small' ? 'bigger one — so the smaller is ' + lo.txt : 'bigger one'}.</div>
+      <ol class="rule-steps">${lines.map(l => `<li>${l}</li>`).join('')}</ol>
+      <div class="ask-sub">The <b>&gt;</b> and <b>&lt;</b> signs always open their mouth towards the bigger number.</div>`,
+    actions: askTopicActions(a.kind === 'frac' ? 'm-frac-concept' : 'm-dec-compare'),
+  };
+}
+
+function askSolveConvert(t){
+  let m = t.match(/(\d+) ?\/ ?(\d+)/);
+  if (m && /decimal/.test(t) && !/mixed/.test(t)){
+    const n = +m[1], d = +m[2];
+    if (!d) return null;
+    const v = n / d;
+    return {
+      html: `<div class="ask-big">${n}/${d} = ${fmtNum(v)}</div>
+        <div class="ask-sub">A fraction <b>is</b> a division: ${n}/${d} means ${n} ÷ ${d}. That is the whole trick — nothing else to remember.</div>
+        <div class="ask-sub">${d === 10 || d === 100 ? 'Tenths and hundredths are the easy ones, because our decimals are built out of exactly those.' : `Or find an equal fraction out of 10 or 100 if you can: ${n}/${d} = ${fmtNum(v * 100)}/100.`}</div>`,
+      actions: askTopicActions('m-frac-dec'),
+    };
+  }
+  m = t.match(/(\d*\.\d+)/);
+  if (m && /fraction/.test(t)){
+    const s = m[1], places = (s.split('.')[1] || '').length;
+    const den = Math.pow(10, places), num = Math.round(+s * den), g = gcd(num, den);
+    return {
+      html: `<div class="ask-big">${s} = ${num}/${den}${g > 1 ? ` = ${num / g}/${den / g}` : ''}</div>
+        <div class="ask-sub">Read the last digit's place out loud: ${places === 1 ? 'tenths' : places === 2 ? 'hundredths' : 'thousandths'}. That gives you the bottom number straight away — ${den}.</div>
+        ${g > 1 ? `<div class="ask-sub">Then simplify: ${num} and ${den} both divide by ${g}, giving <b>${num / g}/${den / g}</b>.</div>` : ''}`,
+      actions: askTopicActions('m-frac-dec'),
+    };
+  }
+  return null;
+}
+
+function askSolveImproper(t){
+  let m = t.match(/(\d+) ?\/ ?(\d+)/);
+  if (m && /mixed|improper|top heavy/.test(t) && !/^\s*\d+ \d+\//.test(t)){
+    const n = +m[1], d = +m[2];
+    if (!d) return null;
+    if (n < d) return {
+      html: `<div class="ask-big">${n}/${d} is already less than one whole.</div>
+        <div class="ask-sub">An improper fraction is one where the top is <b>bigger</b> than the bottom — it holds at least one whole. ${n}/${d} does not, so there is no mixed number to make.</div>`,
+      actions: askTopicActions('m-improper'),
+    };
+    const w = Math.floor(n / d), r = n - w * d;
+    return {
+      html: `<div class="ask-big">${n}/${d} = ${r === 0 ? w : `${w} ${r}/${d}`}</div>
+        <ol class="rule-steps">
+          <li>${d}/${d} makes one whole. So ask: how many ${d}s fit inside ${n}?</li>
+          <li>${n} ÷ ${d} = ${w}${r ? ` remainder ${r}` : ''} — that is <b>${w} whole${w === 1 ? '' : 's'}</b>.</li>
+          <li>${r ? `${r} piece${r === 1 ? ' is' : 's are'} left over, and they are still ${denomName(d)}: ${r}/${d}.` : `Nothing is left over, so it is exactly ${w}.`}</li>
+          <li>Put them together: <b>${r === 0 ? w : `${w} ${r}/${d}`}</b>.</li>
+        </ol>
+        <div class="ask-sub">The bottom number never changes. The pieces stay the same size — you are only bundling them into wholes.</div>`,
+      actions: askTopicActions('m-improper'),
+    };
+  }
+  m = t.match(/(\d+) (\d+) ?\/ ?(\d+)/);
+  if (m && /improper/.test(t)){
+    const w = +m[1], n = +m[2], d = +m[3];
+    if (!d) return null;
+    return {
+      html: `<div class="ask-big">${w} ${n}/${d} = ${w * d + n}/${d}</div>
+        <ol class="rule-steps">
+          <li>Each whole is ${d}/${d}, and there are ${w} of them: ${w} × ${d} = ${w * d} pieces.</li>
+          <li>Add the ${n} loose piece${n === 1 ? '' : 's'}: ${w * d} + ${n} = ${w * d + n}.</li>
+          <li>They are all ${denomName(d)}, so the bottom stays ${d}: <b>${w * d + n}/${d}</b>.</li>
+        </ol>`,
+      actions: askTopicActions('m-improper'),
+    };
+  }
+  return null;
+}
+
+function askSolveRound(t){
+  const m = t.match(/round (\d+(?:\.\d+)?) to the nearest (hundredth|thousand|hundred|tenth|whole|ten)/);
+  if (!m) return null;
+  const n = +m[1], unit = m[2];
+  const size = {ten:10, hundred:100, thousand:1000, tenth:0.1, hundredth:0.01, whole:1}[unit];
+  const r = Math.round(n / size) * size;
+  const low = Math.floor(n / size) * size, high = low + size;
+  return {
+    html: `<div class="ask-big">${n} rounds to ${fmtNum(r)}</div>
+      <ol class="rule-steps">
+        <li>The two nearest ${unit}s are <b>${fmtNum(low)}</b> and <b>${fmtNum(high)}</b>. ${n} sits between them.</li>
+        <li>Halfway is ${fmtNum((low + high) / 2)}. ${n} is ${n - low < high - n ? 'below' : 'at or above'} halfway.</li>
+        <li>So it rounds ${r === low ? 'down' : 'up'} to <b>${fmtNum(r)}</b>.</li>
+      </ol>
+      <div class="ask-sub">Picture the number line, not the digits. Rounding is "which one is it closer to?", and exactly halfway always goes up.</div>`,
+    actions: askTopicActions('m-estimate'),
+  };
+}
+
+/* ---------- questions about the app, and about himself -------------------- */
+function askNextSkill(){
+  const open = MATH_SKILLS.filter(k => !isLocked(k) && !isKnown(k));
+  if (!open.length) return MATH_SKILLS.slice().sort((a, b) => masteryOf(a) - masteryOf(b))[0];
+  return open.sort((a, b) => masteryOf(a) - masteryOf(b))[0];
+}
+
+const ASK_INTENTS = [
+  { k:['what can you do','what can i ask','what do you know','how do you work','what are you for','help me','can you help'],
+    f: () => ({
+      html: `I know every topic in this app — all ${Object.keys(SKILLS).length} of them — and I can work a sum out with you a step at a time. Try me with things like these:`,
+      actions: [
+        ['What is 7 × 8?',            () => askAsk('what is 7 x 8')],
+        ['Is 51 prime?',                   () => askAsk('is 51 prime')],
+        ['7/3 as a mixed number',          () => askAsk('7/3 as a mixed number')],
+        ['Which is bigger, 0.5 or 0.45?',  () => askAsk('which is bigger 0.5 or 0.45')],
+        ['What is a denominator?',         () => askAsk('what is a denominator')],
+        ['What should I do next?',         () => askAsk('what should i do next')],
+      ],
+    }) },
+  { k:['who are you','are you real','are you a person','are you a robot','are you human','are you ai','are you chatgpt','are you alive','is this a real robot'],
+    f: () => ({
+      html: `I am Bolt. I am not a person, and I am not the internet — I am a part of this app, running on this computer.
+        <br><br>That means two things. I know the rules, steps and examples in here properly, and I can work out any sum with you.
+        But if you ask me something outside this app, I will tell you I do not know rather than make something up.
+        A wrong answer said confidently is worse than no answer.`,
+    }) },
+  { k:['what should i do next','what now','what next','what should i practise','what should i practice','what should i work on'],
+    f: () => {
+      const k = askNextSkill();
+      return {
+        html: `I would go with <b>${SKILLS[k].icon} ${SKILLS[k].name}</b> next — ${
+          S.mastery[k].seen ? `you are at ${Math.round(masteryOf(k) * 100)}% on it, so it is the one closest to clicking`
+                            : `you have not tried it yet, and everything it needs is already solid`}.
+          <br><br>${ruleFor(k) ? ruleFor(k).what : ''}`,
+        actions: askTopicActions(k),
+      };
+    } },
+  { k:['how am i doing','am i doing well','how good am i','how is my progress','how much have i done','am i getting better'],
+    f: () => {
+      const known = knownSkills(), L = levelInfo();
+      const best = MATH_SKILLS.slice().sort((a, b) => masteryOf(b) - masteryOf(a))[0];
+      return {
+        html: `You are <b>Level ${L.num} — ${L.title}</b>, with ${S.xp} XP and ${S.profile.answered} questions answered.
+          <br><br>${known.length ? `You properly know <b>${known.length}</b> thing${known.length === 1 ? '' : 's'} now: ${known.slice(0, 6).map(k => SKILLS[k].name).join(', ')}${known.length > 6 ? ', and more' : ''}.`
+            : `Nothing has hit the "I know this" board yet — that needs you to get something right <i>and</i> feel sure about it twice. It will come.`}
+          <br><br>Your strongest right now is <b>${SKILLS[best].name}</b> at ${Math.round(masteryOf(best) * 100)}%.`,
+        actions: [['See the whole picture', () => { closeAsk(); go('progress'); }]],
+      };
+    } },
+  { k:['what do i know','things i know','what have i mastered','what am i good at'],
+    f: () => {
+      const known = knownSkills();
+      return {
+        html: known.length
+          ? `Here is what is on your board — right <i>and</i> sure, twice over:<br><br>${known.map(k => `${SKILLS[k].icon} ${SKILLS[k].name}`).join('<br>')}`
+          : `Nothing on the board yet. A topic only lands there when you get it right and tap <b>I know this</b> — being right while guessing does not count, because the point is that you can feel the difference.`,
+        actions: [['Go to Base', () => { closeAsk(); go('home'); }]],
+      };
+    } },
+  { k:['is it cheating','am i cheating','is using the times table cheating','can i use the times table','is looking it up cheating'],
+    f: () => ({
+      html: `No. Looking a fact up is not cheating here, and it never costs you anything.
+        <br><br>Your brain only has so much room at once. If every scrap of it is spent remembering what 7 × 8 is, there is nothing left for the actual problem.
+        Looking it up frees that room up. That is why the tools button is on every single question — it is meant to be used.`,
+      actions: [['📐 Open the tools', () => { closeAsk(); openTools(); }]],
+    }) },
+  { k:['im stuck','i am stuck','this is too hard','too hard','i dont get it','i do not get it','i dont understand','i cant do this','i give up','this is confusing','i hate maths','i hate math','im bad at maths','im bad at math'],
+    f: () => ({
+      html: `That is a completely fine place to be — it means you have hit the edge of what you know, which is the only place learning ever happens.
+        <br><br>Tell me which bit, and I will take it apart with you. Or pick one of these:`,
+      actions: [
+        ['📐 Open the tools',     () => { closeAsk(); openTools(); }],
+        ['Show me something easier',        () => { const k = MATH_SKILLS.filter(x => !isLocked(x)).sort((a, b) => masteryOf(b) - masteryOf(a))[0];
+                                                    askSay(`Try <b>${SKILLS[k].name}</b> — it is the one you are strongest at. Winning a few first is not a waste of time.`, askTopicActions(k)); }],
+        ['📌 Save this for a grown-up', () => askSaveForGrownup('I am stuck and I do not know what on')],
+      ],
+    }) },
+  { k:['will i lose my progress','how do i save','does it save','will it save','save my progress','lost my progress','chromebook'],
+    f: () => ({
+      html: `Your progress is kept in three places, so losing all three at once would take some doing:
+        <br><br>1. <b>This browser</b>, automatically, every single answer.
+        <br>2. <b>A save file or link</b> you can keep in Google Drive or email to yourself.
+        <br>3. <b>Sync</b>, if it is switched on — then any computer with your code picks up where you left off.
+        <br><br>School Chromebooks do sometimes wipe themselves when you sign out, which is exactly why 2 and 3 exist.`,
+      actions: [['Open the save controls', () => { closeAsk(); go('progress'); }]],
+    }) },
+  { k:['sync code','whats my code','what is my sync code','another computer','different computer','at home'],
+    f: () => ({
+      html: S.syncCode
+        ? `Your sync code is <b>${S.syncCode}</b>. Type that into this app on any other computer and your progress comes with you.`
+        : `Sync is not switched on yet. Turn it on in <b>Progress</b> and you get a code — type that code into this app on any other computer and your progress follows you there.`,
+      actions: [['Open sync', () => { closeAsk(); go('progress'); }]],
+    }) },
+  { k:['xp','level up','levels','how do i get xp','badges','badge'],
+    f: () => {
+      const L = levelInfo();
+      return {
+        html: `XP comes from answering questions — more for harder ones, and you keep it whether you got it right or not, because turning up is the bit that counts.
+          <br><br>You are on <b>Level ${L.num}, ${L.title}</b>${L.next ? `, ${L.span - L.into} XP from ${L.next.title}` : ' — the top of the ladder'}.`,
+        actions: [['See my badges', () => { closeAsk(); go('progress'); }]],
+      };
+    } },
+  { k:['times table chart','multiplication chart','times table grid','where is the times table','prime grid','sieve','tools'],
+    f: () => ({
+      html: `The 📐 button sits on every question. Inside it there is a 12×12 times table, your prime grid, a place-value chart and a fraction wall — open any of them, any time, on any question.`,
+      actions: [
+        ['📐 Open the tools',   () => { closeAsk(); openTools(); }],
+        ['🔢 Open the prime grid', () => { closeAsk(); renderSieve(); show('scr-sieve'); }],
+      ],
+    }) },
+  { k:['thank you','thanks','thankyou','youre cool','you are cool','i love this','this is fun'],
+    f: () => ({ html: `Any time. Come and ask me whenever something does not make sense — that is the whole reason I am in here.` }) },
+  { k:['hello','hi bolt','hey','good morning','whats up','how are you'],
+    f: () => ({
+      html: `Hello${S.name && S.name !== 'Builder' ? ', ' + askEsc(S.name) : ''}. Ask me anything about the maths or reading in here — a sum, a word you do not know, or what you should do next.`,
+      actions: [['What can I ask?', () => askAsk('what can i ask')]],
+    }) },
+];
+
+function askIntentMatch(t){
+  for (const it of ASK_INTENTS){
+    if (it.k.some(k => askHas(t, k))) return it.f();
+  }
+  return null;
+}
+
+/* ---------- the pipeline -------------------------------------------------- */
+/* Order matters. The specific number questions go first, because "is 51 prime"
+   must never be answered with a lecture about primes in general. */
+const ASK_SOLVERS = [
+  askSolvePrime, askSolveEvenOdd, askSolveFactors, askSolveRound,
+  askSolveImproper, askSolveConvert, askSolveCompare, askSolveExpr,
+  askIntentMatch,
+  t => { const k = askSkillMatch(t); return k ? askTopicAnswer(k) : null; },
+];
+
+function askAnswer(raw){
+  const t = askNorm(raw);
+  if (t.trim().length < 2) return null;
+  for (const fn of ASK_SOLVERS){
+    let r = null;
+    try { r = fn(t, raw); } catch(e){ r = null; }
+    if (r) return r;
+  }
+  return null;
+}
+
+/* ---------- saving what he asked ----------------------------------------- */
+/* Every question is logged, answered or not. For his dad and his teacher this
+   is the most honest signal in the whole app: not a score, but the actual
+   sentences he typed when he was stuck. */
+function askLogQuestion(q, answered){
+  S.asked = S.asked || [];
+  S.asked.push({ q: String(q).slice(0, 160), at: today(), ok: !!answered });
+  if (S.asked.length > 80) S.asked = S.asked.slice(-80);
+  save();
+}
+
+function askSaveForGrownup(q){
+  S.asked = S.asked || [];
+  S.asked.push({ q: String(q).slice(0, 160), at: today(), ok: false, flag: true });
+  save();
+  askSay(`Saved. It is sitting in <b>Progress → What Adam asked Bolt</b>, flagged, so a grown-up can see it and answer it properly.`);
+}
+
+/* ---------- the chat itself ---------------------------------------------- */
+let ASK_LOG = [];
+
+function askSay(html, actions){ ASK_LOG.push({who:'bolt', html, actions: actions || []}); askRender(); }
+function askMe(text){ ASK_LOG.push({who:'me', html: askEsc(text)}); askRender(); }
+
+function askRender(){
+  const host = $('askLog');
+  host.innerHTML = '';
+  ASK_LOG.forEach(m => {
+    const row = el('div', 'ask-row' + (m.who === 'me' ? ' me' : ''));
+    if (m.who === 'bolt') row.appendChild(el('div', 'ask-face', '🤖'));
+    const b = el('div', 'bub ' + m.who, m.html);
+    if (m.actions && m.actions.length){
+      const r = el('div', 'ask-acts');
+      m.actions.forEach(([label, fn]) => {
+        const btn = el('button', 'pill', label);
+        btn.onclick = fn;
+        r.appendChild(btn);
+      });
+      b.appendChild(r);
+    }
+    row.appendChild(b);
+    host.appendChild(row);
+  });
+  host.scrollTop = host.scrollHeight;
+}
+
+function askAsk(text){
+  const q = String(text).trim();
+  if (!q) return;
+  askMe(q);
+  askChipsRender();
+  const a = askAnswer(q);
+  askLogQuestion(q, !!a);
+  if (a) askSay(a.html, a.actions);
+  else askSay(
+    `I do not know that one, and I am not going to guess at it — I only know the maths and reading that live in this app.
+     <br><br>Try asking it another way, or let me hand it to a grown-up.`,
+    [
+      ['📌 Save it for a grown-up', () => askSaveForGrownup(q)],
+      ['What can I ask?',                      () => askAsk('what can i ask')],
+    ]);
+}
+
+const ASK_CHIPS = [
+  'What is 7 × 8?',
+  'Is 51 prime?',
+  'What is 7/3 as a mixed number?',
+  'Which is bigger, 0.5 or 0.45?',
+  'What is a denominator?',
+  'What should I do next?',
+];
+
+function openAsk(){
+  // Asking for help mid-question is support, exactly like opening the times
+  // table, and it is recorded the same way: counted, never docked.
+  if (SESH) SESH.usedTools = true;
+  if (!ASK_LOG.length){
+    askSay(`Hello${S.name && S.name !== 'Builder' ? ', ' + askEsc(S.name) : ''}. Ask me anything about the maths or reading in here.
+      <br><br>I can work a sum out step by step, explain any rule in the app, or tell you what to do next.
+      If I do not know something, I will say so — I will not make it up.`);
+  }
+  askChipsRender();
+  $('askSheet').hidden = false;
+  setTimeout(() => { try { $('askInput').focus(); } catch(e){} }, 60);
+}
+function closeAsk(){ $('askSheet').hidden = true; }
+
+/* Mid-question, the likeliest thing he wants is this question explained, so that
+   chip stays put. The generic starters are scaffolding for the very first ask
+   and give their room back to the transcript afterwards. */
+function askChipsRender(){
+  const chips = $('askChips');
+  if (!chips) return;
+  chips.innerHTML = '';
+  const here = SESH && SESH.current && SESH.current.skill;
+  if (here && ruleFor(here)){
+    const b = el('button', 'pill on', '\ud83e\udde9 Help me with this question');
+    b.onclick = () => { askMe('Help me with this question');
+      const a = askTopicAnswer(here); askSay(a.html, a.actions); askChipsRender(); };
+    chips.appendChild(b);
+  }
+  if (!ASK_LOG.some(m => m.who === 'me')){
+    ASK_CHIPS.forEach(c => {
+      const b = el('button', 'pill', c);
+      b.onclick = () => askAsk(c);
+      chips.appendChild(b);
+    });
+  }
+  chips.hidden = !chips.children.length;
+}
+
+/* The grown-up view of what he has been asking. */
+function renderAsked(){
+  const host = $('askedList');
+  if (!host) return;
+  const list = (S.asked || []).slice().reverse();
+  if (!list.length){
+    host.innerHTML = `<p class="tiny">Nothing yet. Anything Adam types into <b>Ask Bolt</b> shows up here — including
+      the questions Bolt could not answer, which are usually the ones worth looking at.</p>`;
+    return;
+  }
+  host.innerHTML = list.map(r =>
+    `<div class="asked-row${r.ok ? '' : ' unmet'}">
+       <span class="asked-mark">${r.flag ? '📌' : r.ok ? '✓' : '?'}</span>
+       <span class="asked-q">${askEsc(r.q)}</span>
+       <span class="asked-at tiny">${r.at}</span>
+     </div>`).join('')
+    + `<p class="tiny" style="margin-top:9px">✓ Bolt answered it · ? Bolt did not know · 📌 he asked for a grown-up.</p>`;
+}
+
 /* ---------------------------------------------------------------------------
    14. WIRING
    --------------------------------------------------------------------------- */
@@ -6221,7 +7118,20 @@ function boot(){
   $('toolsBtn').onclick = openTools;
   $('toolsClose').onclick = closeTools;
   $('toolsSheet').onclick = e=>{ if (e.target.id === 'toolsSheet') closeTools(); };
-  document.addEventListener('keydown', e=>{ if (e.key === 'Escape') closeTools(); });
+  document.addEventListener('keydown', e=>{ if (e.key === 'Escape'){ closeTools(); closeAsk(); } });
+
+  $('askFab').onclick = openAsk;
+  $('askBtnSesh').onclick = openAsk;
+  $('askClose').onclick = closeAsk;
+  $('askSheet').onclick = e=>{ if (e.target.id === 'askSheet') closeAsk(); };
+  $('askForm').onsubmit = e=>{
+    e.preventDefault();
+    const box = $('askInput');
+    const q = box.value.trim();
+    if (!q) return;
+    box.value = '';
+    askAsk(q);
+  };
   $('realmMath').onclick = ()=> go('math');
   $('realmRead').onclick = ()=> go('read');
   document.querySelectorAll('.nav button').forEach(b=> b.onclick = ()=> go(b.dataset.go));
