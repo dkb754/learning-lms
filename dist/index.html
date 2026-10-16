@@ -565,6 +565,40 @@ p{line-height:1.6}
 .sieve.mini span{font-size:.58rem;cursor:default;border-width:1px}
 .sieve-say{font-size:.9rem;line-height:1.6}
 
+.rects{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+.rect{text-align:center}
+.rect-grid{display:flex;flex-direction:column;gap:2px}
+.rect .rr{display:flex;gap:2px}
+.rect .rr i{width:12px;height:12px;border-radius:2px;background:var(--build);
+  border:1px solid var(--build-edge);display:block}
+.rect-cap{font-family:var(--f-display);font-weight:800;font-size:.76rem;color:var(--ink-2);margin-top:6px}
+
+/* ── whole-frames for improper fractions ───────────────────────────────── */
+.whole-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.whole{
+  border:2px solid var(--line-strong);border-radius:var(--r-s);
+  padding:7px;background:var(--surface);min-width:54px;
+}
+.whole.full{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 14%,var(--surface))}
+.whole-slots{display:flex;gap:3px}
+.whole .slot{
+  width:17px;height:34px;border-radius:3px;
+  background:var(--surface-3);border:1.5px dashed var(--line-strong);
+}
+.whole .slot.on{background:var(--story);border:1.5px solid var(--story-edge)}
+.whole.full .slot.on{background:var(--gold);border-color:#B87C08}
+.whole-lab{
+  font-size:.62rem;font-weight:800;letter-spacing:.04em;text-align:center;
+  margin-top:6px;color:var(--ink-3);
+}
+.whole.full .whole-lab{color:var(--gold)}
+.fpiece{
+  width:17px;height:34px;border-radius:3px;cursor:pointer;flex-shrink:0;
+  background:var(--story);border:1.5px solid var(--story-edge);
+  transition:transform .12s;
+}
+.fpiece:hover{transform:translateY(-3px)}
+
 /* ── representational visuals ───────────────────────────────────────────── */
 .viz{background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r-s);
   padding:13px 14px;margin:0 0 13px}
@@ -1112,7 +1146,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v9 · 15 Oct 2026 · knowing it, not just getting it';
+const BUILD = 'v10 · 15 Oct 2026 · improper fractions';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -1163,6 +1197,7 @@ const SKILLS = {
   'm-dec-compare':{realm:'math', strand:'fracdec',  name:'Comparing decimals · < >', icon:'⚖️'},
   'm-dec-addsub' :{realm:'math', strand:'fracdec',  name:'Adding decimals',        icon:'🔟'},
   'm-frac-dec'   :{realm:'math', strand:'fracdec',  name:'Fractions ↔ decimals',   icon:'🔁'},
+  'm-improper'   :{realm:'math', strand:'fracdec',  name:'Improper → mixed numbers',icon:'🥧'},
   // ── grade 5 · data ──
   'm-data'       :{realm:'math', strand:'data',     name:'Reading data',           icon:'📊'},
   'm-probability':{realm:'math', strand:'data',     name:'Probability',            icon:'🎲'},
@@ -1437,6 +1472,25 @@ const RULES = {
          'Bring the decimal point straight down into the answer.'],
   example:{q:'3.4 + 12.75', work:['Stack them with points aligned, and write 3.4 as 3.40.','Hundredths: 0 + 5 = 5.','Tenths: 4 + 7 = 11, write 1 and regroup 1.','Ones: 3 + 2 + 1 = 6. Tens: 1.'], answer:'16.15'},
   trap:'Do not line the numbers up by their last digit. 3.4 + 12.75 lines up as 3.40 + 12.75. Right-aligning them gives a wrong answer every time.'
+},
+'m-improper':{
+  what:'Rewriting a top-heavy fraction as wholes plus a bit left over.',
+  terms:[['Improper fraction','The top is bigger than the bottom, like 11/4. It is worth more than one whole.'],
+         ['Mixed number','A whole number sitting next to a fraction, like 2 3/4.'],
+         ['Denominator','The bottom number — how many pieces make one whole. It does not change here.']],
+  rule:'<b>You already know how to do this part.</b> 11/4 asks: how many whole groups of 4 fit into 11? That is <span class="k">11 ÷ 4 = 2 r3</span> — a remainder question. The <b>quotient becomes the whole number</b>, the <b>remainder becomes the new top</b>, and the <b>bottom never changes</b>.',
+  when:'Whenever the top of a fraction is bigger than the bottom, and any time an answer comes out top-heavy.',
+  steps:['Divide the top by the bottom.',
+         'The answer is the whole number — write it out front.',
+         'The remainder is the new top number.',
+         'Keep the same bottom number. It never moves.'],
+  example:{q:'Write 11/4 as a mixed number',
+           work:['How many 4s fit inside 11? 11 ÷ 4 = 2 remainder 3.',
+                 'The 2 is how many whole frames filled → that is the whole number.',
+                 'The 3 left over becomes the new top.',
+                 'The bottom stays 4, because the pieces are still quarters.'],
+           answer:'2 3/4'},
+  trap:'Two of them. The bottom <b>never</b> changes — 11/4 is not 2 3/11. And going backwards, a whole is worth a full frame: 2 3/4 is 2 × 4 + 3 = 11 quarters, not 2 + 3 = 5.'
 },
 'm-frac-dec':{
   what:'The same amount, written two ways.',
@@ -2557,6 +2611,9 @@ const TRAPS = {
   'left-to-right' :{label:'Went straight left to right',  say:'Multiplication and division happen before addition and subtraction, wherever they sit in the line.'},
   'add-denoms'    :{label:'Added the bottom numbers',     say:'The denominator is the <i>size</i> of the pieces. Collecting more pieces does not change their size, so it stays put.'},
   'unlike-denoms' :{label:'Added before matching bottoms',say:'You can only add fractions once the denominators match. Convert first, then add the tops.'},
+  'denom-changed' :{label:'Changed the bottom number',    say:'The denominator never moves. It says what size the pieces are, and rewriting a fraction does not re-cut them.'},
+  'whole-into-top':{label:'Added the whole to the top',    say:'A whole is not worth one piece — it is worth a full frame of them. Multiply the whole by the bottom first, then add.'},
+  'swap-rem'      :{label:'Quotient and remainder swapped',say:'In 11 ÷ 4 = 2 r3, the <b>2</b> is how many wholes and the <b>3</b> is what is left over. The whole number goes out front.'},
   'bigger-denom'  :{label:'Bigger bottom, bigger fraction',say:'A bigger denominator means the whole was cut into more pieces, so each piece is <i>smaller</i>.'},
   'align-dec'     :{label:'Decimal points not lined up',  say:'Stack the points in a straight line, not the last digits. Fill the gaps with zeros.'},
   'trailing-zero' :{label:'Trailing zero counted',        say:'A zero on the end of a decimal adds nothing. 0.5 and 0.50 are the same amount — the zero fills a place without putting anything in it.'},
@@ -2839,7 +2896,7 @@ function wordItem(skill, diff){
 
 /* A pure visual item: he builds the array himself, then reads the answer off it.
    Sizes are chosen so no grid ever needs more than ~45 taps. */
-const VISUAL_SKILLS = ['m-mult-concept','m-mult-low','m-mult-high','m-div-low','m-div-high'];
+const VISUAL_SKILLS = ['m-mult-concept','m-mult-low','m-mult-high','m-div-low','m-div-high','m-improper'];
 const BUILD_PAIR = {
   'm-mult-concept': ()=>[2+rnd(4), 2+rnd(6)],
   'm-mult-low' : ()=>[pick([2,3,4,5]),  2+rnd(7)],
@@ -2948,10 +3005,31 @@ function vizGroups(groups, per){
   return `<div class="groups">${out}</div>`;
 }
 
+/* Prime and composite as a shape question. A prime can only be laid out as a
+   single line; a composite can be folded into a real rectangle. This is the
+   picture that makes "exactly two factors" mean something. */
+function vizFactorRects(n){
+  const pairs = [];
+  for (let a = 1; a * a <= n; a++) if (n % a === 0) pairs.push([a, n/a]);
+  const shown = pairs.slice(0, 4);
+  const draw = (r, c) => {
+    let rows = '';
+    for (let y = 0; y < r; y++) rows += `<div class="rr">${'<i></i>'.repeat(c)}</div>`;
+    return `<div class="rect"><div class="rect-grid">${rows}</div>
+              <div class="rect-cap">${r} × ${c}</div></div>`;
+  };
+  return `<div class="rects">${shown.map(([a,bb])=>draw(a,bb)).join('')}</div>`;
+}
+
 /* Pick the right picture for an item. Returns '' when this skill has no
    honest visual yet — better nothing than a decoration that teaches nothing. */
 function representationFor(item){
   const sk = item.skill, b = item.build;
+
+  if ((sk === 'm-primes' || sk === 'm-factors') && typeof item.vizN === 'number'
+      && item.vizN > 1 && item.vizN <= 60)
+    return vizBox('Every rectangle you can build from it', vizFactorRects(item.vizN),
+      'One rectangle only (a single line) → <b>prime</b>. More than one → <b>composite</b>.');
 
   if (sk === 'm-evenodd' && typeof item.vizN === 'number' && item.vizN <= 30)
     return vizBox('Try to pair them all up', vizPairs(item.vizN),
@@ -3164,7 +3242,7 @@ function factorsItem(skill, diff){
     for(let i=2;i<n && bad.length<3;i++) if(n%i!==0) bad.push(i);
     return { realm:'math', skill, diff, kind:'choice',
       q:`Which number is a <b>factor</b> of <span class="num">${n}</span>?`,
-      prompt:`factor of ${n}`, answer:String(good),
+      prompt:`factor of ${n}`, answer:String(good), vizN:n,
       opts: mcOpts(good, bad.map(v=>({v, why:'factor-multiple'}))),
       hints:[`A factor divides in with <b>nothing left over</b>.`,
              `Try each one: does ${n} ÷ it come out even?`,
@@ -3190,7 +3268,7 @@ function factorsItem(skill, diff){
   const f = factorsOf(n);
   return { realm:'math', skill, diff, kind:'choice',
     q:`How many <b>factors</b> does <span class="num">${n}</span> have altogether?`,
-    prompt:`count factors ${n}`, answer:String(f.length),
+    prompt:`count factors ${n}`, answer:String(f.length), vizN:n,
     opts: mcOpts(f.length, [{v:f.length-1, why:'count-slip'},{v:f.length+1, why:'one-is-prime'},
                             {v:Math.max(2,f.length-2), why:'count-slip'}]),
     hints:[`Work in pairs, starting at 1 × ${n}.`,
@@ -3235,7 +3313,7 @@ function primesItem(skill, diff){
     const why = prime ? `Nothing divides into ${n} except 1 and ${n}` : `${n} = ${f[1]} × ${n/f[1]}`;
     return { realm:'math', skill, diff, kind:'choice',
       q:`Is <span class="num">${n}</span> prime or composite?`,
-      prompt:`prime? ${n}`, answer: prime?'Prime':'Composite',
+      prompt:`prime? ${n}`, answer: prime?'Prime':'Composite', vizN:n,
       opts: mcText(prime?'Prime':'Composite', [{t:prime?'Composite':'Prime', why:prime?'count-slip':'missed-factor'},
         {t:'Neither', why:'one-is-prime'},{t:'Both', why:'count-slip'}]),
       hints:[`Test small divisors: 2, then 3, then 5, then 7.`,
@@ -3383,6 +3461,127 @@ function fracAddSubItem(skill, diff){
     worked:[`Same denominator, so the pieces are the same size.`,
             `${isAdd?'Add':'Subtract'} the numerators: <span class="k">${n1} ${isAdd?'+':'−'} ${n2} = ${top}</span>.`,
             `Keep the denominator: <span class="k">${ans}</span>. It is never ${isAdd?`${top}/${d+d}`:'over a changed bottom'}.`] };
+}
+
+
+/* ============================================================================
+   IMPROPER FRACTIONS → MIXED NUMBERS
+   The topic he checked out of. Built so the division he already owns does the
+   work: 11/4 is "how many whole groups of 4 fit into 11", which is 11 ÷ 4 = 2 r3
+   — a remainder question he can already answer. The r3 becomes the new top, and
+   the bottom never moves.
+   ========================================================================== */
+const mixedStr = (w, n, d) => n === 0 ? `${w}` : `${w} ${n}/${d}`;
+const mixedHTML = (w, n, d) => n === 0 ? `<span class="num">${w}</span>`
+  : `<span class="num">${w}</span>${frac(n, d)}`;
+
+/* Wholes drawn as frames of d slots. A frame that fills is one whole; the
+   slots still empty in the last frame are exactly the leftover fraction. */
+function vizWholes(n, d, placed){
+  placed = (placed == null) ? n : placed;
+  const frames = Math.max(1, Math.ceil(n / d));
+  let out = '';
+  for (let f = 0; f < frames; f++){
+    const inThis = Math.max(0, Math.min(d, placed - f*d));
+    let slots = '';
+    for (let i = 0; i < d; i++) slots += `<span class="slot ${i < inThis ? 'on' : ''}"></span>`;
+    out += `<div class="whole ${inThis === d ? 'full' : ''}">
+        <div class="whole-slots">${slots}</div>
+        <div class="whole-lab">${inThis === d ? '1 whole' : `${inThis}/${d}`}</div>
+      </div>`;
+  }
+  return `<div class="whole-row">${out}</div>`;
+}
+
+function improperItem(skill, diff, stage){
+  const d = pick(diff >= 3 ? [3,4,5,6,8] : [2,3,4]);
+  const w = 1 + rnd(diff >= 2 ? 4 : 2);
+  const r = 1 + rnd(d - 1);
+  const n = w*d + r;                       // the improper fraction n/d
+  const right = mixedStr(w, r, d);
+
+  const wrongs = [
+    {t: mixedStr(w, r, n),        why:'denom-changed'},   // bottom was changed
+    {t: mixedStr(r, w, d),        why:'swap-rem'},        // quotient and remainder swapped
+    {t: mixedStr(w + 1, r, d),    why:'off-group'},       // one group too many
+    {t: mixedStr(w, r + 1, d),    why:'count-slip'},
+  ];
+
+  // ── concrete: he fills the wholes himself ──
+  if (stage === 0){
+    return {
+      realm:'math', skill, diff, kind:'fracbuild',
+      q:`You have <span class="num">${n}</span> pieces, and <b>${d} of them make one whole</b>.
+         Fill the frames and see how many wholes you get.`,
+      prompt:`build ${n}/${d}`, answer:right,
+      fracBuild:{n, d, w, r},
+      opts: mcText(right, wrongs),
+      hints:[`Drop pieces in until a frame is full — that frame is one whole.`,
+             `Keep going until you run out of pieces. The last frame will not fill.`,
+             `${w} full frames and ${r} pieces left over → <b>${right}</b>.`],
+      worked:[`Each frame holds <span class="k">${d}</span> pieces — that is one whole.`,
+              `${n} pieces filled <span class="k">${w}</span> frames, with <span class="k">${r}</span> left.`,
+              `So ${n}/${d} = <span class="k">${right}</span>. The bottom stayed ${d}.`]
+    };
+  }
+
+  const type = rnd(3);
+
+  // ── the single decoupled step: just the division ──
+  if (type === 0){
+    return {
+      realm:'math', skill, diff, kind:'choice',
+      q:`${stage <= 1 ? vizBox('Pieces grouped into wholes', vizWholes(n, d),
+            `${d} pieces make one whole.`) : ''}
+         One step only — <b>how many whole groups of ${d} fit inside ${n}?</b>`,
+      prompt:`howmany ${n}/${d}`, answer:String(w),
+      opts: mcOpts(w, [{v:w+1, why:'off-group'},{v:r, why:'swap-rem'},
+                       {v:Math.max(1,w-1), why:'off-group'},{v:n-d, why:'wrong-op'}]),
+      hints:[`This is a division you have already done: <b>${n} ÷ ${d}</b>.`,
+             `${n} ÷ ${d} = ${w} remainder ${r}. The question only wants the <b>${w}</b>.`,
+             `<b>${w}</b> whole groups fit, with ${r} left over.`],
+      worked:[`Improper to mixed starts as a remainder question.`,
+              `<span class="k">${n} ÷ ${d} = ${w} r${r}</span>.`,
+              `The whole number is <span class="k">${w}</span>. The ${r} becomes the new top.`]
+    };
+  }
+
+  // ── backwards: mixed → improper ──
+  if (type === 1){
+    return {
+      realm:'math', skill, diff, kind:'choice',
+      q:`${stage <= 1 ? vizBox('What this looks like', vizWholes(n, d), `${d} pieces make one whole.`) : ''}
+         Write ${mixedHTML(w, r, d)} as an <b>improper fraction</b>.`,
+      prompt:`tomproper ${w} ${r}/${d}`, answer:`${n}/${d}`,
+      opts: mcText(`${n}/${d}`, [
+        {t:`${w + r}/${d}`, why:'whole-into-top'},
+        {t:`${n}/${n}`, why:'denom-changed'},
+        {t:`${r}/${n}`, why:'swap-rem'},
+        {t:`${n + d}/${d}`, why:'off-group'}]),
+      hints:[`Each whole is worth ${d} pieces, because ${d} pieces make one.`,
+             `${w} wholes = ${w} × ${d} = <b>${w*d}</b> pieces, plus the ${r} already there.`,
+             `${w*d} + ${r} = <b>${n}</b>, so it is ${n}/${d}. The bottom never changed.`],
+      worked:[`Turn the wholes into pieces: <span class="k">${w} × ${d} = ${w*d}</span>.`,
+              `Add the pieces you already had: ${w*d} + ${r} = <span class="k">${n}</span>.`,
+              `<span class="k">${n}/${d}</span> — same bottom number throughout.`]
+    };
+  }
+
+  // ── the main event: improper → mixed ──
+  return {
+    realm:'math', skill, diff, kind:'choice',
+    q:`${stage <= 1 ? vizBox('Pieces grouped into wholes', vizWholes(n, d),
+          `${d} pieces make one whole. Count the full frames.`) : ''}
+       Write <span class="num">${n}/${d}</span> as a <b>mixed number</b>.`,
+    prompt:`tomixed ${n}/${d}`, answer:right,
+    opts: mcText(right, wrongs),
+    hints:[`Ask it as a division: <b>${n} ÷ ${d}</b>. You have done these.`,
+           `${n} ÷ ${d} = ${w} remainder ${r}.`,
+           `The ${w} is the whole number, the ${r} is the new top, and the bottom stays ${d} → <b>${right}</b>.`],
+    worked:[`<span class="k">${n} ÷ ${d} = ${w} r${r}</span> — the same remainder work as always.`,
+            `Quotient ${w} is the whole number. Remainder ${r} is the new numerator.`,
+            `<span class="k">${right}</span>. The denominator never moves.`]
+  };
 }
 
 /* ── grade 5 · decimal place value ──────────────────────────────────────── */
@@ -3754,7 +3953,7 @@ const MATH_GEN = {
   // grade 5 · number sense
   'm-evenodd':evenOddItem, 'm-factors':factorsItem, 'm-primes':primesItem, 'm-order-ops':orderOpsItem,
   // grade 5 · fractions and decimals
-  'm-frac-concept':fracConceptItem, 'm-frac-addsub':fracAddSubItem,
+  'm-frac-concept':fracConceptItem, 'm-frac-addsub':fracAddSubItem, 'm-improper':improperItem,
   'm-dec-place':decPlaceItem, 'm-dec-compare':decCompareItem,
   'm-dec-addsub':decAddSubItem, 'm-frac-dec':fracDecItem,
   // grade 5 · data
@@ -3764,7 +3963,10 @@ const MATH_GEN = {
 /* stage: 0 concrete (he builds it) · 1 representational (drawn for him) · 2 abstract */
 function makeMathItem(skill, diff, stage){
   stage = stage == null ? 2 : stage;
-  if (stage === 0 && VISUAL_SKILLS.includes(skill)){
+  // The brick builder only fits skills with row/column dimensions. A skill with
+  // its own concrete form (improper fractions fills frames, not arrays) falls
+  // through so its own generator can build stage 0.
+  if (stage === 0 && BUILD_PAIR[skill]){
     const it = buildItem(skill);
     it.stage = 0;
     return it;
@@ -3773,9 +3975,14 @@ function makeMathItem(skill, diff, stage){
   const it = gen(skill, Math.max(1, Math.min(3, diff)), stage);
   it.stage = stage;
   if (stage <= 1){
-    it.viz = representationFor(it);
-    // No honest picture for this skill yet — do not pretend otherwise.
-    if (!it.viz) it.stage = 2;
+    // Hands-on kinds ARE the concrete stage, and some generators embed their
+    // own picture in the question. Only demote a skill that genuinely has
+    // nothing to show — otherwise the stage is mislabelled and, worse, the CRA
+    // ladder compares against the wrong rung and never advances.
+    const handsOn = it.kind === 'build' || it.kind === 'fracbuild';
+    const selfDrawn = /class="viz"|whole-row|numline|minichart|hgrid|fbar|pairs/.test(it.q || '');
+    if (!handsOn) it.viz = representationFor(it);
+    if (!handsOn && !it.viz && !selfDrawn) it.stage = 2;
   }
   return it;
 }
@@ -3839,7 +4046,8 @@ const SKILL_ORDER = (() => {
   'm-div-low', 'm-div-high', 'm-missing', 'm-multidigit', 'm-remainder', 'm-estimate',
   'm-evenodd', 'm-factors', 'm-primes', 'm-order-ops', 'm-frac-concept', 'm-frac-addsub',
   'm-dec-place', 'm-dec-addsub', 'm-frac-dec', 'm-data', 'm-probability', 'r-detail',
-  'r-vocab', 'r-infer', 'r-main', 'r-struct', 'r-purpose', 'r-theme', 'm-dec-compare'
+  'r-vocab', 'r-infer', 'r-main', 'r-struct', 'r-purpose', 'r-theme', 'm-dec-compare',
+    'm-improper'
   ];
   return fixed.concat(Object.keys(SKILLS).filter(k => fixed.indexOf(k) < 0));
 })();
@@ -4068,6 +4276,7 @@ const PREREQ = {
   'm-dec-addsub'  :['m-dec-place'],
   'm-dec-compare' :['m-dec-place'],
   'm-frac-dec'    :['m-frac-concept'],
+  'm-improper'    :['m-frac-concept'],
 };
 function isLocked(skill){
   const pre = PREREQ[skill];
@@ -4622,7 +4831,10 @@ function submitAnswer(chosen, btn, conf){
   const prof = profileRead();
 
   let correct, trap = null;
-  if (item.kind === 'choice'){
+  // An option object grades as a choice whoever served it. Keying this off
+  // item.kind meant any new question type that offers options — the fraction
+  // frames, for one — stringified the object and scored every answer wrong.
+  if (chosen && typeof chosen === 'object'){
     correct = !!chosen.ok;
     trap = chosen.why || null;
   } else {
@@ -4632,7 +4844,7 @@ function submitAnswer(chosen, btn, conf){
   }
 
   // first miss on a multiple-choice item = one free retry, with a diagnosis
-  if (!correct && item.kind==='choice' && s.attempt === 0 && !s.scan){
+  if (!correct && item.opts && s.attempt === 0 && !s.scan){
     s.attempt = 1;
     item.trap = trap;
     if (btn){ btn.classList.add('wrong'); btn.disabled = true; }
@@ -4849,6 +5061,8 @@ function renderItem(){
 
   if (item.kind === 'build'){
     body.appendChild(buildBuilder(item));
+  } else if (item.kind === 'fracbuild'){
+    body.appendChild(buildFracWholes(item));
   } else if (item.kind === 'choice'){
     const wrap = el('div','opts');
     item.opts.forEach((o,i)=>{
@@ -4985,10 +5199,84 @@ function placeBrick(brick, wrap, item){
   }
 }
 
+/* The concrete stage for improper fractions: he drops loose pieces into frames
+   and watches wholes form. The frame that will not fill is the leftover — the
+   fraction part stops being a rule and becomes the thing he is looking at. */
+function buildFracWholes(item){
+  const cfg = item.fracBuild;
+  const wrap = el('div','builder');
+  wrap.innerHTML = `<div class="builder-head">
+      <span class="bl">${cfg.d} pieces make one whole</span>
+      <span class="bl tnum" id="fbCount">0 / ${cfg.n}</span>
+    </div>`;
+
+  const frames = el('div','whole-row');
+  frames.id = 'fbFrames';
+  const frameCount = Math.ceil(cfg.n / cfg.d);
+  for (let f = 0; f < frameCount; f++){
+    const box = el('div','whole');
+    const slots = el('div','whole-slots');
+    for (let i = 0; i < cfg.d; i++) slots.appendChild(el('span','slot'));
+    box.appendChild(slots);
+    box.appendChild(el('div','whole-lab', `0/${cfg.d}`));
+    frames.appendChild(box);
+  }
+  wrap.appendChild(frames);
+
+  const tray = el('div','supply-tray');
+  tray.id = 'fbTray';
+  for (let i = 0; i < cfg.n; i++){
+    const piece = el('div','fpiece');
+    piece.onclick = ()=> placePiece(piece, wrap, item);
+    tray.appendChild(piece);
+  }
+  wrap.appendChild(tray);
+
+  const ask = el('div','');
+  ask.id = 'fbAsk';
+  ask.style.marginTop = '12px';
+  wrap.appendChild(ask);
+  return wrap;
+}
+
+function placePiece(piece, wrap, item){
+  const cfg = item.fracBuild;
+  const slot = wrap.querySelector('.slot:not(.on)');
+  if (!slot) return;
+  slot.classList.add('on');
+  piece.remove();
+
+  let placed = 0;
+  wrap.querySelectorAll('.whole').forEach(box=>{
+    const on = box.querySelectorAll('.slot.on').length;
+    placed += on;
+    box.classList.toggle('full', on === cfg.d);
+    box.querySelector('.whole-lab').textContent = on === cfg.d ? '1 whole' : `${on}/${cfg.d}`;
+  });
+  wrap.querySelector('#fbCount').textContent = `${placed} / ${cfg.n}`;
+
+  if (placed === cfg.n){
+    wrap.querySelector('#fbTray').style.display = 'none';
+    const ask = wrap.querySelector('#fbAsk');
+    ask.innerHTML = `<div class="qtext" style="margin-bottom:10px">
+        <b>${cfg.w}</b> frame${cfg.w===1?'':'s'} filled, and <b>${cfg.r}</b> piece${cfg.r===1?'':'s'}
+        could not fill another. So what is <span class="num">${cfg.n}/${cfg.d}</span>?</div>`;
+    const opts = el('div','opts');
+    item.opts.forEach((o,i)=>{
+      const b = el('button','opt mathy');
+      b.innerHTML = `<span class="ol">${'ABCD'[i]}</span><span>${o.t}</span>`;
+      b.onclick = ()=> proposeAnswer(o, b);
+      opts.appendChild(b);
+    });
+    ask.appendChild(opts);
+    setCoach(`${cfg.w} whole${cfg.w===1?'':'s'}, and ${cfg.r}/${cfg.d} left over. Read it straight off the frames.`, 'hint');
+  }
+}
+
 /* ---------- reveal + hints + nav ---------- */
 function revealAnswer(correct){
   const item = SESH.current;
-  if (item.kind === 'choice'){
+  if (item.opts && document.querySelector('.opt')){
     document.querySelectorAll('.opt').forEach((b,i)=>{
       b.disabled = true;
       const o = item.opts[i];

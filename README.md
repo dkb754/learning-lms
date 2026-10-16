@@ -15,7 +15,7 @@ climbs from adding and subtracting, through what multiplication means and the ti
 tables, up to factors, primes and order of operations — stepping up on a right answer
 and down on a wrong one. Then one short story. It cannot be failed.
 
-**🧮 Math — 24 skills across the grade 4 and grade 5 standards**
+**🧮 Math — 25 skills across the grade 4 and grade 5 standards**
 
 | Strand | Grade | Skills |
 |---|---|---|
@@ -23,7 +23,7 @@ and down on a wrong one. Then one short story. It cannot be failed.
 | Times tables & division | 4 | ×2–×5, ×6–×9, ×10–×12, division facts, tough division, missing factor |
 | Bigger numbers | 4 | 2-digit × 1-digit, remainders, rounding & estimating |
 | Number sense | 5 | Even & odd, factors & multiples, prime & composite, order of operations |
-| Fractions & decimals | 5 | Reading fractions, adding fractions, decimal place value, **comparing decimals (< > =)**, adding decimals, fractions ↔ decimals |
+| Fractions & decimals | 5 | Reading fractions, adding fractions, decimal place value, comparing decimals (< > =), adding decimals, fractions ↔ decimals, **improper → mixed numbers** |
 | Data & probability | 5 | Reading bar charts with a real scale, probability & sample space |
 
 Items are generated, so practice never runs out — which is the point, since repetition
@@ -42,7 +42,7 @@ words defined, the rule written out plainly, how to recognise a question that ne
 the steps, a worked example, and the mistake that catches most people. A rule card opens
 automatically the first time a skill appears, and `📐 The rule` is on every question.
 
-**Lessons tab** — all 31 skills grouped by strand and labelled Grade 4 catch-up or
+**Lessons tab** — all 32 skills grouped by strand and labelled Grade 4 catch-up or
 Grade 5 now. Nothing is locked here, so tonight's homework is always one tap away:
 open the topic, read the rule, then practise 8 or drill 15.
 
@@ -64,6 +64,16 @@ row moves him up a stage, two wrong moves him back down. Two misses in a row
 step the *representation* back, not just the difficulty — going back to the
 picture is the intervention. A skill with no honest picture starts where it can
 rather than being given a decoration that teaches nothing.
+
+**Improper fractions lean on what he already has.** 11/4 is taught as "how many
+whole groups of 4 fit into 11" — which is `11 ÷ 4 = 2 r3`, a remainder question
+he can already answer. The quotient is the whole number, the remainder is the new
+top, the bottom never moves. At the concrete stage he drops loose pieces into
+frames and watches wholes form; the frame that will not fill *is* the leftover.
+
+**Prime and composite is a shape question.** The picture is every rectangle you
+can build from the number: 7 makes only 1×7, so it is prime; 12 makes 1×12, 2×6
+and 3×4, so it is not.
 
 **Cognitive offloading.** A 📐 **Tools** button sits on every question: a 12×12
 times table that lights up a row and column when tapped, his own prime grid, a
