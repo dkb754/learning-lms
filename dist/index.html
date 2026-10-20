@@ -519,6 +519,50 @@ p{line-height:1.6}
 
 
 /* ── ask bolt ───────────────────────────────────────────────────────────── */
+/* ── today, and the topic list ──────────────────────────────────────────── */
+.today{
+  display:block;width:100%;text-align:left;cursor:pointer;font-family:var(--f-ui);color:var(--ink);
+  background:linear-gradient(170deg,var(--build-soft),var(--surface) 70%);
+  border:1.5px solid var(--build);border-radius:var(--r-l);
+  box-shadow:0 4px 0 var(--build-edge);padding:20px 18px;
+}
+.today:active{transform:translateY(3px);box-shadow:0 1px 0 var(--build-edge)}
+.t-lab{display:block;font-size:.66rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--build)}
+.t-name{display:block;font-family:var(--f-display);font-weight:800;font-size:1.45rem;line-height:1.15;margin:7px 0 4px}
+.t-meta{display:block;font-size:.8rem;font-weight:600;color:var(--ink-2)}
+.t-go{
+  display:inline-block;margin-top:15px;padding:10px 20px;border-radius:var(--r-s);
+  background:var(--build);color:#fff;font-family:var(--f-display);font-weight:800;font-size:1rem;
+}
+.topic{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-s);
+  box-shadow:0 2px 0 var(--line-strong);padding:11px 13px;margin-bottom:7px;
+  font-family:var(--f-ui);color:var(--ink);
+}
+.topic:hover{border-color:var(--build)}
+.topic.now{border-color:var(--build);background:var(--build-soft)}
+.topic.done{opacity:.6}
+.topic .ti{font-size:1.05rem;flex-shrink:0}
+.topic .tn{flex:1;min-width:0;font-size:.9rem;font-weight:700}
+.topic .tm{flex-shrink:0;font-size:.66rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.topic.now .tm{color:var(--build)}
+.topic.done .tm{color:var(--good)}
+
+.bt-row{display:flex;gap:3px;align-items:flex-end;flex-wrap:wrap;margin-bottom:9px}
+.bt-rod{width:8px;height:36px;border-radius:2px;background:var(--build);border:1px solid var(--build-edge);display:block}
+.bt-ones{display:grid;grid-template-columns:repeat(5,9px);gap:2px;margin-left:6px}
+.bt-one{width:9px;height:9px;border-radius:2px;background:var(--story);border:1px solid var(--story-edge);display:block}
+.bt-n{margin-left:9px;font-family:var(--f-display);font-weight:800;font-size:1rem;color:var(--ink-2)}
+
+.socard{
+  background:var(--good-soft);border:1.5px solid var(--good);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:20px 18px;margin-bottom:12px;
+}
+.so-lab{font-size:.64rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--good);margin-bottom:9px}
+.so-text{font-family:var(--f-display);font-weight:800;font-size:1.12rem;line-height:1.45}
+
 .ask-fab{
   position:fixed;right:12px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:60;
   display:flex;align-items:center;gap:7px;
@@ -909,53 +953,21 @@ p{line-height:1.6}
 
   <!-- ══════════════════ ONBOARDING ══════════════════ -->
   <section class="screen on" id="scr-welcome">
-    <div class="stack">
-      <div class="card" style="text-align:center;padding:26px 18px">
-        <div style="font-size:3rem;line-height:1">🧱</div>
-        <h1 style="margin:10px 0 6px">Build Mode</h1>
-        <p class="muted" style="font-size:.95rem;max-width:44ch;margin:0 auto">
-          A reading &amp; math trainer that watches how you think, then changes itself to fit you.
-          No worksheets. No red pen. Just building.
-        </p>
+    <div class="stack" style="padding-top:22px">
+      <div class="card" style="text-align:center;padding:30px 20px">
+        <div style="font-size:3.2rem;line-height:1">🧱</div>
+        <h1 style="margin:12px 0 6px">Build Mode</h1>
+        <p class="muted" style="font-size:.95rem">Ten minutes of math. One idea at a time.</p>
+        <button class="btn wide" id="startScanBtn" style="margin-top:20px">Find my level →</button>
+        <button class="btn ghost wide sm" id="skipScanBtn" style="margin-top:9px">Skip — start at the beginning</button>
       </div>
-
-      <div class="card">
-        <div class="eyebrow" style="margin-bottom:9px">Step 1 · Who's building?</div>
-        <input id="nameInput" class="ansfield" style="max-width:none;font-size:1.15rem;text-align:left;letter-spacing:0"
-               value="Adam" maxlength="18" aria-label="Your name">
-        <div class="divider"></div>
-        <div class="eyebrow" style="margin-bottom:9px">Step 2 · Pick your builder brick</div>
-        <div class="pill-row" id="avatarPicker"></div>
+      <div class="row" style="justify-content:center;flex-wrap:wrap">
+        <button class="btn ghost sm" id="wSync">☁️ Sync code</button>
+        <button class="btn ghost sm" id="wFile">📂 Save file</button>
+        <button class="btn ghost sm" id="wPaste">📋 Paste code</button>
       </div>
-
-      <div class="card">
-        <div class="eyebrow" style="margin-bottom:10px">Step 3 · The Skill Scan</div>
-        <p style="font-size:.92rem;line-height:1.6;color:var(--ink-2)">
-          14 questions — ten math, then one short story. It climbs from adding and subtracting
-          up through primes and order of operations, getting <b>harder when you're right</b> and
-          <b>easier when you're not</b>, so it finds his real level in about seven minutes.
-          You can't fail it. It's a scan, not a test.
-        </p>
-        <div class="divider"></div>
-        <button class="btn wide" id="startScanBtn">Start the Skill Scan →</button>
-        <button class="btn ghost wide sm" id="skipScanBtn" style="margin-top:8px">Skip — just start practicing</button>
-      </div>
-
-      <div class="card">
-        <div class="eyebrow" style="margin-bottom:8px">Been here before?</div>
-        <p class="tiny">
-          If Adam has used this on another device — or this Chromebook cleared itself —
-          bring his progress back instead of starting over.
-        </p>
-        <div class="row" style="flex-wrap:wrap;margin-top:11px">
-          <button class="btn ghost sm" id="wSync">☁️ I have a sync code</button>
-          <button class="btn ghost sm" id="wFile">📂 Open a save file</button>
-          <button class="btn ghost sm" id="wPaste">📋 Paste a save code</button>
-        </div>
-        <input type="file" id="wFileInput" accept="application/json,.json" hidden>
-        <div id="wOut" style="margin-top:11px"></div>
-      </div>
-
+      <input type="file" id="wFileInput" accept="application/json,.json" hidden>
+      <div id="wOut"></div>
       <p class="tiny" style="text-align:center" id="buildStampWelcome"></p>
     </div>
   </section>
@@ -963,53 +975,18 @@ p{line-height:1.6}
   <!-- ══════════════════ HOME BASE ══════════════════ -->
   <section class="screen" id="scr-home">
     <div class="stack">
-      <div id="storageBanner"></div>
-      <div class="coach" id="homeCoach">
-        <div class="coach-face" id="homeCoachFace">🤖</div>
-        <div class="coach-body">
-          <div class="coach-name">Bolt · your coach</div>
-          <div class="coach-text" id="homeCoachText">Ready when you are.</div>
-        </div>
+      <div id="homeAlert"></div>
+      <button class="today" id="startToday">
+        <span class="t-lab" id="todayLab">Today's lesson</span>
+        <span class="t-name" id="todayName">Loading</span>
+        <span class="t-meta" id="todayMeta"></span>
+        <span class="t-go">Start →</span>
+      </button>
+      <div class="row" style="flex-wrap:wrap">
+        <button class="btn ghost sm" id="homeRead">📖 Read a story</button>
+        <button class="btn ghost sm" id="homeTopics">Pick a topic</button>
       </div>
-
-      <div>
-        <div class="spread" style="margin-bottom:9px">
-          <div class="eyebrow">Today's build order</div>
-          <div class="eyebrow tnum" id="questProgress">0/3</div>
-        </div>
-        <div class="quests" id="questList"></div>
-      </div>
-
       <div id="knowWrap"></div>
-
-      <div>
-        <div class="eyebrow" style="margin-bottom:9px">Free build</div>
-        <div class="realms">
-          <button class="realm build" id="realmMath">
-            <div class="rico">🧮</div>
-            <div class="rname">Build Mode</div>
-            <div class="rsub">Multiplication &amp; division — facts, arrays, word problems</div>
-            <div class="rbar"><i id="mathBar" style="width:0%"></i></div>
-            <div class="rpct" id="mathPct">0% mastered</div>
-          </button>
-          <button class="realm story" id="realmRead">
-            <div class="rico">📖</div>
-            <div class="rname">Story Servers</div>
-            <div class="rsub">Reading comprehension — clues, meaning, big ideas</div>
-            <div class="rbar"><i id="readBar" style="width:0%"></i></div>
-            <div class="rpct" id="readPct">0% mastered</div>
-          </button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="spread" style="margin-bottom:10px">
-          <div class="eyebrow">Next level</div>
-          <div class="eyebrow tnum" id="lvlText">0 / 200 XP</div>
-        </div>
-        <div class="bar gold"><i id="lvlBar" style="width:0%"></i></div>
-        <div class="tiny" style="margin-top:8px" id="lvlNote"></div>
-      </div>
     </div>
   </section>
 
@@ -1029,46 +1006,26 @@ p{line-height:1.6}
 
   <!-- ══════════════════ RESULT ══════════════════ -->
   <section class="screen" id="scr-result">
-    <div class="result-hero">
-      <span class="big" id="resIcon">🏗️</span>
-      <h1 id="resTitle">Build complete</h1>
-      <p class="muted" id="resSub" style="margin-top:6px;font-size:.92rem"></p>
-    </div>
-    <div class="scoreboard">
-      <div class="sbox good"><div class="n tnum" id="resRight">0</div><div class="l">Right</div></div>
-      <div class="sbox build"><div class="n tnum" id="resTotal">0</div><div class="l">Questions</div></div>
-      <div class="sbox gold"><div class="n tnum" id="resXP">0</div><div class="l">XP</div></div>
-    </div>
-    <div class="stack">
-      <div class="coach" id="resCoach">
-        <div class="coach-face">🤖</div>
-        <div class="coach-body">
-          <div class="coach-name">Bolt's read on that run</div>
-          <div class="coach-text" id="resCoachText"></div>
-        </div>
+    <div class="stack" style="padding-top:22px">
+      <div style="text-align:center">
+        <span class="big" id="resIcon">🏗️</span>
+        <h1 id="resTitle">Done</h1>
+        <p class="muted" id="resSub" style="margin-top:6px;font-size:.92rem"></p>
       </div>
-      <div class="card" id="resSkillsCard">
-        <div class="eyebrow" style="margin-bottom:6px">What moved</div>
-        <div id="resSkills"></div>
+      <div class="coach">
+        <div class="coach-face">🤖</div>
+        <div class="coach-body"><div class="coach-text" id="resCoachText"></div></div>
       </div>
       <div id="resNewBadges"></div>
-      <button class="btn wide" id="resAgainBtn">Keep going →</button>
-      <button class="btn ghost wide" id="resHomeBtn">Back to base</button>
+      <button class="btn wide" id="resAgainBtn">Next lesson →</button>
+      <button class="btn ghost wide" id="resHomeBtn">Done for now</button>
     </div>
   </section>
 
-  <!-- ══════════════════ LESSONS ══════════════════ -->
+  <!-- ══════════════════ TOPICS ══════════════════ -->
   <section class="screen" id="scr-lessons">
     <div class="stack">
-      <div>
-        <h2>Lessons</h2>
-        <p class="tiny" style="margin-top:4px">
-          Every topic, with the rule written out. Pick any one — nothing here is locked,
-          so tonight's homework is always one tap away.
-        </p>
-      </div>
-      <div class="pill-row" id="gradeFilter"></div>
-      <div id="strandList"></div>
+      <div id="topicList"></div>
     </div>
   </section>
 
@@ -1090,12 +1047,24 @@ p{line-height:1.6}
     <div id="sieveBody"></div>
   </section>
 
-  <!-- ══════════════════ PROGRESS ══════════════════ -->
-  <section class="screen" id="scr-progress">
+  <!-- ══════════════════ GROWN-UPS ══════════════════ -->
+  <section class="screen" id="scr-grown">
     <div class="stack">
       <div>
-        <h2>Progress</h2>
+        <h2>For grown-ups</h2>
         <p class="tiny" style="margin-top:4px">Everything below is measured from real answers — nothing is guessed.</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:9px">Where he is</div>
+        <div id="standNow"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="margin-bottom:9px">Name &amp; brick</div>
+        <input id="nameInput" class="ansfield" style="max-width:none;font-size:1rem;text-align:left;letter-spacing:0"
+               value="Adam" maxlength="18" aria-label="Name">
+        <div class="pill-row" id="avatarPicker" style="margin-top:10px"></div>
       </div>
 
       <div class="card">
@@ -1215,11 +1184,9 @@ p{line-height:1.6}
   <!-- ══════════════════ NAV ══════════════════ -->
   <nav class="nav" id="navBar" hidden>
     <div class="nav-in">
-      <button data-go="home" class="on"><span class="ni">🏠</span>Base</button>
-      <button data-go="math"><span class="ni">🧮</span>Math</button>
-      <button data-go="read"><span class="ni">📖</span>Reading</button>
-      <button data-go="lessons"><span class="ni">📚</span>Lessons</button>
-      <button data-go="progress"><span class="ni">📊</span>Progress</button>
+      <button data-go="home" class="on"><span class="ni">🏠</span>Today</button>
+      <button data-go="lessons"><span class="ni">📚</span>Topics</button>
+      <button data-go="grown"><span class="ni">👤</span>Grown-ups</button>
     </div>
   </nav>
 </div>
@@ -1228,7 +1195,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v11 · 16 Oct 2026 · Ask Bolt';
+const BUILD = 'v12 · 20 Oct 2026 · one idea at a time';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -3105,8 +3072,26 @@ function vizFactorRects(n){
 
 /* Pick the right picture for an item. Returns '' when this skill has no
    honest visual yet — better nothing than a decoration that teaches nothing. */
+/* Tens as rods, ones as cubes — the base ten blocks a grade 3 table has in a
+   tub. Regrouping is a thing you can see happen here, which is the whole
+   reason JUMP puts the blocks before the algorithm. */
+function vizBaseTen(n){
+  const tens = Math.floor(n/10), ones = n%10;
+  let h = '<span class="bt-row">';
+  for (let i=0;i<tens;i++) h += '<i class="bt-rod"></i>';
+  if (ones) h += '<span class="bt-ones">';
+  for (let i=0;i<ones;i++) h += '<i class="bt-one"></i>';
+  if (ones) h += '</span>';
+  return h + `<b class="bt-n">${n}</b></span>`;
+}
+
 function representationFor(item){
   const sk = item.skill, b = item.build;
+
+  if (sk === 'm-add-sub' && item.vizTen)
+    return vizBox(item.vizTen.add ? 'Put them together' : 'Take the second one away',
+      vizBaseTen(item.vizTen.a) + vizBaseTen(item.vizTen.b),
+      'A tall rod is ten ones. Ten loose ones can always be traded for one rod — that is regrouping.');
 
   if ((sk === 'm-primes' || sk === 'm-factors') && typeof item.vizN === 'number'
       && item.vizN > 1 && item.vizN <= 60)
@@ -3177,6 +3162,7 @@ function addSubItem(skill, diff){
     worked:[`Line up the place values — ones under ones, tens under tens.`,
             `Work right to left, regrouping whenever a column will not hold.`,
             `<span class="k">${a} ${isAdd?'+':'−'} ${b} = ${ans}</span>`],
+    vizTen: (a < 100 && b < 100) ? {a, b, add:isAdd} : null,
     wrongMap:{ [noRegroup]:isAdd?'no-regroup':'sub-order', [ans+10]:'no-regroup', [Math.abs(ans-10)]:'no-regroup',
                [isAdd?a-b:a+b]:'wrong-op' },
     opts: diff>=2 ? null : mcOpts(ans, [
@@ -4526,6 +4512,135 @@ function craStepBack(skill){
   return false;
 }
 
+
+/* ============================================================================
+   THE LESSON — modelled on how JUMP Math actually breaks a topic down.
+
+   Four things changed here after reading JUMP's own grade 3-5 materials:
+
+   1. ONE TOPIC PER SITTING. What this app called a "skill" is a JUMP *unit*,
+      not a lesson. A JUMP lesson is one move, practised until it is boring.
+   2. THE RULE COMES LAST. A JUMP worksheet opens with the easiest version of
+      the move and a picture; the generalisation is printed at the END, after
+      the child has already seen the pattern. So the rule card no longer greets
+      him before he has done anything — he earns the sentence.
+   3. THE SMALLEST POSSIBLE FIRST STEP. JUMP's first exercise is usually a
+      two-way choice on a picture ("is 27 closer to 20 or 30?"). Four options
+      is already the second step.
+   4. PRIOR KNOWLEDGE IS CHECKED, NOT ASSUMED. Every JUMP lesson plan lists
+      what the child must already be able to do. If the thing underneath is not
+      solid, that is today's lesson instead — quietly, with no "locked" label.
+
+   The order below is JUMP's own sequence through the grade 4-5 material:
+   fractions before decimals, factors before primes, ×10 before ×6-×9,
+   brackets before order of operations.
+   --------------------------------------------------------------------------- */
+const TEACH_ORDER = [
+  'm-add-sub', 'm-mult-concept', 'm-mult-low', 'm-mult-big', 'm-mult-high',
+  'm-div-low', 'm-missing', 'm-div-high', 'm-remainder', 'm-multidigit',
+  'm-estimate', 'm-evenodd', 'm-factors', 'm-primes', 'm-order-ops',
+  'm-frac-concept', 'm-improper', 'm-frac-addsub', 'm-dec-place', 'm-dec-compare',
+  'm-dec-addsub', 'm-frac-dec', 'm-word', 'm-data', 'm-probability',
+].concat(MATH_SKILLS.filter(k => [
+  'm-add-sub', 'm-mult-concept', 'm-mult-low', 'm-mult-big', 'm-mult-high',
+  'm-div-low', 'm-missing', 'm-div-high', 'm-remainder', 'm-multidigit',
+  'm-estimate', 'm-evenodd', 'm-factors', 'm-primes', 'm-order-ops',
+  'm-frac-concept', 'm-improper', 'm-frac-addsub', 'm-dec-place', 'm-dec-compare',
+  'm-dec-addsub', 'm-frac-dec', 'm-word', 'm-data', 'm-probability',
+].indexOf(k) < 0));
+
+/* The one sentence worth keeping, shown AFTER the practice, never before. */
+const SO = {
+  'm-add-sub'     :'Line up the places, work right to left, and regroup when a column will not hold.',
+  'm-mult-concept':'a × b means a groups of b. Multiplying repeats a group; adding joins two.',
+  'm-mult-low'    :'×2 is double. ×4 is double twice. ×5 is half of ×10.',
+  'm-mult-high'   :'Build a hard fact from an easy one: start at ×5 or ×10 and add or take off groups.',
+  'm-mult-big'    :'×10 shifts every digit one place left. ×11 is ×10 plus one more. ×12 is ×10 plus ×2.',
+  'm-div-low'     :'a ÷ b asks what times b gives a. Division undoes multiplication.',
+  'm-div-high'    :'Same question, bigger numbers: what times the divisor lands on the total?',
+  'm-missing'     :'A missing factor is a division in disguise: divide the product by the factor you can see.',
+  'm-multidigit'  :'Split the big number by place value, multiply each piece, then add the pieces back.',
+  'm-remainder'   :'Go as far as the times table reaches without passing the total. What is left is the remainder.',
+  'm-estimate'    :'Find the two nearest round numbers and ask which one it is closer to. Exactly halfway goes up.',
+  'm-evenodd'     :'Only the last digit decides. 0, 2, 4, 6, 8 is even; everything else is odd.',
+  'm-factors'     :'Factors divide into a number and there are only a few. Multiples count up from it and never stop.',
+  'm-primes'      :'Exactly two factors means prime. More than two means composite. 1 is neither.',
+  'm-order-ops'   :'Brackets first, then × and ÷ left to right, then + and −.',
+  'm-frac-concept':'The bottom number says how many equal pieces the whole is cut into. The top says how many you have.',
+  'm-frac-addsub' :'Same-size pieces add straight across. The bottom number never changes.',
+  'm-dec-place'   :'Going right from the point: tenths, hundredths, thousandths. Each place is ten times smaller.',
+  'm-dec-compare' :'Give them the same number of places, then compare left to right. Longer is not bigger.',
+  'm-dec-addsub'  :'Line up the decimal points, fill the gaps with zeros, then add as usual.',
+  'm-frac-dec'    :'A fraction is a division. 3/4 means 3 ÷ 4, which is 0.75.',
+  'm-improper'    :'Count how many wholes fit, and what is left stays over the same bottom number.',
+  'm-word'        :'Equal groups means multiply. Sharing out means divide. Picture the story before you pick.',
+  'm-data'        :'Read the scale before the bars. One step up the axis is rarely one.',
+  'm-probability' :'Probability is the outcomes you want over all the outcomes there are.',
+};
+const soFor = k => SO[k] || (ruleFor(k) ? String(ruleFor(k).rule).replace(/<[^>]+>/g,'') : '');
+
+/* Which lesson is next: the first one in teaching order that is not secure.
+   Not the weakest — the weakest skill is usually the one furthest ahead of
+   him, and teaching out of order is how a child ends up with an A and a
+   failing state test at the same time. */
+function nextLesson(){
+  let k = TEACH_ORDER.find(s => !isKnown(s) && masteryOf(s) < 0.7) || TEACH_ORDER[TEACH_ORDER.length-1];
+  // prior knowledge required, checked rather than assumed
+  for (let i = 0; i < 4; i++){
+    const weak = (PREREQ[k] || []).filter(p => masteryOf(p) < 0.5);
+    if (!weak.length) break;
+    k = weak.sort((a,b) => masteryOf(a) - masteryOf(b))[0];
+  }
+  return k;
+}
+
+/* Mental math: a couple of quick ones on something already met, to start on a
+   win and to keep old material from going cold. */
+function warmSkill(avoid){
+  const met = TEACH_ORDER.filter(k => k !== avoid && S.mastery[k] && S.mastery[k].seen > 0);
+  const pool = met.length ? met : TEACH_ORDER.slice(0, 3).filter(k => k !== avoid);
+  // favour the ones he is strongest at — this is the win, not the test
+  pool.sort((a,b) => masteryOf(b) - masteryOf(a));
+  return pool[rnd(Math.min(4, pool.length))] || 'm-add-sub';
+}
+
+/* The smallest possible first step: one decision between two answers, on a
+   picture. Any item can be cut down to it. */
+function makeBinary(item){
+  if (item.kind === 'choice' && item.opts && item.opts.length > 2){
+    const ok = item.opts.find(o => o.ok);
+    const no = item.opts.find(o => !o.ok);
+    if (ok && no){ item.opts = shuffle([ok, no]); item.binary = true; }
+    return item;
+  }
+  if (item.kind === 'input' && item.answer != null && isFinite(Number(item.answer))){
+    const txt = String(item.answer), dp = (txt.split('.')[1] || '').length;
+    const a = Number(item.answer);
+    const step = dp ? Math.pow(10, -dp) : Math.abs(a) < 20 ? 1 : Math.abs(a) < 200 ? 10 : 100;
+    const alt = a - step > 0 ? a - step : a + step;
+    const decoy = dp ? alt.toFixed(dp) : String(Math.round(alt));
+    if (decoy !== txt){
+      item.kind = 'choice';
+      item.opts = shuffle([{t:txt, ok:true}, {t:decoy}]);
+      item.binary = true;
+    }
+  }
+  return item;
+}
+
+/* A sitting, in JUMP's shape: mental math, one taught move practised until it
+   is dull, the sentence that names it, then an optional stretch. */
+function lessonPlan(skill){
+  return [
+    {phase:'warm'}, {phase:'warm'},
+    {phase:'step'}, {phase:'step'}, {phase:'step'}, {phase:'step'},
+    {phase:'so'},
+    {phase:'bonus'},
+  ];
+}
+
+const PHASE_LABEL = {warm:'Warm-up', step:'', so:'', bonus:'Bonus'};
+
 /* Profile read-outs the coach and the parent view both use. */
 function profileRead(){
   const P = S.profile;
@@ -4653,35 +4768,6 @@ function coachWrong(item, trap, attempt, prof){
   return msg;
 }
 
-function coachHome(){
-  const P = S.profile, prof = profileRead();
-  const mathM = realmMastery('math'), readM = realmMastery('read');
-  if (!S.scanned) return `Before we build anything, I need to see how you think. The Skill Scan takes about six minutes and there is no way to fail it.`;
-  if (S.quests && S.quests.date === today() && (S.quests.done||[]).length >= (S.quests.list||[]).length){
-    return `Today's three are done — nice. There is a <b>bonus round</b> below if you want more,
-            and free build never runs out.`;
-  }
-  if (S.lastDay !== today() && S.streak>0) return `Day ${S.streak+1}. Three quests below — about ten minutes and you are done for today.`;
-  if (P.answered < 10) return `Welcome back, ${S.name}. I am still learning your style, so the first few will feel like I am poking around. That is on purpose.`;
-
-  const settled = [...MATH_SKILLS, ...READ_SKILLS].filter(k=>!isLocked(k) && S.mastery[k].seen>=3);
-  if (!settled.length){
-    const top = MATH_SKILLS.filter(k=>!isLocked(k)).sort((a,b)=>masteryOf(b)-masteryOf(a))[0];
-    return `The scan puts your math around <b>${SKILLS[top].name}</b> and your reading at
-            <b>${Math.round(readM*100)}%</b>. Those are starting estimates — the next few sessions
-            will correct them fast. Start anywhere.`;
-  }
-  const weak = settled.sort((a,b)=>masteryOf(a)-masteryOf(b))[0];
-  const topTrap = Object.entries(S.traps).sort((a,b)=>b[1]-a[1])[0];
-
-  const lines = [];
-  if (weak) lines.push(`Today I want to spend time on <b>${SKILLS[weak].name}</b> — it is the one holding the rest back.`);
-  if (topTrap && topTrap[1]>=3 && TRAPS[topTrap[0]]) lines.push(`I have also seen "<b>${TRAPS[topTrap[0]].label}</b>" ${topTrap[1]} times. We will aim at that.`);
-  if (prof.needsVisual) lines.push(`You read bricks better than symbols, so I will keep showing you the array.`);
-  if (prof.impulsive) lines.push(`Slow-down mode is on — your fast answers are the ones that miss.`);
-  if (!lines.length) lines.push(`Math is at ${Math.round(mathM*100)}%, reading at ${Math.round(readM*100)}%. Pick a lane.`);
-  return lines.slice(0,2).join(' ');
-}
 
 /* ---------------------------------------------------------------------------
    9. SESSION RUNNER
@@ -4700,8 +4786,15 @@ function startSession(opts){
     marks:[], runStreak:0, missRun:0, hintsUsed:0, scaffoldNext:false,
     scan:false, ladder:1, touched:{}, startedAt:Date.now(), quest:null, passage:null,
     passageStart:0, recent:[], lastSkill:null, lastTrap:null, focusSkill:null,
-    seedSkill:null, lastKind:null, deepSkill:null, pending:null
+    seedSkill:null, lastKind:null, deepSkill:null, pending:null,
+    plan:null, lessonSkill:null, steps:0, askConfNow:false
   }, opts);
+  // A lesson is one topic in JUMP's shape; everything else keeps the old path.
+  if (SESH.lesson){
+    SESH.lessonSkill = SESH.lesson;
+    SESH.plan = lessonPlan(SESH.lesson);
+    SESH.len = SESH.plan.length;
+  }
   touchStreak();
   nextItem();
   show('scr-session');
@@ -4772,6 +4865,41 @@ function nextItem(){
       s.qi = 0; s.passageStart = s.marks.length;
     }
     s.current = readingItem(s.passage, s.qi++);
+  } else if (s.plan){
+    const ph = s.plan[s.idx] || {phase:'step'};
+    const k = s.lessonSkill;
+    s.recent = s.recent || [];
+    if (ph.phase === 'warm'){
+      // mental math on something already met: start on a win, keep it warm
+      const wk = warmSkill(k);
+      let w, t = 0;
+      do { w = makeMathItem(wk, 1, 2); t++; } while (t < 6 && s.recent.indexOf(w.prompt) > -1);
+      w.warm = true;
+      s.current = w;
+    } else if (ph.phase === 'so'){
+      // the generalisation, after the work rather than before it
+      s.current = {realm:'math', skill:k, kind:'say', q:soFor(k), prompt:'so:'+k, diff:1};
+    } else if (ph.phase === 'bonus'){
+      const b = makeMathItem(k, 3, 2);
+      b.bonus = true;
+      s.current = b;
+    } else {
+      const c = craFor(k);
+      let made, t = 0;
+      do { made = makeMathItem(k, diffOf(k), c.at); t++; }
+      while (t < 8 && s.recent.indexOf(made.prompt) > -1);
+      if (made.stage > c.at){ c.floor = made.stage; c.at = made.stage; }
+      // JUMP's first exercise is a two-way choice on a picture. Four options is
+      // already the second step, so the opener gets cut down to two.
+      if (!s.steps && c.at === c.floor && masteryOf(k) < 0.5) makeBinary(made);
+      s.steps++;
+      // one confidence check per sitting, on the last one, where it means most
+      const stepAt = s.plan.map((x,i) => x.phase === 'step' ? i : -1).filter(i => i >= 0);
+      s.askConfNow = s.idx === stepAt[stepAt.length - 1];
+      s.current = made;
+    }
+    if (s.current.prompt) s.recent.push(s.current.prompt);
+    if (s.recent.length > 10) s.recent.shift();
   } else {
     const prof = profileRead();
     // A deep dive stays on one topic by design, but climbs the CRA ladder
@@ -4825,8 +4953,9 @@ function nextItem(){
     if (s.scaffoldNext){ s.current.scaffolded = true; s.current.autoScaffold = true; }
     s.scaffoldNext = false;
   }
+  clearTimeout(s.autoTimer);
   s.attempt = 0; s.hintLevel = 0; s.answered = false; s.usedTools = false;
-  s.pending = null; s.shownAt = Date.now();
+  s.pending = null; s.shownAt = Date.now(); s.lastCorrect = null;
   renderItem();
 }
 
@@ -4873,7 +5002,12 @@ function proposeAnswer(chosen, btn){
   const s = SESH;
   if (!s || s.answered || s.pending) return;
   // Retries and the keypad-free paths grade straight away; asking twice is noise.
-  if (S.askConfidence === false || s.attempt > 0){ submitAnswer(chosen, btn); return; }
+  // Asking after every single question is six extra taps a sitting. Once, on
+  // the one where the scaffold came off, is where the answer actually means
+  // something.
+  if (S.askConfidence === false || s.attempt > 0 || (s.plan && !s.askConfNow)){
+    submitAnswer(chosen, btn); return;
+  }
   s.pending = {chosen, btn};
   if (btn) btn.classList.add('picked');
   document.querySelectorAll('.opt').forEach(b=>{ if (b !== btn) b.classList.add('dimmed'); });
@@ -4936,7 +5070,16 @@ function submitAnswer(chosen, btn, conf){
   }
 
   s.answered = true;
+  s.lastCorrect = correct;
   item.trap = trap;
+  // A bonus is a stretch offered for fun. Getting it wrong must not move a
+  // single dial, or it stops being safe to try.
+  if (item.bonus && !correct){
+    revealAnswer(false);
+    setCoach(`That one was a stretch — it costs you nothing. ${item.worked ? 'Here is how it goes:' : ''}`, 'hint');
+    renderNav();
+    return;
+  }
   if (s.scan && s.idx < SCAN_MATH)
     s.ladder = Math.max(0, Math.min(SCAN_MATH-1, s.ladder + (correct ? 1 : -1)));
   const supported = s.hintLevel > 0 || !!s.usedTools;
@@ -4972,6 +5115,7 @@ function submitAnswer(chosen, btn, conf){
 
 function finishSession(){
   const s = SESH;
+  clearTimeout(s.autoTimer);
   S.xp += s.xp;
   closePassage(s);
   if (s.scan){ S.scanned = true; seedFromScan(s); }
@@ -4979,10 +5123,6 @@ function finishSession(){
   if (s.deepSkill && s.marks.length >= 6 && s.right / s.marks.length >= 0.75){
     const cd = craFor(s.deepSkill);
     if (cd.at < 2){ cd.at++; cd.run = 0; }
-  }
-  if (s.quest != null && S.quests) {
-    S.quests.done = S.quests.done || [];
-    if (!S.quests.done.includes(s.quest)) S.quests.done.push(s.quest);
   }
   S.log.unshift({at:today(), realm:s.scan?'scan':s.realm, right:s.right, total:s.marks.length, xp:s.xp,
                  mins:Math.max(1, Math.round((Date.now()-s.startedAt)/60000))});
@@ -5117,14 +5257,21 @@ function renderItem(){
     body.appendChild(card);
   }
 
-  // A skill he has never met opens with its rule, not with a question.
-  S.rulesSeen = S.rulesSeen || {};
-  if (item.skill && ruleFor(item.skill) && !S.rulesSeen[item.skill]){
-    const card = el('div','');
-    card.innerHTML = ruleCardHTML(item.skill, true);
+  // The sentence that names what he has just been doing. JUMP prints the
+  // generalisation at the END of the page, after the child has seen the
+  // pattern — so it lands as a summary of his own work, not as a wall of text
+  // between him and the first question.
+  if (item.kind === 'say'){
+    const sk = SKILLS[item.skill] || {name:'', icon:'💡'};
+    const card = el('div','socard');
+    card.innerHTML = `<div class="so-lab">So — ${sk.name.toLowerCase()}</div>
+                      <div class="so-text">${item.q}</div>`;
     body.appendChild(card);
+    S.rulesSeen = S.rulesSeen || {};
     S.rulesSeen[item.skill] = true;
     save();
+    renderNav();
+    return;
   }
 
   // The picture sits above the question, always visible — not tucked behind a
@@ -5137,12 +5284,13 @@ function renderItem(){
 
   const prompt = el('div','prompt');
   const sk = SKILLS[item.skill] || {name:'Practice', icon:'🎯'};
+  // One label, not three. He does not need to be told which rung of a
+  // representational ladder he is standing on.
+  const label = item.warm ? `<span class="tag">🔥 Warm-up</span>`
+              : item.bonus ? `<span class="tag learning">⭐ Bonus — just for fun</span>`
+              : `<span class="tag">${sk.icon} ${sk.name}</span>`;
   prompt.innerHTML =
-    `<div class="qskill">
-       <span class="tag ${bandOf(masteryOf(item.skill)).key}">${sk.icon} ${sk.name}</span>
-       ${item.realm==='math' && item.stage!=null
-          ? `<span class="tag cra cra-${item.stage}">${CRA_NAMES[item.stage]}</span>` : ''}
-     </div>
+    `<div class="qskill">${label}</div>
      <div class="qtext">${item.q}</div>`;
   body.appendChild(prompt);
 
@@ -5384,6 +5532,14 @@ function renderNav(){
   const row = el('div','row');
   row.style.flexWrap = 'wrap';
 
+  // the "So:" card is not a question — one button, straight on
+  if (item.kind === 'say'){
+    const got = el('button','btn wide','Got it →');
+    got.onclick = () => { s.idx++; nextItem(); };
+    nav.appendChild(got);
+    return;
+  }
+
   if (!s.answered){
     if (item.hints && s.hintLevel < item.hints.length){
       const h = el('button','btn ghost sm', s.hintLevel===0 ? '💡 Give me a nudge' : s.hintLevel===1 ? '💡 More help' : '💡 Show me');
@@ -5395,17 +5551,6 @@ function renderNav(){
       };
       row.appendChild(h);
     }
-    if (item.skill && ruleFor(item.skill)){
-      const r = el('button','btn ghost sm','📐 The rule');
-      r.onclick = ()=>{
-        if (document.getElementById('ruleInline')) { document.getElementById('ruleInline').remove(); return; }
-        const box = el('div',''); box.id = 'ruleInline';
-        box.innerHTML = ruleCardHTML(item.skill, false);
-        $('seshBody').appendChild(box);
-        box.scrollIntoView({block:'nearest', behavior:'smooth'});
-      };
-      row.appendChild(r);
-    }
     if (item.realm==='read' && item.evidence){
       const e = el('button','btn ghost sm','🔎 Where to look');
       e.onclick = () => {
@@ -5416,24 +5561,24 @@ function renderNav(){
       row.appendChild(e);
     }
   } else {
-    const explain = el('button','btn ghost sm','🧠 Why');
-    explain.onclick = () => {
-      const w = item.worked
-        ? `<div class="worked"><ol>${item.worked.map(x=>`<li>${x}</li>`).join('')}</ol></div>`
-        : `<div class="worked">${item.why||''}${item.evidence?`<div class="evidence">${item.evidence}</div>`:''}</div>`;
-      setCoach((item.why && item.realm==='read' ? item.why : 'Here is the build:') + w, 'hint');
-      explain.remove();
-    };
-    row.appendChild(explain);
-
-    const go = el('button','btn' + (s.realm==='read'?' story':''), s.idx+1 >= s.len ? 'Finish ✓' : 'Next →');
-    go.onclick = () => { s.idx++; nextItem(); };
+    // A wrong answer gets the working straight away rather than behind a
+    // button he has to know to press. A right answer gets one button.
+    if (!s.lastCorrect && !document.getElementById('workedBox')){
+      const w = el('div','worked'); w.id = 'workedBox';
+      w.innerHTML = item.worked
+        ? `<ol>${item.worked.map(x=>`<li>${x}</li>`).join('')}</ol>`
+        : `${item.why||''}${item.evidence?`<div class="evidence">${item.evidence}</div>`:''}`;
+      if (w.innerHTML.trim()) $('seshBody').appendChild(w);
+    }
+    const last = s.idx+1 >= s.len;
+    const go = el('button','btn wide' + (s.realm==='read'?' story':''), last ? 'Finish ✓' : 'Next →');
+    go.onclick = () => { clearTimeout(s.autoTimer); s.idx++; nextItem(); };
     row.appendChild(go);
-
-    if (s.idx + 1 < s.len){
-      const stop = el('button','btn ghost sm','Stop here — keep what I did');
-      stop.onclick = () => finishSession();
-      row.appendChild(stop);
+    // Right answer: carry him on by himself after a beat, the way a worksheet
+    // does. Wrong answer: never — he needs that moment to read the working.
+    if (s.lastCorrect && !last){
+      clearTimeout(s.autoTimer);
+      s.autoTimer = setTimeout(() => { if (SESH === s && s.answered){ s.idx++; nextItem(); } }, 1500);
     }
   }
   nav.appendChild(row);
@@ -5706,43 +5851,58 @@ function renderTools(){
 /* ---------------------------------------------------------------------------
    LESSONS — every topic, nothing locked
    --------------------------------------------------------------------------- */
-let gradeFilter = 'all';
+/* The one thing a parent actually wants to know: where is he, really. A report
+   card grade and a state test score can disagree by a mile — this says which
+   topics are secure, in the order they are built, and what secure means here. */
+function renderStand(){
+  const host = $('standNow');
+  if (!host) return;
+  const now = nextLesson();
+  const at = TEACH_ORDER.indexOf(now) + 1;
+  const secure = TEACH_ORDER.filter(isKnown).length;
+  const started = TEACH_ORDER.filter(k => S.mastery[k] && S.mastery[k].seen > 0).length;
+  host.innerHTML = `
+    <div class="dv" style="font-family:var(--f-display);font-weight:800;font-size:1.05rem">
+      Working on ${SKILLS[now].icon} ${SKILLS[now].name}</div>
+    <div class="tiny" style="margin-top:6px">
+      Topic <b>${at}</b> of ${TEACH_ORDER.length} in the order they build on each other.
+      <b>${secure}</b> secure · ${started} started.</div>
+    <div class="bar" style="margin-top:10px"><i style="width:${Math.round(secure/TEACH_ORDER.length*100)}%"></i></div>
+    <p class="tiny" style="margin-top:9px">
+      Secure here means he got it right <b>and</b> said he knew it, more than once —
+      not that he finished the questions. That is the gap a classroom grade can hide.</p>`;
+}
 
-function renderLessons(){
-  const filt = $('gradeFilter');
-  filt.innerHTML = '';
-  [['all','Everything'],['4','Grade 4 catch-up'],['5','Grade 5 now']].forEach(([v,label])=>{
-    const b = el('button','pill'+(gradeFilter===v?' on':''), label);
-    b.onclick = ()=>{ gradeFilter = v; renderLessons(); };
-    filt.appendChild(b);
+/* One flat list, in the order the topics build on each other, and one tap to
+   start. The old version was seven collapsible strands and three taps deep. */
+function renderTopics(){
+  const host = $('topicList');
+  host.innerHTML = `<h2>Topics</h2>
+    <p class="tiny" style="margin:5px 0 13px">In the order they build on each other. Tap one to start.</p>`;
+  const now = nextLesson();
+  TEACH_ORDER.forEach(k => {
+    const known = isKnown(k), m = masteryOf(k);
+    const row = el('button', 'topic' + (k === now ? ' now' : '') + (known ? ' done' : ''));
+    row.innerHTML = `<span class="ti">${SKILLS[k].icon}</span>
+      <span class="tn">${SKILLS[k].name}</span>
+      <span class="tm">${known ? '✓ known' : k === now ? 'next' : m > 0.08 ? Math.round(m*100)+'%' : ''}</span>`;
+    row.onclick = () => startSession({realm:'math', lesson:k});
+    host.appendChild(row);
   });
+  const story = el('button','topic');
+  story.innerHTML = `<span class="ti">📖</span><span class="tn">Read a story</span><span class="tm">reading</span>`;
+  story.onclick = () => startSession({realm:'read', len:8});
+  host.appendChild(story);
 
-  const host = $('strandList'); host.innerHTML = '';
-  Object.keys(STRANDS).forEach(sid=>{
-    const st = STRANDS[sid];
-    if (gradeFilter !== 'all' && String(st.grade) !== gradeFilter) return;
-    const keys = Object.keys(SKILLS).filter(k => SKILLS[k].strand === sid);
-    if (!keys.length) return;
-
-    const wrap = el('div','strand');
-    wrap.innerHTML = `<div class="strand-head">
-        <span class="strand-ico">${st.icon}</span>
-        <span class="strand-name">${st.name}</span>
-        <span class="grade-pill grade-${st.grade}">Grade ${st.grade}</span>
-      </div><div class="strand-blurb">${st.blurb}</div>`;
-
-    keys.forEach(k=>{
-      const m = masteryOf(k), rec = S.mastery[k];
-      const row = el('button','lesson-row');
-      row.innerHTML = `<span class="lesson-ico">${SKILLS[k].icon}</span>
-        <span class="lesson-name">${SKILLS[k].name}</span>
-        <span class="lesson-bar"><span class="bar"><i style="width:${Math.round(m*100)}%"></i></span></span>
-        <span class="lesson-pct">${rec.seen ? Math.round(m*100)+'%' : '–'}</span>`;
-      row.onclick = ()=> openSkill(k);
-      wrap.appendChild(row);
-    });
-    host.appendChild(wrap);
-  });
+  // A focused lesson is how a topic is learned; mixed retrieval is how it stays
+  // learned. The warm-ups do this in small doses — this is the larger dose.
+  const mix = el('button','topic');
+  mix.innerHTML = `<span class="ti">🎲</span><span class="tn">Mixed review</span><span class="tm">everything</span>`;
+  mix.onclick = () => startSession({realm:'math', len:6});
+  host.appendChild(mix);
+  const note = el('p','tiny','Every topic starts with the easiest version and a picture. Nothing is locked.');
+  note.style.marginTop = '11px';
+  host.appendChild(note);
 }
 
 function openSkill(skill){
@@ -5774,25 +5934,13 @@ function openSkill(skill){
   }
 
   const go = el('button','btn wide'+(isRead?' story':''),
-    isRead ? 'Read a story →' : 'Practise this — 5 mixed questions →');
+    isRead ? 'Read a story →' : 'Start this lesson →');
   go.onclick = ()=> isRead
     ? startSession({realm:'read', len:8})
-    : startSession({realm:'math', len:5, seedSkill:skill});
+    : startSession({realm:'math', lesson:skill});
   body.appendChild(go);
 
   if (!isRead){
-    const deep = el('button','btn ghost wide','🔬 Deep dive — 10 on this one topic');
-    deep.style.marginTop = '8px';
-    deep.onclick = ()=> startSession({realm:'math', len:10, deepSkill:skill});
-    body.appendChild(deep);
-
-    const note = el('div','tiny');
-    note.style.marginTop = '10px';
-    note.innerHTML = `The short set mixes <b>${SKILLS[skill].name}</b> with other kinds of question,
-      which is what stops autopilot. The <b>deep dive</b> stays on this one topic and climbs:
-      build it, then see it drawn, then symbols, and it finishes by asking which rule it was —
-      not ten of the same sum.`;
-    body.appendChild(note);
   }
   S.rulesSeen = S.rulesSeen || {};
   S.rulesSeen[skill] = true; save();
@@ -5805,80 +5953,44 @@ function openSkill(skill){
 function renderResult(freshBadges){
   const s = SESH;
   const total = s.marks.length || 1;
-  const pct = s.right/total;
+  const pct = s.right / total;
 
-  $('resRight').textContent = s.right;
-  $('resTotal').textContent = total;
-  $('resXP').textContent = '+' + s.xp;
+  let ico, title;
+  if (s.scan){ ico = '🛰️'; title = 'Found your level'; }
+  else if (pct === 1){ ico = '🏆'; title = 'Every one'; }
+  else if (pct >= 0.75){ ico = '🏗️'; title = 'Good run'; }
+  else if (pct >= 0.5){ ico = '🔧'; title = 'Working it out'; }
+  else { ico = '🧭'; title = 'Too steep — my fault'; }
+  $('resIcon').textContent = ico;
+  $('resTitle').textContent = title;
+  $('resSub').textContent = `${s.right} of ${total} · +${s.xp} XP`;
 
-  let ico, title, sub;
-  if (s.scan){ ico='🛰️'; title='Scan complete'; sub='I have a starting picture of how you think. It will sharpen every session.'; }
-  else if (pct === 1){ ico='🏆'; title='Every one'; sub='Clean all the way through.'; }
-  else if (pct >= 0.75){ ico='🏗️'; title='Strong run'; sub='That is the zone — hard enough to matter, not hard enough to hurt.'; }
-  else if (pct >= 0.5){ ico='🔧'; title='Working it out'; sub='The ones you missed are the ones worth having seen. Nothing lost.'; }
-  else { ico='🧭'; title='Found the edge'; sub='That set was pitched too high — my mistake, not yours. Next one comes back down.'; }
-  $('resIcon').textContent = ico; $('resTitle').textContent = title; $('resSub').textContent = sub;
-
-  // what Bolt noticed
-  const notes = [];
+  // One line. Three paragraphs of analysis is for the grown-up tab.
+  let line;
   if (s.scan){
     const lvl = Math.max(0, Math.min(SCAN_MATH-1, s.ladder));
-    notes.push(`On math you climbed to <b>${SKILLS[SCAN_LADDER[lvl][0]].name}</b> before it got hard. That is where we start.`);
-    const rr = s.marks.slice(SCAN_MATH).filter(Boolean).length;
-    notes.push(`On reading you got <b>${rr} of ${s.marks.slice(SCAN_MATH).length}</b>, so I am starting you at ${rr>=3?'the harder':'the steady'} band.`);
+    line = `You got as far as <b>${SKILLS[SCAN_LADDER[lvl][0]].name}</b>. That is where we start.`;
+  } else if (s.lessonSkill && pct >= 0.75){
+    line = `<b>${SKILLS[s.lessonSkill].name}</b> moved up. Next time it gets a little harder.`;
+  } else if (pct < 0.5){
+    line = `That was pitched too high. The next one comes back down a step.`;
   } else {
-    const topTrap = Object.entries(S.traps).sort((a,b)=>b[1]-a[1])[0];
-    if (pct >= 0.85) notes.push(`I am moving you up a level on the skills you cleared.`);
-    if (pct < 0.5) notes.push(`Nothing here says you cannot do this — it says I picked wrong. Fixed.`);
-    const knewRight = (s.confLog||[]).filter(x=>x.conf===2 && x.ok).length;
-    if (knewRight >= 2) notes.push(`<b>${knewRight}</b> of those you said you knew before you saw the answer — and you did.`);
-    const luckyRight = (s.confLog||[]).filter(x=>x.conf===0 && x.ok).length;
-    if (luckyRight >= 2) notes.push(`${luckyRight} came out right from a guess, so those will come round again.`);
-    if (topTrap && TRAPS[topTrap[0]] && topTrap[1]>=2) notes.push(`Pattern to watch: <b>${TRAPS[topTrap[0]].label}</b>.`);
-    const prof = profileRead();
-    if (prof.enough && prof.needsVisual) notes.push(`You are <b>${Math.round((prof.visAcc-prof.symAcc)*100)}%</b> more accurate when you can see the bricks — so you will keep seeing them.`);
-    if (prof.enough && prof.storyThinker) notes.push(`Word problems are your strong side. I will keep wrapping facts in stories.`);
-    if (!notes.length) notes.push(`Steady run. Come back tomorrow and the streak keeps climbing.`);
+    const knewRight = (s.confLog||[]).filter(x => x.conf === 2 && x.ok).length;
+    line = knewRight
+      ? `You said you knew it, and you did. That is the bit that counts.`
+      : `Steady. Come back tomorrow and the streak keeps going.`;
   }
-  $('resCoachText').innerHTML = notes.slice(0,3).join(' ');
-
-  // skill movement
-  const moved = Object.keys(s.touched||{});
-  $('resSkillsCard').style.display = moved.length ? '' : 'none';
-  $('resSkills').innerHTML = moved.map(k=>{
-    const m = masteryOf(k), b = bandOf(m);
-    return `<div class="skillrow">
-      <span class="sname">${SKILLS[k].icon} ${SKILLS[k].name}</span>
-      <span class="sbar"><span class="bar"><i style="width:${Math.round(m*100)}%"></i></span></span>
-      <span class="sval">${Math.round(m*100)}%</span>
-      <span class="tag ${b.key}">${b.label}</span></div>`;
-  }).join('');
+  $('resCoachText').innerHTML = line;
 
   $('resNewBadges').innerHTML = freshBadges.length
     ? `<div class="card"><div class="eyebrow" style="margin-bottom:9px">New badge${freshBadges.length>1?'s':''}</div>
        <div class="badges">${freshBadges.map(b=>`<div class="badge got"><span class="bi">${b.ico}</span><span class="bn">${b.name}</span></div>`).join('')}</div></div>`
     : '';
 
-  const sessionsDone = (S.log||[]).length;
-  const nudge = !storageHealth() || (sessionsDone > 0 && sessionsDone % 4 === 0);
-  const nudgeBox = $('resNewBadges');
-  if (nudge){
-    const extra = el('div','card');
-    extra.style.marginTop = '12px';
-    extra.innerHTML = `<div class="eyebrow" style="margin-bottom:8px">Keep this safe</div>
-      <div class="tiny" style="margin-bottom:10px">${ storageHealth()
-        ? `${sessionsDone} sessions in. A school Chromebook can clear saved data without warning —
-           grab a save file so none of this can go missing.`
-        : `This browser is <b>not</b> saving progress. Download a save file now or this run is lost.` }</div>`;
-    const b = el('button','btn wide sm','💾 Download save file');
-    b.onclick = async ()=>{ const ok = await downloadSave();
-      b.textContent = ok ? '✓ Saved to Downloads' : 'Blocked — use Progress → Copy save link'; };
-    extra.appendChild(b);
-    nudgeBox.appendChild(extra);
-  }
-
-  if (pct >= 0.75) confetti(pct === 1 ? 70 : 34);
-  renderHUD();
+  const nextK = nextLesson();
+  $('resAgainBtn').textContent = s.realm === 'read' ? 'Another story →'
+    : nextK === s.lessonSkill ? `More ${SKILLS[nextK].name.toLowerCase()} →`
+    : `Next: ${SKILLS[nextK].name} →`;
 }
 
 function confetti(n){
@@ -5899,22 +6011,6 @@ function confetti(n){
 /* ---------------------------------------------------------------------------
    12. HOME
    --------------------------------------------------------------------------- */
-function buildQuests(){
-  if (S.quests && S.quests.date === today()) return S.quests;
-  const weakMath = MATH_SKILLS.filter(k=>!isLocked(k)).sort((a,b)=>masteryOf(a)-masteryOf(b))[0];
-  const p = pickPassage();
-  S.quests = {
-    date: today(),
-    done: [],
-    list: [
-      {type:'math', len:4, name:'Warm-up', meta:`4 mixed questions · includes ${SKILLS[weakMath].name}`, ico:'🔩', focus:weakMath},
-      {type:'read', name:'Story server', meta:`${p.title} · ${p.qs.length} questions`, ico:'📖', passageId:p.id},
-      {type:'math', len:5, name:'Mixed set', meta:'5 questions · all different kinds', ico:'🎲', boss:true}
-    ]
-  };
-  save();
-  return S.quests;
-}
 
 function renderKnowBoard(){
   const host = $('knowWrap');
@@ -5924,12 +6020,7 @@ function renderKnowBoard(){
       <div class="eyebrow">Things I know</div>
       <div class="eyebrow tnum">${known.length}</div>
     </div>`;
-  if (!known.length){
-    host.innerHTML += `<div class="card"><div class="tiny">
-      Nothing on the board yet. A topic lands here when you get it right <b>and</b> tap
-      <b>“I know this”</b> — being sure is half of it.</div></div>`;
-    return;
-  }
+  if (!known.length){ host.innerHTML = ''; return; }
   const strip = el('div','knowstrip');
   known.forEach(k=>{
     const card = el('div','knowcard');
@@ -5943,58 +6034,17 @@ function renderKnowBoard(){
 
 function renderHome(){
   renderHUD();
-  renderStorageBanner();
   renderKnowBoard();
-  const q = buildQuests();
-  $('homeCoachText').innerHTML = coachHome();
+  // The only thing that ever interrupts this screen is storage actually failing.
+  $('homeAlert').innerHTML = storageHealth() ? ''
+    : `<div class="notecard">This browser is not keeping his progress.
+       Open <b>Grown-ups</b> and download a save file.</div>`;
 
-  const list = $('questList'); list.innerHTML = '';
-  q.list.forEach((item, i)=>{
-    const done = (q.done||[]).includes(i);
-    const b = el('button','quest' + (done?' done':''));
-    b.innerHTML = `<span class="qbadge ${done?'done':(item.type==='read'?'story':'build')}">${done?'✓':item.ico}</span>
-      <span class="qinfo"><span class="qname">${item.name}</span><span class="qmeta">${item.meta}</span></span>
-      <span class="qgo">${done?'':'→'}</span>`;
-    b.onclick = ()=> launchQuest(i);
-    list.appendChild(b);
-  });
-  // Finishing the day's three shouldn't end the app — there is always one more.
-  const doneCount = (q.done||[]).length;
-  if (doneCount >= q.list.length){
-    const bonusRealm = (S.bonusCount||0) % 2 === 0 ? 'math' : 'read';
-    const b = el('button','quest');
-    b.innerHTML = `<span class="qbadge ${bonusRealm==='read'?'story':'build'}">⭐</span>
-      <span class="qinfo"><span class="qname">Bonus round</span>
-      <span class="qmeta">${bonusRealm==='read'?'Another story — as many as you want':'Extra math — as long as you like'}</span></span>
-      <span class="qgo">→</span>`;
-    b.onclick = ()=>{
-      S.bonusCount = (S.bonusCount||0)+1; save();
-      startSession(bonusRealm==='read' ? {realm:'read', len:8} : {realm:'math', len:5});
-    };
-    list.appendChild(b);
-  }
-  $('questProgress').textContent = `${doneCount}/${q.list.length}`;
-
-  const mm = realmMastery('math'), rm = realmMastery('read');
-  $('mathBar').style.width = Math.round(mm*100)+'%';
-  $('readBar').style.width = Math.round(rm*100)+'%';
-  $('mathPct').textContent = Math.round(mm*100)+'% mastered';
-  $('readPct').textContent = Math.round(rm*100)+'% mastered';
-
-  const L = levelInfo();
-  $('lvlBar').style.width = L.pct + '%';
-  $('lvlText').textContent = L.next ? `${L.into} / ${L.span} XP` : 'Max level';
-  $('lvlNote').textContent = L.next ? `${L.span - L.into} XP to ${L.next.title}.` : 'Top of the ladder.';
-}
-
-function launchQuest(i){
-  const q = S.quests.list[i];
-  if (q.type === 'read'){
-    const p = PASSAGES.find(x=>x.id===q.passageId) || pickPassage();
-    startSession({realm:'read', forcePassage:p, len:p.qs.length, quest:i});
-  } else {
-    startSession({realm:'math', len:q.len || 5, quest:i, seedSkill:q.focus || null});
-  }
+  const k = nextLesson();
+  S.todaySkill = k;
+  $('todayLab').textContent = (S.mastery[k].seen ? 'Carry on with' : "Today's lesson");
+  $('todayName').textContent = SKILLS[k].name;
+  $('todayMeta').textContent = `${SKILLS[k].icon}  one idea · about five minutes`;
 }
 
 /* ---------------------------------------------------------------------------
@@ -6033,6 +6083,7 @@ function renderProgress(){
          actual concept, so it is never scored down.`));
 
   $('profileDials').innerHTML = dials.join('');
+  renderStand();
 
   const skillRows = ks => ks.map(k=>{
     const m = masteryOf(k), b = bandOf(m), rec = S.mastery[k];
@@ -6160,14 +6211,6 @@ function renderStorageStatus(){
          works even with site data switched off.</div>`;
 }
 
-function renderStorageBanner(){
-  const box = $('storageBanner');
-  if (!box) return;
-  if (storageHealth()){ box.innerHTML = ''; return; }
-  box.innerHTML = `<div class="notecard" style="border-left-color:var(--miss);background:var(--miss-soft)">
-    <b>Heads up — this browser will not remember your progress.</b>
-    Finish your quests, then go to <b>Progress → Download save file</b> to keep them.</div>`;
-}
 
 function doRestore(obj, source, hostId){
   if (!applyState(obj)){
@@ -6361,7 +6404,7 @@ function askTopicActions(skill){
     acts.push([SKILLS[skill].realm === 'read' ? 'Read a story' : 'Let me try some',
       () => { closeAsk(); SKILLS[skill].realm === 'read'
         ? startSession({realm:'read', len:8})
-        : startSession({realm:'math', len:5, seedSkill:skill}); }]);
+        : startSession({realm:'math', lesson:skill}); }]);
     acts.push(['Open the whole lesson', () => { closeAsk(); openSkill(skill); }]);
   } else {
     acts.push(['Back to the question', closeAsk]);
@@ -6818,7 +6861,7 @@ const ASK_INTENTS = [
           <br><br>${known.length ? `You properly know <b>${known.length}</b> thing${known.length === 1 ? '' : 's'} now: ${known.slice(0, 6).map(k => SKILLS[k].name).join(', ')}${known.length > 6 ? ', and more' : ''}.`
             : `Nothing has hit the "I know this" board yet — that needs you to get something right <i>and</i> feel sure about it twice. It will come.`}
           <br><br>Your strongest right now is <b>${SKILLS[best].name}</b> at ${Math.round(masteryOf(best) * 100)}%.`,
-        actions: [['See the whole picture', () => { closeAsk(); go('progress'); }]],
+        actions: [['See the whole picture', () => { closeAsk(); go('grown'); }]],
       };
     } },
   { k:['what do i know','things i know','what have i mastered','what am i good at'],
@@ -6856,14 +6899,14 @@ const ASK_INTENTS = [
         <br>2. <b>A save file or link</b> you can keep in Google Drive or email to yourself.
         <br>3. <b>Sync</b>, if it is switched on — then any computer with your code picks up where you left off.
         <br><br>School Chromebooks do sometimes wipe themselves when you sign out, which is exactly why 2 and 3 exist.`,
-      actions: [['Open the save controls', () => { closeAsk(); go('progress'); }]],
+      actions: [['Open the save controls', () => { closeAsk(); go('grown'); }]],
     }) },
   { k:['sync code','whats my code','what is my sync code','another computer','different computer','at home'],
     f: () => ({
       html: S.syncCode
         ? `Your sync code is <b>${S.syncCode}</b>. Type that into this app on any other computer and your progress comes with you.`
         : `Sync is not switched on yet. Turn it on in <b>Progress</b> and you get a code — type that code into this app on any other computer and your progress follows you there.`,
-      actions: [['Open sync', () => { closeAsk(); go('progress'); }]],
+      actions: [['Open sync', () => { closeAsk(); go('grown'); }]],
     }) },
   { k:['xp','level up','levels','how do i get xp','badges','badge'],
     f: () => {
@@ -6871,7 +6914,7 @@ const ASK_INTENTS = [
       return {
         html: `XP comes from answering questions — more for harder ones, and you keep it whether you got it right or not, because turning up is the bit that counts.
           <br><br>You are on <b>Level ${L.num}, ${L.title}</b>${L.next ? `, ${L.span - L.into} XP from ${L.next.title}` : ' — the top of the ladder'}.`,
-        actions: [['See my badges', () => { closeAsk(); go('progress'); }]],
+        actions: [['See my badges', () => { closeAsk(); go('grown'); }]],
       };
     } },
   { k:['times table chart','multiplication chart','times table grid','where is the times table','prime grid','sieve','tools'],
@@ -7059,8 +7102,8 @@ function go(where){
   if (where==='home'){ renderHome(); show('scr-home'); }
   else if (where==='math'){ startSession({realm:'math', len:5}); }
   else if (where==='read'){ startSession({realm:'read', len:8}); }
-  else if (where==='lessons'){ renderLessons(); show('scr-lessons'); }
-  else if (where==='progress'){ renderProgress(); show('scr-progress'); }
+  else if (where==='lessons'){ renderTopics(); show('scr-lessons'); }
+  else if (where==='grown' || where==='progress'){ renderProgress(); show('scr-grown'); }
 }
 
 function applyTheme(){
@@ -7111,7 +7154,8 @@ function boot(){
   $('resHomeBtn').onclick = ()=> go('home');
   $('resAgainBtn').onclick = ()=>{
     const s = SESH;
-    startSession(s.realm==='read' ? {realm:'read', len:8} : {realm:'math', len:s.len||5});
+    if (s && s.realm === 'read') return startSession({realm:'read', len:8});
+    startSession({realm:'math', lesson: nextLesson()});
   };
   $('skillBack').onclick = ()=> go('lessons');
   $('sieveBack').onclick = ()=> go('lessons');
@@ -7132,8 +7176,9 @@ function boot(){
     box.value = '';
     askAsk(q);
   };
-  $('realmMath').onclick = ()=> go('math');
-  $('realmRead').onclick = ()=> go('read');
+  $('startToday').onclick = ()=> startSession({realm:'math', lesson: S.todaySkill || nextLesson()});
+  $('homeRead').onclick = ()=> startSession({realm:'read', len:8});
+  $('homeTopics').onclick = ()=> go('lessons');
   document.querySelectorAll('.nav button').forEach(b=> b.onclick = ()=> go(b.dataset.go));
 
   $('themeBtn').onclick = ()=>{
