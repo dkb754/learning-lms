@@ -8,6 +8,31 @@ reading, `Array Snapper` for math) with a single app that measures where he is,
 picks what to give him next, and explains misses in terms of the specific
 thinking trap he fell into.
 
+## v14 — the scratch pad
+
+Adam again, after a full lesson: *he needs a scratch pad for addition and
+subtraction*, and he had been stacking the numbers top to bottom himself.
+
+He is right, and for a better reason than he knows. Holding a carried ten in
+your head while you work the next column is the heaviest load in written
+arithmetic, and it is the first thing a child with number trouble drops.
+Writing it down is not a crutch — it is the method.
+
+So adding and subtracting now has a proper **column workspace** at the written
+stage: a row of small dashed boxes for carries and crossings-out, the two
+numbers right-aligned by place value, a rule, and one box per column for the
+answer. Typing a digit walks the cursor **left**, the way the algorithm runs.
+The small boxes are never marked; they are his working, not his answer. Check
+a wrong answer and the boxes stay live with a diagnosis — he fixes his own
+work rather than being told.
+
+The same pad, blank and with both numbers editable, is now the first tab of the
+📐 tools drawer, so it is one tap away from **any** question in the app — a word
+problem, a story, anything he wants to stack.
+
+Adding & subtracting now runs the full concrete-to-abstract ladder in one
+sitting: **trade the blocks → stack the columns → straight answer.**
+
 ## v13 — Adam's own notes
 
 Adam asked for three things, in his words: *more interactive*, *moving stuff

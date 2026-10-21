@@ -571,6 +571,31 @@ p{line-height:1.6}
 .pick-btn.on{background:var(--build-soft);border-color:var(--build)}
 .pick-btn.locked{opacity:.42;cursor:not-allowed;font-size:.6rem;font-weight:800;letter-spacing:.03em}
 
+/* ── the stacked scratch pad ────────────────────────────────────────────── */
+.cpad{
+  display:inline-block;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:var(--r-s);padding:13px 16px 15px;box-shadow:var(--shadow);
+}
+.crow{display:grid;grid-template-columns:30px repeat(var(--cols),42px);align-items:center}
+.cell{
+  height:46px;display:grid;place-items:center;font-variant-numeric:tabular-nums;
+  font-family:var(--f-display);font-weight:800;font-size:1.5rem;
+}
+.cop{font-family:var(--f-display);font-weight:800;font-size:1.45rem;color:var(--ink-2);text-align:center}
+.cin{
+  width:36px;height:42px;display:block;margin:0 auto;padding:0;text-align:center;
+  font-family:var(--f-display);font-weight:800;font-size:1.35rem;font-variant-numeric:tabular-nums;
+  border:2px solid var(--line-strong);border-radius:8px;background:var(--surface-2);color:var(--ink);
+}
+.cin:focus{outline:none;border-color:var(--build);background:var(--build-soft)}
+.cin.sm{
+  width:24px;height:24px;font-size:.82rem;border-width:1.5px;border-style:dashed;
+  background:transparent;color:var(--miss);
+}
+.cin.right{border-color:var(--good);background:var(--good-soft);color:var(--good)}
+.cin.wrong{border-color:var(--miss);background:var(--miss-soft);color:var(--miss)}
+.crule{height:3px;background:var(--ink);border-radius:2px;margin:7px 0 9px}
+
 /* ── pick what to build today ───────────────────────────────────────────── */
 .pickrow{display:flex;flex-direction:column;gap:9px}
 .pickcard{
@@ -1323,7 +1348,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v13 · 21 Oct 2026 · your builder';
+const BUILD = 'v14 · 21 Oct 2026 · the scratch pad';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -3303,7 +3328,10 @@ function addSubItem(skill, diff, stage){
   const noRegroup = Number(A.map((d,i)=> isAdd ? (d+B[i])%10 : Math.abs(d-B[i])).join('')) || ans+1;
 
   return {
-    realm:'math', skill, diff, kind: diff>=2 ? 'input':'choice',
+    realm:'math', skill, diff,
+    // Stage 1 is the written method: stacked, with somewhere to put the carry.
+    kind: stage === 1 ? 'stack' : (diff>=2 ? 'input':'choice'),
+    stack:{a, b, op:isAdd?'+':'−', cols: Math.max(String(a).length, String(b).length) + 1},
     q:`<span class="num">${a} ${isAdd?'+':'−'} ${b} = ?</span>`,
     prompt:`${a} ${isAdd?'+':'-'} ${b}`, answer:ans,
     hints:[ isAdd ? `Stack them so the ones line up under the ones. Start on the right.`
@@ -4264,7 +4292,7 @@ function makeMathItem(skill, diff, stage){
     // own picture in the question. Only demote a skill that genuinely has
     // nothing to show — otherwise the stage is mislabelled and, worse, the CRA
     // ladder compares against the wrong rung and never advances.
-    const handsOn = ['build','fracbuild','sort','numline','trade'].indexOf(it.kind) > -1;
+    const handsOn = ['build','fracbuild','sort','numline','trade','stack'].indexOf(it.kind) > -1;
     const selfDrawn = /class="viz"|whole-row|numline|minichart|hgrid|fbar|pairs/.test(it.q || '');
     if (!handsOn) it.viz = representationFor(it);
     if (!handsOn && !it.viz && !selfDrawn) it.stage = 2;
@@ -5207,6 +5235,219 @@ function buildTrade(item){
   return wrap;
 }
 
+
+/* ============================================================================
+   THE SCRATCH PAD — stacked, the way he does it on paper.
+
+   Adam asked for this one in exactly these words: a scratch pad for addition
+   and subtraction, with the numbers stacked top to bottom. He is right, and
+   for a better reason than he knows: holding a carried ten in your head while
+   you work the next column is the single heaviest load in written arithmetic,
+   and it is the load a child with number trouble drops first. Writing it down
+   is not a crutch. It is the method.
+
+   So the columns get built properly: a row of little boxes above for carries
+   and crossings-out, the two numbers right-aligned by place value, a rule, and
+   one box per column for the answer. Typing a digit walks left, the way the
+   algorithm runs. The little boxes are never marked — they are his working,
+   not his answer.
+   --------------------------------------------------------------------------- */
+function columnPad(a, b, op, cols, opts){
+  opts = opts || {};
+  const wrap = el('div','cpad');
+  wrap.style.setProperty('--cols', cols);
+
+  const cellIn = small => {
+    const i = el('input','cin' + (small ? ' sm' : ''));
+    i.type = 'text'; i.inputMode = 'numeric'; i.maxLength = 1;
+    i.autocomplete = 'off';
+    // One character per box, so a box that is already full would swallow the
+    // next keystroke. Selecting on focus makes the next digit replace it.
+    i.addEventListener('focus', () => { try { i.select(); } catch(e){} });
+    i.setAttribute('aria-label', small ? 'Working' : 'Answer digit');
+    return i;
+  };
+  const row = () => el('div','crow');
+  const spacer = () => el('div','');
+
+  // little numbers: carries going one way, crossings-out going the other
+  const carry = [];
+  const rc = row();
+  rc.appendChild(spacer());
+  for (let i = 0; i < cols; i++){
+    const c = cellIn(true);
+    carry.push(c);
+    const holder = el('div','');
+    holder.appendChild(c);
+    rc.appendChild(holder);
+  }
+  wrap.appendChild(rc);
+
+  // the two numbers, right-aligned so the places line up by themselves
+  const numCells = [[], []];
+  const bufs = ['', ''];
+  // A number he types himself has to land in the right columns — type 4 then 7
+  // and it must read 47 with the 7 in the ones, not 47 jammed against the left.
+  // So an editable number row keeps a buffer and right-aligns it as he types.
+  const paintRow = which => {
+    const cells = numCells[which];
+    const d = bufs[which].padStart(cols, ' ').split('');
+    cells.forEach((c, i) => { c.value = d[i] === ' ' ? '' : d[i]; });
+  };
+  const numRow = (val, sym, which) => {
+    const r = row();
+    r.appendChild(el('div','cop', sym || ''));
+    const digits = String(val == null ? '' : val).padStart(cols, ' ').split('');
+    digits.forEach(d => {
+      if (opts.editNums){
+        const i = cellIn(false);
+        numCells[which].push(i);
+        const holder = el('div','');
+        holder.appendChild(i);
+        r.appendChild(holder);
+      } else {
+        r.appendChild(el('div','cell', d === ' ' ? '' : d));
+      }
+    });
+    if (opts.editNums){
+      const cells = numCells[which];
+      cells.forEach(c => {
+        c.addEventListener('input', () => {
+          const d = (c.value.match(/\d/) || [''])[0];
+          if (d) bufs[which] = (bufs[which] + d).slice(-cols);
+          paintRow(which);
+          cells[cols-1].focus(); try { cells[cols-1].select(); } catch(e){}
+        });
+        c.addEventListener('keydown', e => {
+          if (e.key === 'Backspace'){
+            e.preventDefault();
+            bufs[which] = bufs[which].slice(0, -1);
+            paintRow(which);
+            cells[cols-1].focus();
+          }
+        });
+      });
+    }
+    return r;
+  };
+  wrap.appendChild(numRow(a, '', 0));
+  wrap.appendChild(numRow(b, op, 1));
+  wrap.appendChild(el('div','crule'));
+
+  const ans = [];
+  const ra = row();
+  ra.appendChild(spacer());
+  for (let i = 0; i < cols; i++){
+    const c = cellIn(false);
+    ans.push(c);
+    const holder = el('div','');
+    holder.appendChild(c);
+    ra.appendChild(holder);
+  }
+  wrap.appendChild(ra);
+
+  // One digit per box, and typing walks LEFT, because that is the direction
+  // the algorithm actually runs.
+  const all = carry.concat(ans);
+  all.forEach(inp => {
+    inp.addEventListener('input', () => {
+      inp.value = (inp.value.match(/\d/) || [''])[0];
+      if (inp.value){
+        const sibs = carry.indexOf(inp) > -1 ? carry : ans;
+        const i = sibs.indexOf(inp);
+        if (i > 0) sibs[i-1].focus();
+      }
+    });
+    inp.addEventListener('keydown', e => {
+      const sibs = carry.indexOf(inp) > -1 ? carry : ans;
+      const i = sibs.indexOf(inp);
+      if (e.key === 'Backspace' && !inp.value && i < sibs.length - 1){ sibs[i+1].focus(); e.preventDefault(); }
+      if (e.key === 'ArrowLeft'  && i > 0) sibs[i-1].focus();
+      if (e.key === 'ArrowRight' && i < sibs.length - 1) sibs[i+1].focus();
+    });
+  });
+
+  return {
+    node: wrap,
+    answerCells: ans,
+    read(){
+      // Filled from the right, with no holes — anything else is half an answer,
+      // and marking half an answer wrong teaches him nothing.
+      const v = ans.map(c => c.value.trim());
+      if (!v[v.length - 1]) return '';
+      let i = v.length - 1;
+      while (i >= 0 && v[i] !== '') i--;
+      if (v.slice(0, i + 1).some(x => x !== '')) return '';
+      return v.slice(i + 1).join('');
+    },
+    numbers(){ return [bufs[0], bufs[1]]; },
+    focusLast(){ ans[ans.length-1].focus(); },
+    clear(){
+      bufs[0] = bufs[1] = '';
+      carry.concat(ans, numCells[0], numCells[1]).forEach(c => { c.value = ''; });
+    },
+  };
+}
+
+/* The graded version: his question, stacked. */
+function buildStack(item){
+  const cfg = item.stack;
+  const wrap = el('div','stage');
+  wrap.innerHTML = `<div class="stage-head">Stack it up and work it out, right to left.</div>`;
+  const pad = columnPad(cfg.a, cfg.b, cfg.op, cfg.cols, {});
+  wrap.appendChild(pad.node);
+  item._pad = pad;
+
+  const note = el('div','tiny','The small boxes at the top are for your carries and crossings-out. Nobody marks those.');
+  note.style.margin = '10px 0 12px';
+  wrap.appendChild(note);
+
+  const go = el('button','btn sm','✓ That is my answer');
+  go.onclick = () => {
+    if (SESH.answered) return;
+    const v = pad.read();
+    if (!v) { setCoach('Fill in every box from the right, with no gaps.', 'hint'); return; }
+    proposeAnswer(v, null);
+  };
+  wrap.appendChild(go);
+  setTimeout(() => pad.focusLast(), 80);
+  return wrap;
+}
+
+/* The open version, in the tools drawer: his own numbers, any time, no marking. */
+function toolScratch(){
+  return `<div id="scratchHost"></div>`;
+}
+function wireScratch(host){
+  let op = '+';
+  const redraw = () => {
+    host.innerHTML = '';
+    const pills = el('div','pill-row');
+    ['+','−'].forEach(o => {
+      const b = el('button','pill' + (op===o?' on':''), o === '+' ? '+ Add' : '− Subtract');
+      b.onclick = () => { op = o; redraw(); };
+      pills.appendChild(b);
+    });
+    pills.style.marginBottom = '12px';
+    host.appendChild(pills);
+
+    const pad = columnPad('', '', op, 5, {editNums:true});
+    host.appendChild(pad.node);
+
+    const row = el('div','row');
+    row.style.marginTop = '12px';
+    const clear = el('button','btn ghost sm','Clear');
+    clear.onclick = () => pad.clear();
+    row.appendChild(clear);
+    host.appendChild(row);
+
+    const note = el('p','tiny','Type your own numbers in. Nothing here is marked — it is yours to work on.');
+    note.style.marginTop = '10px';
+    host.appendChild(note);
+  };
+  redraw();
+}
+
 /* Profile read-outs the coach and the parent view both use. */
 function profileRead(){
   const P = S.profile;
@@ -5461,7 +5702,7 @@ function nextItem(){
       if (made.stage > c.at){ c.floor = made.stage; c.at = made.stage; }
       // JUMP's first exercise is a two-way choice on a picture. Four options is
       // already the second step, so the opener gets cut down to two.
-      if (!s.steps && c.at === c.floor && masteryOf(k) < 0.5 && !made.kind.match(/sort|numline|trade|build/))
+      if (!s.steps && c.at === c.floor && masteryOf(k) < 0.5 && !made.kind.match(/sort|numline|trade|build|stack/))
         makeBinary(made);
       s.steps++;
       // one confidence check per sitting, on the last one, where it means most
@@ -5867,7 +6108,9 @@ function renderItem(){
      <div class="qtext">${item.q}</div>`;
   body.appendChild(prompt);
 
-  if (item.kind === 'sort'){
+  if (item.kind === 'stack'){
+    body.appendChild(buildStack(item));
+  } else if (item.kind === 'sort'){
     body.appendChild(buildSorter(item));
   } else if (item.kind === 'numline'){
     body.appendChild(buildNumline(item));
@@ -6090,6 +6333,16 @@ function placePiece(piece, wrap, item){
 /* ---------- reveal + hints + nav ---------- */
 function revealAnswer(correct){
   const item = SESH.current;
+  if (item.kind === 'stack' && item._pad){
+    const cells = item._pad.answerCells;
+    const want = String(item.answer).padStart(cells.length, ' ').split('');
+    cells.forEach((c, i) => {
+      c.disabled = true;
+      if (!correct){ c.value = want[i].trim(); }
+      c.classList.add(correct ? 'right' : 'wrong');
+    });
+    return;
+  }
   if (item.opts && document.querySelector('.opt')){
     document.querySelectorAll('.opt').forEach((b,i)=>{
       b.disabled = true;
@@ -6351,7 +6604,7 @@ function sieveMini(){
    working memory he needs for the concept actually being taught. Using it
    costs nothing — it is recorded as "with support", never as a lower score.
    ========================================================================== */
-let toolTab = 'times';
+let toolTab = 'scratch';
 
 function toolTimesTable(){
   let out = '<div class="xtab"><span class="xh corner">×</span>';
@@ -6386,6 +6639,7 @@ function toolFractionWall(){
 }
 
 const TOOL_TABS = [
+  ['scratch', '✏️ Scratch pad', toolScratch],
   ['times', '✖️ Times table', toolTimesTable],
   ['sieve', '🔢 Prime grid',  ()=> sieveMini()],
   ['place', '🔟 Place value', toolPlaceValue],
@@ -6418,6 +6672,9 @@ function renderTools(){
         cell.classList.add('hit');
       };
     });
+  }
+  if (toolTab === 'scratch'){
+    wireScratch(body.querySelector('#scratchHost'));
   }
   if (toolTab === 'sieve'){
     const go = el('button','btn ghost sm','Open the full grid');
