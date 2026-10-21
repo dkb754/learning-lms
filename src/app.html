@@ -402,6 +402,7 @@ p{line-height:1.6}
 .pad button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line-strong)}
 .pad button.act{background:var(--build);color:#fff;border-color:transparent;box-shadow:0 3px 0 var(--build-edge)}
 .pad button.sub{background:var(--surface-2);color:var(--ink-2)}
+.pad button.span3{grid-column:span 3}
 
 /* ============================================================
    ARRAY BUILDER — plastic bricks
@@ -1195,6 +1196,19 @@ p{line-height:1.6}
       </div>
 
       <div class="card">
+        <div class="eyebrow" style="margin-bottom:9px">Tonight's homework</div>
+        <p class="tiny" style="margin-bottom:9px">
+          Pin what school set today and it goes to the top of Adam's home screen,
+          above everything else, until tomorrow.</p>
+        <select id="hwPick" class="ansfield"
+                style="max-width:none;font-size:.92rem;text-align:left;letter-spacing:0;padding:11px"></select>
+        <div class="row" style="margin-top:10px;flex-wrap:wrap">
+          <button class="btn ghost sm" id="hwClear">Clear it</button>
+          <span class="tiny" id="hwNote"></span>
+        </div>
+      </div>
+
+      <div class="card">
         <div class="eyebrow" style="margin-bottom:9px">Where he is</div>
         <div id="standNow"></div>
       </div>
@@ -1334,7 +1348,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v14 · 21 Oct 2026 · the scratch pad';
+const BUILD = 'v15 · 21 Oct 2026 · fractions to decimals';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -1683,12 +1697,13 @@ const RULES = {
 'm-frac-dec':{
   what:'The same amount, written two ways.',
   terms:[['Equivalent','Worth the same, written differently.']],
-  rule:'A fraction is a division. To turn it into a decimal, divide the top by the bottom. The common ones are worth memorising.',
+  rule:'Tenths and hundredths <b>are</b> decimals: 3/10 is 0.3, and 47/100 is 0.47. For any other fraction, make an equal one out of 10 or 100 first — and only divide if you cannot.',
   when:'When a question mixes fractions and decimals, or asks you to order them together.',
-  steps:['Try to match it to one you know: 1/2 = 0.5, 1/4 = 0.25, 3/4 = 0.75, 1/10 = 0.1, 1/5 = 0.2.',
-         'If it is not one of those, divide the numerator by the denominator.',
-         'Check that the size feels right — less than half should be under 0.5.'],
-  example:{q:'Write 3/4 as a decimal', work:['3/4 means 3 ÷ 4.','Quarters are 0.25 each.','Three of them: 0.25 × 3 = 0.75.'], answer:'0.75'},
+  steps:['Ask: can the bottom number be turned into 10 or 100? (2, 4, 5, 20, 25 and 50 all can.)',
+         'Multiply top and bottom by the same number to get there.',
+         'Read it off: tenths go one place after the point, hundredths go two.',
+         'If the bottom will not reach 10 or 100, divide the top by the bottom instead.'],
+  example:{q:'Write 3/4 as a decimal', work:['4 × 25 = 100, so make it out of 100.','Do the same on top: 3 × 25 = 75.','3/4 = 75/100, and 75 hundredths is 0.75.'], answer:'0.75'},
   trap:'1/4 is not 0.14 and 1/2 is not 0.12. You are not just writing the digits down next to each other — you are dividing.'
 },
 'm-data':{
@@ -3085,11 +3100,11 @@ function wordItem(skill, diff){
 /* A pure visual item: he builds the array himself, then reads the answer off it.
    Sizes are chosen so no grid ever needs more than ~45 taps. */
 const VISUAL_SKILLS = ['m-mult-concept','m-mult-low','m-mult-high','m-div-low','m-div-high','m-improper',
-  'm-add-sub','m-evenodd','m-primes','m-estimate'];
+  'm-add-sub','m-evenodd','m-primes','m-estimate','m-frac-dec'];
 /* Topics whose stage 0 is something he moves with his hands. Listed separately
    because a save written before these existed has a floor of 1 stored for
    them, and he should still get to meet them. */
-const HANDS_ON = ['m-add-sub','m-evenodd','m-primes','m-estimate'];
+const HANDS_ON = ['m-add-sub','m-evenodd','m-primes','m-estimate','m-frac-dec'];
 const BUILD_PAIR = {
   'm-mult-concept': ()=>[2+rnd(4), 2+rnd(6)],
   'm-mult-low' : ()=>[pick([2,3,4,5]),  2+rnd(7)],
@@ -3253,7 +3268,9 @@ function representationFor(item){
   if ((sk === 'm-dec-compare' || sk === 'm-dec-place' || sk === 'm-frac-dec') && item.vizDecs)
     return vizBox('Out of one hundred squares',
       `<div class="hgrid-pair">${item.vizDecs.map(d=>vizHundredGrid(d.v, d.label)).join('')}</div>`,
-      'Count the shaded squares. More shaded = bigger.');
+      sk === 'm-frac-dec'
+        ? 'The whole grid is one. Every small square is one hundredth, and a whole column is one tenth.'
+        : 'Count the shaded squares. More shaded = bigger.');
 
   if (b && b.mode === 'div') return vizBox('Split into equal groups', vizGroups(b.rows, b.cols),
     `${b.rows} groups with ${b.cols} in each.`);
@@ -4126,39 +4143,127 @@ function decAddSubItem(skill, diff){
 }
 
 /* ── grade 5 · fractions and decimals together ──────────────────────────── */
-const FD = [[1,2,'0.5'],[1,4,'0.25'],[3,4,'0.75'],[1,10,'0.1'],[3,10,'0.3'],[1,5,'0.2'],[2,5,'0.4'],[4,5,'0.8'],[1,100,'0.01']];
-function fracDecItem(skill, diff){
-  const [n,d,dec] = pick(FD);
-  if (Math.random()<0.5){
-    return { realm:'math', skill, diff, kind:'choice',
-      q:`Write ${frac(n,d)} as a <b>decimal</b>.`,
-      prompt:`${n}/${d} to dec`, answer:dec,
-      opts: mcText(dec, [{t:`0.${n}${d}`, why:'digits-not-division'},
-        {t:`0.${d}`, why:'digits-not-division'},{t:`${n}.${d}`, why:'digits-not-division'}]),
-      hints:[`A fraction is a division: ${n} ÷ ${d}.`,
-             `Think what one ${d===2?'half':d===4?'quarter':d===5?'fifth':d===10?'tenth':'part'} is worth as a decimal.`,
-             `${frac(n,d)} = <b>${dec}</b>.`],
-      worked:[`${n}/${d} means <span class="k">${n} ÷ ${d}</span>.`,
-              `Not the digits written side by side.`,`= <span class="k">${dec}</span>`] };
+/* ---------------------------------------------------------------------------
+   FRACTIONS ↔ DECIMALS — built the way JUMP builds it.
+
+   The idea that does the work is not "divide the top by the bottom". It is
+   that tenths and hundredths ARE decimals: 3/10 is 0.3, 47/100 is 0.47, and
+   you can read one straight off the other. Everything else is a job of making
+   an equal fraction out of ten or a hundred first. Division is the last
+   resort, not the first move.
+   --------------------------------------------------------------------------- */
+const FD_TENTHS  = [[1,10],[2,10],[3,10],[4,10],[6,10],[7,10],[9,10]];
+const FD_HUNDRED = [[7,100],[9,100],[13,100],[29,100],[41,100],[63,100],[87,100]];
+const FD_KNOWN   = [[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5]];
+const FD_STRETCH = [[7,20],[3,20],[9,25],[13,25],[3,50],[17,50],[1,8],[3,8],[5,8]];
+
+const decOf = (n,d) => {
+  const v = n/d;
+  return v.toFixed(5).replace(/0+$/,'').replace(/\.$/,'');
+};
+const over100 = (n,d) => (100 % d === 0 ? n * (100/d) : null);
+
+function fracDecItem(skill, diff, stage){
+  /* Stage 0 — put each fraction with the decimal it matches. Equivalent
+     fractions and the decimal link, in one move he can do with his hands. */
+  if (stage === 0){
+    const pairs = [
+      ['0.5',  [[1,2],[5,10],[50,100]]],
+      ['0.25', [[1,4],[25,100],[2,8]]],
+      ['0.2',  [[1,5],[2,10],[20,100]]],
+      ['0.75', [[3,4],[75,100],[6,8]]],
+      ['0.3',  [[3,10],[30,100],[6,20]]],
+      ['0.4',  [[2,5],[4,10],[40,100]]],
+    ];
+    const two = shuffle(pairs.slice()).slice(0,2);
+    const tiles = shuffle(
+      two[0][1].map(f => ({t:`${f[0]}/${f[1]}`, b:0}))
+        .concat(two[1][1].map(f => ({t:`${f[0]}/${f[1]}`, b:1}))));
+    return { realm:'math', skill, diff, kind:'sort',
+      q:'Put each fraction with the decimal that matches it.',
+      prompt:'fd-sort ' + two[0][0] + two[1][0], answer:'sorted',
+      buckets:[two[0][0], two[1][0]],
+      tiles,
+      sortAsk:'Drag each one into a bucket — or tap it, then tap a bucket.',
+      slipSay:'Try it as hundredths. How many out of a hundred is that fraction worth?',
+      sortDone:'All of those are the same amount written two ways.',
+      hints:['Turn each one into tenths or hundredths first.',
+             'Half of a hundred is fifty, so 1/2 is 50/100, which is 0.5.',
+             'A quarter of a hundred is twenty-five, so 1/4 is 0.25.'],
+      worked:['Make each fraction into tenths or hundredths.',
+              'Read the decimal straight off: <span class="k">50/100 = 0.5</span>.',
+              'Different fractions can be worth exactly the same decimal.'] };
   }
-  const wrongs = shuffle(FD.filter(f=>f[2]!==dec)).slice(0,3).map(f=>({t:`${f[0]}/${f[1]}`, why:'digits-not-division'}));
+
+  /* Stage 1 — a hundred squares, shaded. Read the decimal off the picture. */
+  if (stage === 1){
+    const [n,d] = pick(FD_TENTHS.concat(FD_KNOWN, FD_HUNDRED));
+    const dec = decOf(n,d), h = over100(n,d);
+    return { realm:'math', skill, diff, kind:'choice',
+      q:`The grid shows ${frac(n,d)} shaded. Write it as a <b>decimal</b>.`,
+      prompt:`fd-grid ${n}/${d}`, answer:dec,
+      vizDecs:[{v:Number(dec), label:`${n}/${d}`}],
+      opts: mcText(dec, [{t:`0.${n}${d}`, why:'digits-not-division'},
+        {t:decOf(n, d) === '0.' + n ? `0.0${n}` : `0.${n}`, why:'place-mix'},
+        {t:`${n}.${d}`, why:'digits-not-division'}]),
+      hints:[`Count the shaded squares out of a hundred.`,
+             h != null ? `${n}/${d} is the same as ${h}/100.` : `Count them in tens.`,
+             `${h != null ? h + ' out of a hundred' : 'That'} is written <b>${dec}</b>.`],
+      worked:[`The whole grid is one. Each small square is one hundredth.`,
+              h != null ? `${frac(n,d)} shades <span class="k">${h}</span> of them.` : `Count the shaded squares.`,
+              `Out of a hundred, that is <span class="k">${dec}</span>.`] };
+  }
+
+  /* Stage 2 — the written move: make it out of 100, then read it off. */
+  const roll = Math.random();
+  if (roll < 0.34){
+    const [n,d] = pick(diff >= 3 ? FD_STRETCH : FD_KNOWN);
+    const h = over100(n,d);
+    if (h != null){
+      return { realm:'math', skill, diff, kind:'input',
+        q:`${frac(n,d)} = <span class="num">?</span> out of 100`,
+        prompt:`fd-100 ${n}/${d}`, answer:String(h),
+        hints:[`What do you multiply ${d} by to get 100?`,
+               `${d} × ${100/d} = 100, so do the same to the top.`,
+               `${n} × ${100/d} = <b>${h}</b>, so ${frac(n,d)} = ${h}/100.`],
+        worked:[`${d} × <span class="k">${100/d}</span> = 100.`,
+                `Do the same on top: ${n} × ${100/d} = <span class="k">${h}</span>.`,
+                `${frac(n,d)} = ${h}/100 = <span class="k">${decOf(n,d)}</span>.`] };
+    }
+  }
+  if (roll < 0.7){
+    const pool = diff >= 3 ? FD_STRETCH : diff >= 2 ? FD_KNOWN.concat(FD_HUNDRED) : FD_TENTHS.concat(FD_KNOWN);
+    const [n,d] = pick(pool);
+    const dec = decOf(n,d), h = over100(n,d);
+    return { realm:'math', skill, diff, kind:'input',
+      q:`Write ${frac(n,d)} as a <b>decimal</b>.`,
+      prompt:`fd ${n}/${d}`, answer:dec,
+      hints:[`Can you make it into tenths or hundredths?`,
+             h != null ? `${frac(n,d)} = ${h}/100.` : `${n} ÷ ${d} — the fraction bar is a division sign.`,
+             `It is <b>${dec}</b>.`],
+      worked:[h != null ? `${frac(n,d)} is the same as <span class="k">${h}/100</span>.`
+                        : `A fraction is a division: ${n} ÷ ${d}.`,
+              `Hundredths are the second place after the point.`,
+              `<span class="k">${dec}</span>`],
+      wrongMap:{ [`0.${n}${d}`]:'digits-not-division', [`0.${d}`]:'digits-not-division',
+                 [`${n}.${d}`]:'digits-not-division' } };
+  }
+  const [n,d] = pick(FD_TENTHS.concat(FD_KNOWN));
+  const dec = decOf(n,d);
+  const wrongs = shuffle(FD_KNOWN.concat(FD_TENTHS).filter(f => decOf(f[0],f[1]) !== dec))
+                   .slice(0,3).map(f => ({t:`${f[0]}/${f[1]}`, why:'digits-not-division'}));
   return { realm:'math', skill, diff, kind:'choice',
     q:`Which fraction is the same as <span class="num">${dec}</span>?`,
-    prompt:`${dec} to frac`, answer:`${n}/${d}`,
+    prompt:`fd-back ${dec}`, answer:`${n}/${d}`,
     opts: mcText(`${n}/${d}`, wrongs),
-    hints:[`Say the decimal out loud. "${dec}" is how many tenths or hundredths?`,
-           `Write that as a fraction, then simplify if you can.`,
+    hints:[`Say it out loud. "${dec}" is how many tenths or hundredths?`,
+           `Write that over 10 or 100, then simplify.`,
            `${dec} = <b>${n}/${d}</b>.`],
-    worked:[`Read the place value of the decimal.`,`Write it over 10 or 100.`,
+    worked:[`Read the place value: ${dec} is ${dec.length === 3 ? 'tenths' : 'hundredths'}.`,
+            `Write it over ${dec.length === 3 ? '10' : '100'}.`,
             `Simplify: <span class="k">${n}/${d}</span>.`] };
 }
 
-/* ── grade 5 · reading data ─────────────────────────────────────────────── */
-const CHART_SETS = [
-  {title:'Players online this week', unit:'players', labels:['Mon','Tue','Wed','Thu','Fri']},
-  {title:'Games finished per class', unit:'games',  labels:['4A','4B','5A','5B','5C']},
-  {title:'Books read this month',    unit:'books',  labels:['Ava','Ben','Cruz','Dee','Eli']},
-];
 function dataItem(skill, diff){
   const set = pick(CHART_SETS);
   const step = diff>=2 ? pick([5,10]) : pick([2,5]);          // the scale is never 1
@@ -4307,7 +4412,7 @@ let S = {
             fastWrong:0, slowRight:0, wordSeen:0, wordRight:0, bareSeen:0, bareRight:0,
             readSeen:0, readRight:0, readRoll:[] },
   review:[], passages:{}, badges:[], log:[], quests:null, bestStreak:0, rulesSeen:{},
-  syncCode:null, syncAt:null, cra:{}, askConfidence:true, asked:[]
+  syncCode:null, syncAt:null, cra:{}, askConfidence:true, asked:[], homework:null
 };
 
 let STORAGE_OK = null;
@@ -4804,7 +4909,7 @@ const SO = {
   'm-dec-place'   :'Going right from the point: tenths, hundredths, thousandths. Each place is ten times smaller.',
   'm-dec-compare' :'Give them the same number of places, then compare left to right. Longer is not bigger.',
   'm-dec-addsub'  :'Line up the decimal points, fill the gaps with zeros, then add as usual.',
-  'm-frac-dec'    :'A fraction is a division. 3/4 means 3 ÷ 4, which is 0.75.',
+  'm-frac-dec'    :'Tenths and hundredths are decimals already: 3/10 is 0.3, 47/100 is 0.47. Make anything else into one of those.',
   'm-improper'    :'Count how many wholes fit, and what is left stays over the same bottom number.',
   'm-word'        :'Equal groups means multiply. Sharing out means divide. Picture the story before you pick.',
   'm-data'        :'Read the scale before the bars. One step up the axis is rarely one.',
@@ -4990,10 +5095,19 @@ function renderHeroPicker(){
    --------------------------------------------------------------------------- */
 function lessonPicks(){
   const next = nextLesson();
-  const out = [{top:'Next up', name:SKILLS[next].name, ico:SKILLS[next].icon, lead:true,
-                go:() => startSession({realm:'math', lesson:next})}];
+  const out = [];
+  // What school actually set today beats what the sequence would have chosen.
+  // Pinned by a grown-up, and only for the day it was pinned.
+  const hw = S.homework;
+  if (hw && hw.at === today() && SKILLS[hw.skill]){
+    out.push({top:"Tonight's homework", name:SKILLS[hw.skill].name, ico:'📒', lead:true,
+              go:() => startSession({realm:'math', lesson:hw.skill})});
+  }
+  out.push({top:'Next up', name:SKILLS[next].name, ico:SKILLS[next].icon, lead:!out.length,
+            go:() => startSession({realm:'math', lesson:next})});
 
-  const met = TEACH_ORDER.filter(k => k !== next && S.mastery[k] && S.mastery[k].seen > 0);
+  const met = TEACH_ORDER.filter(k => k !== next && (!S.homework || k !== S.homework.skill)
+                                    && S.mastery[k] && S.mastery[k].seen > 0);
   const strong = met.sort((a,b) => masteryOf(b) - masteryOf(a))[0];
   if (strong) out.push({top:"Something I'm good at", name:SKILLS[strong].name, ico:'💪',
                         go:() => startSession({realm:'math', lesson:strong})});
@@ -6153,14 +6267,21 @@ function buildKeypad(item){
   wrap.appendChild(field);
 
   const pad = el('div','pad');
-  ['1','2','3','4','5','6','7','8','9','⌫','0','✓'].forEach(k=>{
-    const b = el('button', k==='✓' ? 'act' : (k==='⌫' ? 'sub' : ''), k);
+  // A decimal answer needs a decimal point. Without this the keypad could not
+  // type 0.75 at all, which would have been a quiet wall.
+  const wantsDot = String(item.answer).indexOf('.') > -1;
+  const keys = wantsDot
+    ? ['1','2','3','4','5','6','7','8','9','.','0','⌫','✓']
+    : ['1','2','3','4','5','6','7','8','9','⌫','0','✓'];
+  keys.forEach(k=>{
+    const b = el('button', k==='✓' ? (wantsDot ? 'act span3' : 'act') : (k==='⌫'||k==='.' ? 'sub' : ''), k);
     b.type='button';
     b.onclick = ()=>{
       if (SESH.answered) return;
       if (k==='⌫') field.value = field.value.slice(0,-1);
       else if (k==='✓'){ if (field.value !== '') proposeAnswer(field.value, null); }
-      else if (field.value.length < 5) field.value += k;
+      else if (k==='.'){ if (field.value.indexOf('.') < 0) field.value += (field.value === '' ? '0.' : '.'); }
+      else if (field.value.length < 6) field.value += k;
     };
     pad.appendChild(b);
   });
@@ -6673,6 +6794,24 @@ function renderTools(){
 /* ---------------------------------------------------------------------------
    LESSONS — every topic, nothing locked
    --------------------------------------------------------------------------- */
+function renderHomework(){
+  const sel = $('hwPick');
+  if (!sel) return;
+  const hw = S.homework;
+  const pinnedToday = hw && hw.at === today() ? hw.skill : '';
+  sel.innerHTML = '<option value="">— nothing pinned —</option>' +
+    TEACH_ORDER.map(k => `<option value="${k}"${k === pinnedToday ? ' selected' : ''}>${SKILLS[k].name}</option>`).join('');
+  sel.onchange = () => {
+    S.homework = sel.value ? {skill: sel.value, at: today()} : null;
+    save();
+    renderHomework();
+  };
+  $('hwClear').onclick = () => { S.homework = null; save(); renderHomework(); };
+  $('hwNote').innerHTML = pinnedToday
+    ? `Showing on his home screen today.`
+    : hw ? `Last pinned ${hw.at}. Pick again for today.` : '';
+}
+
 /* The one thing a parent actually wants to know: where is he, really. A report
    card grade and a state test score can disagree by a mile — this says which
    topics are secure, in the order they are built, and what secure means here. */
@@ -6917,6 +7056,7 @@ function renderProgress(){
 
   $('profileDials').innerHTML = dials.join('');
   renderStand();
+  renderHomework();
 
   const skillRows = ks => ks.map(k=>{
     const m = masteryOf(k), b = bandOf(m), rec = S.mastery[k];

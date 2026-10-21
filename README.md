@@ -8,6 +8,30 @@ reading, `Array Snapper` for math) with a single app that measures where he is,
 picks what to give him next, and explains misses in terms of the specific
 thinking trap he fell into.
 
+## v15 — fractions to decimals, and tonight's homework
+
+School set fraction-to-decimal conversion, so that topic got rebuilt properly
+and a way to pin homework got added.
+
+**The topic.** It used to be nine pairs to recognise from a multiple-choice
+list. It now teaches the idea that does the work, which is JUMP's: *tenths and
+hundredths are decimals already*. 3/10 is 0.3; 47/100 is 0.47; you read one
+straight off the other. Anything else becomes one of those first, and dividing
+is the last resort rather than the opening move. Three rungs:
+
+| Rung | What he does |
+|---|---|
+| Hands-on | Drags fractions into the decimal they match — 3/4, 75/100 and 6/8 all land on 0.75. Equivalent fractions and the decimal link in one move. |
+| Picture | A hundred-square grid with the fraction shaded, and the decimal read off it. Distractors are the real slips: 0.04, 0.410, 4.10. |
+| Written | "3/4 = ? out of 100" as its own question, then the conversion, then decimal back to fraction. |
+
+The keypad also grew a decimal point, which it had never had — before this,
+a typed decimal answer was literally untypeable.
+
+**Tonight's homework.** Grown-ups has a picker that pins whatever school set to
+the top of Adam's home screen for that day, above the sequence's own
+suggestion. It clears itself tomorrow.
+
 ## v14 — the scratch pad
 
 Adam again, after a full lesson: *he needs a scratch pad for addition and
