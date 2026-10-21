@@ -8,6 +8,37 @@ reading, `Array Snapper` for math) with a single app that measures where he is,
 picks what to give him next, and explains misses in terms of the specific
 thinking trap he fell into.
 
+## v13 — Adam's own notes
+
+Adam asked for three things, in his words: *more interactive*, *moving stuff
+around*, *having a character*, and *picking the lessons he kind of wants*. All
+three are in.
+
+**A builder he makes himself.** The emoji avatar is now a character built out of
+CSS: colour, hat and eyes, with some parts unlocked by level. It lives in the top
+bar — so it is on screen during a lesson — and it **reacts**: it jumps on a right
+answer and tilts its head on a wrong one. It takes a bow on the results screen.
+
+**Choice, inside the rails.** The single "Today's lesson" button is now a short
+chooser: *Next up* (the one the sequence says), *Something I'm good at*, *Mixed
+review*, and *Read a story*. He picks. Every option is a legitimate next move, so
+choosing freely cannot undo the teaching order — which is the thing closing the
+gap.
+
+**Things you move with your hands.** Three manipulatives open the topics that
+have them, and all three work by dragging *or* by tap-to-pick-up and
+tap-to-put-down, because a school Chromebook might be a touchscreen, a trackpad
+or a mouse:
+
+| Widget | Topic | What he does |
+|---|---|---|
+| **Sort** | Even & odd, prime & composite | Drags numbers into two buckets. A wrong bucket is not a wrong answer — it bounces back with the reason, and the slip is recorded as support, never as a miss. |
+| **Number line** | Rounding & estimating | Drags the number onto the ten it is closest to. This is JUMP's own grade-4 rounding page. |
+| **Trade** | Adding & subtracting | Taps to swap ten loose ones for a rod. The carried 1 in the written method *is* that trade, and most children who "can't regroup" have never seen it happen. |
+
+A lesson now climbs **stage 0 → 1 → 2 inside one sitting**: do it with your
+hands, then with the picture, then with the symbols.
+
 ## v12 — rebuilt around the JUMP Math method
 
 Two facts set the direction for this version:

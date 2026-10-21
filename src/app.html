@@ -145,9 +145,9 @@ p{line-height:1.6}
 .topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .avatar{
   width:44px;height:44px;border-radius:12px;flex-shrink:0;position:relative;
-  background:linear-gradient(160deg,#FFD264,#F0A415);
+  background:var(--surface-2);
   border:1.5px solid var(--line);box-shadow:var(--shadow);
-  display:grid;place-items:center;font-size:1.35rem;
+  display:grid;place-items:center;font-size:1.35rem;cursor:pointer;padding:3px 0 0;
 }
 .who{flex:1;min-width:0}
 .who .name{font-family:var(--f-display);font-weight:800;font-size:1.02rem;line-height:1.1}
@@ -505,6 +505,124 @@ p{line-height:1.6}
 
 
 /* ── ask bolt ───────────────────────────────────────────────────────────── */
+
+/* ── the builder: a character he makes, and that reacts ─────────────────── */
+.hero{position:relative;display:inline-block;width:var(--hw,64px);flex-shrink:0}
+.hero-hat{position:absolute;left:50%;top:-6px;transform:translateX(-50%);font-size:calc(var(--hw,64px) * .42);line-height:1;z-index:2}
+.hero-head{
+  position:relative;margin:0 auto;width:78%;aspect-ratio:1.08;border-radius:26%;
+  background:linear-gradient(165deg,var(--hl),var(--hd));
+  box-shadow:inset 0 -5px 0 rgba(0,0,0,.18), inset 0 3px 0 rgba(255,255,255,.26);
+}
+.hero-eyes{position:absolute;top:30%;left:0;right:0;display:flex;justify-content:center;gap:19%}
+.hero-eyes i{
+  width:15%;aspect-ratio:1;border-radius:50%;background:#fff;display:block;
+  box-shadow:inset 0 -1px 0 rgba(0,0,0,.25);
+}
+.hero.sq .hero-eyes i{border-radius:22%}
+.hero.vis .hero-eyes{gap:0}
+.hero.vis .hero-eyes i{width:62%;height:16%;aspect-ratio:auto;border-radius:3px;background:rgba(255,255,255,.9)}
+.hero.wink .hero-eyes i:first-child{height:5%;border-radius:2px;align-self:center}
+.hero-mouth{
+  position:absolute;bottom:20%;left:50%;transform:translateX(-50%);
+  width:34%;height:9%;border-radius:0 0 99px 99px;background:rgba(255,255,255,.92);
+}
+.hero-body{
+  margin:5% auto 0;width:92%;height:calc(var(--hw,64px) * .34);border-radius:22% 22% 30% 30%;
+  background:linear-gradient(165deg,var(--hl),var(--hd));
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.2);
+  display:flex;align-items:center;justify-content:center;gap:14%;
+}
+.hero-body u{width:13%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.35);display:block}
+.hero.right{animation:heroJump .5s cubic-bezier(.3,1.5,.5,1)}
+.hero.right .hero-mouth{height:17%;width:42%}
+.hero.think{animation:heroTilt .6s ease}
+.hero.think .hero-mouth{width:16%;height:16%;border-radius:50%}
+@keyframes heroJump{0%{transform:none}35%{transform:translateY(-13px) scale(1.05)}100%{transform:none}}
+@keyframes heroTilt{0%,100%{transform:none}30%{transform:rotate(-7deg)}65%{transform:rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero.right,.hero.think{animation:none}}
+
+.hero-slot{display:flex;align-items:center;gap:13px}
+.hero-pick{display:flex;gap:8px;flex-wrap:wrap}
+.swatch{
+  width:38px;height:38px;border-radius:11px;cursor:pointer;border:2.5px solid transparent;
+  box-shadow:0 2px 0 var(--line-strong);
+}
+.swatch.on{border-color:var(--ink);transform:translateY(-2px)}
+.pick-btn{
+  min-width:46px;height:42px;border-radius:11px;cursor:pointer;font-size:1.15rem;
+  background:var(--surface-2);border:1.5px solid var(--line);box-shadow:0 2px 0 var(--line-strong);
+  display:grid;place-items:center;color:var(--ink);
+}
+.pick-btn.on{background:var(--build-soft);border-color:var(--build)}
+.pick-btn.locked{opacity:.42;cursor:not-allowed;font-size:.6rem;font-weight:800;letter-spacing:.03em}
+
+/* ── pick what to build today ───────────────────────────────────────────── */
+.pickrow{display:flex;flex-direction:column;gap:9px}
+.pickcard{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-m);
+  box-shadow:var(--shadow);padding:13px 14px;font-family:var(--f-ui);color:var(--ink);
+  transition:transform .1s ease;
+}
+.pickcard:active{transform:translateY(2px)}
+.pickcard.lead{background:linear-gradient(170deg,var(--build-soft),var(--surface) 70%);border-color:var(--build)}
+.pickcard.story{background:linear-gradient(170deg,var(--story-soft),var(--surface) 75%);border-color:var(--story)}
+.pk-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;
+  background:var(--surface-2);border:1.5px solid var(--line);flex-shrink:0}
+.pk-in{flex:1;min-width:0;display:flex;flex-direction:column}
+.pk-top{display:block;font-size:.64rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+.pickcard.lead .pk-top{color:var(--build)}
+.pk-name{display:block;font-family:var(--f-display);font-weight:800;font-size:1.06rem;line-height:1.2;margin-top:2px}
+.pk-go{font-size:1.15rem;color:var(--ink-3);flex-shrink:0}
+
+/* ── things you move with your hands ────────────────────────────────────── */
+.stage{
+  background:var(--surface-2);border:1.5px dashed var(--line-strong);border-radius:var(--r-m);
+  padding:14px;margin-bottom:12px;touch-action:none;
+}
+.stage-head{font-size:.8rem;font-weight:700;color:var(--ink-2);margin-bottom:12px;line-height:1.45}
+.tile{
+  min-width:46px;height:46px;padding:0 11px;border-radius:11px;cursor:grab;user-select:none;
+  display:inline-grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:1.05rem;
+  background:linear-gradient(165deg,#7CA6FF,#2C63F0);color:#fff;border:1px solid var(--build-edge);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.2);touch-action:none;
+}
+.tile.held{position:fixed;z-index:99;cursor:grabbing;transform:scale(1.12);pointer-events:none;
+  box-shadow:0 10px 18px rgba(10,16,28,.3)}
+.tile.sel{outline:3px solid var(--ink);outline-offset:2px}
+.tile.done{background:linear-gradient(165deg,#8BE6BC,#0E9B58);border-color:#0a7a46;cursor:default}
+.tray{display:flex;gap:8px;flex-wrap:wrap;min-height:50px;align-items:center;
+  padding:7px;border-radius:var(--r-s);background:var(--surface-3);border:1.5px solid var(--line)}
+.buckets{display:flex;gap:10px;margin-bottom:11px}
+.bucket{
+  flex:1;min-height:94px;border-radius:var(--r-s);padding:9px;
+  background:var(--surface);border:2px dashed var(--line-strong);
+  display:flex;flex-direction:column;gap:7px;
+}
+.bucket.over{border-color:var(--build);background:var(--build-soft)}
+.bucket .bk-lab{font-size:.74rem;font-weight:800;color:var(--ink-2);text-align:center;line-height:1.3}
+.bucket .bk-lab .tiny{display:block;font-weight:600;margin-top:2px}
+.bucket .bk-in{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.bucket .tile{min-width:38px;height:38px;font-size:.9rem}
+
+.nline{position:relative;height:96px;margin:6px 8px 0;touch-action:none}
+.nl-track{position:absolute;left:0;right:0;top:58px;height:5px;border-radius:3px;background:var(--line-strong)}
+.nl-tick{position:absolute;top:50px;width:3px;height:21px;border-radius:2px;background:var(--line-strong);transform:translateX(-50%)}
+.nl-tick.major{height:30px;top:46px;background:var(--ink-3)}
+.nl-lab{position:absolute;top:80px;transform:translateX(-50%);font-size:.7rem;font-weight:800;color:var(--ink-2);white-space:nowrap}
+.nl-drop{position:absolute;top:40px;width:44px;height:44px;transform:translateX(-50%);border-radius:50%;
+  border:2px dashed var(--line-strong)}
+.nl-drop.over{border-color:var(--build);background:var(--build-soft)}
+.nl-mk{
+  position:absolute;top:4px;left:50%;transform:translateX(-50%);
+  padding:5px 11px;border-radius:9px;cursor:grab;user-select:none;touch-action:none;
+  font-family:var(--f-display);font-weight:800;font-size:.95rem;
+  background:var(--story);color:#fff;border:1px solid var(--story-edge);box-shadow:0 3px 0 var(--story-edge);
+}
+.nl-mk::after{content:'';position:absolute;left:50%;top:100%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:var(--story-edge)}
+
 /* ── today, and the topic list ──────────────────────────────────────────── */
 .today{
   display:block;width:100%;text-align:left;cursor:pointer;font-family:var(--f-ui);color:var(--ink);
@@ -927,7 +1045,7 @@ p{line-height:1.6}
 
   <!-- ══════════════════ TOP BAR ══════════════════ -->
   <header class="topbar" id="topbar" hidden>
-    <div class="avatar" id="avatarBox">🧱</div>
+    <button class="avatar" id="avatarBox" aria-label="Make your builder"></button>
     <div class="who">
       <div class="name" id="hudName">Adam</div>
       <div class="lvl" id="hudLevel">Level 1 · Apprentice Builder</div>
@@ -962,16 +1080,16 @@ p{line-height:1.6}
   <section class="screen" id="scr-home">
     <div class="stack">
       <div id="homeAlert"></div>
-      <button class="today" id="startToday">
-        <span class="t-lab" id="todayLab">Today's lesson</span>
-        <span class="t-name" id="todayName">Loading</span>
-        <span class="t-meta" id="todayMeta"></span>
-        <span class="t-go">Start →</span>
-      </button>
-      <div class="row" style="flex-wrap:wrap">
-        <button class="btn ghost sm" id="homeRead">📖 Read a story</button>
-        <button class="btn ghost sm" id="homeTopics">Pick a topic</button>
+      <div class="hero-slot">
+        <button id="homeHero" style="background:none;border:none;padding:0;cursor:pointer"
+                aria-label="Make your builder"></button>
+        <div style="flex:1;min-width:0">
+          <h2 style="font-size:1.25rem">What do you want to build?</h2>
+          <p class="tiny" style="margin-top:3px" id="homeSub"></p>
+        </div>
       </div>
+      <div class="pickrow" id="pickRow"></div>
+      <button class="btn ghost sm" id="homeTopics">See all topics</button>
       <div id="knowWrap"></div>
     </div>
   </section>
@@ -994,7 +1112,8 @@ p{line-height:1.6}
   <section class="screen" id="scr-result">
     <div class="stack" style="padding-top:22px">
       <div style="text-align:center">
-        <span class="big" id="resIcon">🏗️</span>
+        <div id="resHero" style="margin-bottom:6px"></div>
+        <span class="big" id="resIcon" style="font-size:2rem">🏗️</span>
         <h1 id="resTitle">Done</h1>
         <p class="muted" id="resSub" style="margin-top:6px;font-size:.92rem"></p>
       </div>
@@ -1024,6 +1143,15 @@ p{line-height:1.6}
     <div id="skillBody"></div>
   </section>
 
+  <!-- ══════════════════ YOUR BUILDER ══════════════════ -->
+  <section class="screen" id="scr-hero">
+    <div class="sesh-top">
+      <button class="icon-btn" id="heroBack" aria-label="Back">←</button>
+      <div style="flex:1"><h2 style="font-size:1.15rem">Your builder</h2></div>
+    </div>
+    <div id="heroBody"></div>
+  </section>
+
   <!-- ══════════════════ SIEVE ══════════════════ -->
   <section class="screen" id="scr-sieve">
     <div class="sesh-top">
@@ -1047,10 +1175,10 @@ p{line-height:1.6}
       </div>
 
       <div class="card">
-        <div class="eyebrow" style="margin-bottom:9px">Name &amp; brick</div>
+        <div class="eyebrow" style="margin-bottom:9px">Name</div>
         <input id="nameInput" class="ansfield" style="max-width:none;font-size:1rem;text-align:left;letter-spacing:0"
                value="Adam" maxlength="18" aria-label="Name">
-        <div class="pill-row" id="avatarPicker" style="margin-top:10px"></div>
+        <button class="btn ghost sm" id="grownHero" style="margin-top:11px">🧱 Make your builder</button>
       </div>
 
       <div class="card">
@@ -1181,7 +1309,7 @@ p{line-height:1.6}
 "use strict";
 /* Bump on every release. Shown on the welcome screen and under Grown-up
    controls so anyone can say out loud which build they are actually looking at. */
-const BUILD = 'v12 · 20 Oct 2026 · one idea at a time';
+const BUILD = 'v13 · 21 Oct 2026 · your builder';
 /* ============================================================================
    ADAM'S BUILD MODE
    A self-contained adaptive tutor. Everything runs in the browser:
@@ -2931,7 +3059,12 @@ function wordItem(skill, diff){
 
 /* A pure visual item: he builds the array himself, then reads the answer off it.
    Sizes are chosen so no grid ever needs more than ~45 taps. */
-const VISUAL_SKILLS = ['m-mult-concept','m-mult-low','m-mult-high','m-div-low','m-div-high','m-improper'];
+const VISUAL_SKILLS = ['m-mult-concept','m-mult-low','m-mult-high','m-div-low','m-div-high','m-improper',
+  'm-add-sub','m-evenodd','m-primes','m-estimate'];
+/* Topics whose stage 0 is something he moves with his hands. Listed separately
+   because a save written before these existed has a floor of 1 stored for
+   them, and he should still get to meet them. */
+const HANDS_ON = ['m-add-sub','m-evenodd','m-primes','m-estimate'];
 const BUILD_PAIR = {
   'm-mult-concept': ()=>[2+rnd(4), 2+rnd(6)],
   'm-mult-low' : ()=>[pick([2,3,4,5]),  2+rnd(7)],
@@ -3123,7 +3256,26 @@ function mcText(correct, wrongs){
 const roundTo = (n,place)=>Math.round(n/place)*place;
 
 /* ── grade 4 · adding and subtracting ───────────────────────────────────── */
-function addSubItem(skill, diff){
+function addSubItem(skill, diff, stage){
+  // Stage 0: build both numbers out of tens and ones, then make the trade by
+  // hand. The carried 1 in the written method is this swap, and most children
+  // who "can't regroup" have never once seen it happen.
+  if (stage === 0){
+    const ao = 5 + rnd(4), bo = 5 + rnd(4);              // ones always cross ten
+    const at = 1 + rnd(4), bt = 1 + rnd(3);
+    const a = at*10 + ao, b = bt*10 + bo, ans = a + b;
+    return { realm:'math', skill, diff, kind:'trade',
+      q:`<span class="num">${a} + ${b} = ?</span>`,
+      prompt:`${a} + ${b}`, answer:ans,
+      trade:{rods: at+bt, ones: ao+bo},
+      tradeAsk:`${a} and ${b}, all the rods and ones together.`,
+      hints:[`Count the rods: that is the tens. Count the loose ones.`,
+             `There are ${ao+bo} loose ones — more than ten, so one trade is waiting.`,
+             `After the trade: ${at+bt+1} tens and ${ao+bo-10} ones, which is <b>${ans}</b>.`],
+      worked:[`${a} is ${at} tens and ${ao} ones. ${b} is ${bt} tens and ${bo} ones.`,
+              `Together: ${at+bt} tens and ${ao+bo} ones.`,
+              `Ten of those ones trade for a rod: <span class="k">${ans}</span>.`] };
+  }
   const digits = diff>=3 ? 4 : diff>=2 ? 3 : 2;
   const lo = Math.pow(10,digits-1), hi = Math.pow(10,digits)-1;
   const isAdd = Math.random()<0.5;
@@ -3215,7 +3367,28 @@ function multConceptItem(skill, diff){
 }
 
 /* ── grade 4 · rounding and estimating ──────────────────────────────────── */
-function estimateItem(skill, diff){
+function estimateItem(skill, diff, stage){
+  // Stage 0 is JUMP's rounding page almost exactly: the number sits on the
+  // line, and the only question is which end it is nearer.
+  if (stage === 0){
+    const base = (2 + rnd(8)) * 10;
+    let n = base + 1 + rnd(9);
+    const ok = Math.round(n/10) * 10;
+    return { realm:'math', skill, diff, kind:'numline',
+      q:`Which ten is <span class="num">${n}</span> closest to?`,
+      prompt:`nl ${n}`, answer:String(ok),
+      lo:base, hi:base+10, step:1,
+      zones:[{at:base}, {at:base+10}],
+      chip:n, chipAt:n, ok,
+      lineAsk:`Drag <b>${n}</b> onto the ten it is closest to.`,
+      whyWrong:'round-wrong',
+      hints:[`Halfway between ${base} and ${base+10} is ${base+5}.`,
+             `${n} is ${n < base+5 ? 'below' : 'at or above'} halfway.`,
+             `So it rounds ${ok === base ? 'down' : 'up'} to <b>${ok}</b>.`],
+      worked:[`The two nearest tens are <span class="k">${base}</span> and <span class="k">${base+10}</span>.`,
+              `Halfway is ${base+5}, and ${n} is ${n < base+5 ? 'closer to the bottom' : 'closer to the top'}.`,
+              `${n} rounds to <span class="k">${ok}</span>. Exactly halfway always goes up.`] };
+  }
   if (diff>=2 && Math.random()<0.5){
     const a = 21+rnd(70), b = 3+rnd(7);
     const ra = roundTo(a,10), est = ra*b;
@@ -3251,6 +3424,28 @@ function estimateItem(skill, diff){
 
 /* ── grade 5 · even and odd ─────────────────────────────────────────────── */
 function evenOddItem(skill, diff, stage){
+  // Stage 0: six numbers and two buckets. Sorting is the fastest way to find
+  // out whether the last-digit rule has actually landed.
+  if (stage === 0){
+    const nums = [];
+    while (nums.length < 6){ const n = 11 + rnd(88); if (nums.indexOf(n) < 0) nums.push(n); }
+    if (!nums.some(n => n%2===0)) nums[0]++;
+    if (!nums.some(n => n%2)) nums[1]++;
+    return { realm:'math', skill, diff, kind:'sort',
+      q:'Sort these into even and odd.',
+      prompt:'sort-eo ' + nums.join(','), answer:'sorted',
+      buckets:['Even','Odd'],
+      tiles: nums.map(n => ({t:n, b: n%2===0 ? 0 : 1})),
+      sortAsk:'Drag each one into a bucket — or tap it, then tap a bucket.',
+      slipSay:'Look at the <b>last digit</b> and nothing else. 0, 2, 4, 6, 8 are even.',
+      sortDone:'All sorted. The last digit decided every single one.',
+      hints:['Only the last digit matters. Cover up the rest with your finger.',
+             'Even last digits: 0, 2, 4, 6, 8. Odd: 1, 3, 5, 7, 9.',
+             'Take them one at a time — look at the end of the number, then drop it.'],
+      worked:['Look at the ones digit only.',
+              'In 0, 2, 4, 6, 8 → <span class="k">even</span>.',
+              'Anything else → <span class="k">odd</span>.'] };
+  }
   // At the picture stage the number has to be small enough to actually pair up.
   const n = stage < 2 ? 7+rnd(18) : (diff>=2 ? 100+rnd(9000) : 10+rnd(90));
   const isEven = n%2===0;
@@ -3336,7 +3531,29 @@ function factorsItem(skill, diff){
 /* ── grade 5 · prime and composite (current homework) ───────────────────── */
 const isPrime = n => { if(n<2) return false; for(let i=2;i*i<=n;i++) if(n%i===0) return false; return true; };
 const PRIMES = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47];
-function primesItem(skill, diff){
+function primesItem(skill, diff, stage){
+  // Stage 0: sort a handful by how many factors they have. The prime grid is
+  // one tap away in the tools if he wants to check.
+  if (stage === 0){
+    const pool = [2,3,5,7,11,13,17,19,23,29], comp = [4,6,8,9,10,12,14,15,16,18,20,21,22,24,25,26,27,28];
+    const tiles = shuffle(shuffle(pool).slice(0,3).map(n => ({t:n, b:0}))
+                   .concat(shuffle(comp).slice(0,3).map(n => ({t:n, b:1}))));
+    return { realm:'math', skill, diff, kind:'sort',
+      q:'Sort these by how many factors they have.',
+      prompt:'sort-pr ' + tiles.map(t=>t.t).join(','), answer:'sorted',
+      buckets:['Prime<br><span class="tiny">only 1 and itself</span>',
+               'Composite<br><span class="tiny">more than two factors</span>'],
+      tiles,
+      sortAsk:'Drag each one into a bucket — or tap it, then tap a bucket.',
+      slipSay:'Try to split it into equal rows. If you can (other than 1 row), it is composite.',
+      sortDone:'That is the whole idea: exactly two factors means prime.',
+      hints:['Ask: can I split this into equal groups bigger than one?',
+             'If 2, 3 or 5 divides into it, it is composite.',
+             'Open the 📐 tools for your prime grid — it never counts against you.'],
+      worked:['Count the factors of each number.',
+              'Exactly two (1 and itself) → <span class="k">prime</span>.',
+              'More than two → <span class="k">composite</span>.'] };
+  }
   const type = rnd(10) < 3 ? 2 : rnd(2);   // 30% of the time, an edge-case question
   if (type===2){
     const edge = pick([1,2]);
@@ -4033,7 +4250,7 @@ function makeMathItem(skill, diff, stage){
     // own picture in the question. Only demote a skill that genuinely has
     // nothing to show — otherwise the stage is mislabelled and, worse, the CRA
     // ladder compares against the wrong rung and never advances.
-    const handsOn = it.kind === 'build' || it.kind === 'fracbuild';
+    const handsOn = ['build','fracbuild','sort','numline','trade'].indexOf(it.kind) > -1;
     const selfDrawn = /class="viz"|whole-row|numline|minichart|hgrid|fbar|pairs/.test(it.q || '');
     if (!handsOn) it.viz = representationFor(it);
     if (!handsOn && !it.viz && !selfDrawn) it.stage = 2;
@@ -4475,7 +4692,9 @@ function craFor(skill){
     const floor = VISUAL_SKILLS.indexOf(skill) > -1 ? 0 : 1;
     S.cra[skill] = {at:floor, floor, run:0};
   }
-  return S.cra[skill];
+  const c = S.cra[skill];
+  if (c.floor > 0 && HANDS_ON.indexOf(skill) > -1) c.floor = 0;
+  return c;
 }
 
 function craRecord(item, correct){
@@ -4626,6 +4845,353 @@ function lessonPlan(skill){
 }
 
 const PHASE_LABEL = {warm:'Warm-up', step:'', so:'', bonus:'Bonus'};
+
+
+/* ============================================================================
+   THE BUILDER — Adam asked for a character, so he gets one he makes himself.
+
+   Built out of CSS boxes rather than an emoji, for two reasons: he can change
+   it, and it can react. It jumps on a right answer and tilts its head on a
+   wrong one, which is the entire feedback loop a ten-year-old actually reads.
+   A few parts unlock with level — the only thing in here that is locked, and
+   it is locked off a number that only goes up.
+   --------------------------------------------------------------------------- */
+const HERO_COLORS = [
+  ['#7CA6FF','#2C63F0'], ['#8BE6BC','#0E9B58'], ['#C3AEFF','#7A4DEA'], ['#FF9FAE','#D63E58'],
+  ['#FFD264','#E39A0C'], ['#8EE4E4','#139A9A'], ['#AFC0DA','#5A6C8C'], ['#FFB3E6','#D63EA8'],
+];
+/* [label, emoji, level needed] */
+const HERO_HATS = [
+  ['Bare head','',0], ['Cap','🧢',0], ['Headphones','🎧',0], ['Hard hat','⛑️',2],
+  ['Crown','👑',3], ['Rocket','🚀',4], ['Top hat','🎩',5], ['Dino','🦖',6],
+];
+/* [label, css class, level needed] */
+const HERO_EYES = [['Round','',0], ['Square','sq',0], ['Visor','vis',2], ['Wink','wink',3]];
+
+function heroState(){
+  if (!S.hero) S.hero = {color:0, hat:1, eyes:0};
+  return S.hero;
+}
+const heroUnlocked = need => levelInfo().num >= need;
+
+function heroHTML(mood, size){
+  const h = heroState();
+  const c = HERO_COLORS[h.color] || HERO_COLORS[0];
+  const hat = (HERO_HATS[h.hat] || HERO_HATS[0])[1];
+  const eyes = (HERO_EYES[h.eyes] || HERO_EYES[0])[1];
+  return `<div class="hero ${eyes} ${mood||''}" style="--hw:${size||64}px;--hl:${c[0]};--hd:${c[1]}">
+    ${hat ? `<span class="hero-hat">${hat}</span>` : ''}
+    <div class="hero-head"><div class="hero-eyes"><i></i><i></i></div><div class="hero-mouth"></div></div>
+    <div class="hero-body"><u></u><u></u></div>
+  </div>`;
+}
+
+/* Make every builder on screen do the same thing at the same moment. */
+function heroReact(mood){
+  document.querySelectorAll('.hero').forEach(n => {
+    n.classList.remove('right','think');
+    if (mood){ void n.offsetWidth; n.classList.add(mood); }
+  });
+}
+
+function renderHeroPicker(){
+  const body = $('heroBody');
+  const h = heroState();
+  body.innerHTML = `<div class="card" style="text-align:center;padding:22px">
+      <div id="heroPreview">${heroHTML('', 110)}</div>
+      <div class="tiny" style="margin-top:12px">Tap the builder to make it wave.</div>
+    </div>`;
+  body.querySelector('#heroPreview').onclick = () => heroReact('right');
+
+  const section = (title, inner) => {
+    const c = el('div','card');
+    c.innerHTML = `<div class="eyebrow" style="margin-bottom:11px">${title}</div>`;
+    c.appendChild(inner);
+    c.style.marginTop = '12px';
+    body.appendChild(c);
+    return c;
+  };
+
+  const colors = el('div','hero-pick');
+  HERO_COLORS.forEach((c,i) => {
+    const b = el('button','swatch' + (h.color===i?' on':''));
+    b.style.background = `linear-gradient(165deg,${c[0]},${c[1]})`;
+    b.setAttribute('aria-label','Colour ' + (i+1));
+    b.onclick = () => { h.color = i; save(); renderHeroPicker(); renderHUD(); };
+    colors.appendChild(b);
+  });
+  section('Colour', colors);
+
+  const hats = el('div','hero-pick');
+  HERO_HATS.forEach((x,i) => {
+    const ok = heroUnlocked(x[2]);
+    const b = el('button','pick-btn' + (h.hat===i?' on':'') + (ok?'':' locked'),
+      ok ? (x[1] || '—') : 'Lvl ' + x[2]);
+    b.title = x[0];
+    b.onclick = () => { if(!ok) return; h.hat = i; save(); renderHeroPicker(); renderHUD(); };
+    hats.appendChild(b);
+  });
+  section('Hat', hats);
+
+  const eyes = el('div','hero-pick');
+  HERO_EYES.forEach((x,i) => {
+    const ok = heroUnlocked(x[2]);
+    const b = el('button','pick-btn' + (h.eyes===i?' on':'') + (ok?'':' locked'), ok ? x[0] : 'Lvl ' + x[2]);
+    b.style.fontSize = ok ? '.76rem' : '.6rem';
+    b.style.fontWeight = '800';
+    b.onclick = () => { if(!ok) return; h.eyes = i; save(); renderHeroPicker(); renderHUD(); };
+    eyes.appendChild(b);
+  });
+  section('Eyes', eyes);
+
+  const L = levelInfo();
+  const note = el('p','tiny', L.next
+    ? `More parts unlock as you level up. <b>${L.span - L.into} XP</b> to Level ${L.num+1}.`
+    : `Everything is unlocked.`);
+  note.style.marginTop = '11px';
+  body.appendChild(note);
+}
+
+/* ============================================================================
+   WHAT DO YOU WANT TO BUILD? — choice, inside the rails.
+
+   Adam asked to pick his own lessons. Letting him pick anything would undo the
+   teaching order, which is the thing fixing the gap. So every option on this
+   screen is a legitimate next move: the next lesson, one he is already good at,
+   mixed retrieval, or a story. He chooses; none of the choices is a wrong one.
+   --------------------------------------------------------------------------- */
+function lessonPicks(){
+  const next = nextLesson();
+  const out = [{top:'Next up', name:SKILLS[next].name, ico:SKILLS[next].icon, lead:true,
+                go:() => startSession({realm:'math', lesson:next})}];
+
+  const met = TEACH_ORDER.filter(k => k !== next && S.mastery[k] && S.mastery[k].seen > 0);
+  const strong = met.sort((a,b) => masteryOf(b) - masteryOf(a))[0];
+  if (strong) out.push({top:"Something I'm good at", name:SKILLS[strong].name, ico:'💪',
+                        go:() => startSession({realm:'math', lesson:strong})});
+
+  out.push({top:'Mixed review', name:'A bit of everything', ico:'🎲',
+            go:() => startSession({realm:'math', len:6})});
+  out.push({top:'Reading', name:'Read a story', ico:'📖', story:true,
+            go:() => startSession({realm:'read', len:8})});
+  return out;
+}
+
+/* ============================================================================
+   THINGS YOU MOVE WITH YOUR HANDS
+
+   Adam asked for this one directly, and JUMP's books agree with him: the first
+   step on a topic should be something you do, not something you pick from a
+   list. Three manipulatives cover most of the grade 4-5 ground:
+
+     sort    — drag numbers into two buckets (even/odd, prime/composite)
+     numline — drag a number to where it belongs (rounding, nearest ten)
+     trade   — tap to swap ten ones for a rod (regrouping, by hand)
+
+   Every one works three ways, because a school Chromebook might be a
+   touchscreen, a trackpad or a mouse: drag it, or tap to pick up and tap to
+   put down.
+   --------------------------------------------------------------------------- */
+let TILE_SEL = null;
+
+function dragTile(node, getZones, onDrop){
+  let on = false, moved = false, sx = 0, sy = 0, ox = 0, oy = 0;
+  const zones = () => Array.from(getZones());
+  const zoneAt = (x, y) => zones().find(z => {
+    const r = z.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  }) || null;
+  const hover = (x, y) => { const t = zoneAt(x, y); zones().forEach(z => z.classList.toggle('over', z === t)); return t; };
+
+  node._zones = zones;
+  node._drop = onDrop;
+
+  node.addEventListener('pointerdown', e => {
+    if (node.classList.contains('done')) return;
+    e.preventDefault();
+    const r = node.getBoundingClientRect();
+    sx = e.clientX; sy = e.clientY; ox = e.clientX - r.left; oy = e.clientY - r.top;
+    node._w = r.width; node._h = r.height;
+    on = true; moved = false;
+    try { node.setPointerCapture(e.pointerId); } catch(err){}
+  });
+  node.addEventListener('pointermove', e => {
+    if (!on) return;
+    if (!moved && Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) < 7) return;
+    if (!moved){
+      moved = true;
+      node.classList.add('held');
+      node.style.width = node._w + 'px'; node.style.height = node._h + 'px';
+    }
+    node.style.left = (e.clientX - ox) + 'px';
+    node.style.top  = (e.clientY - oy) + 'px';
+    hover(e.clientX, e.clientY);
+  });
+  const land = e => {
+    if (!on) return;
+    on = false;
+    if (!moved){ tapTile(node); return; }          // a tap, not a drag
+    node.classList.remove('held');
+    node.style.left = node.style.top = node.style.width = node.style.height = '';
+    const t = zoneAt(e.clientX, e.clientY);
+    zones().forEach(z => z.classList.remove('over'));
+    if (t) onDrop(node, t);
+  };
+  node.addEventListener('pointerup', land);
+  node.addEventListener('pointercancel', () => {
+    on = false; moved = false;
+    node.classList.remove('held');
+    node.style.left = node.style.top = node.style.width = node.style.height = '';
+  });
+}
+
+/* Tap to pick up; the next tap on a target puts it down. */
+function tapTile(node){
+  if (TILE_SEL === node){ node.classList.remove('sel'); TILE_SEL = null; return; }
+  if (TILE_SEL) TILE_SEL.classList.remove('sel');
+  TILE_SEL = node;
+  node.classList.add('sel');
+  node._zones().forEach(z => {
+    z.onclick = () => {
+      const t = TILE_SEL;
+      if (!t) return;
+      t.classList.remove('sel'); TILE_SEL = null;
+      t._drop(t, z);
+    };
+  });
+}
+
+/* ---- sort into two buckets --------------------------------------------- */
+function buildSorter(item){
+  const wrap = el('div','stage');
+  wrap.innerHTML = `<div class="stage-head">${item.sortAsk}</div>`;
+  const bucks = el('div','buckets');
+  item.buckets.forEach((lab, i) => {
+    const b = el('div','bucket');
+    b.dataset.b = i;
+    b.innerHTML = `<div class="bk-lab">${lab}</div>`;
+    b.appendChild(el('div','bk-in'));
+    bucks.appendChild(b);
+  });
+  wrap.appendChild(bucks);
+  const tray = el('div','tray');
+  wrap.appendChild(tray);
+
+  const zones = () => wrap.querySelectorAll('.bucket');
+  item._left = item.tiles.length;
+  item._slips = 0;
+
+  item.tiles.forEach(t => {
+    const tile = el('div','tile', String(t.t));
+    tile.dataset.b = t.b;
+    dragTile(tile, zones, (node, zone) => {
+      if (+node.dataset.b !== +zone.dataset.b){
+        // Wrong bucket is not a wrong answer — it is a try. Say why, put it back.
+        item._slips++;
+        node.classList.add('sel');
+        setTimeout(() => node.classList.remove('sel'), 420);
+        setCoach(item.slipSay || 'Not that one. Look at it again.', 'miss');
+        heroReact('think');
+        return;
+      }
+      node.classList.add('done');
+      node.classList.remove('sel');
+      zone.querySelector('.bk-in').appendChild(node);
+      heroReact('right');
+      if (--item._left === 0){
+        // A slip along the way counts as support, exactly like opening the
+        // times table. It never counts as getting the question wrong.
+        if (item._slips) SESH.hintLevel = Math.max(SESH.hintLevel, 1);
+        setCoach(item.sortDone || 'All of them sorted.', 'good');
+        submitAnswer({ok:true, t:'sorted'});
+      }
+    });
+    tray.appendChild(tile);
+  });
+  return wrap;
+}
+
+/* ---- drag a number onto a number line ----------------------------------- */
+function buildNumline(item){
+  const wrap = el('div','stage');
+  wrap.innerHTML = `<div class="stage-head">${item.lineAsk}</div>`;
+  const line = el('div','nline');
+  const span = item.hi - item.lo;
+  const pos = v => ((v - item.lo) / span) * 100;
+
+  let h = '<div class="nl-track"></div>';
+  for (let i = 0; i <= Math.round(span / item.step); i++){
+    const v = item.lo + i * item.step;
+    const major = item.zones.some(z => Math.abs(z.at - v) < 1e-9);
+    h += `<div class="nl-tick${major ? ' major' : ''}" style="left:${pos(v)}%"></div>`;
+    if (major) h += `<div class="nl-lab" style="left:${pos(v)}%">${v}</div>`;
+  }
+  line.innerHTML = h;
+
+  item.zones.forEach((z, i) => {
+    const d = el('div','nl-drop');
+    d.dataset.z = i;
+    d.style.left = pos(z.at) + '%';
+    line.appendChild(d);
+  });
+
+  const mk = el('div','nl-mk', String(item.chip));
+  mk.style.left = pos(item.chipAt) + '%';
+  line.appendChild(mk);
+  wrap.appendChild(line);
+
+  dragTile(mk, () => line.querySelectorAll('.nl-drop'), (node, zone) => {
+    const z = item.zones[+zone.dataset.z];
+    const ok = z.at === item.ok;
+    node.style.left = pos(z.at) + '%';
+    node.classList.add('done');
+    submitAnswer({ok, t:String(z.at), why: ok ? null : (item.whyWrong || 'round-wrong')});
+  });
+  return wrap;
+}
+
+/* ---- trade ten ones for a rod ------------------------------------------- */
+function buildTrade(item){
+  const t = item.trade;
+  let rods = t.rods, ones = t.ones;
+  const wrap = el('div','stage');
+  wrap.innerHTML = `<div class="stage-head">${item.tradeAsk}</div>`;
+  const show = el('div','');
+  const foot = el('div','');
+  foot.style.marginTop = '12px';
+  wrap.appendChild(show);
+  wrap.appendChild(foot);
+
+  function paint(){
+    let h = '<span class="bt-row">';
+    for (let i = 0; i < rods; i++) h += '<i class="bt-rod"></i>';
+    h += '<span class="bt-ones">';
+    for (let i = 0; i < ones; i++) h += '<i class="bt-one"></i>';
+    h += `</span><b class="bt-n">${rods} tens and ${ones} ones</b></span>`;
+    show.innerHTML = h;
+
+    foot.innerHTML = '';
+    if (ones >= 10){
+      const btn = el('button','btn sm','🔄 Trade 10 ones for 1 ten');
+      btn.onclick = () => {
+        ones -= 10; rods += 1;
+        heroReact('right');
+        paint();
+      };
+      foot.appendChild(btn);
+      const note = el('div','tiny','Ten loose ones is the same amount as one rod. Swap them.');
+      note.style.marginTop = '8px';
+      foot.appendChild(note);
+    } else {
+      const done = el('div','qtext', `${rods} tens and ${ones} ones. So <span class="num">${item.prompt} = ?</span>`);
+      foot.appendChild(done);
+      foot.appendChild(buildKeypad(item));
+      if (t.ones >= 10) setCoach('That is regrouping. The carried 1 in the written method <b>is</b> that trade.', 'hint');
+    }
+  }
+  paint();
+  return wrap;
+}
 
 /* Profile read-outs the coach and the parent view both use. */
 function profileRead(){
@@ -4871,13 +5437,18 @@ function nextItem(){
       s.current = b;
     } else {
       const c = craFor(k);
+      // Open on the hands-on rung whenever the topic is not solid yet, even if
+      // he has climbed past it before — he asked for things to move, and the
+      // concrete step is where a shaky topic should restart anyway.
+      const openStage = (!s.steps && HANDS_ON.indexOf(k) > -1 && masteryOf(k) < 0.6) ? 0 : c.at;
       let made, t = 0;
-      do { made = makeMathItem(k, diffOf(k), c.at); t++; }
+      do { made = makeMathItem(k, diffOf(k), openStage); t++; }
       while (t < 8 && s.recent.indexOf(made.prompt) > -1);
       if (made.stage > c.at){ c.floor = made.stage; c.at = made.stage; }
       // JUMP's first exercise is a two-way choice on a picture. Four options is
       // already the second step, so the opener gets cut down to two.
-      if (!s.steps && c.at === c.floor && masteryOf(k) < 0.5) makeBinary(made);
+      if (!s.steps && c.at === c.floor && masteryOf(k) < 0.5 && !made.kind.match(/sort|numline|trade|build/))
+        makeBinary(made);
       s.steps++;
       // one confidence check per sitting, on the last one, where it means most
       const stepAt = s.plan.map((x,i) => x.phase === 'step' ? i : -1).filter(i => i >= 0);
@@ -5091,6 +5662,7 @@ function submitAnswer(chosen, btn, conf){
   }
 
   revealAnswer(correct);
+  heroReact(correct ? 'right' : 'think');
   setCoach(correct
     ? coachRight(item, s.runStreak, secs, supported)
     : coachWrong(item, trap, 2, prof), correct ? 'good' : 'miss');
@@ -5186,7 +5758,7 @@ function renderHUD(){
   $('hudLevel').textContent = `Level ${L.num} · ${L.title}`;
   $('hudXP').textContent = S.xp;
   $('hudStreak').textContent = S.streak;
-  $('avatarBox').textContent = S.avatar;
+  $('avatarBox').innerHTML = heroHTML('', 34);
 }
 
 /* ---------- session chrome ---------- */
@@ -5216,6 +5788,7 @@ function setCoach(html, tone){
 
 function renderItem(){
   const s = SESH, item = s.current;
+  TILE_SEL = null;
   renderProgressStrip();
   $('seshCoach').innerHTML = '';
   const body = $('seshBody');
@@ -5280,7 +5853,13 @@ function renderItem(){
      <div class="qtext">${item.q}</div>`;
   body.appendChild(prompt);
 
-  if (item.kind === 'build'){
+  if (item.kind === 'sort'){
+    body.appendChild(buildSorter(item));
+  } else if (item.kind === 'numline'){
+    body.appendChild(buildNumline(item));
+  } else if (item.kind === 'trade'){
+    body.appendChild(buildTrade(item));
+  } else if (item.kind === 'build'){
     body.appendChild(buildBuilder(item));
   } else if (item.kind === 'fracbuild'){
     body.appendChild(buildFracWholes(item));
@@ -5947,6 +6526,7 @@ function renderResult(freshBadges){
   else if (pct >= 0.75){ ico = '🏗️'; title = 'Good run'; }
   else if (pct >= 0.5){ ico = '🔧'; title = 'Working it out'; }
   else { ico = '🧭'; title = 'Too steep — my fault'; }
+  $('resHero').innerHTML = heroHTML(pct >= 0.5 ? 'right' : '', 92);
   $('resIcon').textContent = ico;
   $('resTitle').textContent = title;
   $('resSub').textContent = `${s.right} of ${total} · +${s.xp} XP`;
@@ -6026,11 +6606,21 @@ function renderHome(){
     : `<div class="notecard">This browser is not keeping his progress.
        Open <b>Grown-ups</b> and download a save file.</div>`;
 
-  const k = nextLesson();
-  S.todaySkill = k;
-  $('todayLab').textContent = (S.mastery[k].seen ? 'Carry on with' : "Today's lesson");
-  $('todayName').textContent = SKILLS[k].name;
-  $('todayMeta').textContent = `${SKILLS[k].icon}  one idea · about five minutes`;
+  $('homeHero').innerHTML = heroHTML('', 58);
+  const L = levelInfo();
+  $('homeSub').innerHTML = `Level ${L.num} · ${S.xp} XP${
+    L.next ? ` · ${L.span - L.into} to go` : ''}`;
+
+  const host = $('pickRow');
+  host.innerHTML = '';
+  lessonPicks().forEach(pk => {
+    const b = el('button','pickcard' + (pk.lead ? ' lead' : '') + (pk.story ? ' story' : ''));
+    b.innerHTML = `<span class="pk-ico">${pk.ico}</span>
+      <span class="pk-in"><span class="pk-top">${pk.top}</span><span class="pk-name">${pk.name}</span></span>
+      <span class="pk-go">→</span>`;
+    b.onclick = pk.go;
+    host.appendChild(b);
+  });
 }
 
 /* ---------------------------------------------------------------------------
@@ -7090,6 +7680,7 @@ function go(where){
   else if (where==='read'){ startSession({realm:'read', len:8}); }
   else if (where==='lessons'){ renderTopics(); show('scr-lessons'); }
   else if (where==='grown' || where==='progress'){ renderProgress(); show('scr-grown'); }
+  else if (where==='hero'){ renderHeroPicker(); show('scr-hero'); }
 }
 
 function applyTheme(){
@@ -7124,13 +7715,6 @@ function boot(){
   }
   applyTheme();
 
-  const picker = $('avatarPicker');
-  AVATARS.forEach(a=>{
-    const b = el('button','pill' + (a===S.avatar?' on':''), a);
-    b.style.fontSize = '1.05rem';
-    b.onclick = ()=>{ S.avatar = a; picker.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); b.classList.add('on'); save(); renderHUD(); };
-    picker.appendChild(b);
-  });
   $('nameInput').value = S.name;
   $('nameInput').addEventListener('input', e=>{ S.name = e.target.value.trim() || 'Builder'; save(); renderHUD(); });
 
@@ -7162,9 +7746,11 @@ function boot(){
     box.value = '';
     askAsk(q);
   };
-  $('startToday').onclick = ()=> startSession({realm:'math', lesson: S.todaySkill || nextLesson()});
-  $('homeRead').onclick = ()=> startSession({realm:'read', len:8});
   $('homeTopics').onclick = ()=> go('lessons');
+  $('avatarBox').onclick = ()=> go('hero');
+  $('homeHero').onclick = ()=> go('hero');
+  $('grownHero').onclick = ()=> go('hero');
+  $('heroBack').onclick = ()=> go('home');
   document.querySelectorAll('.nav button').forEach(b=> b.onclick = ()=> go(b.dataset.go));
 
   $('themeBtn').onclick = ()=>{
